@@ -21,6 +21,7 @@ using System.Reflection;
 using System.Net;
 using AttacheCase.Properties;
 using System.IO;
+using System.Drawing;
 
 namespace AttacheCase
 {
@@ -37,13 +38,40 @@ namespace AttacheCase
       //labelAppName.Text = Application.ProductName;
       labelVersion.Text = "Version." + ApplicationInfo.Version;
       labelCopyright.Text = ApplicationInfo.CopyrightHolder;
-
       linkLabelCheckForUpdates.Left = pictureBoxApplicationIcon.Left;
 
-#if (MS_STORE)
-      linkLabelCheckForUpdates.Visible = false;
-#endif
+      labelBeta.Left = labelVersion.Left + labelVersion.Width + 2;
+      labelBeta.Top = labelVersion.Top + 3;
 
+      panelVersion.Parent = this.panelMain;
+      panelRegistration.Parent = this.panelMain;
+      panelRegistration.Visible = false;
+
+      tabControl1.Visible = false;
+
+      // レジストレーションコードのチェック
+      LicenseRegister lcr = new LicenseRegister("");
+      if ( lcr.Decypt(false) == true)
+      {
+        // 商用ライセンス適用
+        // Commercial license applicable
+        labelUserName.Text = lcr.UserNameString;
+        labelEmailAddress.Text = lcr.EmailAddressString;
+        labelUserNameTitle.Visible = true;
+        labelEmailTitle.Visible = true;
+        labelUserName.Visible = true;
+        labelEmailAddress.Visible = true;
+
+        labelFreeLicence.Visible = false;      // フリーライセンス文字を非表示
+        buttonRegisterLicense.Visible = false; // 登録ボタンの消去
+
+        // 商用利用ライセンスパネルの表示
+        panelCommercialLicense.Visible = true;
+        // バージョン情報ページを表示する
+        panelRegistration.Visible = false;
+        panelVersion.Visible = true;
+        panelVersion.Focus();
+      }
     }
 
     private void buttonOK_Click(object sender, EventArgs e)
@@ -116,6 +144,83 @@ namespace AttacheCase
 
     }
 
+    private void buttonRegisterLicense_Click_1(object sender, EventArgs e)
+    {
+      // レジストレーションコード入力ページを表示
+      panelVersion.Visible = false;
+      panelRegistration.Visible = true;
+      panelRegistration.Focus();
+    }
+
+    private void buttonRegister_Click(object sender, EventArgs e)
+    {
+      LicenseRegister lcr = new LicenseRegister(textBox1.Text);
+      lcr.Decypt(true);
+      if (lcr.UserNameString != "" && lcr.EmailAddressString != "")
+      {
+        // 商用利用適用
+        // Commercial Use applicable
+        labelUserName.Text = lcr.UserNameString;
+        labelEmailAddress.Text = lcr.EmailAddressString;
+        labelUserNameTitle.Visible = true;
+        labelEmailTitle.Visible = true;
+        labelUserName.Visible = true;
+        labelEmailAddress.Visible = true;
+
+        labelFreeLicence.Visible = false;      // フリー利用文字を非表示
+        buttonRegisterLicense.Visible = false; // 登録ボタンの消去
+        
+        // 商用利用登録パネルの表示
+        panelCommercialLicense.Visible = true;
+        // バージョン情報ページを表示する
+        panelRegistration.Visible = false;
+        panelVersion.Visible = true;
+        panelVersion.Focus();
+      }
+      else
+      {
+        labelValidation.ForeColor = Color.FromName("Red");
+        // コードが正しくありません。
+        // The code is incorrect.
+        labelValidation.Text = Resources.labelCodeIncorrect;
+      }
+    }
+
+    private void buttonCancel_Click(object sender, EventArgs e)
+    {
+      // バージョン情報ページを表示
+      panelRegistration.Visible = false;
+      panelVersion.Visible = true;
+      panelVersion.Focus();
+    }
+
+    private void textBox1_TextChanged(object sender, EventArgs e)
+    {
+      LicenseRegister lcr = new LicenseRegister(textBox1.Text.Trim());
+      lcr.Decypt(true);
+      if (lcr.UserNameString != "" && lcr.EmailAddressString !="")
+      {
+        labelValidation.ForeColor = Color.FromName("ForestGreen");
+        // Valid code.
+        // 有効なコードです。
+        labelValidation.Text = Resources.labelValidCode;
+        labelValidation.Visible = true;
+      }
+      else
+      {
+        labelValidation.ForeColor = Color.FromName("Red");
+        // コードが正しくありません。
+        // The code is incorrect.
+        labelValidation.Text = Resources.labelCodeIncorrect;
+        labelValidation.Visible = true;
+      }
+    }
+
+    private void linkLabelPurchase_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+    {
+      System.Diagnostics.Process.Start("https://hibara.org/software/attachecase/buy/");
+      return;
+    }
   }
 
   /// <summary>

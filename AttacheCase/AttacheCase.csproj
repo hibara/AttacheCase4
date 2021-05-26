@@ -135,9 +135,7 @@
     <Compile Include="ExeOut4.cs" />
     <Compile Include="FileDecrypt3.cs" />
     <Compile Include="FileDecrypt4.cs" />
-    <Compile Include="FileEncrypt2.cs" />
     <Compile Include="FileDecrypt2.cs" />
-    <Compile Include="FileEncypt3.cs" />
     <Compile Include="FileEncypt4.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -170,6 +168,7 @@
       <DependentUpon>Form5.cs</DependentUpon>
     </Compile>
     <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="LicenseRegister.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

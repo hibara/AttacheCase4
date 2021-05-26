@@ -26,6 +26,9 @@ using System.Security.Cryptography;
 using System.IO.Compression;
 using System.ComponentModel;
 using System.Diagnostics;
+#if __MACOS__
+using AppKit;
+#endif
 
 namespace AttacheCase
 {
@@ -94,7 +97,17 @@ namespace AttacheCase
     // Atc data size of self executable file
     private Int64 _ExeOutSize = 0;
     private Int64 _TotalSize = 0;
-    //private Int64 _TotalFileSize = 0;
+        //private Int64 _TotalFileSize = 0;
+
+#if __MACOS__
+    private bool _fCancel = false;
+    public bool fCancel
+    {
+        get { return this._fCancel; }
+        set { this._fCancel = value; }
+    }
+
+#endif
 
     //----------------------------------------------------------------------
     // For thie file list after description, open associated with file or folder.
@@ -234,6 +247,11 @@ namespace AttacheCase
     {
       get { return this._ErrorMessage; }
     }
+    private ArrayList _MessageList;
+    public ArrayList MessageList
+    {
+        get { return this._MessageList; }
+    }
 
     //----------------------------------------------------------------------
     // The plain text header data of encrypted file ( ReadOnly)
@@ -315,7 +333,6 @@ namespace AttacheCase
     {
       get { return this._DecryptionTimeString; }
     }
-
 
     /// <summary>
     /// Constructor
@@ -524,6 +541,7 @@ namespace AttacheCase
       }
 
     } // end public FileDecrypt4(string FilePath);
+      //----------------------------------------------------------------------
 
     /// <summary>
     /// The encrypted file by AES to the original file or folder by user's password.
@@ -533,11 +551,19 @@ namespace AttacheCase
     /// <param name="OutFileDir">The directory of outputing encryption file.</param>
     /// <param name="Password">Encription password string</param>
     /// <returns>bool true: Success, false: Failed</returns>
+#if __MACOS__
     public bool Decrypt(
       object sender, DoWorkEventArgs e,
-      string FilePath, string OutDirPath, string Password, byte[] PasswordBinary, Action<int, string> dialog)
+      string FilePath, string OutDirPath, string Password, byte[] PasswordBinary,
+      Action<int, string> dialog, bool fSuppressConfirmation)
     {
-
+#else
+    public bool Decrypt(
+      object sender, DoWorkEventArgs e,
+      string FilePath, string OutDirPath, string Password, byte[] PasswordBinary,
+      Action<int, string> dialog)
+    {
+#endif
       string LastWriteDateTimeString;
       string CreationDateTimeString;
 
@@ -549,6 +575,7 @@ namespace AttacheCase
       ArrayList MessageList = new ArrayList();
       MessageList.Add(READY_FOR_DECRYPT);
       MessageList.Add(Path.GetFileName(FilePath));
+
       worker.ReportProgress(0, MessageList);
 
       Stopwatch swDecrypt = new Stopwatch();
@@ -610,13 +637,16 @@ namespace AttacheCase
           }
           else
           {
-            fs.Seek(_ExeOutSize + 52, SeekOrigin.Begin);
+            if (_ExeOutSize > 0)
+            {
+              // self-executable file
+              fs.Seek(_ExeOutSize + 52, SeekOrigin.Begin);
+            }
+            else
+            {
+              fs.Seek(52, SeekOrigin.Begin);
+            }
           }
-
-          //int mod = 16 - _AtcHeaderSize % 16;
-          //fs.Seek(_ExeOutSize + 68 + _AtcHeaderSize, SeekOrigin.Begin);
-          //byteArray = new byte[mod];
-          //fs.Read(byteArray, 0, mod);
 
           using (MemoryStream ms = new MemoryStream())
           {
@@ -627,7 +657,7 @@ namespace AttacheCase
               aes.BlockSize = 128;             // BlockSize = 16 bytes
               aes.KeySize = 256;               // KeySize = 32 bytes
               aes.Mode = CipherMode.CBC;       // CBC mode
-              aes.Padding = PaddingMode.Zeros; // Padding mode
+              aes.Padding = PaddingMode.Zeros; // Padding mode is "PKCS7".
 
               aes.Key = key;
               aes.IV = iv;
@@ -686,11 +716,17 @@ namespace AttacheCase
               ms.Read(byteArray, 0, FileNameSize);
               fd.FilePath = Encoding.UTF8.GetString(byteArray);
 
-              //-----------------------------------
-              // Parent folder is not created.
-              //
-              if (_fNoParentFolder == true)
-              {
+#if __MACOS__
+              fd.FilePath = fd.FilePath.Replace("\\", "/");
+#else
+              fd.FilePath = fd.FilePath.Replace("/", "\\");
+#endif
+
+             //-----------------------------------
+             // Parent folder is not created.
+             //
+             if (_fNoParentFolder == true)
+             {
                 // root directory
                 if (FileNum == 0)
                 {
@@ -709,14 +745,7 @@ namespace AttacheCase
               // File path
               //
               string OutFilePath = "";
-              if (_fSalvageIntoSameDirectory == true) // Salvage mode?
-              {
-                OutFilePath = Path.Combine(OutDirPath, Path.GetFileName(fd.FilePath));
-              }
-              else
-              {
-                OutFilePath = Path.Combine(OutDirPath, fd.FilePath);
-              }
+              OutFilePath = Path.Combine(OutDirPath, fd.FilePath);
 
               //-----------------------------------
               // ディレクトリ・トラバーサル対策
@@ -755,7 +784,7 @@ namespace AttacheCase
                 InvalidFilePath = OutFilePath;
               }
 
-              // Directory traversal countermeasures
+              // Error: Directory traversal countermeasures
               if (fDirectoryTraversal == true)
               {
                 _ReturnCode = INVALID_FILE_PATH;
@@ -817,6 +846,30 @@ namespace AttacheCase
 
         }//end using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read));
 
+#if DEBUG
+        //----------------------------------------------------------------------
+        // Output debug log
+        //----------------------------------------------------------------------
+        string DesktopDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        using (var sw = new StreamWriter(Path.Combine(DesktopDir, "_decrypt_header.txt"), false, Encoding.UTF8))
+        {
+            for (int i = 0; i < FileDataList.Count; i++)
+            {
+                string OneLine = i.ToString() + "\t";
+                OneLine += FileDataList[i].FilePath + "\t";
+                OneLine += FileDataList[i].FileSize.ToString() + "\t";
+                OneLine += FileDataList[i].FileAttribute.ToString() + "\t";
+                OneLine += FileDataList[i].LastWriteDateTime.ToString("yyyy/MM/dd H:mm:s") + "\t";
+                OneLine += FileDataList[i].CreationDateTime.ToString("yyyy/MM/dd H:mm:s") + "\t";
+                if (FileDataList[i].FileSize > 0)   // MD5 hash
+                {
+                    OneLine += BitConverter.ToString(FileDataList[i].Hash).Replace("-", string.Empty);
+                }
+                sw.WriteLine(OneLine);
+            }
+        }
+#endif
+
         //----------------------------------------------------------------------
         // Check the disk space
         //----------------------------------------------------------------------
@@ -862,7 +915,14 @@ namespace AttacheCase
           //-----------------------------------
           // Adjust the header data in 16 bytes ( Block size )
           int mod = _AtcHeaderSize % 16;
-          fs.Seek(_ExeOutSize + 52 + _AtcHeaderSize + 16 - mod, SeekOrigin.Begin);
+          if (_fExecutableType == true)
+          {
+            fs.Seek(_ExeOutSize + 52 + _AtcHeaderSize + 16 - mod, SeekOrigin.Begin);
+          }
+          else
+          {
+            fs.Seek(52 + _AtcHeaderSize + 16 - mod, SeekOrigin.Begin);
+          }
 
           //-----------------------------------
           // Decyption
@@ -892,7 +952,7 @@ namespace AttacheCase
 
                 if (_fNoParentFolder == true)
                 {
-                  if (FileDataList[0].FilePath.EndsWith("\\") == true)
+                  if (FileDataList[0].FilePath.EndsWith("\\") == true || FileDataList[0].FilePath.EndsWith("/") == true)
                   {
                     FileIndex = 1;  // Ignore parent folder.
                   }
@@ -932,7 +992,7 @@ namespace AttacheCase
                         //-----------------------------------
                         // Create directory
                         //-----------------------------------
-                        if (FileDataList[FileIndex].FilePath.EndsWith("\\") == true)
+                        if (FileDataList[FileIndex].FilePath.EndsWith("\\") == true || FileDataList[FileIndex].FilePath.EndsWith("/") == true)
                         {
                           string path = Path.Combine(OutDirPath, FileDataList[FileIndex].FilePath);
                           DirectoryInfo di = new DirectoryInfo(path);
@@ -965,6 +1025,7 @@ namespace AttacheCase
                             }
                             else
                             {
+
                               // Show dialog of comfirming to overwrite. 
                               dialog(0, path);
 
@@ -1073,8 +1134,9 @@ namespace AttacheCase
                               }
                               else
                               {
+
                                 // Show dialog of comfirming to overwrite. 
-                                dialog(0, path);
+                                dialog(1, path);
 
                                 // Cancel
                                 if (_TempOverWriteOption == USER_CANCELED)
@@ -1240,15 +1302,15 @@ namespace AttacheCase
                       MessageText = FilePath;
                     }
 
-                    MessageList = new ArrayList();
-                    MessageList.Add(DECRYPTING);
-                    MessageList.Add(MessageText);
+                    _MessageList = new ArrayList();
+                    _MessageList.Add(DECRYPTING);
+                    _MessageList.Add(MessageText);
 
                     // プログレスバーの更新間隔を100msに調整
                     if (swProgress.ElapsedMilliseconds > 100)
                     {
                       percent = ((float)_TotalSize / _TotalFileSize);
-                      worker.ReportProgress((int)(percent * 10000), MessageList);
+                      worker.ReportProgress((int)(percent * 10000), _MessageList);
                       swProgress.Restart();
                     }
 
@@ -1263,8 +1325,7 @@ namespace AttacheCase
                       e.Cancel = true;
                       return (false);
                     }
-
-                  }// end while(len > 0);
+　                 }// end while(len > 0);
 
                 }// end while ((len = ds.Read(byteArray, 0, BUFFER_SIZE)) > 0); 
 

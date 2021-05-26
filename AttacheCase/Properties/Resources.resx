@@ -624,4 +624,13 @@ The process is aborted.</value>
   <data name="BreadcrumbsInputPassword" xml:space="preserve">
     <value>Input Password</value>
   </data>
+  <data name="labelCodeIncorrect" xml:space="preserve">
+    <value>The code is incorrect.</value>
+  </data>
+  <data name="labelCommercialLicenseApplicable" xml:space="preserve">
+    <value>Commercial license applicable</value>
+  </data>
+  <data name="labelValidCode" xml:space="preserve">
+    <value>Valid code.</value>
+  </data>
 </root>

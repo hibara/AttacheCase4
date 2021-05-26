@@ -25,8 +25,11 @@ using System.IO.Compression;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Reflection;
+#if __MACOS__
+using AppKit;
+#endif
 
 namespace AttacheCase
 {
@@ -77,6 +80,15 @@ namespace AttacheCase
     private Int64 _TotalSize = 0;
     //private Int64 _TotalFileSize = 0;
     private Int64 _StartPos = 0;
+
+#if __MACOS__
+    private bool _fCancel = false;
+    public bool fCancel
+    {
+        get { return this._fCancel; }
+        set { this._fCancel = value; }
+    }
+#endif
 
     // The number of files or folders to be encrypted
     private int _NumberOfFiles = 0;
@@ -187,7 +199,7 @@ namespace AttacheCase
     }
 
     /// <summary>
-		/// Multiple files or directories is encrypted by AES (exactly Rijndael) to use password string.
+    /// Multiple files or directories is encrypted by AES (exactly Rijndael) to use password string.
     /// 複数のファイル、またはディレクトリをAES（正確にはRijndael）を使って指定のパスワードで暗号化する
     /// </summary>
     /// <param name="FilePath">File path or directory path is encrypted</param>
@@ -196,9 +208,7 @@ namespace AttacheCase
     /// <returns>Encryption success(true) or failed(false)</returns>
     public bool Encrypt(
       object sender, DoWorkEventArgs e,
-      string[] FilePaths, string OutFilePath,
-      string Password, byte[] PasswordBinary,
-      string NewArchiveName)
+      string[] FilePaths, string OutFilePath, string Password, byte[] PasswordBinary, string NewArchiveName)
     {
 
 #if (DEBUG)
@@ -212,14 +222,10 @@ namespace AttacheCase
       _AtcFilePath = OutFilePath;
 
       BackgroundWorker worker = sender as BackgroundWorker;
-
       // The timestamp of original file
       DateTime dtCreate = File.GetCreationTime(FilePaths[0]);
       DateTime dtUpdate = File.GetLastWriteTime(FilePaths[0]);
       DateTime dtAccess = File.GetLastAccessTime(FilePaths[0]);
-
-      // Executable file size
-      int ExeOutFileSize;
 
       // Create Header data.
       ArrayList MessageList = new ArrayList
@@ -227,6 +233,7 @@ namespace AttacheCase
         READY_FOR_ENCRYPT,
         Path.GetFileName(_AtcFilePath)
       };
+
       worker.ReportProgress(0, MessageList);
 
       // Stopwatch for measuring time and adjusting the progress bar display
@@ -266,18 +273,14 @@ namespace AttacheCase
           {
             // public partial class FileEncrypt4
             // Read from ExeOut4.cs
-            ExeOutFileSize = rawData.Length;
-            outfs.Write(rawData, 0, (int)ExeOutFileSize);
-          }
-          else
-          {
-            ExeOutFileSize = 0;
+            //int ExeOutFileSize = rawData.Length;
+            //outfs.Write(rawData, 0, (int)ExeOutFileSize);
           }
 
           _StartPos = outfs.Seek(0, SeekOrigin.End);
 
           // Application version
-          Version ver = ApplicationInfo.Version;
+          Version ver = AppInfo.Version;
           Int16 vernum = Int16.Parse(ver.ToString().Replace(".", ""));
           byteArray = BitConverter.GetBytes(vernum);
           outfs.Write(byteArray, 0, 2);
@@ -311,50 +314,63 @@ namespace AttacheCase
             byteArray = Encoding.ASCII.GetBytes(ATC_ENCRYPTED_TOKEN);
             ms.Write(byteArray, 0, 4);
 
-            // Int64 FileNumber = 0;
-            // byteArray = BitConverter.GetBytes((Int64)0);
-            // ms.Write(byteArray, 0, 8);
-                        
             string ParentPath;
+            List<string> DebugList = new List<string>();
+            string OneLine = "";
 
             //----------------------------------------------------------------------
             // Put together files in one ( Save as the name ).
             // 複数ファイルを一つにまとめる（ファイルに名前をつけて保存）
             if (NewArchiveName != "")
             {
+#if __MACOS__
+              NewArchiveName = NewArchiveName + "/";
+#else
               NewArchiveName = NewArchiveName + "\\";
-
+#endif
               // File name length
               int FileLen = Encoding.UTF8.GetByteCount(NewArchiveName);
               byteArray = BitConverter.GetBytes((Int16)FileLen);
+              OneLine += FileLen.ToString() + "\t";         // デバッグ
               ms.Write(byteArray, 0, 2);
               
               // File name
               byteArray = Encoding.UTF8.GetBytes(NewArchiveName);
+              OneLine += NewArchiveName + "\t";             //デバッグ
               ms.Write(byteArray, 0, FileLen);
               
               // File size
               byteArray = BitConverter.GetBytes((Int64)0);
+              OneLine += "0\t";                             // デバッグ
               ms.Write(byteArray, 0, 8);
               
               // File attribute
               byteArray = BitConverter.GetBytes((int)16);
+              OneLine += BitConverter.ToInt16(byteArray, 0).ToString() + "\t";  // デバッグ
               ms.Write(byteArray, 0, 4);
 
+              string DateString = DateTime.UtcNow.ToString("yyyyMMdd");
+              string TimeString = DateTime.UtcNow.ToString("HHmmss");
               // Last write date
-              byteArray = BitConverter.GetBytes(int.Parse(DateTime.UtcNow.ToString("yyyyMMdd")));
+              byteArray = BitConverter.GetBytes(int.Parse(DateString));
+              OneLine += DateString + "\t";                             // デバッグ
               ms.Write(byteArray, 0, 4);
               // Last write time
-              byteArray = BitConverter.GetBytes(int.Parse(DateTime.UtcNow.ToString("HHmmss")));
+              byteArray = BitConverter.GetBytes(int.Parse(TimeString));
+              OneLine += TimeString + "\t";                             // デバッグ
               ms.Write(byteArray, 0, 4);
 
               // Creation date
-              byteArray = BitConverter.GetBytes(int.Parse(DateTime.UtcNow.ToString("yyyyMMdd")));
+              byteArray = BitConverter.GetBytes(int.Parse(DateString));
+              OneLine += DateString + "\t";                             // デバッグ
               ms.Write(byteArray, 0, 4);
               // Creation time
-              byteArray = BitConverter.GetBytes(int.Parse(DateTime.UtcNow.ToString("HHmmss")));
+              byteArray = BitConverter.GetBytes(int.Parse(TimeString));
+              OneLine += TimeString;                                    // デバッグ
               ms.Write(byteArray, 0, 4);
-              
+
+              DebugList.Add(OneLine); // デバッグ
+
             }
 
             //----------------------------------------------------------------------
@@ -364,10 +380,13 @@ namespace AttacheCase
             {
               ParentPath = Path.GetDirectoryName(FilePath);
 
+#if __MACOS__
+#else
               if (ParentPath.EndsWith("\\") == false)  // In case of 'C:\\' root direcroy.
               {
                 ParentPath = ParentPath + "\\";
               }
+#endif
 
               if ((worker.CancellationPending == true))
               {
@@ -387,38 +406,61 @@ namespace AttacheCase
                 int FileLen = Encoding.UTF8.GetByteCount(NewArchiveName + Items[2]);
                 byteArray = BitConverter.GetBytes((Int16)FileLen);
                 ms.Write(byteArray, 0, 2);
+#if DEBUG
+                OneLine = FileLen.ToString() + "\t";
+#endif
 
                 // File name
                 byteArray = Encoding.UTF8.GetBytes(NewArchiveName + Items[2]);
                 ms.Write(byteArray, 0, FileLen);
-                
+#if DEBUG
+                OneLine += NewArchiveName + Items[2] + "\t";
+#endif
+
                 // File size
                 Int64 FileSize = Convert.ToInt64(Items[3]);
                 byteArray = BitConverter.GetBytes(FileSize);
                 ms.Write(byteArray, 0, 8);
-                
+#if DEBUG
+                OneLine += FileSize.ToString() + "\t";
+#endif
                 // File attribute
                 byteArray = BitConverter.GetBytes((int)Items[4]);
                 ms.Write(byteArray, 0, 4);
-                
+#if DEBUG
+                OneLine += ((int)Items[4]).ToString() + "\t";
+#endif
                 // Last write date (UTC)
                 byteArray = BitConverter.GetBytes((int)Items[5]);
                 ms.Write(byteArray, 0, 4);
+#if DEBUG
+                OneLine += ((int)Items[5]).ToString() + "\t";
+#endif
                 // Last write time (UTC)
                 byteArray = BitConverter.GetBytes((int)Items[6]);
                 ms.Write(byteArray, 0, 4);
-                
+#if DEBUG
+                OneLine += ((int)Items[6]).ToString() + "\t";
+#endif
                 // Creation date (UTC)
                 byteArray = BitConverter.GetBytes((int)Items[7]);
                 ms.Write(byteArray, 0, 4);
+#if DEBUG
+                OneLine += ((int)Items[7]).ToString() + "\t";
+#endif
                 // Creation time (UTC)
                 byteArray = BitConverter.GetBytes((int)Items[8]);
                 ms.Write(byteArray, 0, 4);
-                
+#if DEBUG
+                OneLine += ((int)Items[8]).ToString() + "\t";
+#endif
                 // Check sum (MD5)
                 byteArray = (byte[])Items[9];
                 ms.Write(byteArray, 0, 16);
-
+#if DEBUG
+                OneLine += BitConverter.ToString((byte[])Items[9]).Replace("-", "");
+                DebugList.Add(OneLine);   // デバッグ
+#endif
                 // Files list for encryption
                 _FileList.Add(Items[1].ToString());  // Absolute file path
                 // Total file size
@@ -440,90 +482,138 @@ namespace AttacheCase
                     e.Cancel = true;
                     return (false);
                   }
-
                   if (NewArchiveName != "")
                   {
-                    Items[2] = NewArchiveName + "\\" + Items[2];
+#if __MACOS__
+                     Items[2] = NewArchiveName + "/" + Items[2];
+#else
+                     Items[2] = NewArchiveName + "\\" + Items[2];
+#endif
                   }
 
+                  //-----------------------------------
+                  // ディレクトリ
                   if ((int)Items[0] == 0)
                   {
                     // Directory name length
                     int FileLen = Encoding.UTF8.GetByteCount((string)Items[2]);
                     byteArray = BitConverter.GetBytes((Int16)FileLen);
                     ms.Write(byteArray, 0, 2);
-
+#if DEBUG
+                    OneLine = FileLen.ToString() + "\t";
+#endif
                     // Directroy name
                     byteArray = Encoding.UTF8.GetBytes((string)Items[2]);
                     ms.Write(byteArray, 0, (int)FileLen);
-                    
+#if DEBUG
+                    OneLine += (string)Items[2] + "\t";
+#endif
                     // File size
                     Int64 FileSize = Convert.ToInt64(0);
                     byteArray = BitConverter.GetBytes(FileSize);
                     ms.Write(byteArray, 0, 8);
-                    
+#if DEBUG
+                    OneLine += FileSize.ToString() + "\t";
+#endif
                     // File attribute
                     byteArray = BitConverter.GetBytes((int)Items[4]);
                     ms.Write(byteArray, 0, 4);
-
+#if DEBUG
+                    OneLine += ((int)Items[4]).ToString() + "\t";
+#endif
                     // Last write date (UTC)
                     byteArray = BitConverter.GetBytes((int)Items[5]);
                     ms.Write(byteArray, 0, 4);
+#if DEBUG
+                    OneLine += ((int)Items[5]).ToString() + "\t";
+#endif
                     // Last write time (UTC)
                     byteArray = BitConverter.GetBytes((int)Items[6]);
                     ms.Write(byteArray, 0, 4);
-
+#if DEBUG
+                    OneLine += ((int)Items[6]).ToString() + "\t";
+#endif
                     // Creation date (UTC)
                     byteArray = BitConverter.GetBytes((int)Items[7]);
                     ms.Write(byteArray, 0, 4);
+#if DEBUG
+                    OneLine += ((int)Items[7]).ToString() + "\t";
+#endif
                     // Creation time (UTC)
                     byteArray = BitConverter.GetBytes((int)Items[8]);
                     ms.Write(byteArray, 0, 4);
-                    
+#if DEBUG
+                    OneLine += ((int)Items[8]).ToString();
                     // Check sum (MD5)
                     // None
+
+                    DebugList.Add(OneLine); // デバッグ
+#endif
 
                     // Directory
                     //_FileList.Add(Item[1].ToString());  // Absolute file path
                   }
+                  //-----------------------------------
+                  // ファイル
                   else
                   {
                     // File name length
                     int FileLen = Encoding.UTF8.GetByteCount(NewArchiveName + Items[2]);
                     byteArray = BitConverter.GetBytes((Int16)FileLen);
                     ms.Write(byteArray, 0, 2);
-                    
+#if DEBUG
+                    OneLine = FileLen.ToString() + "\t";
+#endif
                     // File name
                     byteArray = Encoding.UTF8.GetBytes((string)(NewArchiveName + Items[2]));
                     ms.Write(byteArray, 0, FileLen);
-                    
+#if DEBUG
+                    OneLine += (string)(NewArchiveName + Items[2]) + "\t";
+#endif
                     // File size
                     Int64 FileSize = Convert.ToInt64((Int64)Items[3]);
                     byteArray = BitConverter.GetBytes(FileSize);
                     ms.Write(byteArray, 0, 8);
-                    
+#if DEBUG
+                    OneLine += FileSize.ToString() + "\t";
+#endif
                     // File attribute
                     byteArray = BitConverter.GetBytes((int)Items[4]);
                     ms.Write(byteArray, 0, 4);
-                    
+#if DEBUG
+                    OneLine += ((int)Items[4]).ToString() + "\t";
+#endif
                     // Last write date (UTC)
                     byteArray = BitConverter.GetBytes((int)Items[5]);
                     ms.Write(byteArray, 0, 4);
+#if DEBUG
+                    OneLine += ((int)Items[5]).ToString() + "\t";
+#endif
                     // Last write time (UTC)
                     byteArray = BitConverter.GetBytes((int)Items[6]);
                     ms.Write(byteArray, 0, 4);
-                    
+#if DEBUG
+                    OneLine += ((int)Items[6]).ToString() + "\t";
+#endif
                     // Creation date (UTC)
                     byteArray = BitConverter.GetBytes((int)Items[7]);
                     ms.Write(byteArray, 0, 4);
+#if DEBUG
+                    OneLine += ((int)Items[7]).ToString() + "\t";
+#endif
                     // Creation time (UTC)
                     byteArray = BitConverter.GetBytes((int)Items[8]);
                     ms.Write(byteArray, 0, 4);
-
+#if DEBUG
+                    OneLine += ((int)Items[8]).ToString() + "\t";
+#endif
                     // Check sum (MD5)
                     byteArray = (Byte[])Items[9];
                     ms.Write(byteArray, 0, 16);
-
+#if DEBUG
+                    OneLine += BitConverter.ToString((Byte[])Items[9]).Replace("-", "");
+                    DebugList.Add(OneLine);
+#endif
                     // files only ( Add Files list for encryption )
                     _FileList.Add(Items[1].ToString());  // Absolute file path
                     // Total file size
@@ -537,6 +627,16 @@ namespace AttacheCase
 
             }// end foreach (string FilePath in FilePaths);
 
+#if DEBUG
+            string DesktopDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            using (var sw = new StreamWriter(Path.Combine(DesktopDir, "_encrypt_header.txt"), false, Encoding.UTF8))
+            {
+              foreach (string line in DebugList)
+              {
+                sw.WriteLine(line);
+              }
+            }
+#endif
             // Write File number
             // ms.positon = 4;
             // byteArray = BitConverter.GetBytes((Int64)FileNumber);
@@ -596,7 +696,7 @@ namespace AttacheCase
               aes.BlockSize = 128;              // BlockSize = 8bytes
               aes.KeySize = 256;                // KeySize = 16bytes
               aes.Mode = CipherMode.CBC;        // CBC mode
-              aes.Padding = PaddingMode.PKCS7;  // Padding mode
+              aes.Padding = PaddingMode.PKCS7;  // Padding mode is "PKCS7".
               aes.Key = key;
               aes.IV = iv;
 
@@ -631,9 +731,15 @@ namespace AttacheCase
         using (FileStream outfs = new FileStream(_AtcFilePath, FileMode.OpenOrCreate, FileAccess.Write))
         {
           byteArray = new byte[4];
-
           // Back to current positon of 'encrypted file size'
-          outfs.Seek(ExeOutFileSize + 24, SeekOrigin.Begin);  // self executable file
+          if (_fExecutable == true)
+          {
+            //outfs.Seek(ExeOutFileSize + 24, SeekOrigin.Begin);  // self executable file
+          }
+          else
+          {
+            outfs.Seek(24, SeekOrigin.Begin);
+          }
 
           byteArray = BitConverter.GetBytes(_AtcHeaderSize);
           outfs.Write(byteArray, 0, 4);
@@ -858,7 +964,11 @@ namespace AttacheCase
       DirectoryInfo di = new DirectoryInfo(DirPath);
       List.Add(0);                                      // Directory flag
       List.Add(DirPath);                                // Absolute file path
+#if __MACOS__
+      List.Add(DirPath.Replace(ParentPath, "") + "/"); // (string)Remove parent directory path.
+#else
       List.Add(DirPath.Replace(ParentPath, "") + "\\"); // (string)Remove parent directory path.
+#endif
       List.Add(0);                                      // File size = 0
       List.Add((int)di.Attributes);                     // (int)File attribute
       List.Add(int.Parse((di.LastWriteTimeUtc.ToString("yyyyMMdd")))); // Last write Date (UTC)
@@ -879,6 +989,12 @@ namespace AttacheCase
     private static ArrayList GetFileInfo(string ParentPath, string FilePath)
     {
       ArrayList List = new ArrayList();
+#if __MACOS__
+      if (ParentPath.EndsWith('/') == false)
+      {
+        ParentPath = ParentPath + "/";
+      }
+#endif
       string AbsoluteFilePath = FilePath;
       FileInfo fi = new FileInfo(FilePath);
       List.Add(1);                                // File flag
@@ -908,8 +1024,67 @@ namespace AttacheCase
       return (bs);
     }
 
-  }// end class FileEncrypt()
+    /// <summary>
+    /// アセンブリ情報を取得する
+    /// Get assembly infomations
+    /// http://stackoverflow.com/questions/909555/how-can-i-get-the-assembly-file-version
+    /// </summary>
+    static private class AppInfo
+    {
+      public static Version Version { get { return Assembly.GetCallingAssembly().GetName().Version; } }
+      public static string Title
+      {
+        get
+        {
+          object[] attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+          if (attributes.Length > 0)
+          {
+            AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
+            if (titleAttribute.Title.Length > 0) return titleAttribute.Title;
+          }
+          return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+        }
+      }
 
+      public static string ProductName
+      {
+        get
+        {
+          object[] attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
+          return attributes.Length == 0 ? "" : ((AssemblyProductAttribute)attributes[0]).Product;
+        }
+      }
+
+      public static string Description
+      {
+        get
+        {
+          object[] attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
+          return attributes.Length == 0 ? "" : ((AssemblyDescriptionAttribute)attributes[0]).Description;
+        }
+      }
+
+      public static string CopyrightHolder
+      {
+        get
+        {
+          object[] attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
+          return attributes.Length == 0 ? "" : ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
+        }
+      }
+
+      public static string CompanyName
+      {
+        get
+        {
+          object[] attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
+          return attributes.Length == 0 ? "" : ((AssemblyCompanyAttribute)attributes[0]).Company;
+        }
+      }
+
+    }
+
+  }// end class FileEncrypt()
 
 }// end namespace
 

@@ -284,6 +284,9 @@ Thumbs.db
 *.ilf
 *.ils
 
+# License register
+AttacheCase/LicenseRegister.cs
+
 # Repository Avater for SourceTree
 icon.png
 

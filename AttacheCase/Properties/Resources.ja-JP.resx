@@ -625,4 +625,13 @@
   <data name="BreadcrumbsInputPassword" xml:space="preserve">
     <value>パスワード入力</value>
   </data>
+  <data name="labelCodeIncorrect" xml:space="preserve">
+    <value>コードが正しくありません。</value>
+  </data>
+  <data name="labelCommercialLicenseApplicable" xml:space="preserve">
+    <value>商用ライセンス適用</value>
+  </data>
+  <data name="labelValidCode" xml:space="preserve">
+    <value>有効なコードです。</value>
+  </data>
 </root>

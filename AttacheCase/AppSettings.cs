@@ -2342,7 +2342,7 @@ namespace AttacheCase
               break;
 
             // Enable password strength meter
-            case "/pms":  // パスワード強度メーターを表示するか
+            case "/psm":  // パスワード強度メーターを表示するか
               if (value == "1")
               {
                 _fPasswordStrengthMeter = true;

@@ -788,6 +788,15 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   The code is incorrect. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelCodeIncorrect {
+            get {
+                return ResourceManager.GetString("labelCodeIncorrect", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   The following directory already exists. Do you overwrite the directory to save? に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string labelComfirmToOverwriteDir {
@@ -802,6 +811,15 @@ namespace AttacheCase.Properties {
         public static string labelComfirmToOverwriteFile {
             get {
                 return ResourceManager.GetString("labelComfirmToOverwriteFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Commercial license applicable に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelCommercialLicenseApplicable {
+            get {
+                return ResourceManager.GetString("labelCommercialLicenseApplicable", resourceCulture);
             }
         }
         
@@ -1128,6 +1146,15 @@ namespace AttacheCase.Properties {
         public static string labelProcessNameMoveToTrash {
             get {
                 return ResourceManager.GetString("labelProcessNameMoveToTrash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Valid code. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelValidCode {
+            get {
+                return ResourceManager.GetString("labelValidCode", resourceCulture);
             }
         }
         

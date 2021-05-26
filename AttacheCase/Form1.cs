@@ -5460,6 +5460,11 @@ namespace AttacheCase
           renderer.RoundedEdges = false;
           ToolStripManager.Renderer = renderer;
           ToolStripManager.VisualStylesEnabled = true;
+          // テキストボックスだけ例外
+          // Only text box is an exception.
+          textBoxPassword.ForeColor = Color.Black;
+          textBoxRePassword.ForeColor = Color.Black;
+          textBoxDecryptPassword.ForeColor = Color.Black;
         }
         else
         {
