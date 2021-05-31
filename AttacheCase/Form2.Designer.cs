@@ -32,6 +32,7 @@
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.panelVersion = new System.Windows.Forms.Panel();
+      this.labelBeta = new System.Windows.Forms.Label();
       this.panelCommercialLicense = new System.Windows.Forms.Panel();
       this.labelEmailAddress = new System.Windows.Forms.Label();
       this.labelEmailTitle = new System.Windows.Forms.Label();
@@ -64,7 +65,6 @@
       this.buttonCancel = new System.Windows.Forms.Button();
       this.buttonRegister = new System.Windows.Forms.Button();
       this.panelMain = new System.Windows.Forms.Panel();
-      this.labelBeta = new System.Windows.Forms.Label();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.panelVersion.SuspendLayout();
@@ -79,6 +79,7 @@
       this.tabPage2.SuspendLayout();
       this.panelRegistration.SuspendLayout();
       this.panel1.SuspendLayout();
+      this.panelMain.SuspendLayout();
       this.SuspendLayout();
       // 
       // tabControl1
@@ -118,6 +119,11 @@
       this.panelVersion.Controls.Add(this.buttonRegisterLicense);
       resources.ApplyResources(this.panelVersion, "panelVersion");
       this.panelVersion.Name = "panelVersion";
+      // 
+      // labelBeta
+      // 
+      resources.ApplyResources(this.labelBeta, "labelBeta");
+      this.labelBeta.Name = "labelBeta";
       // 
       // panelCommercialLicense
       // 
@@ -337,19 +343,14 @@
       // 
       // panelMain
       // 
+      this.panelMain.Controls.Add(this.tabControl1);
       resources.ApplyResources(this.panelMain, "panelMain");
       this.panelMain.Name = "panelMain";
-      // 
-      // labelBeta
-      // 
-      resources.ApplyResources(this.labelBeta, "labelBeta");
-      this.labelBeta.Name = "labelBeta";
       // 
       // Form2
       // 
       resources.ApplyResources(this, "$this");
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.Controls.Add(this.tabControl1);
       this.Controls.Add(this.panelMain);
       this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
       this.MaximizeBox = false;
@@ -378,6 +379,7 @@
       this.panelRegistration.PerformLayout();
       this.panel1.ResumeLayout(false);
       this.panel1.PerformLayout();
+      this.panelMain.ResumeLayout(false);
       this.ResumeLayout(false);
 
     }

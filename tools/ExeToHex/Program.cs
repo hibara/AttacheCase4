@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,9 +45,6 @@ namespace ExeToHex
 				return (1);
 			}
 			
-			int len;
-			byte[] byteArray = new byte[16];
-
 			//----------------------------------------------------------------------
 			// Read the binary data of "Exeout.exe"
 			//----------------------------------------------------------------------
@@ -56,43 +53,78 @@ namespace ExeToHex
 			{
 				using (FileStream fs = new FileStream(ExecutableFilePath, FileMode.Open, FileAccess.Read))
 				{
-          int TotalSize = 0;
           ExeOutSize = (int)fs.Length;
-					
-					//----------------------------------------------------------------------
-					//【デバッグ】
-					//System.Windows.Forms.MessageBox.Show("ExeOutSize: " + ExeOutSize.ToString());
-					//----------------------------------------------------------------------
 
-          using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8))
+					//using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8))	// BOM付きで挿入されソースにゴミデータが混入する
+					using (StreamWriter sw = new StreamWriter(ms))
 					{
-						sw.WriteLine("\t\tpublic static byte[] rawData = {");
+						ms.Position = 0;
+						sw.WriteLine("    public static byte[] rawData = {");
 
-            while ((len = fs.Read(byteArray, 0, BUFFER_SIZE)) > 0)
+						BinaryReader br = new BinaryReader(fs);
+						byte[] data = new byte[ExeOutSize];
+
+						int count = 0;
+						string dataString = "";
+						for (int i = 0; i < ExeOutSize; i++)
 						{
+							data[i] = br.ReadByte();
+							if (i == ExeOutSize - 1)
+              {
+								dataString = string.Format("0x{0:X2}", data[i]);
+							}
+							else
+              {
+								dataString = string.Format("0x{0:X2}, ", data[i]);
+							}
+
+							if (count == 0)
+              {
+								sw.Write("      " + dataString);
+              }
+							else if (count > 15)
+              {
+								sw.WriteLine(dataString);	// 改行
+								count = -1;
+							}
+							else
+              {
+								sw.Write(dataString);
+							}
+							count++;
+						}
+
+
+						/*
+            while ((len = fs.Read(byteArray, 0, BUFFER_SIZE)) > 0)
+            {
               List<String> StringList = new List<string>();
-							for (int i = 0; i < len; i++)
-							{
-								StringList.Add(string.Format("0x{0:X2}", byteArray[i]));
+              for (int i = 0; i < len; i++)
+              {
+                StringList.Add(string.Format("0x{0:X2}", byteArray[i]));
                 TotalSize++;
               }
 
-							string[] OneLineArray = StringList.ToArray();
+              string[] OneLineArray = StringList.ToArray();
 
-              string OneLine = "\t\t\t" + string.Join(", ", OneLineArray);
+              string OneLine = "      " + string.Join(", ", OneLineArray);
 
-							if (fs.Position == fs.Length)
-							{
-								sw.WriteLine(OneLine);	// Last line of array.
-							}
-							else
-							{
-								sw.WriteLine(OneLine + ",");
+              if (fs.Position == fs.Length)
+              {
+                sw.WriteLine(OneLine);  // Last line of array.
+								//Console.WriteLine(OneLine);
+              }
+              else
+              {
+                sw.WriteLine(OneLine + ",");
+								//Console.WriteLine(OneLine + ",");
 							}
 
 						}//end while();
+						*/
 
-						sw.WriteLine("\t\t};");
+						sw.WriteLine("");
+						sw.WriteLine("    };");
 
 					}// end using (StreamWriter sw = new StreamWriter(ms, System.Text.Encoding.UTF8));
 
@@ -102,48 +134,48 @@ namespace ExeToHex
 					//----------------------------------------------------------------------
 
 				}// end using (FileStream fs = new FileStream(ExecutableFilePath, FileMode.Open, FileAccess.Read));
-
-
-		
-				string ExeHexString = Encoding.UTF8.GetString(ms.ToArray());
-
+						
 				//----------------------------------------------------------------------
 				// Output src file text
 				//----------------------------------------------------------------------
 
 				string[] lines = System.IO.File.ReadAllLines(CShrpSourceFilePath, Encoding.UTF8);
 
-				List<string> SrcTextList = new List<string>();
+				List<string> SrcList = new List<string>();
 
 				bool fDelete = false;
 				for (int i = 0; i < lines.Count(); i++)
 				{
-          if (lines[i].IndexOf("public int ExeOutFileSize") > 0)
-          {
-            SrcTextList.Add(string.Format("\t\tpublic int ExeOutFileSize = {0};\r\n", ExeOutSize));
-          }
-          else if (lines[i].IndexOf("#region ATC executable file bytes data") > 0)
+					if (lines[i].IndexOf("public int ExeOutFileSize") > -1)
+					{
+						SrcList.Add(string.Format("    public int ExeOutFileSize = {0};", ExeOutSize));
+					}
+					else if (lines[i].IndexOf("#region") > -1)
 					{
 						fDelete = true;
-						SrcTextList.Add(lines[i] + "\r\n");
-						SrcTextList.Add(ExeHexString);
-					}
-					else if (lines[i].IndexOf("#endregion") > 0)
+						SrcList.Add(lines[i]);
+            SrcList.Add(Encoding.UTF8.GetString(ms.ToArray()));
+          }
+					else if (lines[i].IndexOf("#endregion") > -1)
 					{
 						fDelete = false;
-						SrcTextList.Add(lines[i] + "\r\n");
+						SrcList.Add(lines[i]);
 					}
 					else
 					{
-						if (fDelete == false)
+						if (fDelete == true)
+            {
+							// fDeleteフラグ中は書き込まない（削除される）
+            }
+            else  
 						{
-							SrcTextList.Add(lines[i] + "\r\n");
+							SrcList.Add(lines[i]);
 						}
 					}
 
 				}
 
-				string src = string.Join("", SrcTextList.ToArray());
+				string src = string.Join(Environment.NewLine, SrcList.ToArray());
 
 				/*
 				// データ量が多いと、Regexでtime out エラーが発生するようだ。 

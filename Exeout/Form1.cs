@@ -61,7 +61,7 @@ namespace Exeout
 
     public static BackgroundWorker bkg;
 		public int LimitOfInputPassword = -1;
-		private FileDecrypt3 decryption = null;
+		private FileDecrypt4 decryption = null;
 		string TempDecryptionPassFilePath = "";
 
 		public Form1()
@@ -72,8 +72,9 @@ namespace Exeout
 
 		private void Form1_Load(object sender, EventArgs e)
 		{
-			// stab
-		}
+      // Copyright info
+      toolStripStatusLabel1.Text = ApplicationInfo.CopyrightHolder;
+    }
 
 		private void Form1_Shown(object sender, EventArgs e)
 		{
@@ -85,12 +86,12 @@ namespace Exeout
 		{
 			if (checkBoxNotMaskPassword.Checked == true)
 			{
-				textBox1.UseSystemPasswordChar = true;
-			}
-			else
-			{
-				textBox1.PasswordChar = (char)0;
+        textBox1.PasswordChar = (char)0;
         textBox1.UseSystemPasswordChar = false;
+      }
+      else
+			{
+        textBox1.UseSystemPasswordChar = true;
       }
     }
 
@@ -183,7 +184,7 @@ namespace Exeout
 			// Preparing for decrypting
 			// 
 			//-----------------------------------
-			decryption = new FileDecrypt3(Application.ExecutablePath);
+			decryption = new FileDecrypt4(Application.ExecutablePath);
 
 			if (decryption.TokenStr == "_AttacheCaseData")
 			{
@@ -663,5 +664,6 @@ namespace Exeout
 		}
 
   }
+
 
 }

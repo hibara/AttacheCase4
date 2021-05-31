@@ -1,0 +1,5 @@
+
+$(SolutionDir)tools\ExeToHex\bin\Release\ExeToHex.exe $(TargetPath) $(SolutionDir)AttacheCase\ExeOut4.cs
+
+$(SolutionDir)_tools\ExeTest\ExeTest\bin\Release\ExeTest.exe $(TargetPath) $(SolutionDir)_tools\ExeTest\test.atc
+

@@ -1,4 +1,4 @@
-﻿//---------------------------------------------------------------------- 
+//---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
 // Copyright (C) 2021  Mitsuhiro Hibara
 //
@@ -273,8 +273,8 @@ namespace AttacheCase
           {
             // public partial class FileEncrypt4
             // Read from ExeOut4.cs
-            //int ExeOutFileSize = rawData.Length;
-            //outfs.Write(rawData, 0, (int)ExeOutFileSize);
+            ExeOutFileSize = rawData.Length;
+            outfs.Write(rawData, 0, ExeOutFileSize);
           }
 
           _StartPos = outfs.Seek(0, SeekOrigin.End);
@@ -734,7 +734,7 @@ namespace AttacheCase
           // Back to current positon of 'encrypted file size'
           if (_fExecutable == true)
           {
-            //outfs.Seek(ExeOutFileSize + 24, SeekOrigin.Begin);  // self executable file
+            outfs.Seek(ExeOutFileSize + 24, SeekOrigin.Begin);  // self executable file
           }
           else
           {

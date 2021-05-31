@@ -130,8 +130,6 @@
     <Compile Include="DelayTextBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="ExeOut3.cs" />
-    <Compile Include="ExeOut2.cs" />
     <Compile Include="ExeOut4.cs" />
     <Compile Include="FileDecrypt3.cs" />
     <Compile Include="FileDecrypt4.cs" />
@@ -167,7 +165,12 @@
     <Compile Include="Form5.Designer.cs">
       <DependentUpon>Form5.cs</DependentUpon>
     </Compile>
-    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="Form6.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Form6.Designer.cs">
+      <DependentUpon>Form6.cs</DependentUpon>
+    </Compile>
     <Compile Include="LicenseRegister.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="Program.cs" />
@@ -260,6 +263,9 @@
     <EmbeddedResource Include="Form5.resx">
       <DependentUpon>Form5.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Form6.resx">
+      <DependentUpon>Form6.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -338,10 +344,8 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Fody.6.5.0\build\Fody.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Fody.6.5.0\build\Fody.targets'))" />
     <Error Condition="!Exists('..\packages\Costura.Fody.5.1.0\build\Costura.Fody.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Costura.Fody.5.1.0\build\Costura.Fody.props'))" />
-    <Error Condition="!Exists('..\packages\Resource.Embedder.1.2.8\build\Resource.Embedder.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Resource.Embedder.1.2.8\build\Resource.Embedder.targets'))" />
   </Target>
   <Import Project="..\packages\Fody.6.5.0\build\Fody.targets" Condition="Exists('..\packages\Fody.6.5.0\build\Fody.targets')" />
-  <Import Project="..\packages\Resource.Embedder.1.2.8\build\Resource.Embedder.targets" Condition="Exists('..\packages\Resource.Embedder.1.2.8\build\Resource.Embedder.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

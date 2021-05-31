@@ -1,6 +1,8 @@
 //---------------------------------------------------------------------- 
-// "アタッシェケース#3 ( AttachéCase#3 )" -- File encryption software.
-// Copyright (C) 2016-2021  Mitsuhiro Hibara
+// "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
+// Copyright (C) 2021  Mitsuhiro Hibara
+//
+// * Required .NET Framework 4.5 or later
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -21,59 +23,61 @@ using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Security.Cryptography;
-using System.Text.RegularExpressions;
+using System.IO.Compression;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
+#if __MACOS__
+using AppKit;
+#endif
 
 namespace AttacheCase
 {
-  class FileDecrypt3
+  class FileDecrypt4
   {
-    private struct FileListData
+    private struct FileData
     {
       public string FilePath;
       public Int64 FileSize;
       public int FileAttribute;
       public DateTime LastWriteDateTime;
       public DateTime CreationDateTime;
-      public string Hash;
+      public byte[] Hash;
     }
 
     // Status code
     private const int ENCRYPT_SUCCEEDED = 1; // Encrypt is succeeded.
     private const int DECRYPT_SUCCEEDED = 2; // Decrypt is succeeded.
-    private const int DELETE_SUCCEEDED = 3; // Delete is succeeded.
+    private const int DELETE_SUCCEEDED  = 3; // Delete is succeeded.
     private const int READY_FOR_ENCRYPT = 4; // Getting ready for encryption or decryption.
     private const int READY_FOR_DECRYPT = 5; // Getting ready for encryption or decryption.
-    private const int ENCRYPTING = 6; // Ecrypting.
-    private const int DECRYPTING = 7; // Decrypting.
-    private const int DELETING = 8; // Deleting.
+    private const int ENCRYPTING        = 6; // Ecrypting.
+    private const int DECRYPTING        = 7; // Decrypting.
+    private const int DELETING          = 8; // Deleting.
 
     // Error code
-    private const int USER_CANCELED = -1;   // User cancel.
-    private const int ERROR_UNEXPECTED = -100;
-    private const int NOT_ATC_DATA = -101;
-    private const int ATC_BROKEN_DATA = -102;
-    private const int NO_DISK_SPACE = -103;
-    private const int FILE_INDEX_NOT_FOUND = -104;
+    private const int USER_CANCELED            = -1;   // User cancel.
+    private const int ERROR_UNEXPECTED         = -100;
+    private const int NOT_ATC_DATA             = -101;
+    private const int ATC_BROKEN_DATA          = -102;
+    private const int NO_DISK_SPACE            = -103;
+    private const int FILE_INDEX_NOT_FOUND     = -104;
     private const int PASSWORD_TOKEN_NOT_FOUND = -105;
-    private const int NOT_CORRECT_HASH_VALUE = -106;
-    private const int INVALID_FILE_PATH = -107;
-    private const int OS_DENIES_ACCESS = -108;
-    private const int DATA_NOT_FOUND = -109;
-    private const int DIRECTORY_NOT_FOUND = -110;
-    private const int DRIVE_NOT_FOUND = -111;
-    private const int FILE_NOT_LOADED = -112;
-    private const int FILE_NOT_FOUND = -113;
-    private const int PATH_TOO_LONG = -114;
-    private const int IO_EXCEPTION = -115;
+    private const int NOT_CORRECT_HASH_VALUE   = -106;
+    private const int INVALID_FILE_PATH        = -107;
+    private const int OS_DENIES_ACCESS         = -108;
+    private const int DATA_NOT_FOUND           = -109;
+    private const int DIRECTORY_NOT_FOUND      = -110;
+    private const int DRIVE_NOT_FOUND          = -111;
+    private const int FILE_NOT_LOADED          = -112;
+    private const int FILE_NOT_FOUND           = -113;
+    private const int PATH_TOO_LONG            = -114;
+    private const int IO_EXCEPTION             = -115;
 
     // Overwrite Option
     //private const int USER_CANCELED = -1;
-    private const int OVERWRITE = 1;
-    private const int OVERWRITE_ALL = 2;
-    private const int KEEP_NEWER = 3;
+    private const int OVERWRITE      = 1;
+    private const int OVERWRITE_ALL  = 2;
+    private const int KEEP_NEWER     = 3;
     private const int KEEP_NEWER_ALL = 4;
     // ---
     // Skip Option
@@ -86,13 +90,24 @@ namespace AttacheCase
     // Header data variables
     private const string STRING_TOKEN_NORMAL = "_AttacheCaseData";
     private const string STRING_TOKEN_BROKEN = "_Atc_Broken_Data";
-    private const char DATA_FILE_VERSION = (char)130;
-    private const string AtC_ENCRYPTED_TOKEN = "atc3";
+    private const string STRING_TOKEN_RSA    = "_AttacheCase_Rsa";
+    private const char DATA_FILE_VERSION = (char)140;
+    private const string ATC_ENCRYPTED_TOKEN = "atc4";
 
     // Atc data size of self executable file
     private Int64 _ExeOutSize = 0;
     private Int64 _TotalSize = 0;
-    //private Int64 _TotalFileSize = 0;
+        //private Int64 _TotalFileSize = 0;
+
+#if __MACOS__
+    private bool _fCancel = false;
+    public bool fCancel
+    {
+        get { return this._fCancel; }
+        set { this._fCancel = value; }
+    }
+
+#endif
 
     //----------------------------------------------------------------------
     // For thie file list after description, open associated with file or folder.
@@ -208,6 +223,12 @@ namespace AttacheCase
     {
       get { return this._DriveName; }
     }
+    // Total file number
+    private Int64 _TotalFileNumber = 0;
+    public Int64 TotalFileNumber
+    {
+      get { return this._TotalFileNumber; }
+    }
     // Total file size of files to be decrypted
     private Int64 _TotalFileSize = -1;
     public Int64 TotalFileSize
@@ -225,6 +246,11 @@ namespace AttacheCase
     public string ErrorMessage
     {
       get { return this._ErrorMessage; }
+    }
+    private ArrayList _MessageList;
+    public ArrayList MessageList
+    {
+        get { return this._MessageList; }
     }
 
     //----------------------------------------------------------------------
@@ -248,7 +274,7 @@ namespace AttacheCase
     {
       get { return this._TokenStr; }
     }
-    // Data File Version ( DATA_FILE_VERSION = 130 )
+    // Data File Version ( DATA_FILE_VERSION = 140 )
     private int _DataFileVersion = 0;
     public int DataFileVersion
     {
@@ -275,8 +301,8 @@ namespace AttacheCase
     }
 
     // App version
-    private short _AppVersion = 0;
-    public short AppVersion
+    private Int16 _AppVersion = 0;
+    public Int16 AppVersion
     {
       get { return this._AppVersion; }
     }
@@ -308,12 +334,11 @@ namespace AttacheCase
       get { return this._DecryptionTimeString; }
     }
 
-
     /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="FilePath"></param>
-    public FileDecrypt3(string FilePath)
+    public FileDecrypt4(string FilePath)
     {
       _AtcFilePath = FilePath;
 
@@ -392,17 +417,13 @@ namespace AttacheCase
 
           }// end while();
 
-#if (DEBUG)
-          //string msg = fToken == true ? "fTokne: true" : "fTokne: false";
-          //System.Windows.Forms.MessageBox.Show(msg);
-#endif
         }// end using (FileStream fs = new FileStream(_AtcFilePath, FileMode.Open, FileAccess.Read));
 
         byte[] byteArray;
 
         using (FileStream fs = new FileStream(_AtcFilePath, FileMode.Open, FileAccess.Read))
         {
-          if (fs.Length < 32)
+          if (fs.Length < 16)
           {
             _ReturnCode = NOT_ATC_DATA;
             _ErrorFilePath = _AtcFilePath;
@@ -433,11 +454,15 @@ namespace AttacheCase
 
           byteArray = new byte[4];
           fs.Read(byteArray, 0, 4);
-          _DataFileVersion = BitConverter.ToInt32(byteArray, 0); // DATA_FILE_VERSION = 130
+          _DataFileVersion = BitConverter.ToInt32(byteArray, 0); // DATA_FILE_VERSION = 140
 
           byteArray = new byte[4];
           fs.Read(byteArray, 0, 4);
           _AtcHeaderSize = BitConverter.ToInt32(byteArray, 0);   // AtcHeaderSize ( encrypted header data size )
+
+          byteArray = new byte[16];
+          fs.Read(byteArray, 0, 16);
+          //_AtcHeaderSize = BitConverter.ToInt32(byteArray, 0);   // GUID
 
           // salt
           fs.Read(_salt, 0, 8);
@@ -515,22 +540,32 @@ namespace AttacheCase
         return;
       }
 
-    } // end public FileDecrypt3(string FilePath);
+    } // end public FileDecrypt4(string FilePath);
+      //----------------------------------------------------------------------
 
     /// <summary>
-    /// The encrypted file by AES (exactly Rijndael) to the original file or folder by user's password.
-    /// ユーザーが設定したパスワードによって、AES（正確にはRijndael）によって暗号化されたファイルを
-    /// 元のファイル、またはフォルダーに復号して戻す。
+    /// The encrypted file by AES to the original file or folder by user's password.
+    /// ユーザーが設定したパスワードによって、AESによって暗号化されたファイルを元のファイル、またはフォルダーに復号して戻す。
     /// </summary>
     /// <param name="FilePath">File path or directory path is encrypted</param>
     /// <param name="OutFileDir">The directory of outputing encryption file.</param>
     /// <param name="Password">Encription password string</param>
     /// <returns>bool true: Success, false: Failed</returns>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:オブジェクトを複数回破棄しない")]
+#if __MACOS__
     public bool Decrypt(
       object sender, DoWorkEventArgs e,
-      string FilePath, string OutDirPath, string Password, byte[] PasswordBinary, Action<int, string> dialog)
+      string FilePath, string OutDirPath, string Password, byte[] PasswordBinary,
+      Action<int, string> dialog, bool fSuppressConfirmation)
     {
+#else
+    public bool Decrypt(
+      object sender, DoWorkEventArgs e,
+      string FilePath, string OutDirPath, string Password, byte[] PasswordBinary,
+      Action<int, string> dialog)
+    {
+#endif
+      string LastWriteDateTimeString;
+      string CreationDateTimeString;
 
       BackgroundWorker worker = sender as BackgroundWorker;
 
@@ -540,6 +575,7 @@ namespace AttacheCase
       ArrayList MessageList = new ArrayList();
       MessageList.Add(READY_FOR_DECRYPT);
       MessageList.Add(Path.GetFileName(FilePath));
+
       worker.ReportProgress(0, MessageList);
 
       Stopwatch swDecrypt = new Stopwatch();
@@ -552,8 +588,9 @@ namespace AttacheCase
       int len = 0;
       byte[] byteArray;
 
-      _FileList = new List<string>();
-      Dictionary<int, FileListData> dic = new Dictionary<int, FileListData>();
+      // _FileList = new List<string>();
+      // Dictionary<int, FileListData> dic = new Dictionary<int, FileListData>();
+      List<FileData> FileDataList = new List<FileData>();
 
       if (_TokenStr.Trim() == "_AttacheCaseData")
       {
@@ -585,13 +622,13 @@ namespace AttacheCase
       }
 
       byte[] key = _deriveBytes.GetBytes(32);
-      byte[] iv = _deriveBytes.GetBytes(32);
+      byte[] iv = _deriveBytes.GetBytes(16);
 
       try
       {
         using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
-          if (fs.Length < 32)
+          if (fs.Length < 16)
           {
             // not AttacheCase data
             _ReturnCode = NOT_ATC_DATA;
@@ -603,336 +640,235 @@ namespace AttacheCase
             if (_ExeOutSize > 0)
             {
               // self-executable file
-              fs.Seek(_ExeOutSize + 36, SeekOrigin.Begin);
+              fs.Seek(_ExeOutSize + 52, SeekOrigin.Begin);
             }
             else
             {
-              fs.Seek(36, SeekOrigin.Begin);
+              fs.Seek(52, SeekOrigin.Begin);
             }
           }
 
-          // The Header of MemoryStream is encrypted
-          using (Rijndael aes = new RijndaelManaged())
+          using (MemoryStream ms = new MemoryStream())
           {
-            aes.BlockSize = 256;             // BlockSize = 32 bytes
-            aes.KeySize = 256;               // KeySize = 32 bytes
-            aes.Mode = CipherMode.CBC;       // CBC mode
-            aes.Padding = PaddingMode.Zeros; // Padding mode is "ZEROS".
 
-            aes.Key = key;
-            aes.IV = iv;
-
-            // Decryption interface.
-            ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-            using (CryptoStream cse = new CryptoStream(fs, decryptor, CryptoStreamMode.Read))
+            // The Header of MemoryStream is encrypted
+            using (AesManaged aes = new AesManaged())
             {
-              using (MemoryStream ms = new MemoryStream())
+              aes.BlockSize = 128;             // BlockSize = 16 bytes
+              aes.KeySize = 256;               // KeySize = 32 bytes
+              aes.Mode = CipherMode.CBC;       // CBC mode
+              aes.Padding = PaddingMode.Zeros; // Padding mode is "PKCS7".
+
+              aes.Key = key;
+              aes.IV = iv;
+
+              // Decryption interface.
+              ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+              using (CryptoStream cse = new CryptoStream(fs, decryptor, CryptoStreamMode.Read))
               {
                 byteArray = new byte[_AtcHeaderSize];
                 len = cse.Read(byteArray, 0, _AtcHeaderSize);
                 ms.Write(byteArray, 0, _AtcHeaderSize);
-#if (DEBUG)
-                //string AppDirPath = Path.GetDirectoryName(System.Windows.Forms.Application.ExecutablePath);
-                //string DesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                string TempFilePath = Path.Combine(OutDirPath, "decrypt_header.txt");
-                using (StreamWriter sw = new StreamWriter(TempFilePath, false, Encoding.UTF8))
-                {
-                  sw.Write(Encoding.UTF8.GetString(byteArray));
-                }
+              }
+            }
+
+            // Encrypted token
+            ms.Position = 0;
+            byteArray = new byte[4];
+            ms.Read(byteArray, 0, 4);
+
+            // Check Password Token
+            if (Encoding.ASCII.GetString(byteArray).IndexOf(ATC_ENCRYPTED_TOKEN) > -1)
+            {
+              // Decryption is succeeded.
+            }
+            else
+            {
+              // Token is not match ( Password is not correct )
+              _ReturnCode = PASSWORD_TOKEN_NOT_FOUND;
+              _ErrorFilePath = FilePath;
+              return (false);
+            }
+
+            _TotalFileSize = 0;
+            Int16 FileNameSize = 0;
+
+            string ParentFolder = "";
+            bool fDirectoryTraversal = false;
+            string InvalidFilePath = "";
+
+            Int64 FileNum = 0;
+
+            while (true) {
+
+              byteArray = new byte[2];
+
+              if (ms.Read(byteArray, 0, 2) < 2 )
+              {
+                break;
+              }
+
+              // FileNameSize
+              FileData fd = new FileData();
+              FileNameSize = BitConverter.ToInt16(byteArray, 0);
+              // FileName
+              byteArray = new byte[FileNameSize];
+              ms.Read(byteArray, 0, FileNameSize);
+              fd.FilePath = Encoding.UTF8.GetString(byteArray);
+
+#if __MACOS__
+              fd.FilePath = fd.FilePath.Replace("\\", "/");
+#else
+              fd.FilePath = fd.FilePath.Replace("/", "\\");
 #endif
-                // Check Password Token
-                if (Encoding.UTF8.GetString(byteArray).IndexOf(AtC_ENCRYPTED_TOKEN) > -1)
+
+             //-----------------------------------
+             // Parent folder is not created.
+             //
+             if (_fNoParentFolder == true)
+             {
+                // root directory
+                if (FileNum == 0)
                 {
-                  // Decryption is succeeded.
+                  ParentFolder = fd.FilePath;
                 }
+                // not root directroy ( files )
                 else
                 {
-                  // Token is not match ( Password is not correct )
-                  _ReturnCode = PASSWORD_TOKEN_NOT_FOUND;
-                  _ErrorFilePath = FilePath;
-                  return (false);
+                  StringBuilder sb = new StringBuilder(fd.FilePath);
+                  len = ParentFolder.Length;
+                  fd.FilePath = sb.Replace(ParentFolder, "", 0, len).ToString();
                 }
+              }
 
-                ms.Position = 0;
+              //-----------------------------------
+              // File path
+              //
+              string OutFilePath = "";
+              OutFilePath = Path.Combine(OutDirPath, fd.FilePath);
 
-                var sr = new StreamReader(ms, Encoding.UTF8);
-                string line;
+              //-----------------------------------
+              // ディレクトリ・トラバーサル対策
+              // Directory traversal countermeasures
 
-                while ((line = sr.ReadLine()) != null)
-                {
-                  if (Regex.IsMatch(line, @"^[0-9]+:"))
-                  {
-                    _FileList.Add(line);
-                  }
-                }
+              // 余計な ":" が含まれている
+              // Extra ":" is included
+              string[] FilePathSplits = fd.FilePath.Split(':');
+              if (FilePathSplits.Length > 1)
+              {
+                fDirectoryTraversal = true;
+                InvalidFilePath = OutFilePath;
+              }
 
-              }//end using (MemoryStream ms = new MemoryStream())
+              try
+              {
+                // ファイルパスを正規化
+                // Canonicalize file path.
+                OutFilePath = Path.GetFullPath(OutFilePath);
+              }
+              catch
+              {
+                fDirectoryTraversal = true;
+                InvalidFilePath = OutFilePath;
+              }
 
-            }//end using (CryptoStream cse = new CryptoStream(fs, decryptor, CryptoStreamMode.Read));
+              // 正規化したパスが保存先と一致するか
+              // Whether the canonicalized path matches the save destination
+              if (fDirectoryTraversal == false && OutFilePath.StartsWith(OutDirPath))
+              {
+                fd.FilePath = OutFilePath;
+              }
+              else
+              {
+                fDirectoryTraversal = true;
+                InvalidFilePath = OutFilePath;
+              }
 
-          }//end using (Rijndael aes = new RijndaelManaged());
+              // Error: Directory traversal countermeasures
+              if (fDirectoryTraversal == true)
+              {
+                _ReturnCode = INVALID_FILE_PATH;
+                _ErrorFilePath = InvalidFilePath;
+                return (false);
+              }
+
+              //-----------------------------------
+              // FileSize
+              byteArray = new byte[8];
+              ms.Read(byteArray, 0, 8);
+              fd.FileSize = BitConverter.ToInt64(byteArray, 0);
+              _TotalFileSize += fd.FileSize;
+
+              // File Attribute
+              byteArray = new byte[4];
+              ms.Read(byteArray, 0, 4);
+              fd.FileAttribute = BitConverter.ToInt32(byteArray, 0);
+                  
+              // Last write DateTime;
+              TimeZoneInfo tzi = TimeZoneInfo.Local;  // UTC to Local time
+                  
+              byteArray = new byte[4];
+              ms.Read(byteArray, 0, 4);
+              LastWriteDateTimeString = BitConverter.ToInt32(byteArray, 0).ToString("0000/00/00");
+              byteArray = new byte[4];
+              ms.Read(byteArray, 0, 4);
+              LastWriteDateTimeString = LastWriteDateTimeString + BitConverter.ToInt32(byteArray, 0).ToString(" 00:00:00");
+              DateTime.TryParse(LastWriteDateTimeString, out fd.LastWriteDateTime);
+              fd.LastWriteDateTime = TimeZoneInfo.ConvertTimeFromUtc(fd.LastWriteDateTime, tzi);
+                  
+              // Creation DateTime
+              byteArray = new byte[4];
+              ms.Read(byteArray, 0, 4);
+              CreationDateTimeString = BitConverter.ToInt32(byteArray, 0).ToString("0000/00/00");
+              byteArray = new byte[4];
+              ms.Read(byteArray, 0, 4);
+              CreationDateTimeString = CreationDateTimeString + BitConverter.ToInt32(byteArray, 0).ToString(" 00:00:00");
+              DateTime.TryParse(CreationDateTimeString, out fd.CreationDateTime);
+              fd.CreationDateTime = TimeZoneInfo.ConvertTimeFromUtc(fd.CreationDateTime, tzi);
+                  
+              if (fd.FileSize > 0)
+              {
+                // Check sum ( MD5 hash )
+                fd.Hash = new byte[16];
+                ms.Read(fd.Hash, 0, 16);
+              }
+
+              // Insert to 'Key-Value' type array data.
+              // dic.Add(FileNum, fd);
+              FileDataList.Add(fd);
+              FileNum++;
+
+              // Next FileNameSize
+              //byteArray = new byte[2];
+            }
+
+          }//end using (MemoryStream ms = new MemoryStream())
 
         }//end using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read));
 
+#if DEBUG
         //----------------------------------------------------------------------
-        // Make a list array of the information for each file
+        // Output debug log
         //----------------------------------------------------------------------
-        _TotalFileSize = 0;
-        string ParentFolder = "";
-        bool fDirectoryTraversal = false;
-        string InvalidFilePath = "";
-        _FileList.ForEach(delegate (string OutputLine)
+        string DesktopDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        using (var sw = new StreamWriter(Path.Combine(DesktopDir, "_decrypt_header.txt"), false, Encoding.UTF8))
         {
-          int LastWriteDate, CreateDate;
-          double LastWriteTime, CreateTime;
-          DateTime LastWriteDateTime = DateTime.Parse("0001/01/01");
-          DateTime CreationDateTime = DateTime.Parse("0001/01/01");
-
-          FileListData fd = new FileListData();
-          string[] OutputFileData = OutputLine.Split('\t');
-
-          //-----------------------------------
-          // File number
-          // e.g.)
-          // 0:sample.txt[\t]49657[\t]32[\t]736194[\t]39585.875[\t]736194[\t]30186.782[\t]5f43aa1fed05350f34c2fabb7ed938457b2497f2b54a50415b51882f333b8ae1
-          string[] FilePathSplits = OutputFileData[0].Split(':');
-          int FileNum = 0;
-          if (Int32.TryParse(FilePathSplits[0], out FileNum) == false)
-          {
-            FileNum = -1;
-          }
-
-          //-----------------------------------
-          // Parent folder is not created.
-          //
-          if (_fNoParentFolder == true)
-          {
-            // root directory
-            if (FileNum == 0)
+            for (int i = 0; i < FileDataList.Count; i++)
             {
-              if (FilePathSplits.Length > 2)
-              {
-                // ex. 0:G:\Test.txt
-                ParentFolder = FilePathSplits[2];
-              }
-              else
-              {
-                ParentFolder = FilePathSplits[1];
-              }
+                string OneLine = i.ToString() + "\t";
+                OneLine += FileDataList[i].FilePath + "\t";
+                OneLine += FileDataList[i].FileSize.ToString() + "\t";
+                OneLine += FileDataList[i].FileAttribute.ToString() + "\t";
+                OneLine += FileDataList[i].LastWriteDateTime.ToString("yyyy/MM/dd H:mm:s") + "\t";
+                OneLine += FileDataList[i].CreationDateTime.ToString("yyyy/MM/dd H:mm:s") + "\t";
+                if (FileDataList[i].FileSize > 0)   // MD5 hash
+                {
+                    OneLine += BitConverter.ToString(FileDataList[i].Hash).Replace("-", string.Empty);
+                }
+                sw.WriteLine(OneLine);
             }
-            // not root directroy ( files )
-            else
-            {
-              if (FilePathSplits.Length > 2)
-              {
-                StringBuilder sb = new StringBuilder(FilePathSplits[2]);
-                len = ParentFolder.Length;
-                FilePathSplits[2] = sb.Replace(ParentFolder, "", 0, len).ToString();
-              }
-              else
-              {
-                StringBuilder sb = new StringBuilder(FilePathSplits[1]);
-                len = ParentFolder.Length;
-                FilePathSplits[1] = sb.Replace(ParentFolder, "", 0, len).ToString();
-              }
-            }
-          }
-
-          //-----------------------------------
-          // File path
-          //
-          string OutFilePath = "";
-          if (_fSalvageIntoSameDirectory == true) // Salvage mode?
-          {
-            OutFilePath = Path.Combine(OutDirPath, Path.GetFileName(FilePathSplits[1]));
-          }
-          else
-          {
-            if (FilePathSplits.Length > 2)
-            {
-              OutFilePath = Path.Combine(OutDirPath, FilePathSplits[2]);
-            }
-            else
-            {
-              OutFilePath = Path.Combine(OutDirPath, FilePathSplits[1]);
-            }
-          }
-
-          //-----------------------------------
-          // ディレクトリ・トラバーサル対策
-          // Directory traversal countermeasures
-
-          // 余計な ":" が含まれている
-          // Extra ":" is included
-          if (FilePathSplits.Length > 2)
-          {
-            fDirectoryTraversal = true;
-            InvalidFilePath = OutFilePath;
-          }
-
-          try
-          {
-            // ファイルパスを正規化
-            // Canonicalize file path.
-            OutFilePath = Path.GetFullPath(OutFilePath);
-          }
-          catch
-          {
-            fDirectoryTraversal = true;
-            InvalidFilePath = OutFilePath;
-          }
-
-          // 正規化したパスが保存先と一致するか
-          // Whether the canonicalized path matches the save destination
-          if (fDirectoryTraversal == false && OutFilePath.StartsWith(OutDirPath))
-          {
-            fd.FilePath = OutFilePath;
-          }
-          else
-          {
-            fDirectoryTraversal = true;
-            InvalidFilePath = OutFilePath;
-          }
-
-          //-----------------------------------
-          // File size
-          if (Int64.TryParse(OutputFileData[1], out fd.FileSize) == false)
-          {
-            fd.FileSize = -1;
-          }
-          else
-          {
-            _TotalFileSize += fd.FileSize;
-          }
-          //-----------------------------------
-          // File attribute
-          if (Int32.TryParse(OutputFileData[2], out fd.FileAttribute) == false)
-          {
-            fd.FileAttribute = -1;
-          }
-
-          //-----------------------------------
-          /*
-           * TTimeStamp = record
-           *  Time: Integer;      { Number of seconds since midnight }
-           *  Time: Integer;      { Number of milliseconds since midnight }
-           *  Date: Integer;      { One plus number of days since 1/1/0001 }
-           * end;
-          */
-          //-----------------------------------
-
-          // Last update timestamp
-          try
-          {
-            if (_fSameTimeStamp == false && Int32.TryParse(OutputFileData[3], out LastWriteDate) == true)
-            {
-              LastWriteDateTime = LastWriteDateTime.AddDays(LastWriteDate); // Add days
-            }
-            else
-            {
-              LastWriteDateTime = DateTime.Now;
-            }
-
-            if (_fSameTimeStamp == false && Double.TryParse(OutputFileData[4], out LastWriteTime) == true)
-            {
-              LastWriteDateTime = LastWriteDateTime.AddSeconds(LastWriteTime);  // Add seconds
-            }
-            else
-            {
-              LastWriteDateTime = DateTime.Now;
-            }
-          }
-          catch
-          {
-            LastWriteDateTime = DateTime.Now;
-          }
-
-          fd.LastWriteDateTime = LastWriteDateTime;
-
-          //-----------------------------------
-          // Create datetime
-          try
-          {
-            if (_fSameTimeStamp == false && Int32.TryParse(OutputFileData[5], out CreateDate) == true)
-            {
-              CreationDateTime = CreationDateTime.AddDays(CreateDate);
-            }
-            else
-            {
-              CreationDateTime = DateTime.Now;
-            }
-
-            if (_fSameTimeStamp == false && Double.TryParse(OutputFileData[6], out CreateTime) == true)
-            {
-              CreationDateTime = CreationDateTime.AddSeconds(CreateTime);
-            }
-            else
-            {
-              CreationDateTime = DateTime.Now;
-            }
-          }
-          catch
-          {
-            CreationDateTime = DateTime.Now;
-          }
-
-          fd.CreationDateTime = CreationDateTime;
-
-          //-----------------------------------
-          // SHA-256 hash
-          if (OutputFileData.Length > 7)
-          {
-            fd.Hash = OutputFileData[7];
-          }
-
-          //-----------------------------------
-          // File datetime ( UTC )
-          // ver.3.2.3.0 ~
-          if (OutputFileData.Length > 8)
-          {
-            if (_fSameTimeStamp == false)
-            {
-              DateTime LastWriteDateTimeUtc;
-              DateTime CreationDateTimeUtc;
-              TimeZoneInfo tzi = TimeZoneInfo.Local;
-
-              // Last update datetime(UTC)
-              var culture = new CultureInfo("", true);
-
-              // DateTime.TryParse(OutputFileData[8], culture, DateTimeStyles.None, out LastWriteDateTimeUtc);
-              if (DateTime.TryParse(OutputFileData[8], out LastWriteDateTimeUtc) == true)
-              {
-                fd.LastWriteDateTime = LastWriteDateTimeUtc;
-                fd.LastWriteDateTime = TimeZoneInfo.ConvertTimeFromUtc(LastWriteDateTimeUtc, tzi);
-              }
-
-              // Create datetime(UTC)
-              if (DateTime.TryParse(OutputFileData[9], out CreationDateTimeUtc))
-              {
-                fd.CreationDateTime = CreationDateTimeUtc;
-                fd.CreationDateTime = TimeZoneInfo.ConvertTimeFromUtc(CreationDateTimeUtc, tzi);
-              }
-            }
-            else
-            {
-              fd.LastWriteDateTime = DateTime.UtcNow;
-              fd.CreationDateTime = DateTime.UtcNow;
-            }
-          }
-
-          //-----------------------------------
-          // Insert to 'Key-Value' type array data.
-          dic.Add(FileNum, fd);
-
-        });
-
-        // Directory traversal countermeasures
-        if (fDirectoryTraversal == true)
-        {
-          _ReturnCode = INVALID_FILE_PATH;
-          _ErrorFilePath = InvalidFilePath;
-          return (false);
         }
+#endif
 
         //----------------------------------------------------------------------
         // Check the disk space
@@ -977,25 +913,25 @@ namespace AttacheCase
         using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
         {
           //-----------------------------------
-          // Adjust the header data in 32 bytes
-          int mod = _AtcHeaderSize % 32;
+          // Adjust the header data in 16 bytes ( Block size )
+          int mod = _AtcHeaderSize % 16;
           if (_fExecutableType == true)
           {
-            fs.Seek(_ExeOutSize + 36 + _AtcHeaderSize + 32 - mod, SeekOrigin.Begin);
+            fs.Seek(_ExeOutSize + 52 + _AtcHeaderSize + 16 - mod, SeekOrigin.Begin);
           }
           else
           {
-            fs.Seek(36 + _AtcHeaderSize + 32 - mod, SeekOrigin.Begin);
+            fs.Seek(52 + _AtcHeaderSize + 16 - mod, SeekOrigin.Begin);
           }
 
           //-----------------------------------
           // Decyption
-          using (Rijndael aes = new RijndaelManaged())
+          using (AesManaged aes = new AesManaged())
           {
-            aes.BlockSize = 256;             // BlockSize = 32bytes
+            aes.BlockSize = 128;             // BlockSize = 16bytes
             aes.KeySize = 256;               // KeySize = 32bytes
             aes.Mode = CipherMode.CBC;       // CBC mode
-            aes.Padding = PaddingMode.Zeros; // Padding mode
+            aes.Padding = PaddingMode.PKCS7; // Padding mode
             aes.Key = key;
             aes.IV = iv;
 #if DEBUG
@@ -1005,23 +941,9 @@ namespace AttacheCase
             ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
             using (CryptoStream cse = new CryptoStream(fs, decryptor, CryptoStreamMode.Read))
             {
-              using (Ionic.Zlib.DeflateStream ds = new Ionic.Zlib.DeflateStream(cse, Ionic.Zlib.CompressionMode.Decompress))
+              using (DeflateStream ds = new DeflateStream(cse, CompressionMode.Decompress))
               {
-                /*
-                public struct FileListData
-                {
-                  public string FilePath;
-                  public Int64 FileSize;
-                  public int FileAttribute;
-                  public DateTime LastWriteDateTime;
-                  public DateTime CreationDateTime;
-                  public string Sha256String;
-                  // ver.3.2.3.0 ~
-                  public DateTime LastWriteDateTimeUtc;
-                  public DateTime CreationDateTimeUtc;
-                }
-                Dictionary<int, FileListData> dic = new Dictionary<int, FileListData>();
-                */
+
                 FileStream outfs = null;
                 Int64 FileSize = 0;
                 int FileIndex = 0;
@@ -1030,7 +952,7 @@ namespace AttacheCase
 
                 if (_fNoParentFolder == true)
                 {
-                  if (dic[0].FilePath.EndsWith("\\") == true)
+                  if (FileDataList[0].FilePath.EndsWith("\\") == true || FileDataList[0].FilePath.EndsWith("/") == true)
                   {
                     FileIndex = 1;  // Ignore parent folder.
                   }
@@ -1042,15 +964,9 @@ namespace AttacheCase
                 //while ((len = ds.Read(byteArray, 0, BUFFER_SIZE)) > 0)
                 while (true)
                 {
-                  if (_AppVersion < 3013)
-                  {
-                    len = cse.Read(byteArray, 0, BUFFER_SIZE);
-                  }
-                  else
-                  {
-                    len = ds.Read(byteArray, 0, BUFFER_SIZE);
-                  }
-
+                 
+                  len = ds.Read(byteArray, 0, BUFFER_SIZE);
+ 
                   // 末尾の0バイトファイル、またはフォルダ生成対策
                   if (len == 0) len = 1;
 
@@ -1066,27 +982,19 @@ namespace AttacheCase
                     {
                       //-----------------------------------
                       // Create file or dirctories.
-                      if (dic.ContainsKey(FileIndex) == false)
+                      if (FileIndex > FileDataList.Count - 1)
                       {
-                        if (FileIndex > dic.Count - 1)
-                        {
-                          _ReturnCode = DECRYPT_SUCCEEDED;
-                          return (true);
-                        }
-                        else
-                        {
-                          _ReturnCode = FILE_INDEX_NOT_FOUND;
-                          return (false);
-                        }
+                        _ReturnCode = DECRYPT_SUCCEEDED;
+                        return (true);
                       }
                       else
                       {
                         //-----------------------------------
                         // Create directory
                         //-----------------------------------
-                        if (dic[FileIndex].FilePath.EndsWith("\\") == true)
+                        if (FileDataList[FileIndex].FilePath.EndsWith("\\") == true || FileDataList[FileIndex].FilePath.EndsWith("/") == true)
                         {
-                          string path = Path.Combine(OutDirPath, dic[FileIndex].FilePath);
+                          string path = Path.Combine(OutDirPath, FileDataList[FileIndex].FilePath);
                           DirectoryInfo di = new DirectoryInfo(path);
 
                           // File already exists.
@@ -1110,13 +1018,14 @@ namespace AttacheCase
                             }
                             else if (_TempOverWriteOption == KEEP_NEWER_ALL)
                             {
-                              if (di.LastWriteTime > dic[FileIndex].LastWriteDateTime)
+                              if (di.LastWriteTime > FileDataList[FileIndex].LastWriteDateTime)
                               {
                                 fSkip = true; // old directory
                               }
                             }
                             else
                             {
+
                               // Show dialog of comfirming to overwrite. 
                               dialog(0, path);
 
@@ -1143,7 +1052,7 @@ namespace AttacheCase
                               }
                               else if (_TempOverWriteOption == KEEP_NEWER || _TempOverWriteOption == KEEP_NEWER_ALL)
                               { // New file?
-                                if (di.LastWriteTime > dic[FileIndex].LastWriteDateTime)
+                                if (di.LastWriteTime > FileDataList[FileIndex].LastWriteDateTime)
                                 {
                                   fSkip = true;
                                 }
@@ -1163,12 +1072,12 @@ namespace AttacheCase
 
                           } // end if ( Directory.Exists )
 
-                          Directory.CreateDirectory(dic[FileIndex].FilePath);
-                          _OutputFileList.Add(dic[FileIndex].FilePath);
+                          Directory.CreateDirectory(FileDataList[FileIndex].FilePath);
+                          _OutputFileList.Add(FileDataList[FileIndex].FilePath);
                           FileSize = 0;
                           FileIndex++;
 
-                          if (FileIndex > dic.Count - 1)
+                          if (FileIndex > FileDataList.Count - 1)
                           {
                             _ReturnCode = DECRYPT_SUCCEEDED;
                             return (true);
@@ -1182,7 +1091,7 @@ namespace AttacheCase
                         //-----------------------------------
                         else
                         {
-                          string path = Path.Combine(OutDirPath, dic[FileIndex].FilePath);
+                          string path = Path.Combine(OutDirPath, FileDataList[FileIndex].FilePath);
                           FileInfo fi = new FileInfo(path);
 
                           // File already exists.
@@ -1218,15 +1127,16 @@ namespace AttacheCase
                               }
                               else if (_TempOverWriteOption == KEEP_NEWER_ALL)
                               {
-                                if (fi.LastWriteTime > dic[FileIndex].LastWriteDateTime)
+                                if (fi.LastWriteTime > FileDataList[FileIndex].LastWriteDateTime)
                                 {
                                   fSkip = true;
                                 }
                               }
                               else
                               {
+
                                 // Show dialog of comfirming to overwrite. 
-                                dialog(0, path);
+                                dialog(1, path);
 
                                 // Cancel
                                 if (_TempOverWriteOption == USER_CANCELED)
@@ -1245,7 +1155,7 @@ namespace AttacheCase
                                 }
                                 else if (_TempOverWriteOption == KEEP_NEWER || _TempOverWriteOption == KEEP_NEWER_ALL)
                                 { // New file?
-                                  if (fi.LastWriteTime > dic[FileIndex].LastWriteDateTime)
+                                  if (fi.LastWriteTime > FileDataList[FileIndex].LastWriteDateTime)
                                   {
                                     fSkip = true; // old directory
                                   }
@@ -1296,7 +1206,7 @@ namespace AttacheCase
                     //----------------------------------------------------------------------
                     // Write data
                     //----------------------------------------------------------------------
-                    if (FileSize + len < (Int64)dic[FileIndex].FileSize)
+                    if (FileSize + len < FileDataList[FileIndex].FileSize)
                     {
                       if (outfs != null || fSkip == true)
                       {
@@ -1315,7 +1225,7 @@ namespace AttacheCase
                     {
                       // ファイルの境界を超えて読み込んでいる
                       // Reading beyond file boundaries
-                      int rest = (int)(dic[FileIndex].FileSize - FileSize);
+                      int rest = (int)(FileDataList[FileIndex].FileSize - FileSize);
 
                       if (fSkip == false)
                       {
@@ -1342,26 +1252,26 @@ namespace AttacheCase
 
                       if (fSkip == false)
                       {
-                        FileInfo fi = new FileInfo(dic[FileIndex].FilePath);
+                        FileInfo fi = new FileInfo(FileDataList[FileIndex].FilePath);
 
                         // タイムスタンプの復元
                         // Restore the timestamp of a file
-                        fi.CreationTime = (DateTime)dic[FileIndex].CreationDateTime;
-                        fi.LastWriteTime = (DateTime)dic[FileIndex].LastWriteDateTime;
+                        fi.CreationTime = (DateTime)FileDataList[FileIndex].CreationDateTime;
+                        fi.LastWriteTime = (DateTime)FileDataList[FileIndex].LastWriteDateTime;
 
                         // ファイル属性の復元
                         // Restore file attribute.
-                        fi.Attributes = (FileAttributes)dic[FileIndex].FileAttribute;
+                        fi.Attributes = (FileAttributes)FileDataList[FileIndex].FileAttribute;
 
                         // ハッシュ値のチェック
                         // Check the hash of a file
                         if (_fSalvageIgnoreHashCheck == false)
                         {
-                          string hash = GetSha256FromFile(dic[FileIndex].FilePath);
-                          if (hash != dic[FileIndex].Hash.ToString())
+                          byte[] hash = getMd5Hash(FileDataList[FileIndex].FilePath);
+                          if (System.Linq.Enumerable.SequenceEqual(hash, FileDataList[FileIndex].Hash) == false )
                           {
                             _ReturnCode = NOT_CORRECT_HASH_VALUE;
-                            _ErrorFilePath = dic[FileIndex].FilePath;
+                            _ErrorFilePath = FileDataList[FileIndex].FilePath;
                             return (false);
                           }
                         }
@@ -1373,7 +1283,7 @@ namespace AttacheCase
 
                       fSkip = false;
 
-                      if (FileIndex > dic.Count - 1)
+                      if (FileIndex > FileDataList.Count - 1)
                       {
                         _ReturnCode = DECRYPT_SUCCEEDED;
                         return (true);
@@ -1392,15 +1302,15 @@ namespace AttacheCase
                       MessageText = FilePath;
                     }
 
-                    MessageList = new ArrayList();
-                    MessageList.Add(DECRYPTING);
-                    MessageList.Add(MessageText);
+                    _MessageList = new ArrayList();
+                    _MessageList.Add(DECRYPTING);
+                    _MessageList.Add(MessageText);
 
                     // プログレスバーの更新間隔を100msに調整
                     if (swProgress.ElapsedMilliseconds > 100)
                     {
                       percent = ((float)_TotalSize / _TotalFileSize);
-                      worker.ReportProgress((int)(percent * 10000), MessageList);
+                      worker.ReportProgress((int)(percent * 10000), _MessageList);
                       swProgress.Restart();
                     }
 
@@ -1415,8 +1325,7 @@ namespace AttacheCase
                       e.Cancel = true;
                       return (false);
                     }
-
-                  }// end while(len > 0);
+　                 }// end while(len > 0);
 
                 }// end while ((len = ds.Read(byteArray, 0, BUFFER_SIZE)) > 0); 
 
@@ -1503,25 +1412,6 @@ namespace AttacheCase
 
     }// end Decrypt();
 
-    /// 計算してチェックサム（SHA-256）を得る
-    /// Get a check sum (SHA-256) to calculate
-    private static string GetSha256FromFile(string FilePath)
-    {
-      using (BufferedStream bs = new BufferedStream(File.OpenRead(FilePath), 16 * 1024 * 1024))
-      {
-        SHA256Managed sha = new SHA256Managed();
-        byte[] hash = sha.ComputeHash(bs);
-
-        StringBuilder result = new StringBuilder();
-        result.Capacity = 32;
-        foreach (byte b in hash)
-        {
-          result.Append(b.ToString());
-        }
-        return (result.ToString());
-      }
-    }
- 
     /// ファイル名に連番を振る
     /// Put a serial number to the file name
     private string getFileNameWithSerialNumber(string FilePath, int SerialNum)
@@ -1532,6 +1422,21 @@ namespace AttacheCase
       return Path.Combine(DirPath, FileName);
 
     }
+
+    /// Get a check sum (MD5) to calculate
+    private static byte[] getMd5Hash(string FilePath)
+    {
+      byte[] bs;
+      using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+      {
+        //MD5CryptoServiceProviderオブジェクト
+        MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider();
+        bs = md5.ComputeHash(fs);
+        md5.Clear();
+      }
+      return (bs);
+    }
+
 
   }//end class FileDecrypt2;
 
