@@ -51,20 +51,24 @@ namespace AttacheCase
     }
 
     // File type
-    private const int FILE_TYPE_ERROR        = -1;
-    private const int FILE_TYPE_NONE         = 0;
-    private const int FILE_TYPE_ATC          = 1;
-    private const int FILE_TYPE_ATC_EXE      = 2;
-    private const int FILE_TYPE_PASSWORD_ZIP = 3;
+    private const int FILE_TYPE_ERROR           = -1;
+    private const int FILE_TYPE_NONE            =  0;
+    private const int FILE_TYPE_ATC             =  1;
+    private const int FILE_TYPE_ATC_EXE         =  2;
+    private const int FILE_TYPE_PASSWORD_ZIP    =  3;
+    private const int FILE_TYPE_RSA_DATA        =  4;
+    private const int FILE_TYPE_RSA_PRIVATE_KEY =  5;
+    private const int FILE_TYPE_RSA_PUBLIC_KEY  =  6;
 
     // Process Type
-    private const int PROCESS_TYPE_ERROR        = -1;
-    private const int PROCESS_TYPE_NONE         = 0;
-    private const int PROCESS_TYPE_ATC          = 1;
-    private const int PROCESS_TYPE_ATC_EXE      = 2;
-    private const int PROCESS_TYPE_PASSWORD_ZIP = 3;
-    private const int PROCESS_TYPE_DECRYPTION   = 4;
-    
+    private const int PROCESS_TYPE_ERROR           = -1;
+    private const int PROCESS_TYPE_NONE            =  0;
+    private const int PROCESS_TYPE_ATC             =  1;
+    private const int PROCESS_TYPE_ATC_EXE         =  2;
+    private const int PROCESS_TYPE_PASSWORD_ZIP    =  3;
+    private const int PROCESS_TYPE_DECRYPTION      =  4;
+    private const int PROCESS_TYPE_RSA_DATA        =  5;
+    private const int PROCESS_TYPE_RSA_XML_KEY     =  6;
 
     //
     // An INI file handling class using C#
@@ -1173,6 +1177,13 @@ namespace AttacheCase
       set { this._ActiveTreeNode = value; }
     }
 
+    private string _SaveToIniDirPath;             // 保存ダイアログの初期ディレクトリ
+    // Active option panel 
+    public string SaveToIniDirPath
+    {
+      get { return this._SaveToIniDirPath; }
+      set { this._SaveToIniDirPath = value; }
+    }
 
     #endregion
 
@@ -1492,6 +1503,7 @@ namespace AttacheCase
         //-----------------------------------
         // Others
         _Language = (string)reg.GetValue("Language", "");
+        _SaveToIniDirPath = (string)reg.GetValue("SaveToIniDirPath", "");
       }
 
     }
@@ -1678,6 +1690,7 @@ namespace AttacheCase
         //-----------------------------------
         // Others
         reg.SetValue("Language", _Language);
+        reg.SetValue("SaveToIniDirPath", _SaveToIniDirPath);
       }
     }
 
@@ -1870,7 +1883,8 @@ namespace AttacheCase
 
       // Others
       ReadIniFile(IniFilePath, ref _Language, "Option", "Language", "");
-      
+      ReadIniFile(IniFilePath, ref _SaveToIniDirPath, "Option", "SaveToIniDirPath", "");
+
     }
 
     //----------------------------------------------------------------------
@@ -2045,7 +2059,7 @@ namespace AttacheCase
       //-----------------------------------
       // Others
       WriteIniFile(IniFilePath, _Language, "Option", "Language");
-
+      WriteIniFile(IniFilePath, _SaveToIniDirPath, "Option", "SaveToIniDirPath");
     }
         
     //----------------------------------------------------------------------
@@ -3471,10 +3485,12 @@ namespace AttacheCase
     /// <returns> 1: ATC, 2: EXE(ATC), 2: EXE(ATC), 3: ZIP, 0: Others(Encrypt file?)</returns>
     private int CheckFileType(string FilePath)
     {
-      const string SignatureZip = "50-4B-03-04";
-      const string SignatureAtc = "_AttacheCaseData";
+      //const string SignatureZip = "50-4B-03-04";  // ZIPファイル
+      const string SignatureAtc =       "_AttacheCaseData";
       const string SignatureAtcBroken = "_Atc_Broken_Data";
-            
+      const string SignatureRsaData =   "_AttacheCase_Rsa";
+      const string SignatureXmlData =   "EF-BB-BF-3C-3F-78-6D-6C";   // BOM + "<?xml "
+
       //-----------------------------------
       // ディレクトリー
       // Directory
@@ -3490,32 +3506,11 @@ namespace AttacheCase
         return (0);
       }
 
-      //-----------------------------------
-      // ZIPファイルの判別
-      // Detect Zip file
-      //-----------------------------------
       using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
       {
         if (fs.Length < 4)
         {
           return (0);
-        }
-        else
-        {
-          byte[] signature = new byte[4];
-          int bytesRequired = 4;
-          int index = 0;
-          while (bytesRequired > 0)
-          {
-            int bytesRead = fs.Read(signature, index, bytesRequired);
-            bytesRequired -= bytesRead;
-            index += bytesRead;
-          }
-          string actualSignature = BitConverter.ToString(signature);
-          if (actualSignature == SignatureZip && Path.GetExtension(FilePath).ToLower() == ".zip")
-          {
-            return (3);  // Zip file
-          }
         }
         //-----------------------------------
         // ATCファイルの判別
@@ -3528,6 +3523,31 @@ namespace AttacheCase
         if (SignatureText == SignatureAtc || SignatureText == SignatureAtcBroken)
         {
           return (1);
+        }
+        //-----------------------------------
+        // RSA 公開鍵暗号データ
+        // Detect atc file
+        //-----------------------------------
+        fs.Seek(4, SeekOrigin.Begin);
+        bufferSignature = new byte[16];
+        fs.Read(bufferSignature, 0, 16);
+        SignatureText = Encoding.ASCII.GetString(bufferSignature);
+        if (SignatureText == SignatureRsaData)
+        {
+          return (5);
+        }
+        //-----------------------------------
+        // XMLファイル（公開鍵、暗号鍵データ）
+        // Detect XML file ( public key or private key data)
+        //-----------------------------------
+        // <?xml version="1.0" encoding="utf-8"?>
+        fs.Seek(0, SeekOrigin.Begin);
+        bufferSignature = new byte[8];
+        fs.Read(bufferSignature, 0, 8);
+        SignatureText = BitConverter.ToString(bufferSignature);
+        if (SignatureText == SignatureXmlData)
+        {
+          return (6);
         }
         //-----------------------------------
         // EXE(ATC)ファイルの判別
@@ -3624,14 +3644,16 @@ namespace AttacheCase
     public int DetectFileType()
     {
       // Process Type
-      // private const int PROCESS_TYPE_ERROR        = -1;
-      // private const int PROCESS_TYPE_NONE         = 0;
-      // private const int PROCESS_TYPE_ATC          = 1;
-      // private const int PROCESS_TYPE_ATC_EXE      = 2;
-      // private const int PROCESS_TYPE_PASSWORD_ZIP = 3;
-      // private const int PROCESS_TYPE_DECRYPTION   = 4;
+      // private const int PROCESS_TYPE_ERROR           = -1;
+      // private const int PROCESS_TYPE_NONE            =  0;
+      // private const int PROCESS_TYPE_ATC             =  1;
+      // private const int PROCESS_TYPE_ATC_EXE         =  2;
+      // private const int PROCESS_TYPE_PASSWORD_ZIP    =  3;
+      // private const int PROCESS_TYPE_DECRYPTION      =  4;
+      // private const int PROCESS_TYPE_RSA_DATA        =  5;
+      // private const int PROCESS_TYPE_RSA_XML_KEY     =  6;
 
-      _FileType = new int[4] { 0, 0, 0, 0 };
+      _FileType = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
 
       foreach (string f in _FileList)
       {
@@ -3639,28 +3661,23 @@ namespace AttacheCase
         _FileType[CheckFileType(f)]++;
       }
 
-      // Process Type
-      // private const int PROCESS_TYPE_ERROR        = -1;
-      // private const int PROCESS_TYPE_NONE         = 0;
-      // private const int PROCESS_TYPE_ATC          = 1;
-      // private const int PROCESS_TYPE_ATC_EXE      = 2;
-      // private const int PROCESS_TYPE_PASSWORD_ZIP = 3;
-      // private const int PROCESS_TYPE_DECRYPTION   = 4;
-      if ((_FileType[1] > 0 || _FileType[2] > 0) && _FileType[3] == 0 && _FileType[0] == 0)
+      if ((_FileType[1] > 0 || _FileType[2] > 0) && _FileType[0] == 0)
       {
         return PROCESS_TYPE_DECRYPTION;
       }
-      else if (_FileType[1] == 0 && _FileType[2] > 0 && _FileType[3] == 0 && _FileType[0] == 0)
+      else if (_FileType[1] == 0 && _FileType[2] > 0 && _FileType[0] == 0)
       {
         return PROCESS_TYPE_DECRYPTION;
       }
-      else if (_FileType[1] == 0 && _FileType[2] == 0 && _FileType[3] > 0 && _FileType[0] == 0)
+      else if (_FileType[1] == 0 && _FileType[2] == 0 && _FileType[5] > 0)
       {
-        //AppSettings.Instance.EncryptionFileType = FILE_TYPE_PASSWORD_ZIP;
-        //return 3;
-        return PROCESS_TYPE_PASSWORD_ZIP;
+        return PROCESS_TYPE_RSA_DATA;
       }
-      else if (_FileType[1] == 0 && _FileType[2] == 0 && _FileType[3] == 0 && _FileType[0] > 0)
+      else if (_FileType[1] == 0 && _FileType[2] == 0 && _FileType[5] == 0 && _FileType[6] > 0)
+      {
+        return PROCESS_TYPE_RSA_XML_KEY;
+      }
+      else if (_FileType[1] == 0 && _FileType[2] == 0 && _FileType[0] > 0)
       {
         return PROCESS_TYPE_ATC;
       }

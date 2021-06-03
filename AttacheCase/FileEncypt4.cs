@@ -62,7 +62,8 @@ namespace AttacheCase
     private const int FILE_NOT_LOADED          = -112;
     private const int FILE_NOT_FOUND           = -113;
     private const int PATH_TOO_LONG            = -114;
-    private const int IO_EXCEPTION             = -115;
+    private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
+    private const int IO_EXCEPTION             = -116;
 
     private byte[] buffer;
     private const int BUFFER_SIZE = 4096;
@@ -151,6 +152,14 @@ namespace AttacheCase
     public string EncryptionTimeString
     {
       get { return this._EncryptionTimeString; }
+    }
+
+    // RSA Encryption public key XML file path
+    private string _RsaPublicKeyFilePath;
+    public string RsaPublicKeyFilePath
+    {
+      get { return this._RsaPublicKeyFilePath; }
+      set { this._RsaPublicKeyFilePath = value; }
     }
 
     //----------------------------------------------------------------------
@@ -688,9 +697,11 @@ namespace AttacheCase
             string DesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             string FileListTextPath = Path.Combine(DesktopPath, "_header_text.txt");
             var FileListText = String.Join("\n", _FileList);
-            System.IO.File.WriteAllText(FileListTextPath, FileListText, System.Text.Encoding.UTF8);
+            File.WriteAllText(FileListTextPath, FileListText, Encoding.UTF8);
 #endif
             // The Header of MemoryStream is encrypted
+
+
             using (AesManaged aes = new AesManaged())
             {
               aes.BlockSize = 128;              // BlockSize = 8bytes
@@ -719,6 +730,11 @@ namespace AttacheCase
               }
 
             }// end using (Rijndael aes = new RijndaelManaged());
+
+
+
+
+
 
           }// end  using (MemoryStream ms = new MemoryStream());
 
@@ -881,6 +897,14 @@ namespace AttacheCase
         //パス名または完全修飾ファイル名がシステム定義の最大長を超えている場合にスローされる例外
         //The exception that is thrown when a path or fully qualified file name is longer than the system-defined maximum length
         _ReturnCode = PATH_TOO_LONG;
+        return (false);
+      }
+      catch (CryptographicException ex)
+      {
+        //xmlString パラメーターの形式が正しくありません。
+        //The format of the xmlString parameter is not valid.
+        _ReturnCode = CRYPTOGRAPHIC_EXCEPTION;
+        _ErrorMessage = ex.Message;
         return (false);
       }
       catch (IOException ex)

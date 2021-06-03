@@ -680,6 +680,15 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   Save a lock file (public key) and key file (private key) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogTitleSavePublicAndPrivateKey {
+            get {
+                return ResourceManager.GetString("DialogTitleSavePublicAndPrivateKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Select Password file に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string DialogTitleSelectPasswordFile {

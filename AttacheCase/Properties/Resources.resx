@@ -633,4 +633,7 @@ The process is aborted.</value>
   <data name="labelValidCode" xml:space="preserve">
     <value>Valid code.</value>
   </data>
+  <data name="DialogTitleSavePublicAndPrivateKey" xml:space="preserve">
+    <value>Save a lock file (public key) and key file (private key)</value>
+  </data>
 </root>

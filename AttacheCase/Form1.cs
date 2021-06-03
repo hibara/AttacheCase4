@@ -29,6 +29,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
 
 namespace AttacheCase
 {
@@ -61,22 +62,28 @@ namespace AttacheCase
     private const int FILE_NOT_LOADED          = -112;
     private const int FILE_NOT_FOUND           = -113;
     private const int PATH_TOO_LONG            = -114;
-    private const int IO_EXCEPTION             = -115;
+    private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
+    private const int IO_EXCEPTION             = -116;
 
     // File Type
-    private const int FILE_TYPE_ERROR        = -1;
-    private const int FILE_TYPE_NONE         = 0;
-    private const int FILE_TYPE_ATC          = 1;
-    private const int FILE_TYPE_ATC_EXE      = 2;
-    private const int FILE_TYPE_PASSWORD_ZIP = 3;
+    private const int FILE_TYPE_ERROR           = -1;
+    private const int FILE_TYPE_NONE            =  0;
+    private const int FILE_TYPE_ATC             =  1;
+    private const int FILE_TYPE_ATC_EXE         =  2;
+    private const int FILE_TYPE_PASSWORD_ZIP    =  3;
+    private const int FILE_TYPE_RSA_DATA        =  4;
+    private const int FILE_TYPE_RSA_PRIVATE_KEY =  5;
+    private const int FILE_TYPE_RSA_PUBLIC_KEY  =  6;
 
     // Process Type
     private const int PROCESS_TYPE_ERROR        = -1;
-    private const int PROCESS_TYPE_NONE         = 0;
-    private const int PROCESS_TYPE_ATC          = 1;
-    private const int PROCESS_TYPE_ATC_EXE      = 2;
-    private const int PROCESS_TYPE_PASSWORD_ZIP = 3;
-    private const int PROCESS_TYPE_DECRYPTION   = 4;
+    private const int PROCESS_TYPE_NONE         =  0;
+    private const int PROCESS_TYPE_ATC          =  1;
+    private const int PROCESS_TYPE_ATC_EXE      =  2;
+    private const int PROCESS_TYPE_PASSWORD_ZIP =  3;
+    private const int PROCESS_TYPE_DECRYPTION   =  4;
+    private const int PROCESS_TYPE_RSA_DATA     =  5;
+    private const int PROCESS_TYPE_RSA_XML_KEY  =  6;
 
     // Overwrite Option
     //private const int USER_CANCELED = -1;
@@ -110,7 +117,6 @@ namespace AttacheCase
     private FileDecrypt3 decryption3;
     private FileEncrypt4 encryption4;
     private FileDecrypt4 decryption4;
-    private ZipEncrypt compression;
     private Wipe wipe;
 
     private CancellationTokenSource cts;
@@ -134,6 +140,7 @@ namespace AttacheCase
       panelEncrypt.Parent = panelOuter;
       panelEncryptConfirm.Parent = panelOuter;
       panelDecrypt.Parent = panelOuter;
+      panelRsa.Parent = panelOuter;
       panelProgressState.Parent = panelOuter;
 
       // メインウィンドウの終了ボタン
@@ -173,6 +180,7 @@ namespace AttacheCase
       panelEncrypt.Visible = false;
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
+      panelRsa.Visible = false;
       panelProgressState.Visible = false;
       panelStartPage.Visible = true;
       this.AllowDrop = true;
@@ -952,9 +960,10 @@ namespace AttacheCase
           private const int FILE_NOT_LOADED          = -112;
           private const int FILE_NOT_FOUND           = -113;
           private const int PATH_TOO_LONG            = -114;
-          private const int IO_EXCEPTION             = -115;
+          private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
+          private const int IO_EXCEPTION             = -116;
           */
-          switch (compression == null ? encryption4.ReturnCode : compression.ReturnCode)
+          switch (encryption4.ReturnCode)
           {
             //-----------------------------------
             case ENCRYPT_SUCCEEDED:
@@ -1047,8 +1056,7 @@ namespace AttacheCase
               // [The drive path]
               //
               MessageBox.Show(new Form { TopMost = true },
-                Resources.DialogMessageNoDiskSpace + Environment.NewLine +
-                (compression == null ? encryption4.DriveName : compression.DriveName),
+                Resources.DialogMessageNoDiskSpace + Environment.NewLine + encryption4.DriveName,
                 Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               break;
 
@@ -1064,8 +1072,7 @@ namespace AttacheCase
               // [Error message from the system]
               //
               MessageBox.Show(new Form { TopMost = true },
-                Resources.DialogMessageDirectoryNotFound + Environment.NewLine +
-                (compression == null ? encryption4.ErrorMessage : compression.ErrorMessage),
+                Resources.DialogMessageDirectoryNotFound + Environment.NewLine + encryption4.ErrorMessage,
                 Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               break;
 
@@ -1082,8 +1089,7 @@ namespace AttacheCase
               // [Error message from the system]
               //
               MessageBox.Show(new Form { TopMost = true },
-                Resources.DialogMessageDriveNotFound + Environment.NewLine +
-                (compression == null ? encryption4.ErrorMessage : compression.ErrorMessage),
+                Resources.DialogMessageDriveNotFound + Environment.NewLine + encryption4.ErrorMessage,
                 Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               break;
 
@@ -1100,8 +1106,7 @@ namespace AttacheCase
               // [The file path]
               //
               MessageBox.Show(new Form { TopMost = true },
-                Resources.DialogMessageFileNotLoaded + Environment.NewLine +
-                (compression == null ? encryption4.ErrorFilePath : compression.ErrorFilePath),
+                Resources.DialogMessageFileNotLoaded + Environment.NewLine + encryption4.ErrorFilePath,
                 Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               break;
 
@@ -1118,8 +1123,7 @@ namespace AttacheCase
               // [The file path]
               //
               MessageBox.Show(new Form { TopMost = true },
-                Resources.DialogMessageFileNotFound + Environment.NewLine +
-                (compression == null ? encryption4.ErrorFilePath : compression.ErrorFilePath),
+                Resources.DialogMessageFileNotFound + Environment.NewLine + encryption4.ErrorFilePath,
                 Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               break;
 
@@ -1144,8 +1148,7 @@ namespace AttacheCase
               //
               // Error
               // [A message describing the exception that is thrown when an I/O error occurs.]
-              MessageBox.Show(new Form { TopMost = true },
-                (compression == null ? encryption4.ErrorMessage : compression.ErrorMessage),
+              MessageBox.Show(new Form { TopMost = true }, encryption4.ErrorMessage,
                 Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               break;
 
@@ -1257,7 +1260,8 @@ namespace AttacheCase
         private const int FILE_NOT_LOADED          = -112;
         private const int FILE_NOT_FOUND           = -113;
         private const int PATH_TOO_LONG            = -114;
-        private const int IO_EXCEPTION             = -115;
+        private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
+        private const int IO_EXCEPTION             = -116;
         */
         int ReturnCode;
         if (decryption2 != null)
@@ -1502,6 +1506,7 @@ namespace AttacheCase
               panelEncrypt.Visible = false;
               panelEncryptConfirm.Visible = false;
               panelDecrypt.Visible = true;
+              panelRsa.Visible = false;
               panelProgressState.Visible = false;
               textBoxDecryptPassword.Focus();
               textBoxDecryptPassword.SelectAll();
@@ -1527,6 +1532,7 @@ namespace AttacheCase
               panelEncrypt.Visible = false;
               panelEncryptConfirm.Visible = false;
               panelDecrypt.Visible = false;
+              panelRsa.Visible = false;
               panelProgressState.Visible = false;
               textBoxDecryptPassword.Focus();
               textBoxDecryptPassword.SelectAll();
@@ -1704,6 +1710,7 @@ namespace AttacheCase
             panelEncrypt.Visible = true;        // Encrypt
             panelEncryptConfirm.Visible = false;
             panelDecrypt.Visible = false;
+            panelRsa.Visible = false;
             panelProgressState.Visible = false;
           }
         }
@@ -1742,6 +1749,7 @@ namespace AttacheCase
           panelEncrypt.Visible = true;        // Encrypt
           panelEncryptConfirm.Visible = false;
           panelDecrypt.Visible = false;
+          panelRsa.Visible = false;
           panelProgressState.Visible = false;
         }
       }
@@ -1784,6 +1792,7 @@ namespace AttacheCase
             panelEncrypt.Visible = false;
             panelEncryptConfirm.Visible = false;
             panelDecrypt.Visible = true;    //Decrypt
+            panelRsa.Visible = false;
             panelProgressState.Visible = false;
           }
         }
@@ -1819,7 +1828,7 @@ namespace AttacheCase
 
         pictureBoxAtc.Image = pictureBoxAtcOff.Image;
         pictureBoxExe.Image = pictureBoxExeOff.Image;
-        pictureBoxZip.Image = pictureBoxZipOff.Image;
+        pictureBoxRsa.Image = pictureBoxRsaOff.Image;
         pictureBoxDec.Image = pictureBoxDecOff.Image;
 
         if (AppSettings.Instance.EncryptionSameFileTypeAlways == 1)
@@ -1832,7 +1841,7 @@ namespace AttacheCase
         }
         else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 3)
         {
-          pictureBoxZip.Image = pictureBoxZipOn.Image;
+          pictureBoxRsa.Image = pictureBoxRsaOn.Image;
         }
         else
         {
@@ -1897,6 +1906,7 @@ namespace AttacheCase
           textBoxPassword.Focus();            // Text box is focused
           panelEncryptConfirm.Visible = false;
           panelDecrypt.Visible = false;
+          panelRsa.Visible = false;
           panelProgressState.Visible = false;
 
         }
@@ -1907,6 +1917,7 @@ namespace AttacheCase
           panelEncryptConfirm.Visible = false;
           panelDecrypt.Visible = true;        // Decrypt
           textBoxDecryptPassword.Focus();     // Text box is focused
+          panelRsa.Visible = false;
           panelProgressState.Visible = false;
         }
 
@@ -1930,6 +1941,7 @@ namespace AttacheCase
           textBoxPassword.Focus();            // Text box is focused
           panelEncryptConfirm.Visible = false;
           panelDecrypt.Visible = false;
+          panelRsa.Visible = false;
           panelProgressState.Visible = false;
         }
         //-----------------------------------
@@ -1942,6 +1954,7 @@ namespace AttacheCase
           panelEncryptConfirm.Visible = false;
           panelDecrypt.Visible = true;        // Decrypt
           textBoxDecryptPassword.Focus();     // Text box is focused
+          panelRsa.Visible = false;
           panelProgressState.Visible = false;
         }
         //-----------------------------------
@@ -1960,21 +1973,26 @@ namespace AttacheCase
         // Auto detect without asking user
 
         // File type
-        // private const int FILE_TYPE_ERROR        = -1;
-        // private const int FILE_TYPE_NONE         = 0;
-        // private const int FILE_TYPE_ATC          = 1;
-        // private const int FILE_TYPE_ATC_EXE      = 2;
-        // private const int FILE_TYPE_PASSWORD_ZIP = 3;
+        // private const int FILE_TYPE_ERROR           = -1;
+        // private const int FILE_TYPE_NONE            =  0;
+        // private const int FILE_TYPE_ATC             =  1;
+        // private const int FILE_TYPE_ATC_EXE         =  2;
+        // private const int FILE_TYPE_PASSWORD_ZIP    =  3;
+        // private const int FILE_TYPE_RSA_DATA        =  4;
+        // private const int FILE_TYPE_RSA_PRIVATE_KEY =  5;
+        // private const int FILE_TYPE_RSA_PUBLIC_KEY  =  6;
         //
         // -----------------------------------
         //
         // Process Type
         // private const int PROCESS_TYPE_ERROR        = -1;
-        // private const int PROCESS_TYPE_NONE         = 0;
-        // private const int PROCESS_TYPE_ATC          = 1;
-        // private const int PROCESS_TYPE_ATC_EXE      = 2;
-        // private const int PROCESS_TYPE_PASSWORD_ZIP = 3;
-        // private const int PROCESS_TYPE_DECRYPTION   = 4;
+        // private const int PROCESS_TYPE_NONE         =  0;
+        // private const int PROCESS_TYPE_ATC          =  1;
+        // private const int PROCESS_TYPE_ATC_EXE      =  2;
+        // private const int PROCESS_TYPE_PASSWORD_ZIP =  3;
+        // private const int PROCESS_TYPE_DECRYPTION   =  4;
+        // private const int PROCESS_TYPE_RSA_DATA     =  5;
+        // private const int PROCESS_TYPE_RSA_XML_KEY  =  6;
 
         ProcessType = AppSettings.Instance.EncryptionSameFileTypeBefore;
 
@@ -1993,6 +2011,10 @@ namespace AttacheCase
           {
             ProcessType = AtcProcessType;
           }
+          else
+          {
+            ProcessType = AppSettings.Instance.DetectFileType();
+          }
         }
         else
         {
@@ -2010,7 +2032,8 @@ namespace AttacheCase
             panelStartPage.Visible = false;
             panelEncrypt.Visible = true;         // Encrypt
             panelEncryptConfirm.Visible = false;
-            panelDecrypt.Visible = false;        
+            panelDecrypt.Visible = false;
+            panelRsa.Visible = false;
             panelProgressState.Visible = false;
 
             /*
@@ -2035,25 +2058,39 @@ namespace AttacheCase
             panelEncrypt.Visible = false;
             panelEncryptConfirm.Visible = false;
             panelDecrypt.Visible = true;
+            panelRsa.Visible = false;
             panelProgressState.Visible = false;
             textBoxDecryptPassword.Focus();     // Text box is focused
             this.Activate();                    // MainForm is Activated
           }
           //----------------------------------------------------------------------
-          // Password ZIP
-          else if (ProcessType == FILE_TYPE_PASSWORD_ZIP)
+          // RSA
+          else if (ProcessType == PROCESS_TYPE_RSA_DATA || ProcessType == PROCESS_TYPE_RSA_XML_KEY)
           {
             panelStartPage.Visible = false;
-            panelEncrypt.Visible = false;         
-            panelEncryptConfirm.Visible = false;   
-            panelDecrypt.Visible = true;            // Decrypt
+            panelEncrypt.Visible = false;
+            panelEncryptConfirm.Visible = false;
+            panelDecrypt.Visible = false;
+            panelRsa.Visible = true;
             panelProgressState.Visible = false;
-
-            pictureBoxEncryption.Image = pictureBoxZipOn.Image;
-
-            this.Activate();                     // MainForm is Activated
-            textBoxPassword.Focus();             // Text box is focused
+            this.Activate();                    // MainForm is Activated
           }
+          //----------------------------------------------------------------------
+          // Password ZIP
+          //else if (ProcessType == FILE_TYPE_PASSWORD_ZIP)
+          //{
+          //  panelStartPage.Visible = false;
+          //  panelEncrypt.Visible = false;         
+          //  panelEncryptConfirm.Visible = false;   
+          //  panelDecrypt.Visible = true;            // Decrypt
+          //  panelRsa.Visible = false;
+          //  panelProgressState.Visible = false;
+
+          //  pictureBoxEncryption.Image = pictureBoxRsaOn.Image;
+
+          //  this.Activate();                     // MainForm is Activated
+          //  textBoxPassword.Focus();             // Text box is focused
+          //}
           //----------------------------------------------------------------------
           else
           {
@@ -2061,6 +2098,7 @@ namespace AttacheCase
             panelEncrypt.Visible = false;
             panelEncryptConfirm.Visible = false;
             panelDecrypt.Visible = false;
+            panelRsa.Visible = false;
             panelProgressState.Visible = false;
           }
 
@@ -2192,6 +2230,7 @@ namespace AttacheCase
             panelEncrypt.Visible = false;
             panelEncryptConfirm.Visible = false;
             panelDecrypt.Visible = true;
+            panelRsa.Visible = false;
             panelProgressState.Visible = false;
 
             buttonDecryptStart.Focus();
@@ -2245,6 +2284,7 @@ namespace AttacheCase
             panelEncrypt.Visible = false;
             panelEncryptConfirm.Visible = true;
             panelDecrypt.Visible = false;
+            panelRsa.Visible = false;
             panelProgressState.Visible = false;
 
             buttonEncryptStart.Focus();
@@ -2317,7 +2357,7 @@ namespace AttacheCase
      
         pictureBoxAtc.Image = pictureBoxAtcOff.Image;
         pictureBoxExe.Image = pictureBoxExeOff.Image;
-        pictureBoxZip.Image = pictureBoxZipOff.Image;
+        pictureBoxRsa.Image = pictureBoxRsaOff.Image;
         pictureBoxDec.Image = pictureBoxDecOff.Image;
 
         // Encryption will be the same file type always.
@@ -2335,7 +2375,7 @@ namespace AttacheCase
         }
         else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 3)
         {
-          pictureBoxZip.Image = pictureBoxZipOn.Image;
+          pictureBoxRsa.Image = pictureBoxRsaOn.Image;
         }
         else if (AppSettings.Instance.EncryptionSameFileTypeBefore == 0)
         {
@@ -2351,7 +2391,7 @@ namespace AttacheCase
         }
         else if (AppSettings.Instance.EncryptionSameFileTypeBefore == 3)
         {
-          pictureBoxZip.Image = pictureBoxZipOn.Image;
+          pictureBoxRsa.Image = pictureBoxRsaOn.Image;
         }
 
         // タスクバーのリセット
@@ -2450,7 +2490,7 @@ namespace AttacheCase
         }
         else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
         {
-          pictureBoxEncryption.Image = pictureBoxZipOn.Image;
+          pictureBoxEncryption.Image = pictureBoxRsaOn.Image;
           labelEncryption.Text = labelZip.Text;
         }
         else
@@ -2460,7 +2500,7 @@ namespace AttacheCase
         }
 
         //In the case of ZIP files, it must be more than one character of the password.
-        if (pictureBoxEncryption.Image == pictureBoxZipOn.Image)
+        if (pictureBoxEncryption.Image == pictureBoxRsaOn.Image)
         {
           if (textBoxPassword.Text == "")
           {
@@ -2664,6 +2704,7 @@ namespace AttacheCase
             panelEncrypt.Visible = false;
             panelEncryptConfirm.Visible = false;
             panelDecrypt.Visible = false;
+            panelRsa.Visible = false;
             panelProgressState.Visible = false;
 
             panelStartPage_VisibleChanged(sender, e);
@@ -2783,7 +2824,7 @@ namespace AttacheCase
     {
       // Encrypt to Zip file
       AppSettings.Instance.EncryptionFileType = FILE_TYPE_PASSWORD_ZIP;
-      pictureBoxEncryption.Image = pictureBoxZipOn.Image;
+      pictureBoxEncryption.Image = pictureBoxRsaOn.Image;
       labelEncryption.Text = labelZip.Text;
       textBoxPassword.Focus();
 
@@ -2811,7 +2852,7 @@ namespace AttacheCase
       }
 
       // In the case of ZIP files, it must be more than one character of the password.
-      if (pictureBoxEncryption.Image == pictureBoxZipOn.Image)
+      if (pictureBoxEncryption.Image == pictureBoxRsaOn.Image)
       {
         if (textBoxPassword.Text == "")
         {
@@ -3066,6 +3107,7 @@ namespace AttacheCase
         panelEncrypt.Visible = false;
         panelEncryptConfirm.Visible = true;      // EncryptConfirm
         panelDecrypt.Visible = false;
+        panelRsa.Visible = false;
         panelProgressState.Visible = false;
       }
       else
@@ -3104,6 +3146,7 @@ namespace AttacheCase
       panelEncrypt.Visible = false;
       panelEncryptConfirm.Visible = true;
       panelDecrypt.Visible = false;
+      panelRsa.Visible = false;
       panelProgressState.Visible = false;
 
     }
@@ -3117,6 +3160,7 @@ namespace AttacheCase
       panelEncrypt.Visible = true;
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
+      panelRsa.Visible = false;
       panelProgressState.Visible = false;
 
     }
@@ -3283,6 +3327,7 @@ namespace AttacheCase
       panelEncrypt.Visible = false;
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
+      panelRsa.Visible = false;
       panelProgressState.Visible = true;
       labelCryptionType.Text = Resources.labelProcessNameEncrypt;
 
@@ -3458,7 +3503,7 @@ namespace AttacheCase
       }
       else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
       {
-        pictureBoxProgress.Image = pictureBoxZipOn.Image;
+        pictureBoxProgress.Image = pictureBoxRsaOn.Image;
         labelProgress.Text = labelZip.Text;
 
         // Save the zip file(s) to the same directory?
@@ -3535,6 +3580,7 @@ namespace AttacheCase
             panelEncrypt.Visible = false;
             panelEncryptConfirm.Visible = true;
             panelDecrypt.Visible = false;
+            panelRsa.Visible = false;
             panelProgressState.Visible = false;
             return;
           }
@@ -3550,12 +3596,6 @@ namespace AttacheCase
           encryption4 = new FileEncrypt4();
           encryption4.NumberOfFiles = NumberOfFiles + 1;
           encryption4.TotalNumberOfFiles = NumberOfFiles;
-        }
-        else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
-        {
-          compression = new ZipEncrypt();
-          compression.NumberOfFiles = NumberOfFiles + 1;
-          compression.TotalNumberOfFiles = NumberOfFiles;
         }
 
         //-----------------------------------
@@ -3608,8 +3648,7 @@ namespace AttacheCase
 
         //-----------------------------------
         //Confirm &overwriting when same file name exists.
-        if ((encryption4 != null && AppSettings.Instance.fEncryptConfirmOverwrite == true) ||
-            compression != null && AppSettings.Instance.fZipConfirmOverwrite == true)
+        if (encryption4 != null && AppSettings.Instance.fEncryptConfirmOverwrite == true)
         {
           if (File.Exists(AtcFilePath) == true)
           {
@@ -3643,6 +3682,7 @@ namespace AttacheCase
                   panelEncrypt.Visible = false;
                   panelEncryptConfirm.Visible = false;
                   panelDecrypt.Visible = false;
+                  panelRsa.Visible = false;
                   panelProgressState.Visible = true;
 
                   // Canceled
@@ -3727,16 +3767,6 @@ namespace AttacheCase
             EncryptionPassword, EncryptionPasswordBinary,
             Path.GetFileNameWithoutExtension(AtcFilePath));
         }
-        else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
-        {
-          bkg.DoWork += (s, d) =>
-          compression.Encrypt(
-            s, d,
-            AppSettings.Instance.FileList.ToArray(),
-            AtcFilePath,
-            EncryptionPassword, EncryptionPasswordBinary,
-            Path.GetFileNameWithoutExtension(AtcFilePath));
-        }
 
         FileIndex = AppSettings.Instance.FileList.Count;
 
@@ -3774,12 +3804,6 @@ namespace AttacheCase
           encryption4 = new FileEncrypt4();
           encryption4.NumberOfFiles = FileIndex + 1;
           encryption4.TotalNumberOfFiles = TotalNumberOfFiles;
-        }
-        else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
-        {
-          compression = new ZipEncrypt();
-          compression.NumberOfFiles = FileIndex + 1;
-          compression.TotalNumberOfFiles = TotalNumberOfFiles;
         }
 
         //-----------------------------------
@@ -3832,8 +3856,7 @@ namespace AttacheCase
 
         //-----------------------------------
         //Confirm &overwriting when same file name exists.
-        if ((encryption4 != null && AppSettings.Instance.fEncryptConfirmOverwrite == true) ||
-            compression != null && AppSettings.Instance.fZipConfirmOverwrite == true)
+        if (encryption4 != null && AppSettings.Instance.fEncryptConfirmOverwrite == true)
         {
           if (File.Exists(AtcFilePath) == true)
           {
@@ -3867,6 +3890,7 @@ namespace AttacheCase
                   panelEncrypt.Visible = false;
                   panelEncryptConfirm.Visible = false;
                   panelDecrypt.Visible = false;
+                  panelRsa.Visible = false;
                   panelProgressState.Visible = true;
 
                   // Canceled
@@ -3947,18 +3971,6 @@ namespace AttacheCase
               "");
           };
         }
-        else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
-        {
-          bkg.DoWork += (s, d) =>
-          {
-            compression.Encrypt(
-              null, null,
-              new string[] { AppSettings.Instance.FileList[FileIndex] },
-              AtcFilePath,
-              EncryptionPassword, EncryptionPasswordBinary,
-              "");
-          };
-        }
 
         bkg.RunWorkerCompleted += backgroundWorker_Encryption_RunWorkerCompleted;
         bkg.ProgressChanged += backgroundWorker_ProgressChanged;
@@ -3996,12 +4008,6 @@ namespace AttacheCase
           encryption4 = new FileEncrypt4();
           encryption4.NumberOfFiles = FileIndex + 1;
           encryption4.TotalNumberOfFiles = TotalNumberOfFiles;
-        }
-        else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
-        {
-          compression = new ZipEncrypt();
-          compression.NumberOfFiles = FileIndex + 1;
-          compression.TotalNumberOfFiles = TotalNumberOfFiles;
         }
 
         //-----------------------------------
@@ -4057,8 +4063,7 @@ namespace AttacheCase
         //-----------------------------------
         //Confirm &overwriting when same file name exists.
 
-        if ((encryption4 != null && AppSettings.Instance.fEncryptConfirmOverwrite == true) ||
-            compression != null && AppSettings.Instance.fZipConfirmOverwrite == true)
+        if (encryption4 != null && AppSettings.Instance.fEncryptConfirmOverwrite == true)
         {
 
           if (File.Exists(AtcFilePath) == true)
@@ -4093,6 +4098,7 @@ namespace AttacheCase
                   panelEncrypt.Visible = false;
                   panelEncryptConfirm.Visible = false;
                   panelDecrypt.Visible = false;
+                  panelRsa.Visible = false;
                   panelProgressState.Visible = true;
 
                   // Canceled
@@ -4176,16 +4182,6 @@ namespace AttacheCase
             EncryptionPassword, EncryptionPasswordBinary,
             "");
         }
-        else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
-        {
-          bkg.DoWork += (s, d) =>
-          compression.Encrypt(
-            s, d,
-            new string[] { AppSettings.Instance.FileList[FileIndex] },
-            AtcFilePath,
-            EncryptionPassword, EncryptionPasswordBinary,
-            "");
-        }
 
         bkg.RunWorkerCompleted += backgroundWorker_Encryption_RunWorkerCompleted;
         bkg.ProgressChanged += backgroundWorker_ProgressChanged;
@@ -4214,6 +4210,7 @@ namespace AttacheCase
       panelEncrypt.Visible = false;
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
+      panelRsa.Visible = false;
       panelProgressState.Visible = false;
 
       panelStartPage_VisibleChanged(sender, e);
@@ -4376,6 +4373,7 @@ namespace AttacheCase
       panelEncrypt.Visible = false;
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
+      panelRsa.Visible = false;
       panelProgressState.Visible = true;
 
       labelProgress.Text = labelDecryption.Text;
@@ -4870,6 +4868,7 @@ namespace AttacheCase
       panelEncrypt.Visible = false;
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
+      panelRsa.Visible = false;
       panelProgressState.Visible = false;
       panelStartPage.Visible = true;
       textBoxDecryptPassword.Text = "";
@@ -4910,6 +4909,7 @@ namespace AttacheCase
         panelEncrypt.Visible = false;
         panelEncryptConfirm.Visible = false;
         panelDecrypt.Visible = false;
+        panelRsa.Visible = false;
         panelProgressState.Visible = false;
 
         panelStartPage_VisibleChanged(sender, e);
@@ -4958,6 +4958,7 @@ namespace AttacheCase
         panelEncrypt.Visible = false;
         panelEncryptConfirm.Visible = false;
         panelDecrypt.Visible = false;
+        panelRsa.Visible = false;
         panelProgressState.Visible = false;
 
         panelStartPage_VisibleChanged(sender, e);
@@ -5222,7 +5223,7 @@ namespace AttacheCase
       {
         pictureBoxAtc.Image = pictureBoxAtcChk.Image;
         pictureBoxExe.Image = pictureBoxExeOff.Image;
-        pictureBoxZip.Image = pictureBoxZipOff.Image;
+        pictureBoxRsa.Image = pictureBoxRsaOff.Image;
         pictureBoxDec.Image = pictureBoxDecOff.Image;
         AppSettings.Instance.EncryptionFileType = FILE_TYPE_ATC;
         AppSettings.Instance.EncryptionSameFileTypeBefore = FILE_TYPE_ATC;
@@ -5257,7 +5258,7 @@ namespace AttacheCase
       {
         pictureBoxAtc.Image = pictureBoxAtcOff.Image;
         pictureBoxExe.Image = pictureBoxExeChk.Image;
-        pictureBoxZip.Image = pictureBoxZipOff.Image;
+        pictureBoxRsa.Image = pictureBoxRsaOff.Image;
         pictureBoxDec.Image = pictureBoxDecOff.Image;
         AppSettings.Instance.EncryptionFileType = FILE_TYPE_ATC_EXE;
         AppSettings.Instance.EncryptionSameFileTypeBefore = FILE_TYPE_ATC_EXE;
@@ -5280,39 +5281,42 @@ namespace AttacheCase
       }
     }
 
-    private void pictureBoxZip_Click(object sender, EventArgs e)
+    private void pictureBoxRsa_Click(object sender, EventArgs e)
     {
-      if (pictureBoxZip.Image == pictureBoxZipChk.Image)
+      if (pictureBoxRsa.Image == pictureBoxRsaChk.Image)
       {
-        pictureBoxZip.Image = pictureBoxZipOn.Image;
-        AppSettings.Instance.EncryptionFileType = FILE_TYPE_NONE;
-        AppSettings.Instance.EncryptionSameFileTypeBefore = FILE_TYPE_NONE;
+        pictureBoxRsa.Image = pictureBoxRsaOn.Image;
       }
       else
       {
         pictureBoxAtc.Image = pictureBoxAtcOff.Image;
         pictureBoxExe.Image = pictureBoxExeOff.Image;
-        pictureBoxZip.Image = pictureBoxZipChk.Image;
         pictureBoxDec.Image = pictureBoxDecOff.Image;
-        AppSettings.Instance.EncryptionFileType = FILE_TYPE_PASSWORD_ZIP;
-        AppSettings.Instance.EncryptionSameFileTypeBefore = FILE_TYPE_PASSWORD_ZIP;
+        pictureBoxRsa.Image = pictureBoxRsaChk.Image;
       }
+
+      panelStartPage.Visible = false;
+      panelEncrypt.Visible = false;
+      panelEncryptConfirm.Visible = false;
+      panelDecrypt.Visible = false;
+      panelRsa.Visible = true;            // RSA
+      panelProgressState.Visible = false;
 
     }
 
-    private void pictureBoxZip_MouseEnter(object sender, EventArgs e)
+    private void pictureBoxRsa_MouseEnter(object sender, EventArgs e)
     {
-      if (pictureBoxZip.Image != pictureBoxZipChk.Image)
+      if (pictureBoxRsa.Image != pictureBoxRsaChk.Image)
       {
-        pictureBoxZip.Image = pictureBoxZipOn.Image;
+        pictureBoxRsa.Image = pictureBoxRsaOn.Image;
       }
     }
 
-    private void pictureBoxZip_MouseLeave(object sender, EventArgs e)
+    private void pictureBoxRsa_MouseLeave(object sender, EventArgs e)
     {
-      if (pictureBoxZip.Image != pictureBoxZipChk.Image)
+      if (pictureBoxRsa.Image != pictureBoxRsaChk.Image)
       {
-        pictureBoxZip.Image = pictureBoxZipOff.Image;
+        pictureBoxRsa.Image = pictureBoxRsaOff.Image;
       }
     }
 
@@ -5326,7 +5330,7 @@ namespace AttacheCase
 
       pictureBoxAtc.Image = pictureBoxAtcOff.Image;
       pictureBoxExe.Image = pictureBoxExeOff.Image;
-      pictureBoxZip.Image = pictureBoxZipOff.Image;
+      pictureBoxRsa.Image = pictureBoxRsaOff.Image;
       pictureBoxDec.Image = pictureBoxDecChk.Image;
 
       if (openFileDialog1.ShowDialog() == DialogResult.OK)
@@ -5357,6 +5361,7 @@ namespace AttacheCase
           panelEncrypt.Visible = false;
           panelEncryptConfirm.Visible = false;
           panelDecrypt.Visible = true;    //Decrypt
+          panelRsa.Visible = false;
           panelProgressState.Visible = false;
         }
       }
@@ -5675,6 +5680,150 @@ namespace AttacheCase
       }
     }
 
+    private void button3_Click(object sender, EventArgs e)
+    {
+      if (File.Exists(AppSettings.Instance.SaveToIniDirPath) == false)
+      {
+        // Default foloder is Desktop
+        saveFileDialog2.InitialDirectory =
+          Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+      }
+      else
+      {
+        saveFileDialog2.InitialDirectory = AppSettings.Instance.SaveToIniDirPath;
+      }
+
+      // Save a lock file (public key) and key file (private key)
+      // ロックファイル（公開鍵）とキーファイル（秘密鍵）の保存
+      saveFileDialog2.Title = Resources.DialogTitleSavePublicAndPrivateKey;
+      if (saveFileDialog2.ShowDialog() == DialogResult.OK)
+      {
+        CreateKeyPair(saveFileDialog2.FileName, "");
+        DirectoryInfo diParent = Directory.GetParent(saveFileDialog2.FileName);
+        AppSettings.Instance.SaveToIniDirPath = diParent.FullName;
+      }
+
+    }
+
+    //----------------------------------------------------------------------
+    // ペアの公開鍵・暗号鍵を生成する
+    //----------------------------------------------------------------------
+    private static string CreateKeyPair(string filePath, string guidString)
+    {
+
+      if (string.IsNullOrEmpty(guidString))
+      {
+        // GUIDを生成する
+        var guid = Guid.NewGuid();
+        guidString = guid.ToString();
+      }
+
+      DirectoryInfo diParent = Directory.GetParent(filePath);
+      string DirPath = diParent.FullName;
+      string FileName = Path.GetFileNameWithoutExtension(filePath);
+
+      // 公開鍵・秘密鍵のファイルパス
+      var publicKeyFilePath = Path.Combine(DirPath, FileName + ".atclock");
+      var privateFilePath = Path.Combine(DirPath, FileName + ".atckey");
+
+      //-----------------------------------
+      //RSACryptoServiceProviderオブジェクトの作成
+      var rsa = new RSACryptoServiceProvider(2048);
+
+      //公開鍵をXML形式で取得
+      var publicKey = rsa.ToXmlString(false);
+      //秘密鍵をXML形式で取得
+      var privateKey = rsa.ToXmlString(true);
+
+      //-----------------------------------
+      // 公開鍵XMLファイルの編集
+      var xml = XElement.Parse(publicKey);
+
+      // アップロード日時（UTC日時）
+      //XElement xmlUploadDateTime = new XElement("upload", "");
+      //xml.AddFirst(xmlUploadDateTime);
+      // 生成日時（UTC日時）
+      //XElement xmlDateTime = new XElement("datetime", DateTime.UtcNow.ToString("yyyy/MM/dd HH:mm:ss"));
+      //xml.AddFirst(xmlDateTime);
+      // From ( メールアドレスなど )
+      //XElement xmlFrom = new XElement("from", sendToString);
+      //xml.AddFirst(xmlFrom);
+      // ラベル（鍵管理用キーワード）
+      //XElement xmlTo = new XElement("to", fromString);
+      //xml.AddFirst(xmlTo);
+
+      // 種別
+      XElement xmlType = new XElement("type", "public");
+      xml.AddFirst(xmlType);
+      // GUID
+      XElement xmlGuid = new XElement("id", guidString);
+      xml.AddFirst(xmlGuid);
+      // Token
+      XElement xmlToken = new XElement("token", "AttacheCase");
+      xml.AddFirst(xmlToken);
+      // 公開鍵として保存する
+      xml.Save(publicKeyFilePath);
+
+      //-----------------------------------
+      // 秘密鍵XMLファイルの編集
+      xml = XElement.Parse(privateKey);
+
+      //xml.AddFirst(xmlUploadDateTime); // アップロード日時（UTC日時）
+      //xml.AddFirst(xmlDateTime);       // 作成日時（UTC日時）
+      //xml.AddFirst(xmlFrom);           // 送り主情報（メールアドレスなど格納）
+      //xml.AddFirst(xmlTo);             // 鍵管理用キーワード
+
+      // 種別
+      xmlType = new XElement("type", "private");
+      xml.AddFirst(xmlType);
+      // GUID
+      xml.AddFirst(xmlGuid);
+      // Token
+      xml.AddFirst(xmlToken);
+      // 秘密鍵として保存する
+      xml.Save(privateFilePath);
+
+      rsa.Clear();
+
+      return guidString;
+
+    }
+
+    private void buttonRsaCancel_Click(object sender, EventArgs e)
+    {
+      // Cancel, If decryption is not being processed 
+      panelEncrypt.Visible = false;
+      panelEncryptConfirm.Visible = false;
+      panelDecrypt.Visible = false;
+      panelRsa.Visible = false;
+      panelProgressState.Visible = false;
+      panelStartPage.Visible = true;
+      textBoxDecryptPassword.Text = "";
+      AppSettings.Instance.TempDecryptionPassFilePath = "";
+
+    }
+
+    private void pictureBoxRsaBackButton_MouseEnter(object sender, EventArgs e)
+    {
+      pictureBoxRsaBackButton.Image = pictureBoxBackButtonOn.Image;
+    }
+
+    private void pictureBoxRsaBackButton_MouseLeave(object sender, EventArgs e)
+    {
+      pictureBoxRsaBackButton.Image = pictureBoxBackButtonOff.Image;
+    }
+
+    private void panelRsa_VisibleChanged(object sender, EventArgs e)
+    {
+      if (panelRsa.Visible == true)
+      {
+
+
+
+
+      }
+
+    }
 
   }// end public partial class Form1 : Form;
 

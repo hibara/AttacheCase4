@@ -213,7 +213,6 @@ namespace AtcSetup
 			{
 				regkey.SetValue("", "AttacheCase.DataFile");
 			}
-			
 			//-----------------------------------
 			// HKEY_CLASSES_ROOT\AttacheCase.DataFile
 			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\DefaultIcon"))
@@ -227,20 +226,43 @@ namespace AtcSetup
 					regkey.SetValue("", "\"" + MyIconFilePath + "\"");	// My Icon
 				}
 			}
-
 			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\decode"))
 			{
 				regkey.SetValue("", "アタッシェケースファイルを復号する");
 			}
-
 			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\decode\command"))
 			{
 				regkey.SetValue("", "\"" + AttacheCaseFilePath + "\",\"%1\"");
 			}
-
 			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\open\command"))
 			{
 				regkey.SetValue("", "\"" + AttacheCaseFilePath + "\",\"%1\"");
+			}
+
+			//-----------------------------------
+			// HKEY_CLASSES_ROOT\.atckey
+			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atckey"))
+			{
+				regkey.SetValue("", "AttacheCase.KeyFile");
+			}
+			//-----------------------------------
+			// HKEY_CLASSES_ROOT\AttacheCase.KeyFile
+			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.KeyFile\DefaultIcon"))
+			{
+				regkey.SetValue("", "\"" + AttacheCaseFilePath + "\"," + 5);
+			}
+
+			//-----------------------------------
+			// HKEY_CLASSES_ROOT\.atclock
+			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atclock"))
+			{
+				regkey.SetValue("", "AttacheCase.LockFile");
+			}
+			//-----------------------------------
+			// HKEY_CLASSES_ROOT\AttacheCase.LockFile
+			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.KeyFile\DefaultIcon"))
+			{
+				regkey.SetValue("", "\"" + AttacheCaseFilePath + "\"," + 6);
 			}
 
 			progressBar1.Style = ProgressBarStyle.Continuous;

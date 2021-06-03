@@ -634,4 +634,7 @@
   <data name="labelValidCode" xml:space="preserve">
     <value>有効なコードです。</value>
   </data>
+  <data name="DialogTitleSavePublicAndPrivateKey" xml:space="preserve">
+    <value>ロックファイル（公開鍵）とキーファイル（秘密鍵）の保存</value>
+  </data>
 </root>

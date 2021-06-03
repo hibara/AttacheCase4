@@ -54,7 +54,7 @@
       this.tabPageStartPage = new System.Windows.Forms.TabPage();
       this.panelStartPage = new System.Windows.Forms.Panel();
       this.pictureBoxDecChk = new System.Windows.Forms.PictureBox();
-      this.pictureBoxZipChk = new System.Windows.Forms.PictureBox();
+      this.pictureBoxRsaChk = new System.Windows.Forms.PictureBox();
       this.pictureBoxExeChk = new System.Windows.Forms.PictureBox();
       this.pictureBoxAtcChk = new System.Windows.Forms.PictureBox();
       this.pictureBoxOptionButton = new System.Windows.Forms.PictureBox();
@@ -64,19 +64,19 @@
       this.pictureBoxBackButtonOn = new System.Windows.Forms.PictureBox();
       this.buttonExit = new System.Windows.Forms.Button();
       this.panel1 = new System.Windows.Forms.Panel();
-      this.labelDec = new System.Windows.Forms.Label();
       this.labelZip = new System.Windows.Forms.Label();
-      this.labelExe = new System.Windows.Forms.Label();
-      this.labelAtc = new System.Windows.Forms.Label();
+      this.pictureBoxRsa = new System.Windows.Forms.PictureBox();
+      this.labelDec = new System.Windows.Forms.Label();
       this.pictureBoxDec = new System.Windows.Forms.PictureBox();
-      this.pictureBoxZip = new System.Windows.Forms.PictureBox();
+      this.labelExe = new System.Windows.Forms.Label();
       this.pictureBoxExe = new System.Windows.Forms.PictureBox();
+      this.labelAtc = new System.Windows.Forms.Label();
       this.pictureBoxAtc = new System.Windows.Forms.PictureBox();
       this.pictureBoxDeleteOn = new System.Windows.Forms.PictureBox();
       this.pictureBoxDecOff = new System.Windows.Forms.PictureBox();
       this.pictureBoxDecOn = new System.Windows.Forms.PictureBox();
-      this.pictureBoxZipOff = new System.Windows.Forms.PictureBox();
-      this.pictureBoxZipOn = new System.Windows.Forms.PictureBox();
+      this.pictureBoxRsaOff = new System.Windows.Forms.PictureBox();
+      this.pictureBoxRsaOn = new System.Windows.Forms.PictureBox();
       this.pictureBoxExeOff = new System.Windows.Forms.PictureBox();
       this.pictureBoxExeOn = new System.Windows.Forms.PictureBox();
       this.pictureBoxAtcOff = new System.Windows.Forms.PictureBox();
@@ -129,6 +129,15 @@
       this.buttonDecryptStart = new System.Windows.Forms.Button();
       this.labelDecryptionPassword = new System.Windows.Forms.Label();
       this.textBoxDecryptPassword = new System.Windows.Forms.TextBox();
+      this.tabPageRsa = new System.Windows.Forms.TabPage();
+      this.panelRsa = new System.Windows.Forms.Panel();
+      this.pictureBoxRsaBackButton = new System.Windows.Forms.PictureBox();
+      this.label2 = new System.Windows.Forms.Label();
+      this.buttonRsaCancel = new System.Windows.Forms.Button();
+      this.button3 = new System.Windows.Forms.Button();
+      this.panel6 = new System.Windows.Forms.Panel();
+      this.label1 = new System.Windows.Forms.Label();
+      this.pictureBox1 = new System.Windows.Forms.PictureBox();
       this.tabPageProgressState = new System.Windows.Forms.TabPage();
       this.panelProgressState = new System.Windows.Forms.Panel();
       this.pictureBoxProgressStateBackButton = new System.Windows.Forms.PictureBox();
@@ -162,6 +171,7 @@
       this.folderBrowserDialog1 = new System.Windows.Forms.FolderBrowserDialog();
       this.toolTipZxcvbnWarning = new System.Windows.Forms.ToolTip(this.components);
       this.toolTipZxcvbnSuggestions = new System.Windows.Forms.ToolTip(this.components);
+      this.saveFileDialog2 = new System.Windows.Forms.SaveFileDialog();
       this.statusStrip1.SuspendLayout();
       this.menuStrip1.SuspendLayout();
       this.panelOuter.SuspendLayout();
@@ -169,7 +179,7 @@
       this.tabPageStartPage.SuspendLayout();
       this.panelStartPage.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDecChk)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxZipChk)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRsaChk)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExeChk)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAtcChk)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOptionButton)).BeginInit();
@@ -178,15 +188,15 @@
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBackButtonOff)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBackButtonOn)).BeginInit();
       this.panel1.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRsa)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDec)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxZip)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExe)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAtc)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDeleteOn)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDecOff)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDecOn)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxZipOff)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxZipOn)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRsaOff)).BeginInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRsaOn)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExeOff)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExeOn)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAtcOff)).BeginInit();
@@ -216,6 +226,11 @@
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDecryptBackButton)).BeginInit();
       this.panel4.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDecryption)).BeginInit();
+      this.tabPageRsa.SuspendLayout();
+      this.panelRsa.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRsaBackButton)).BeginInit();
+      this.panel6.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.tabPageProgressState.SuspendLayout();
       this.panelProgressState.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProgressStateBackButton)).BeginInit();
@@ -246,6 +261,7 @@
       // 
       // menuStrip1
       // 
+      this.menuStrip1.AllowDrop = true;
       this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
       this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItemFile,
@@ -356,6 +372,7 @@
       this.tabControl1.Controls.Add(this.tabPageEncrypt);
       this.tabControl1.Controls.Add(this.tabPageEncryptConfirm);
       this.tabControl1.Controls.Add(this.tabPageDecrypt);
+      this.tabControl1.Controls.Add(this.tabPageRsa);
       this.tabControl1.Controls.Add(this.tabPageProgressState);
       resources.ApplyResources(this.tabControl1, "tabControl1");
       this.tabControl1.Name = "tabControl1";
@@ -376,7 +393,7 @@
       this.panelStartPage.BackColor = System.Drawing.Color.White;
       this.panelStartPage.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.panelStartPage.Controls.Add(this.pictureBoxDecChk);
-      this.panelStartPage.Controls.Add(this.pictureBoxZipChk);
+      this.panelStartPage.Controls.Add(this.pictureBoxRsaChk);
       this.panelStartPage.Controls.Add(this.pictureBoxExeChk);
       this.panelStartPage.Controls.Add(this.pictureBoxAtcChk);
       this.panelStartPage.Controls.Add(this.pictureBoxOptionButton);
@@ -389,8 +406,8 @@
       this.panelStartPage.Controls.Add(this.pictureBoxDeleteOn);
       this.panelStartPage.Controls.Add(this.pictureBoxDecOff);
       this.panelStartPage.Controls.Add(this.pictureBoxDecOn);
-      this.panelStartPage.Controls.Add(this.pictureBoxZipOff);
-      this.panelStartPage.Controls.Add(this.pictureBoxZipOn);
+      this.panelStartPage.Controls.Add(this.pictureBoxRsaOff);
+      this.panelStartPage.Controls.Add(this.pictureBoxRsaOn);
       this.panelStartPage.Controls.Add(this.pictureBoxExeOff);
       this.panelStartPage.Controls.Add(this.pictureBoxExeOn);
       this.panelStartPage.Controls.Add(this.pictureBoxAtcOff);
@@ -411,12 +428,12 @@
       this.pictureBoxDecChk.Name = "pictureBoxDecChk";
       this.pictureBoxDecChk.TabStop = false;
       // 
-      // pictureBoxZipChk
+      // pictureBoxRsaChk
       // 
-      this.pictureBoxZipChk.BackColor = System.Drawing.Color.Transparent;
-      resources.ApplyResources(this.pictureBoxZipChk, "pictureBoxZipChk");
-      this.pictureBoxZipChk.Name = "pictureBoxZipChk";
-      this.pictureBoxZipChk.TabStop = false;
+      this.pictureBoxRsaChk.BackColor = System.Drawing.Color.Transparent;
+      resources.ApplyResources(this.pictureBoxRsaChk, "pictureBoxRsaChk");
+      this.pictureBoxRsaChk.Name = "pictureBoxRsaChk";
+      this.pictureBoxRsaChk.TabStop = false;
       // 
       // pictureBoxExeChk
       // 
@@ -480,22 +497,16 @@
       // panel1
       // 
       this.panel1.BackColor = System.Drawing.Color.WhiteSmoke;
-      this.panel1.Controls.Add(this.labelDec);
       this.panel1.Controls.Add(this.labelZip);
-      this.panel1.Controls.Add(this.labelExe);
-      this.panel1.Controls.Add(this.labelAtc);
+      this.panel1.Controls.Add(this.pictureBoxRsa);
+      this.panel1.Controls.Add(this.labelDec);
       this.panel1.Controls.Add(this.pictureBoxDec);
-      this.panel1.Controls.Add(this.pictureBoxZip);
+      this.panel1.Controls.Add(this.labelExe);
       this.panel1.Controls.Add(this.pictureBoxExe);
+      this.panel1.Controls.Add(this.labelAtc);
       this.panel1.Controls.Add(this.pictureBoxAtc);
       resources.ApplyResources(this.panel1, "panel1");
       this.panel1.Name = "panel1";
-      // 
-      // labelDec
-      // 
-      this.labelDec.BackColor = System.Drawing.Color.Transparent;
-      resources.ApplyResources(this.labelDec, "labelDec");
-      this.labelDec.Name = "labelDec";
       // 
       // labelZip
       // 
@@ -503,17 +514,21 @@
       resources.ApplyResources(this.labelZip, "labelZip");
       this.labelZip.Name = "labelZip";
       // 
-      // labelExe
+      // pictureBoxRsa
       // 
-      this.labelExe.BackColor = System.Drawing.Color.Transparent;
-      resources.ApplyResources(this.labelExe, "labelExe");
-      this.labelExe.Name = "labelExe";
+      this.pictureBoxRsa.BackColor = System.Drawing.Color.Transparent;
+      resources.ApplyResources(this.pictureBoxRsa, "pictureBoxRsa");
+      this.pictureBoxRsa.Name = "pictureBoxRsa";
+      this.pictureBoxRsa.TabStop = false;
+      this.pictureBoxRsa.Click += new System.EventHandler(this.pictureBoxRsa_Click);
+      this.pictureBoxRsa.MouseEnter += new System.EventHandler(this.pictureBoxRsa_MouseEnter);
+      this.pictureBoxRsa.MouseLeave += new System.EventHandler(this.pictureBoxRsa_MouseLeave);
       // 
-      // labelAtc
+      // labelDec
       // 
-      this.labelAtc.BackColor = System.Drawing.Color.Transparent;
-      resources.ApplyResources(this.labelAtc, "labelAtc");
-      this.labelAtc.Name = "labelAtc";
+      this.labelDec.BackColor = System.Drawing.Color.Transparent;
+      resources.ApplyResources(this.labelDec, "labelDec");
+      this.labelDec.Name = "labelDec";
       // 
       // pictureBoxDec
       // 
@@ -525,15 +540,11 @@
       this.pictureBoxDec.MouseEnter += new System.EventHandler(this.pictureBoxDec_MouseEnter);
       this.pictureBoxDec.MouseLeave += new System.EventHandler(this.pictureBoxDec_MouseLeave);
       // 
-      // pictureBoxZip
+      // labelExe
       // 
-      this.pictureBoxZip.BackColor = System.Drawing.Color.Transparent;
-      resources.ApplyResources(this.pictureBoxZip, "pictureBoxZip");
-      this.pictureBoxZip.Name = "pictureBoxZip";
-      this.pictureBoxZip.TabStop = false;
-      this.pictureBoxZip.Click += new System.EventHandler(this.pictureBoxZip_Click);
-      this.pictureBoxZip.MouseEnter += new System.EventHandler(this.pictureBoxZip_MouseEnter);
-      this.pictureBoxZip.MouseLeave += new System.EventHandler(this.pictureBoxZip_MouseLeave);
+      this.labelExe.BackColor = System.Drawing.Color.Transparent;
+      resources.ApplyResources(this.labelExe, "labelExe");
+      this.labelExe.Name = "labelExe";
       // 
       // pictureBoxExe
       // 
@@ -544,6 +555,12 @@
       this.pictureBoxExe.Click += new System.EventHandler(this.pictureBoxExe_Click);
       this.pictureBoxExe.MouseEnter += new System.EventHandler(this.pictureBoxExe_MouseEnter);
       this.pictureBoxExe.MouseLeave += new System.EventHandler(this.pictureBoxExe_MouseLeave);
+      // 
+      // labelAtc
+      // 
+      this.labelAtc.BackColor = System.Drawing.Color.Transparent;
+      resources.ApplyResources(this.labelAtc, "labelAtc");
+      this.labelAtc.Name = "labelAtc";
       // 
       // pictureBoxAtc
       // 
@@ -576,19 +593,19 @@
       this.pictureBoxDecOn.Name = "pictureBoxDecOn";
       this.pictureBoxDecOn.TabStop = false;
       // 
-      // pictureBoxZipOff
+      // pictureBoxRsaOff
       // 
-      this.pictureBoxZipOff.BackColor = System.Drawing.Color.Transparent;
-      resources.ApplyResources(this.pictureBoxZipOff, "pictureBoxZipOff");
-      this.pictureBoxZipOff.Name = "pictureBoxZipOff";
-      this.pictureBoxZipOff.TabStop = false;
+      this.pictureBoxRsaOff.BackColor = System.Drawing.Color.Transparent;
+      resources.ApplyResources(this.pictureBoxRsaOff, "pictureBoxRsaOff");
+      this.pictureBoxRsaOff.Name = "pictureBoxRsaOff";
+      this.pictureBoxRsaOff.TabStop = false;
       // 
-      // pictureBoxZipOn
+      // pictureBoxRsaOn
       // 
-      this.pictureBoxZipOn.BackColor = System.Drawing.Color.Transparent;
-      resources.ApplyResources(this.pictureBoxZipOn, "pictureBoxZipOn");
-      this.pictureBoxZipOn.Name = "pictureBoxZipOn";
-      this.pictureBoxZipOn.TabStop = false;
+      this.pictureBoxRsaOn.BackColor = System.Drawing.Color.Transparent;
+      resources.ApplyResources(this.pictureBoxRsaOn, "pictureBoxRsaOn");
+      this.pictureBoxRsaOn.Name = "pictureBoxRsaOn";
+      this.pictureBoxRsaOn.TabStop = false;
       // 
       // pictureBoxExeOff
       // 
@@ -1004,6 +1021,74 @@
       this.textBoxDecryptPassword.DragLeave += new System.EventHandler(this.textBoxDecryptPassword_DragLeave);
       this.textBoxDecryptPassword.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.textBoxDecryptPassword_PreviewKeyDown);
       // 
+      // tabPageRsa
+      // 
+      this.tabPageRsa.Controls.Add(this.panelRsa);
+      resources.ApplyResources(this.tabPageRsa, "tabPageRsa");
+      this.tabPageRsa.Name = "tabPageRsa";
+      this.tabPageRsa.UseVisualStyleBackColor = true;
+      // 
+      // panelRsa
+      // 
+      this.panelRsa.Controls.Add(this.pictureBoxRsaBackButton);
+      this.panelRsa.Controls.Add(this.label2);
+      this.panelRsa.Controls.Add(this.buttonRsaCancel);
+      this.panelRsa.Controls.Add(this.button3);
+      this.panelRsa.Controls.Add(this.panel6);
+      resources.ApplyResources(this.panelRsa, "panelRsa");
+      this.panelRsa.Name = "panelRsa";
+      this.panelRsa.VisibleChanged += new System.EventHandler(this.panelRsa_VisibleChanged);
+      // 
+      // pictureBoxRsaBackButton
+      // 
+      resources.ApplyResources(this.pictureBoxRsaBackButton, "pictureBoxRsaBackButton");
+      this.pictureBoxRsaBackButton.Cursor = System.Windows.Forms.Cursors.Hand;
+      this.pictureBoxRsaBackButton.Name = "pictureBoxRsaBackButton";
+      this.pictureBoxRsaBackButton.TabStop = false;
+      this.pictureBoxRsaBackButton.Click += new System.EventHandler(this.buttonRsaCancel_Click);
+      this.pictureBoxRsaBackButton.MouseEnter += new System.EventHandler(this.pictureBoxRsaBackButton_MouseEnter);
+      this.pictureBoxRsaBackButton.MouseLeave += new System.EventHandler(this.pictureBoxRsaBackButton_MouseLeave);
+      // 
+      // label2
+      // 
+      resources.ApplyResources(this.label2, "label2");
+      this.label2.Name = "label2";
+      // 
+      // buttonRsaCancel
+      // 
+      resources.ApplyResources(this.buttonRsaCancel, "buttonRsaCancel");
+      this.buttonRsaCancel.Name = "buttonRsaCancel";
+      this.buttonRsaCancel.UseVisualStyleBackColor = true;
+      this.buttonRsaCancel.Click += new System.EventHandler(this.buttonRsaCancel_Click);
+      // 
+      // button3
+      // 
+      resources.ApplyResources(this.button3, "button3");
+      this.button3.Name = "button3";
+      this.button3.UseVisualStyleBackColor = true;
+      this.button3.Click += new System.EventHandler(this.button3_Click);
+      // 
+      // panel6
+      // 
+      this.panel6.BackColor = System.Drawing.Color.WhiteSmoke;
+      this.panel6.Controls.Add(this.label1);
+      this.panel6.Controls.Add(this.pictureBox1);
+      resources.ApplyResources(this.panel6, "panel6");
+      this.panel6.Name = "panel6";
+      // 
+      // label1
+      // 
+      resources.ApplyResources(this.label1, "label1");
+      this.label1.BackColor = System.Drawing.Color.Transparent;
+      this.label1.Name = "label1";
+      // 
+      // pictureBox1
+      // 
+      resources.ApplyResources(this.pictureBox1, "pictureBox1");
+      this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
+      this.pictureBox1.Name = "pictureBox1";
+      this.pictureBox1.TabStop = false;
+      // 
       // tabPageProgressState
       // 
       this.tabPageProgressState.BackColor = System.Drawing.SystemColors.Control;
@@ -1240,7 +1325,7 @@
       this.panelStartPage.ResumeLayout(false);
       this.panelStartPage.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDecChk)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxZipChk)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRsaChk)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExeChk)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAtcChk)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxOptionButton)).EndInit();
@@ -1250,15 +1335,15 @@
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBackButtonOn)).EndInit();
       this.panel1.ResumeLayout(false);
       this.panel1.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRsa)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDec)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxZip)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExe)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAtc)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDeleteOn)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDecOff)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDecOn)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxZipOff)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxZipOn)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRsaOff)).EndInit();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRsaOn)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExeOff)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExeOn)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAtcOff)).EndInit();
@@ -1292,6 +1377,13 @@
       this.panel4.ResumeLayout(false);
       this.panel4.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDecryption)).EndInit();
+      this.tabPageRsa.ResumeLayout(false);
+      this.panelRsa.ResumeLayout(false);
+      this.panelRsa.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRsaBackButton)).EndInit();
+      this.panel6.ResumeLayout(false);
+      this.panel6.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
       this.tabPageProgressState.ResumeLayout(false);
       this.panelProgressState.ResumeLayout(false);
       this.panelProgressState.PerformLayout();
@@ -1390,19 +1482,11 @@
     internal System.Windows.Forms.PictureBox pictureBoxProgress;
     private System.Windows.Forms.Panel panelStartPage;
     private System.Windows.Forms.Panel panel1;
-    private System.Windows.Forms.Label labelDec;
-    private System.Windows.Forms.Label labelZip;
-    private System.Windows.Forms.Label labelExe;
-    private System.Windows.Forms.Label labelAtc;
-    protected internal System.Windows.Forms.PictureBox pictureBoxDec;
-    internal System.Windows.Forms.PictureBox pictureBoxZip;
-    internal System.Windows.Forms.PictureBox pictureBoxExe;
-    internal System.Windows.Forms.PictureBox pictureBoxAtc;
     internal System.Windows.Forms.PictureBox pictureBoxDeleteOn;
     internal System.Windows.Forms.PictureBox pictureBoxDecOff;
     internal System.Windows.Forms.PictureBox pictureBoxDecOn;
-    internal System.Windows.Forms.PictureBox pictureBoxZipOff;
-    internal System.Windows.Forms.PictureBox pictureBoxZipOn;
+    internal System.Windows.Forms.PictureBox pictureBoxRsaOff;
+    internal System.Windows.Forms.PictureBox pictureBoxRsaOn;
     internal System.Windows.Forms.PictureBox pictureBoxExeOff;
     internal System.Windows.Forms.PictureBox pictureBoxExeOn;
     internal System.Windows.Forms.PictureBox pictureBoxAtcOff;
@@ -1434,9 +1518,27 @@
     internal System.Windows.Forms.PictureBox pictureBoxOptionOff;
     internal System.Windows.Forms.PictureBox pictureBoxOptionButton;
     internal System.Windows.Forms.PictureBox pictureBoxDecChk;
-    internal System.Windows.Forms.PictureBox pictureBoxZipChk;
+    internal System.Windows.Forms.PictureBox pictureBoxRsaChk;
     internal System.Windows.Forms.PictureBox pictureBoxExeChk;
     internal System.Windows.Forms.PictureBox pictureBoxAtcChk;
+    private System.Windows.Forms.Label labelDec;
+    protected internal System.Windows.Forms.PictureBox pictureBoxDec;
+    private System.Windows.Forms.Label labelExe;
+    internal System.Windows.Forms.PictureBox pictureBoxExe;
+    private System.Windows.Forms.Label labelAtc;
+    internal System.Windows.Forms.PictureBox pictureBoxAtc;
+    private System.Windows.Forms.Label labelZip;
+    internal System.Windows.Forms.PictureBox pictureBoxRsa;
+    private System.Windows.Forms.TabPage tabPageRsa;
+    private System.Windows.Forms.Panel panelRsa;
+    private System.Windows.Forms.Label label2;
+    private System.Windows.Forms.Button buttonRsaCancel;
+    private System.Windows.Forms.Button button3;
+    private System.Windows.Forms.Panel panel6;
+    private System.Windows.Forms.Label label1;
+    internal System.Windows.Forms.PictureBox pictureBox1;
+    private System.Windows.Forms.SaveFileDialog saveFileDialog2;
+    private System.Windows.Forms.PictureBox pictureBoxRsaBackButton;
   }
 }
 
