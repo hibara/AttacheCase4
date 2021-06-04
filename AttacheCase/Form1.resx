@@ -997,7 +997,7 @@
     <value>NoControl</value>
   </data>
   <data name="labelDec.Location" type="System.Drawing.Point, System.Drawing">
-    <value>2, 359</value>
+    <value>1, 265</value>
   </data>
   <data name="labelDec.Size" type="System.Drawing.Size, System.Drawing">
     <value>86, 12</value>
@@ -1022,37 +1022,6 @@
   </data>
   <data name="&gt;&gt;labelDec.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="labelZip.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="labelZip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>2, 258</value>
-  </data>
-  <data name="labelZip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>86, 24</value>
-  </data>
-  <data name="labelZip.TabIndex" type="System.Int32, mscorlib">
-    <value>14</value>
-  </data>
-  <data name="labelZip.Text" xml:space="preserve">
-    <value>Password
-ZIP</value>
-  </data>
-  <data name="labelZip.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleCenter</value>
-  </data>
-  <data name="&gt;&gt;labelZip.Name" xml:space="preserve">
-    <value>labelZip</value>
-  </data>
-  <data name="&gt;&gt;labelZip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;labelZip.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;labelZip.ZOrder" xml:space="preserve">
-    <value>1</value>
   </data>
   <data name="labelExe.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -1083,7 +1052,7 @@ EXE</value>
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;labelExe.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>1</value>
   </data>
   <data name="labelAtc.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -1114,7 +1083,7 @@ ATC</value>
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;labelAtc.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>2</value>
   </data>
   <data name="pictureBoxDec.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
     <value>None</value>
@@ -1162,7 +1131,7 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxDec.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 292</value>
+    <value>5, 198</value>
   </data>
   <data name="pictureBoxDec.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -1183,83 +1152,7 @@ ATC</value>
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;pictureBoxDec.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="pictureBoxZip.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
-    <value>None</value>
-  </data>
-  <data name="pictureBoxZip.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-        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
-        QmCC
-</value>
-  </data>
-  <data name="pictureBoxZip.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="pictureBoxZip.InitialImage" type="System.Resources.ResXNullRef, System.Windows.Forms">
-    <value />
-  </data>
-  <data name="pictureBoxZip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 196</value>
-  </data>
-  <data name="pictureBoxZip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 64</value>
-  </data>
-  <data name="pictureBoxZip.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
-    <value>AutoSize</value>
-  </data>
-  <data name="pictureBoxZip.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
-  </data>
-  <data name="&gt;&gt;pictureBoxZip.Name" xml:space="preserve">
-    <value>pictureBoxZip</value>
-  </data>
-  <data name="&gt;&gt;pictureBoxZip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;pictureBoxZip.Parent" xml:space="preserve">
-    <value>panel1</value>
-  </data>
-  <data name="&gt;&gt;pictureBoxZip.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>3</value>
   </data>
   <data name="pictureBoxExe.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
     <value>None</value>
@@ -1327,7 +1220,7 @@ ATC</value>
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;pictureBoxExe.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>4</value>
   </data>
   <data name="pictureBoxAtc.BackgroundImageLayout" type="System.Windows.Forms.ImageLayout, System.Windows.Forms">
     <value>None</value>
@@ -1392,7 +1285,7 @@ ATC</value>
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;pictureBoxAtc.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>5</value>
   </data>
   <data name="panel1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>
@@ -2808,7 +2701,7 @@ ATC</value>
     <value>textBoxPassword</value>
   </data>
   <data name="&gt;&gt;textBoxPassword.Type" xml:space="preserve">
-    <value>AttacheCase.DelayTextBox, AttacheCase, Version=4.0.0.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>AttacheCase.DelayTextBox, AttacheCase, Version=4.0.0.1, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;textBoxPassword.Parent" xml:space="preserve">
     <value>panelEncrypt</value>

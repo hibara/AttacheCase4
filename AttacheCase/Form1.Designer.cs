@@ -65,11 +65,9 @@
       this.buttonExit = new System.Windows.Forms.Button();
       this.panel1 = new System.Windows.Forms.Panel();
       this.labelDec = new System.Windows.Forms.Label();
-      this.labelZip = new System.Windows.Forms.Label();
       this.labelExe = new System.Windows.Forms.Label();
       this.labelAtc = new System.Windows.Forms.Label();
       this.pictureBoxDec = new System.Windows.Forms.PictureBox();
-      this.pictureBoxZip = new System.Windows.Forms.PictureBox();
       this.pictureBoxExe = new System.Windows.Forms.PictureBox();
       this.pictureBoxAtc = new System.Windows.Forms.PictureBox();
       this.pictureBoxDeleteOn = new System.Windows.Forms.PictureBox();
@@ -179,7 +177,6 @@
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxBackButtonOn)).BeginInit();
       this.panel1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDec)).BeginInit();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxZip)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExe)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAtc)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDeleteOn)).BeginInit();
@@ -481,11 +478,9 @@
       // 
       this.panel1.BackColor = System.Drawing.Color.WhiteSmoke;
       this.panel1.Controls.Add(this.labelDec);
-      this.panel1.Controls.Add(this.labelZip);
       this.panel1.Controls.Add(this.labelExe);
       this.panel1.Controls.Add(this.labelAtc);
       this.panel1.Controls.Add(this.pictureBoxDec);
-      this.panel1.Controls.Add(this.pictureBoxZip);
       this.panel1.Controls.Add(this.pictureBoxExe);
       this.panel1.Controls.Add(this.pictureBoxAtc);
       resources.ApplyResources(this.panel1, "panel1");
@@ -496,12 +491,6 @@
       this.labelDec.BackColor = System.Drawing.Color.Transparent;
       resources.ApplyResources(this.labelDec, "labelDec");
       this.labelDec.Name = "labelDec";
-      // 
-      // labelZip
-      // 
-      this.labelZip.BackColor = System.Drawing.Color.Transparent;
-      resources.ApplyResources(this.labelZip, "labelZip");
-      this.labelZip.Name = "labelZip";
       // 
       // labelExe
       // 
@@ -524,16 +513,6 @@
       this.pictureBoxDec.Click += new System.EventHandler(this.pictureBoxDec_Click);
       this.pictureBoxDec.MouseEnter += new System.EventHandler(this.pictureBoxDec_MouseEnter);
       this.pictureBoxDec.MouseLeave += new System.EventHandler(this.pictureBoxDec_MouseLeave);
-      // 
-      // pictureBoxZip
-      // 
-      this.pictureBoxZip.BackColor = System.Drawing.Color.Transparent;
-      resources.ApplyResources(this.pictureBoxZip, "pictureBoxZip");
-      this.pictureBoxZip.Name = "pictureBoxZip";
-      this.pictureBoxZip.TabStop = false;
-      this.pictureBoxZip.Click += new System.EventHandler(this.pictureBoxZip_Click);
-      this.pictureBoxZip.MouseEnter += new System.EventHandler(this.pictureBoxZip_MouseEnter);
-      this.pictureBoxZip.MouseLeave += new System.EventHandler(this.pictureBoxZip_MouseLeave);
       // 
       // pictureBoxExe
       // 
@@ -1251,7 +1230,6 @@
       this.panel1.ResumeLayout(false);
       this.panel1.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDec)).EndInit();
-      ((System.ComponentModel.ISupportInitialize)(this.pictureBoxZip)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExe)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxAtc)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDeleteOn)).EndInit();
@@ -1391,11 +1369,9 @@
     private System.Windows.Forms.Panel panelStartPage;
     private System.Windows.Forms.Panel panel1;
     private System.Windows.Forms.Label labelDec;
-    private System.Windows.Forms.Label labelZip;
     private System.Windows.Forms.Label labelExe;
     private System.Windows.Forms.Label labelAtc;
     protected internal System.Windows.Forms.PictureBox pictureBoxDec;
-    internal System.Windows.Forms.PictureBox pictureBoxZip;
     internal System.Windows.Forms.PictureBox pictureBoxExe;
     internal System.Windows.Forms.PictureBox pictureBoxAtc;
     internal System.Windows.Forms.PictureBox pictureBoxDeleteOn;

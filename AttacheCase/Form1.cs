@@ -1819,7 +1819,7 @@ namespace AttacheCase
 
         pictureBoxAtc.Image = pictureBoxAtcOff.Image;
         pictureBoxExe.Image = pictureBoxExeOff.Image;
-        pictureBoxZip.Image = pictureBoxZipOff.Image;
+        //pictureBoxZip.Image = pictureBoxZipOff.Image;
         pictureBoxDec.Image = pictureBoxDecOff.Image;
 
         if (AppSettings.Instance.EncryptionSameFileTypeAlways == 1)
@@ -1832,7 +1832,7 @@ namespace AttacheCase
         }
         else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 3)
         {
-          pictureBoxZip.Image = pictureBoxZipOn.Image;
+          //pictureBoxZip.Image = pictureBoxZipOn.Image;
         }
         else
         {
@@ -2317,7 +2317,7 @@ namespace AttacheCase
      
         pictureBoxAtc.Image = pictureBoxAtcOff.Image;
         pictureBoxExe.Image = pictureBoxExeOff.Image;
-        pictureBoxZip.Image = pictureBoxZipOff.Image;
+        //pictureBoxZip.Image = pictureBoxZipOff.Image;
         pictureBoxDec.Image = pictureBoxDecOff.Image;
 
         // Encryption will be the same file type always.
@@ -2335,7 +2335,7 @@ namespace AttacheCase
         }
         else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 3)
         {
-          pictureBoxZip.Image = pictureBoxZipOn.Image;
+          //pictureBoxZip.Image = pictureBoxZipOn.Image;
         }
         else if (AppSettings.Instance.EncryptionSameFileTypeBefore == 0)
         {
@@ -2351,7 +2351,7 @@ namespace AttacheCase
         }
         else if (AppSettings.Instance.EncryptionSameFileTypeBefore == 3)
         {
-          pictureBoxZip.Image = pictureBoxZipOn.Image;
+          //pictureBoxZip.Image = pictureBoxZipOn.Image;
         }
 
         // タスクバーのリセット
@@ -2451,7 +2451,7 @@ namespace AttacheCase
         else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
         {
           pictureBoxEncryption.Image = pictureBoxZipOn.Image;
-          labelEncryption.Text = labelZip.Text;
+          //labelEncryption.Text = labelZip.Text;
         }
         else
         {
@@ -2784,7 +2784,7 @@ namespace AttacheCase
       // Encrypt to Zip file
       AppSettings.Instance.EncryptionFileType = FILE_TYPE_PASSWORD_ZIP;
       pictureBoxEncryption.Image = pictureBoxZipOn.Image;
-      labelEncryption.Text = labelZip.Text;
+      //labelEncryption.Text = labelZip.Text;
       textBoxPassword.Focus();
 
       //In the case of ZIP files, it must be more than one character of the password.
@@ -3459,7 +3459,7 @@ namespace AttacheCase
       else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
       {
         pictureBoxProgress.Image = pictureBoxZipOn.Image;
-        labelProgress.Text = labelZip.Text;
+        //labelProgress.Text = labelZip.Text;
 
         // Save the zip file(s) to the same directory?
         if (AppSettings.Instance.fZipToSameFldr == true)
@@ -5222,7 +5222,7 @@ namespace AttacheCase
       {
         pictureBoxAtc.Image = pictureBoxAtcChk.Image;
         pictureBoxExe.Image = pictureBoxExeOff.Image;
-        pictureBoxZip.Image = pictureBoxZipOff.Image;
+        //pictureBoxZip.Image = pictureBoxZipOff.Image;
         pictureBoxDec.Image = pictureBoxDecOff.Image;
         AppSettings.Instance.EncryptionFileType = FILE_TYPE_ATC;
         AppSettings.Instance.EncryptionSameFileTypeBefore = FILE_TYPE_ATC;
@@ -5257,7 +5257,7 @@ namespace AttacheCase
       {
         pictureBoxAtc.Image = pictureBoxAtcOff.Image;
         pictureBoxExe.Image = pictureBoxExeChk.Image;
-        pictureBoxZip.Image = pictureBoxZipOff.Image;
+        //pictureBoxZip.Image = pictureBoxZipOff.Image;
         pictureBoxDec.Image = pictureBoxDecOff.Image;
         AppSettings.Instance.EncryptionFileType = FILE_TYPE_ATC_EXE;
         AppSettings.Instance.EncryptionSameFileTypeBefore = FILE_TYPE_ATC_EXE;
@@ -5282,38 +5282,14 @@ namespace AttacheCase
 
     private void pictureBoxZip_Click(object sender, EventArgs e)
     {
-      if (pictureBoxZip.Image == pictureBoxZipChk.Image)
-      {
-        pictureBoxZip.Image = pictureBoxZipOn.Image;
-        AppSettings.Instance.EncryptionFileType = FILE_TYPE_NONE;
-        AppSettings.Instance.EncryptionSameFileTypeBefore = FILE_TYPE_NONE;
-      }
-      else
-      {
-        pictureBoxAtc.Image = pictureBoxAtcOff.Image;
-        pictureBoxExe.Image = pictureBoxExeOff.Image;
-        pictureBoxZip.Image = pictureBoxZipChk.Image;
-        pictureBoxDec.Image = pictureBoxDecOff.Image;
-        AppSettings.Instance.EncryptionFileType = FILE_TYPE_PASSWORD_ZIP;
-        AppSettings.Instance.EncryptionSameFileTypeBefore = FILE_TYPE_PASSWORD_ZIP;
-      }
-
     }
 
     private void pictureBoxZip_MouseEnter(object sender, EventArgs e)
     {
-      if (pictureBoxZip.Image != pictureBoxZipChk.Image)
-      {
-        pictureBoxZip.Image = pictureBoxZipOn.Image;
-      }
     }
 
     private void pictureBoxZip_MouseLeave(object sender, EventArgs e)
     {
-      if (pictureBoxZip.Image != pictureBoxZipChk.Image)
-      {
-        pictureBoxZip.Image = pictureBoxZipOff.Image;
-      }
     }
 
     private void pictureBoxDec_Click(object sender, EventArgs e)
@@ -5326,7 +5302,7 @@ namespace AttacheCase
 
       pictureBoxAtc.Image = pictureBoxAtcOff.Image;
       pictureBoxExe.Image = pictureBoxExeOff.Image;
-      pictureBoxZip.Image = pictureBoxZipOff.Image;
+      //pictureBoxZip.Image = pictureBoxZipOff.Image;
       pictureBoxDec.Image = pictureBoxDecChk.Image;
 
       if (openFileDialog1.ShowDialog() == DialogResult.OK)
