@@ -1426,7 +1426,7 @@ ATC</value>
     <value>panel1</value>
   </data>
   <data name="&gt;&gt;pictureBoxAtc.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>5</value>
   </data>
   <data name="panel1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Left</value>

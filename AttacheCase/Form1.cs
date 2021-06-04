@@ -2492,6 +2492,8 @@ namespace AttacheCase
         {
           pictureBoxEncryption.Image = pictureBoxRsaOn.Image;
           labelEncryption.Text = labelZip.Text;
+          pictureBoxEncryption.Image = pictureBoxZipOn.Image;
+          //labelEncryption.Text = labelZip.Text;
         }
         else
         {
@@ -2826,6 +2828,7 @@ namespace AttacheCase
       AppSettings.Instance.EncryptionFileType = FILE_TYPE_PASSWORD_ZIP;
       pictureBoxEncryption.Image = pictureBoxRsaOn.Image;
       labelEncryption.Text = labelZip.Text;
+      pictureBoxEncryption.Image = pictureBoxZipOn.Image;
       textBoxPassword.Focus();
 
       //In the case of ZIP files, it must be more than one character of the password.
@@ -3505,6 +3508,7 @@ namespace AttacheCase
       {
         pictureBoxProgress.Image = pictureBoxRsaOn.Image;
         labelProgress.Text = labelZip.Text;
+        pictureBoxProgress.Image = pictureBoxZipOn.Image;
 
         // Save the zip file(s) to the same directory?
         if (AppSettings.Instance.fZipToSameFldr == true)
@@ -5259,6 +5263,7 @@ namespace AttacheCase
         pictureBoxAtc.Image = pictureBoxAtcOff.Image;
         pictureBoxExe.Image = pictureBoxExeChk.Image;
         pictureBoxRsa.Image = pictureBoxRsaOff.Image;
+        //pictureBoxZip.Image = pictureBoxZipOff.Image;
         pictureBoxDec.Image = pictureBoxDecOff.Image;
         AppSettings.Instance.EncryptionFileType = FILE_TYPE_ATC_EXE;
         AppSettings.Instance.EncryptionSameFileTypeBefore = FILE_TYPE_ATC_EXE;
