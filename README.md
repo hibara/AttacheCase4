@@ -1,6 +1,6 @@
 # AttachéCase4
 
-File encryption software for Windows 10.  
+File encryption software for Windows 10.
 
 ![main icon & main form](./image/readme/main-icon-and-main-form.png)
 
