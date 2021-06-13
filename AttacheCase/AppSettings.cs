@@ -27,6 +27,7 @@ using AttacheCase.Properties;
 using System.Text;
 using System.Security;
 using System.Security.Cryptography;
+using System.Xml.Linq;
 
 namespace AttacheCase
 {
@@ -67,8 +68,8 @@ namespace AttacheCase
     private const int PROCESS_TYPE_ATC_EXE         =  2;
     private const int PROCESS_TYPE_PASSWORD_ZIP    =  3;
     private const int PROCESS_TYPE_DECRYPTION      =  4;
-    private const int PROCESS_TYPE_RSA_DATA        =  5;
-    private const int PROCESS_TYPE_RSA_XML_KEY     =  6;
+    private const int PROCESS_TYPE_RSA_ENCRYPTION  =  5;
+    private const int PROCESS_TYPE_RSA_DECRYPTION  =  6;
 
     //
     // An INI file handling class using C#
@@ -116,7 +117,7 @@ namespace AttacheCase
       get { return this._FileList; }
       set { this._FileList = value; }
     }
-                           
+
     //----------------------------------------------------------------------
     // 一時的な設定ファイルパス（INIファイル）
     // Temporary setting file path ( INI file )
@@ -3482,8 +3483,14 @@ namespace AttacheCase
     /// 投げ込まれたファイルの種類を特定する（ディレクトリ, ATC, EXE[by ATC], ZIP）
     /// </summary>
     /// <remarks>https://stackoverflow.com/a/929418</remarks>
-    /// <returns> 1: ATC, 2: EXE(ATC), 2: EXE(ATC), 3: ZIP, 0: Others(Encrypt file?)</returns>
-    private int CheckFileType(string FilePath)
+    /// <returns>
+    ///   1: ATC, 
+    ///   2: EXE(ATC), 
+    ///   3: ZIP, 
+    ///   4: RSA Encryption data, 
+    ///   5: RSA key data ( XML file ), 
+    ///   0: Others(Encrypt file?)</returns>
+    public int CheckFileType(string FilePath)
     {
       //const string SignatureZip = "50-4B-03-04";  // ZIPファイル
       const string SignatureAtc =       "_AttacheCaseData";
@@ -3534,7 +3541,7 @@ namespace AttacheCase
         SignatureText = Encoding.ASCII.GetString(bufferSignature);
         if (SignatureText == SignatureRsaData)
         {
-          return (5);
+          return (4);
         }
         //-----------------------------------
         // XMLファイル（公開鍵、暗号鍵データ）
@@ -3547,7 +3554,18 @@ namespace AttacheCase
         SignatureText = BitConverter.ToString(bufferSignature);
         if (SignatureText == SignatureXmlData)
         {
-          return (6);
+          XElement xmlElement = XElement.Load(FilePath);
+          if (xmlElement.Element("token").Value == "AttacheCase")
+          {
+            if (xmlElement.Element("type").Value == "public")
+            {
+              return (5); // RSA Encryption process
+            }
+            else if (xmlElement.Element("type").Value == "private")
+            {
+              return (6); // RSA Decryption process
+            }
+          }
         }
         //-----------------------------------
         // EXE(ATC)ファイルの判別
@@ -3650,14 +3668,20 @@ namespace AttacheCase
       // private const int PROCESS_TYPE_ATC_EXE         =  2;
       // private const int PROCESS_TYPE_PASSWORD_ZIP    =  3;
       // private const int PROCESS_TYPE_DECRYPTION      =  4;
-      // private const int PROCESS_TYPE_RSA_DATA        =  5;
-      // private const int PROCESS_TYPE_RSA_XML_KEY     =  6;
+      // private const int PROCESS_TYPE_RSA_ENCRYPTION  =  5;
+      // private const int PROCESS_TYPE_RSA_DECRYPTION  =  6;
 
       _FileType = new int[7] { 0, 0, 0, 0, 0, 0, 0 };
 
       foreach (string f in _FileList)
       {
-        // 1: ATC, 2: EXE(ATC), 2: EXE(ATC), 3: ZIP, 0: Others(Encrypt file?)
+        // 1: ATC,
+        // 2: EXE(ATC),
+        // 3: ZIP,
+        // 4: RSA Encryption data,
+        // 5: RSA public key data ( XML file ),
+        // 6: RSA private key data ( XML file ),
+        // 0: Others(Encrypt file?)
         _FileType[CheckFileType(f)]++;
       }
 
@@ -3669,13 +3693,13 @@ namespace AttacheCase
       {
         return PROCESS_TYPE_DECRYPTION;
       }
-      else if (_FileType[1] == 0 && _FileType[2] == 0 && _FileType[5] > 0)
+      else if (_FileType[1] == 0 && _FileType[2] == 0 && _FileType[4] == 0 && _FileType[5] > 0)
       {
-        return PROCESS_TYPE_RSA_DATA;
+        return PROCESS_TYPE_RSA_ENCRYPTION;
       }
-      else if (_FileType[1] == 0 && _FileType[2] == 0 && _FileType[5] == 0 && _FileType[6] > 0)
+      else if (_FileType[1] == 0 && _FileType[2] == 0 && (_FileType[4] > 0 || _FileType[6] > 0))
       {
-        return PROCESS_TYPE_RSA_XML_KEY;
+        return PROCESS_TYPE_RSA_DECRYPTION;
       }
       else if (_FileType[1] == 0 && _FileType[2] == 0 && _FileType[0] > 0)
       {
@@ -3686,7 +3710,6 @@ namespace AttacheCase
         return PROCESS_TYPE_ERROR;
       }
     }
-
 
     //======================================================================
     /// <summary>

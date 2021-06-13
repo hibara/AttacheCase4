@@ -240,27 +240,27 @@ namespace AtcSetup
 			}
 
 			//-----------------------------------
-			// HKEY_CLASSES_ROOT\.atckey
-			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atckey"))
+			// HKEY_CLASSES_ROOT\.atcpvt
+			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atcpvt"))
 			{
-				regkey.SetValue("", "AttacheCase.KeyFile");
+				regkey.SetValue("", "AttacheCase.PrivateKeyFile");
 			}
 			//-----------------------------------
 			// HKEY_CLASSES_ROOT\AttacheCase.KeyFile
-			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.KeyFile\DefaultIcon"))
+			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.PrivateKeyFile\DefaultIcon"))
 			{
 				regkey.SetValue("", "\"" + AttacheCaseFilePath + "\"," + 5);
 			}
 
 			//-----------------------------------
-			// HKEY_CLASSES_ROOT\.atclock
-			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atclock"))
+			// HKEY_CLASSES_ROOT\.atcpub
+			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atcpub"))
 			{
-				regkey.SetValue("", "AttacheCase.LockFile");
+				regkey.SetValue("", "AttacheCase.PublicKeyFile");
 			}
 			//-----------------------------------
 			// HKEY_CLASSES_ROOT\AttacheCase.LockFile
-			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.KeyFile\DefaultIcon"))
+			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.PublicKeyFile\DefaultIcon"))
 			{
 				regkey.SetValue("", "\"" + AttacheCaseFilePath + "\"," + 6);
 			}
@@ -301,8 +301,26 @@ namespace AtcSetup
         Registry.ClassesRoot.DeleteSubKeyTree("AttacheCase.DataFile");
       }
 
-      // In addition, delete all AttacheCase settings from the Windows registry.
-      if ( checkBoxDeleteAllSettingsFromRegistry.Checked == true)
+			// RSA key
+			if (regAtc != null)
+			{
+				Registry.ClassesRoot.DeleteSubKeyTree(".atcpvt");
+			}
+			if (regAttacheCaseDataFile != null)
+			{
+				Registry.ClassesRoot.DeleteSubKeyTree("AttacheCase.PrivateKeyFile");
+			}
+			if (regAtc != null)
+			{
+				Registry.ClassesRoot.DeleteSubKeyTree(".atcpub");
+			}
+			if (regAttacheCaseDataFile != null)
+			{
+				Registry.ClassesRoot.DeleteSubKeyTree("AttacheCase.PublicKeyFile");
+			}
+
+			// In addition, delete all AttacheCase settings from the Windows registry.
+			if ( checkBoxDeleteAllSettingsFromRegistry.Checked == true)
       {
         if (Registry.CurrentUser.OpenSubKey(@"Software\Hibara\AttacheCase3", false) != null)
         {

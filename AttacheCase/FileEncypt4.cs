@@ -27,6 +27,8 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
+using System.Xml;
+using System.Xml.Linq;
 #if __MACOS__
 using AppKit;
 #endif
@@ -63,7 +65,8 @@ namespace AttacheCase
     private const int FILE_NOT_FOUND           = -113;
     private const int PATH_TOO_LONG            = -114;
     private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
-    private const int IO_EXCEPTION             = -116;
+    private const int RSA_KEY_GUID_NOT_MATCH   = -116;
+    private const int IO_EXCEPTION             = -117;
 
     private byte[] buffer;
     private const int BUFFER_SIZE = 4096;
@@ -154,12 +157,28 @@ namespace AttacheCase
       get { return this._EncryptionTimeString; }
     }
 
-    // RSA Encryption public key XML file path
-    private string _RsaPublicKeyFilePath;
-    public string RsaPublicKeyFilePath
+    // Guid
+    private string _GuidString;
+    public string GuidString
     {
-      get { return this._RsaPublicKeyFilePath; }
-      set { this._RsaPublicKeyFilePath = value; }
+      get { return this._GuidString; }
+    }
+
+    // RSA Encryption public key XML string
+    private string _RsaPublicKeyXmlString;
+    public string RsaPublicKeyXmlString
+    {
+      get { return this._RsaPublicKeyXmlString; }
+      set { 
+        this._RsaPublicKeyXmlString = value;
+        this._fRsaEncryption = true;
+      }
+    }
+    // RSA Encryption
+    private bool _fRsaEncryption = false;
+    public bool fRsaEncryption
+    {
+      get { return this._fRsaEncryption; }
     }
 
     //----------------------------------------------------------------------
@@ -256,6 +275,17 @@ namespace AttacheCase
       _FileList = new List<string>();
       byte[] byteArray = null;
 
+      // RSA Encryption password
+      var byteRsaPassword = new byte[32]; // Key size
+      if (_fRsaEncryption == true)
+      {
+        using (var rng = new RNGCryptoServiceProvider())
+        {
+          rng.GetBytes(byteRsaPassword);
+          PasswordBinary = byteRsaPassword;
+        }
+      }
+
       // Salt
       Rfc2898DeriveBytes deriveBytes;
       if(PasswordBinary == null)
@@ -272,6 +302,15 @@ namespace AttacheCase
       byte[] salt = deriveBytes.Salt;
       byte[] key = deriveBytes.GetBytes(32);
       byte[] iv = deriveBytes.GetBytes(16);
+
+#if (DEBUG)
+      string debugString = BitConverter.ToString(salt);
+      Console.WriteLine("salt: " + debugString);
+      debugString = BitConverter.ToString(key);
+      Console.WriteLine("key: " + debugString);
+      debugString = BitConverter.ToString(iv);
+      Console.WriteLine("iv: " + debugString);
+#endif
 
       try
       {
@@ -300,7 +339,14 @@ namespace AttacheCase
           byteArray = BitConverter.GetBytes(fBrocken);
           outfs.Write(byteArray, 0, 1);
           // Token that this is the AttacheCase file
-          byteArray = Encoding.ASCII.GetBytes(STRING_TOKEN_NORMAL);
+          if (fRsaEncryption == true)
+          {
+            byteArray = Encoding.ASCII.GetBytes(STRING_TOKEN_RSA);
+          }
+          else
+          {
+            byteArray = Encoding.ASCII.GetBytes(STRING_TOKEN_NORMAL);
+          }
           outfs.Write(byteArray, 0, 16);
           // File sub version
           byteArray = BitConverter.GetBytes(DATA_FILE_VERSION);
@@ -308,13 +354,38 @@ namespace AttacheCase
           // The size of encrypted Atc header size ( reserved ) 
           byteArray = BitConverter.GetBytes((int)0);
           outfs.Write(byteArray, 0, 4);
+
           // GUID
-          var guid = Guid.NewGuid();
-          byteArray = new byte[16];
-          byteArray = guid.ToByteArray();
-          outfs.Write(byteArray, 0, 16);
+          Guid guid;
+          if (string.IsNullOrEmpty(RsaPublicKeyXmlString) == false)
+          { // Read GUID binary from RSA public key string
+            XElement xmlElement = XElement.Parse(RsaPublicKeyXmlString);
+            string GuidString = xmlElement.Element("id").Value;
+            guid = Guid.Parse(GuidString);
+          }
+          else
+          {
+            // New GUID
+            guid = Guid.NewGuid();
+          }
+          outfs.Write(guid.ToByteArray(), 0, 16);
+
           // Salt
           outfs.Write(salt, 0, 8);
+
+          // RSA encryption password
+          if (_fRsaEncryption == true)
+          {
+            // パスワードを暗号化して書き込む
+            //RSACryptoServiceProviderオブジェクトの作成
+            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(2048);
+            rsa.FromXmlString(_RsaPublicKeyXmlString); //公開鍵を指定
+           //byte[] outbuffer = new byte[214];  // 剰余サイズ(256bytes) -2 -2 * hLen(SHA-1) = 214 Max 
+            //string debugString = BitConverter.ToString(byteRsaPassword);
+            //Console.WriteLine(debugString);
+            byte[] encryptedData = rsa.Encrypt(byteRsaPassword, RSAEncryptionPadding.OaepSHA1); //OAEPパディング=trueでRSA復号
+            outfs.Write(encryptedData, 0, encryptedData.Length);  // 256 byte
+          }
 
           // Cipher text header.
           using (MemoryStream ms = new MemoryStream())
@@ -692,16 +763,14 @@ namespace AttacheCase
 
             //----------------------------------------------------------------------
             // Create header data
-
 #if (DEBUG)
             string DesktopPath = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
             string FileListTextPath = Path.Combine(DesktopPath, "_header_text.txt");
             var FileListText = String.Join("\n", _FileList);
             File.WriteAllText(FileListTextPath, FileListText, Encoding.UTF8);
 #endif
+            //----------------------------------------------------------------------
             // The Header of MemoryStream is encrypted
-
-
             using (AesManaged aes = new AesManaged())
             {
               aes.BlockSize = 128;              // BlockSize = 8bytes
@@ -730,11 +799,6 @@ namespace AttacheCase
               }
 
             }// end using (Rijndael aes = new RijndaelManaged());
-
-
-
-
-
 
           }// end  using (MemoryStream ms = new MemoryStream());
 

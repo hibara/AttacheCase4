@@ -31,11 +31,13 @@ namespace Exeout.Properties {
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
-        
-        /// <summary>
-        ///   このクラスで使用されているキャッシュされた ResourceManager インスタンスを返します。
-        /// </summary>
-        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+
+    public static string DialogMessageInvalidPrivateKey { get; internal set; }
+
+    /// <summary>
+    ///   このクラスで使用されているキャッシュされた ResourceManager インスタンスを返します。
+    /// </summary>
+    [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {

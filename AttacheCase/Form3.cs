@@ -974,10 +974,10 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 					panelSaveDecryptOption.Visible = true;
 					panelSaveDecryptOption.Focus();
 					break;
-        case "nodeZip":
-          panelSaveZipOption.Visible = true;
-          panelSaveZipOption.Focus();
-          break;
+        //case "nodeZip":
+        //  panelSaveZipOption.Visible = true;
+        //  panelSaveZipOption.Focus();
+        //  break;
         case "nodeDelete":
 					panelDeleteOption.Visible = true;
 					panelDeleteOption.Focus();

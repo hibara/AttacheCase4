@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
+using System.Text;
 
 namespace AttacheCase
 {
@@ -63,7 +64,8 @@ namespace AttacheCase
     private const int FILE_NOT_FOUND           = -113;
     private const int PATH_TOO_LONG            = -114;
     private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
-    private const int IO_EXCEPTION             = -116;
+    private const int RSA_KEY_GUID_NOT_MATCH   = -116;
+    private const int IO_EXCEPTION             = -117;
 
     // File Type
     private const int FILE_TYPE_ERROR           = -1;
@@ -76,14 +78,14 @@ namespace AttacheCase
     private const int FILE_TYPE_RSA_PUBLIC_KEY  =  6;
 
     // Process Type
-    private const int PROCESS_TYPE_ERROR        = -1;
-    private const int PROCESS_TYPE_NONE         =  0;
-    private const int PROCESS_TYPE_ATC          =  1;
-    private const int PROCESS_TYPE_ATC_EXE      =  2;
-    private const int PROCESS_TYPE_PASSWORD_ZIP =  3;
-    private const int PROCESS_TYPE_DECRYPTION   =  4;
-    private const int PROCESS_TYPE_RSA_DATA     =  5;
-    private const int PROCESS_TYPE_RSA_XML_KEY  =  6;
+    private const int PROCESS_TYPE_ERROR          = -1;
+    private const int PROCESS_TYPE_NONE           =  0;
+    private const int PROCESS_TYPE_ATC            =  1;
+    private const int PROCESS_TYPE_ATC_EXE        =  2;
+    private const int PROCESS_TYPE_PASSWORD_ZIP   =  3;
+    private const int PROCESS_TYPE_DECRYPTION     =  4;
+    private const int PROCESS_TYPE_RSA_ENCRYPTION =  5;
+    private const int PROCESS_TYPE_RSA_DECRYPTION =  6;
 
     // Overwrite Option
     //private const int USER_CANCELED = -1;
@@ -119,6 +121,12 @@ namespace AttacheCase
     private FileDecrypt4 decryption4;
     private Wipe wipe;
 
+    // RSA encryption key data
+    private string XmlPublicKeyString;
+    private string XmlPrivateKeyString;
+    private Dictionary<string, string> XmlHashStringList;
+    bool fWaitingForKeyFile = false;
+
     private CancellationTokenSource cts;
 
     private int FileIndex = 0;
@@ -141,6 +149,7 @@ namespace AttacheCase
       panelEncryptConfirm.Parent = panelOuter;
       panelDecrypt.Parent = panelOuter;
       panelRsa.Parent = panelOuter;
+      panelRsaKey.Parent = panelOuter;
       panelProgressState.Parent = panelOuter;
 
       // メインウィンドウの終了ボタン
@@ -181,6 +190,7 @@ namespace AttacheCase
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
       panelRsa.Visible = false;
+      panelRsaKey.Visible = false;
       panelProgressState.Visible = false;
       panelStartPage.Visible = true;
       this.AllowDrop = true;
@@ -191,8 +201,8 @@ namespace AttacheCase
       this.Width = AppSettings.Instance.FormWidth;
       this.Height = AppSettings.Instance.FormHeight;
 
-      //初期位置（スクリーン中央）
-      //Default window position ( in screen center )
+      // 初期位置（スクリーン中央）
+      // Default window position ( in screen center )
       if (AppSettings.Instance.FormLeft < 0 || AppSettings.Instance.FormLeft > SystemInformation.VirtualScreen.Width)
       {
         this.Left = Screen.GetBounds(this).Width / 2 - this.Width / 2;
@@ -309,7 +319,8 @@ namespace AttacheCase
     /// <param name="e"></param>
     private void Form1_DragEnter(object sender, DragEventArgs e)
     {
-      if (panelStartPage.Visible == true || (panelProgressState.Visible == true && progressBar.Value == progressBar.Maximum))
+      if (panelStartPage.Visible == true || 
+        (panelProgressState.Visible == true && progressBar.Value == progressBar.Maximum))
       {
       }
       else if (panelEncrypt.Visible == true && AppSettings.Instance.fAllowPassFile == true)
@@ -318,10 +329,15 @@ namespace AttacheCase
       else if (panelDecrypt.Visible == true && AppSettings.Instance.fAllowPassFile == true)
       {
       }
+      else if (panelRsa.Visible == true || panelRsaKey.Visible == true)
+      {
+
+      }
       else {
         e.Effect = DragDropEffects.None;
         return;
       }
+
       if (e.Data.GetDataPresent(DataFormats.FileDrop) == true)
       {
         e.Effect = DragDropEffects.Copy;
@@ -361,13 +377,16 @@ namespace AttacheCase
     /// <param name="e"></param>
     private void Form1_DragDrop(object sender, DragEventArgs e)
     {
-      if(panelStartPage.Visible == false)
+      if (panelStartPage.Visible == false && panelRsa.Visible == false && panelRsaKey.Visible == false)
       {
         return;
       }
 
+      if ( fWaitingForKeyFile == false)
+      {
+        AppSettings.Instance.FileList = new List<string>();
+      }
       string[] ArrayFiles = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-      AppSettings.Instance.FileList = new List<string>();
       foreach (string FilePath in ArrayFiles)
       {
         AppSettings.Instance.FileList.Add(FilePath);
@@ -961,7 +980,8 @@ namespace AttacheCase
           private const int FILE_NOT_FOUND           = -113;
           private const int PATH_TOO_LONG            = -114;
           private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
-          private const int IO_EXCEPTION             = -116;
+          private const int RSA_KEY_GUID_NOT_MATCH   = -116;
+          private const int IO_EXCEPTION             = -117;
           */
           switch (encryption4.ReturnCode)
           {
@@ -1142,6 +1162,20 @@ namespace AttacheCase
               break;
 
             //-----------------------------------
+            case CRYPTOGRAPHIC_EXCEPTION:
+              // エラー
+              // RSA公開鍵または秘密鍵の形式が違うか、XMLファイル形式ではありません。
+              // 処理を中止します。
+              //
+              // Error
+              // The RSA public or private key is in a different format or is not in XML file format.
+              // The process is aborted.
+              //
+              MessageBox.Show(new Form { TopMost = true }, Resources.DialogMessageCryptographicException,
+                Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+              break;
+
+            //-----------------------------------
             case IO_EXCEPTION:
               // エラー
               // [I/O エラーが発生したときにスローされる例外を説明するメッセージ]
@@ -1261,7 +1295,8 @@ namespace AttacheCase
         private const int FILE_NOT_FOUND           = -113;
         private const int PATH_TOO_LONG            = -114;
         private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
-        private const int IO_EXCEPTION             = -116;
+        private const int RSA_KEY_GUID_NOT_MATCH   = -116;
+        private const int IO_EXCEPTION             = -117;
         */
         int ReturnCode;
         if (decryption2 != null)
@@ -1507,6 +1542,7 @@ namespace AttacheCase
               panelEncryptConfirm.Visible = false;
               panelDecrypt.Visible = true;
               panelRsa.Visible = false;
+              panelRsaKey.Visible = false;
               panelProgressState.Visible = false;
               textBoxDecryptPassword.Focus();
               textBoxDecryptPassword.SelectAll();
@@ -1533,11 +1569,40 @@ namespace AttacheCase
               panelEncryptConfirm.Visible = false;
               panelDecrypt.Visible = false;
               panelRsa.Visible = false;
+              panelRsaKey.Visible = false;
               panelProgressState.Visible = false;
               textBoxDecryptPassword.Focus();
               textBoxDecryptPassword.SelectAll();
               return;
             }
+
+          //-----------------------------------
+          case CRYPTOGRAPHIC_EXCEPTION:
+            // エラー
+            // RSA公開鍵または秘密鍵の形式が違うか、XMLファイル形式ではありません。
+            // 処理を中止します。
+            //
+            // Error
+            // The RSA public or private key is in a different format or is not in XML file format.
+            // The process is aborted.
+            //
+            MessageBox.Show(new Form { TopMost = true }, Resources.DialogMessageCryptographicException,
+              Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            break;
+
+          //-----------------------------------
+          case RSA_KEY_GUID_NOT_MATCH:
+            // エラー
+            // RSAで暗号化された公開鍵と異なるペアの鍵が指定されています。復号できません。
+            // 処理を中止します。
+            //
+            // Error
+            // A different pair of keys from the RSA-encrypted public key has been specified. Cannot decrypt.
+            // The process is aborted.
+            //
+            MessageBox.Show(new Form { TopMost = true }, Resources.DialogMessageRsaKeyGuidNotMatch,
+              Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            break;
 
           //-----------------------------------
           case ERROR_UNEXPECTED:
@@ -1711,6 +1776,7 @@ namespace AttacheCase
             panelEncryptConfirm.Visible = false;
             panelDecrypt.Visible = false;
             panelRsa.Visible = false;
+            panelRsaKey.Visible = false;
             panelProgressState.Visible = false;
           }
         }
@@ -1750,6 +1816,7 @@ namespace AttacheCase
           panelEncryptConfirm.Visible = false;
           panelDecrypt.Visible = false;
           panelRsa.Visible = false;
+          panelRsaKey.Visible = false;
           panelProgressState.Visible = false;
         }
       }
@@ -1793,6 +1860,7 @@ namespace AttacheCase
             panelEncryptConfirm.Visible = false;
             panelDecrypt.Visible = true;    //Decrypt
             panelRsa.Visible = false;
+            panelRsaKey.Visible = false;
             panelProgressState.Visible = false;
           }
         }
@@ -1907,6 +1975,7 @@ namespace AttacheCase
           panelEncryptConfirm.Visible = false;
           panelDecrypt.Visible = false;
           panelRsa.Visible = false;
+          panelRsaKey.Visible = false;
           panelProgressState.Visible = false;
 
         }
@@ -1918,6 +1987,7 @@ namespace AttacheCase
           panelDecrypt.Visible = true;        // Decrypt
           textBoxDecryptPassword.Focus();     // Text box is focused
           panelRsa.Visible = false;
+          panelRsaKey.Visible = false;
           panelProgressState.Visible = false;
         }
 
@@ -1942,6 +2012,7 @@ namespace AttacheCase
           panelEncryptConfirm.Visible = false;
           panelDecrypt.Visible = false;
           panelRsa.Visible = false;
+          panelRsaKey.Visible = false;
           panelProgressState.Visible = false;
         }
         //-----------------------------------
@@ -1955,6 +2026,7 @@ namespace AttacheCase
           panelDecrypt.Visible = true;        // Decrypt
           textBoxDecryptPassword.Focus();     // Text box is focused
           panelRsa.Visible = false;
+          panelRsaKey.Visible = false;
           panelProgressState.Visible = false;
         }
         //-----------------------------------
@@ -1985,14 +2057,14 @@ namespace AttacheCase
         // -----------------------------------
         //
         // Process Type
-        // private const int PROCESS_TYPE_ERROR        = -1;
-        // private const int PROCESS_TYPE_NONE         =  0;
-        // private const int PROCESS_TYPE_ATC          =  1;
-        // private const int PROCESS_TYPE_ATC_EXE      =  2;
-        // private const int PROCESS_TYPE_PASSWORD_ZIP =  3;
-        // private const int PROCESS_TYPE_DECRYPTION   =  4;
-        // private const int PROCESS_TYPE_RSA_DATA     =  5;
-        // private const int PROCESS_TYPE_RSA_XML_KEY  =  6;
+        // private const int PROCESS_TYPE_ERROR          = -1;
+        // private const int PROCESS_TYPE_NONE           =  0;
+        // private const int PROCESS_TYPE_ATC            =  1;
+        // private const int PROCESS_TYPE_ATC_EXE        =  2;
+        // private const int PROCESS_TYPE_PASSWORD_ZIP   =  3;
+        // private const int PROCESS_TYPE_DECRYPTION     =  4;
+        // private const int PROCESS_TYPE_RSA_ENCRYPTION =  5;
+        // private const int PROCESS_TYPE_RSA_DECRYPTION =  6;
 
         ProcessType = AppSettings.Instance.EncryptionSameFileTypeBefore;
 
@@ -2026,54 +2098,309 @@ namespace AttacheCase
         {
           //----------------------------------------------------------------------
           // Encryption
-          if (ProcessType == PROCESS_TYPE_NONE || ProcessType == PROCESS_TYPE_ATC || 
-            ProcessType == PROCESS_TYPE_ATC_EXE || ProcessType == PROCESS_TYPE_PASSWORD_ZIP)
+          if (ProcessType == PROCESS_TYPE_NONE )
           {
+            // RSA Encryption
+            if (panelRsa.Visible == true)
+            {
+              if (fWaitingForKeyFile == true)
+              {
+                panelStartPage.Visible = false;
+                panelEncrypt.Visible = false;
+                panelEncryptConfirm.Visible = false;
+                panelDecrypt.Visible = false;
+                panelRsa.Visible = false;
+                panelRsaKey.Visible = false;
+                panelProgressState.Visible = true;
+
+                // Error
+                labelProgressPercentText.Text = "- %";
+                progressBar.Value = 0;
+                pictureBoxProgress.Image = pictureBoxPublicAndPrivateKey.Image;
+                labelProgress.Text = Resources.labelRsa;
+                labelCryptionType.Text = Resources.labelCaptionError;
+                // 公開鍵または秘密鍵は読み込まれませんでした。
+                // The public or private key was not loaded.
+                labelProgressMessageText.Text = Resources.labelKeyFileNotLoaded;
+                notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+                AppSettings.Instance.FileList = null;
+                fWaitingForKeyFile = false;
+                buttonCancel.Text = Resources.ButtonTextOK;
+
+                return;
+              }
+              else
+              {
+                // ただファイルリストを保持しておく
+                // Just keep the file list.
+                fWaitingForKeyFile = true;
+                // ファイルまたはフォルダーが読み込まれました。暗号化するための公開鍵をここへドラッグ＆ドロップしてください。
+                // The file or folder has been loaded.Drag and drop the public key to be encrypted here.
+                labelRsaMessage.Text = Resources.labelRsaFilesloaded;
+                return;
+              }
+
+            }
             panelStartPage.Visible = false;
             panelEncrypt.Visible = true;         // Encrypt
             panelEncryptConfirm.Visible = false;
             panelDecrypt.Visible = false;
             panelRsa.Visible = false;
+            panelRsaKey.Visible = false;
             panelProgressState.Visible = false;
-
-            /*
-            if (ProcessType == FILE_TYPE_ATC_EXE) // Executable
-            {
-              pictureBoxEncryption.Image = pictureBoxExeOn.Image;
-            }
-            else
-            {
-              pictureBoxEncryption.Image = pictureBoxAtcOn.Image;
-            }
-            */
 
             this.Activate();              // MainForm is Activated
             textBoxPassword.Focus();      // Text box is focused
+          }
+          else if (ProcessType == PROCESS_TYPE_ATC || ProcessType == PROCESS_TYPE_ATC_EXE) 
+          {
+            // RSA Encryption
+            if (panelRsa.Visible == true)
+            {
+              if (fWaitingForKeyFile == true)
+              {
+                panelStartPage.Visible = false;
+                panelEncrypt.Visible = false;
+                panelEncryptConfirm.Visible = false;
+                panelDecrypt.Visible = false;
+                panelRsa.Visible = false;
+                panelRsaKey.Visible = false;
+                panelProgressState.Visible = true;
+
+                // Error
+                labelProgressPercentText.Text = "- %";
+                progressBar.Value = 0;
+                pictureBoxProgress.Image = pictureBoxPublicAndPrivateKey.Image;
+                labelProgress.Text = Resources.labelRsa;
+                labelCryptionType.Text = Resources.labelCaptionError;
+                // 公開鍵または秘密鍵は読み込まれませんでした。
+                // The public or private key was not loaded.
+                labelProgressMessageText.Text = Resources.labelKeyFileNotLoaded;
+                notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+                AppSettings.Instance.FileList = null;
+                fWaitingForKeyFile = false;
+                buttonCancel.Text = Resources.ButtonTextOK;
+
+                return;
+              }
+              else
+              {
+                // ただファイルリストを保持しておく
+                // Just keep the file list.
+                fWaitingForKeyFile = true;
+                // ファイルまたはフォルダーが読み込まれました。暗号化するための公開鍵をここへドラッグ＆ドロップしてください。
+                // The file or folder has been loaded.Drag and drop the public key to be encrypted here.
+                labelRsaMessage.Text = Resources.labelRsaFilesloaded;
+                return;
+              }
+
+            }
+
+            if (AppSettings.Instance.FileList.Count > 0)
+            {
+              // すでに公開鍵が読み込まれている
+              if (string.IsNullOrEmpty(XmlPublicKeyString) == false)
+              {
+                // RSA暗号化を実行する
+                FileIndex = 0;
+                EncryptionProcess();
+                return;
+              }
+              // すでに秘密鍵が読み込まれている
+              else if (string.IsNullOrEmpty(XmlPrivateKeyString) == false)
+              {
+                // RSA復号を実行する
+                FileIndex = 0;
+                DecryptionProcess();
+                return;
+              }
+              else
+              {
+                panelStartPage.Visible = false;
+                panelEncrypt.Visible = true;         // Encrypt
+                panelEncryptConfirm.Visible = false;
+                panelDecrypt.Visible = false;
+                panelRsa.Visible = false;
+                panelRsaKey.Visible = false;
+                panelProgressState.Visible = false;
+
+                this.Activate();
+                textBoxPassword.Focus();
+              }
+            }
           }
           //----------------------------------------------------------------------
           // Decryption
           else if (ProcessType == PROCESS_TYPE_DECRYPTION)
           {
+            if (panelRsa.Visible == true)
+            {
+              // ただファイルリストを保持しておく
+              return;
+            }
             panelStartPage.Visible = false;
             panelEncrypt.Visible = false;
             panelEncryptConfirm.Visible = false;
             panelDecrypt.Visible = true;
             panelRsa.Visible = false;
+            panelRsaKey.Visible = false;
             panelProgressState.Visible = false;
             textBoxDecryptPassword.Focus();     // Text box is focused
             this.Activate();                    // MainForm is Activated
           }
           //----------------------------------------------------------------------
           // RSA
-          else if (ProcessType == PROCESS_TYPE_RSA_DATA || ProcessType == PROCESS_TYPE_RSA_XML_KEY)
+          else if (ProcessType == PROCESS_TYPE_RSA_ENCRYPTION || ProcessType == PROCESS_TYPE_RSA_DECRYPTION)
           {
-            panelStartPage.Visible = false;
-            panelEncrypt.Visible = false;
-            panelEncryptConfirm.Visible = false;
-            panelDecrypt.Visible = false;
-            panelRsa.Visible = true;
-            panelProgressState.Visible = false;
-            this.Activate();                    // MainForm is Activated
+            for (var i = AppSettings.Instance.FileList.Count - 1; i >=0; i--)
+            {
+              //----------------------------------------------------------------------
+              //   4: RSA Encryption data, 
+              //   5: RSA key data ( XML file ), 
+              if (AppSettings.Instance.CheckFileType(AppSettings.Instance.FileList[i]) == 5)
+              {
+                // The lock file(public key) has been loaded.Drag and drop the ​file or folder to be encrypted here.
+                // ロックファイル（公開鍵）が読み込まれました。暗号化したいファイルまたはフォルダーをここへドラッグ＆ドロップしてください。
+                labelRsaMessage.Text = Resources.labelRsaPublicKeyloaded;
+                labelRsaDescription.Text = Resources.labelRsaPublicKeyloaded;
+
+                panelEncrypt.Visible = false;
+                panelEncryptConfirm.Visible = false;
+                panelDecrypt.Visible = false;
+                panelRsa.Visible = false;
+                panelRsaKey.Visible = true;
+                panelProgressState.Visible = false;
+                panelStartPage.Visible = false;
+
+                using (StreamReader sr = new StreamReader(AppSettings.Instance.FileList[i], Encoding.UTF8))
+                {
+                  XmlPublicKeyString = sr.ReadToEnd();  // Public key data ( XML data )
+                }
+                getXmlFileHash(AppSettings.Instance.FileList[i]);
+                comboBoxHashList.SelectedIndex = 2;
+                labelRsa.Text = Resources.labelRsaPublicKey;
+                labelRsaKeyName.Text = Resources.labelRsaPublicKey;
+                pictureBoxRsaPage.Image = pictureBoxPublicKey.Image;
+                pictureBoxRsaType.Image = pictureBoxPublicKey.Image;
+                XmlPrivateKeyString = "";
+                AppSettings.Instance.FileList.Remove(AppSettings.Instance.FileList[i]);
+
+              }
+              else if (AppSettings.Instance.CheckFileType(AppSettings.Instance.FileList[i]) == 6)
+              {
+                // The key file(private key) has been loaded.Drag and drop the encrypted file to be decrypted here.
+                // キーファイル（秘密鍵）が読み込まれました。復号する暗号化ファイルをここへドラッグ＆ドロップしてください。
+                labelRsaMessage.Text = Resources.labelRsaPrivateKeyloaded;
+                labelRsaDescription.Text = Resources.labelRsaPrivateKeyloaded;
+
+                panelEncrypt.Visible = false;
+                panelEncryptConfirm.Visible = false;
+                panelDecrypt.Visible = false;
+                panelRsa.Visible = false;
+                panelRsaKey.Visible = true;
+                panelProgressState.Visible = false;
+                panelStartPage.Visible = false;
+
+                using (StreamReader sr = new StreamReader(AppSettings.Instance.FileList[i], Encoding.UTF8))
+                {
+                  XmlPrivateKeyString = sr.ReadToEnd();  // Private key data ( XML data )
+                }
+                getXmlFileHash(AppSettings.Instance.FileList[i]);
+                comboBoxHashList.SelectedIndex = 2;
+                labelRsa.Text = Resources.labelRsaPrivateKey;
+                labelRsaKeyName.Text = Resources.labelRsaPrivateKey;
+                pictureBoxRsaPage.Image = pictureBoxPrivateKey.Image;
+                pictureBoxRsaType.Image = pictureBoxPrivateKey.Image;
+                XmlPublicKeyString = "";
+                AppSettings.Instance.FileList.Remove(AppSettings.Instance.FileList[i]);
+
+              }
+              //----------------------------------------------------------------------
+              else if (AppSettings.Instance.CheckFileType(AppSettings.Instance.FileList[i]) == 4)
+              {
+                // The encrypted file has been loaded. Drag and drop the key file　(private key) to be decrypted here.
+                // 暗号化ファイルが読み込まれました。復号するためのキーファイル（秘密鍵）をここへドラッグ＆ドロップしてください。
+                labelRsaMessage.Text = Resources.labelRsaEncryptedFileloaded;
+                panelEncrypt.Visible = false;
+                panelEncryptConfirm.Visible = false;
+                panelDecrypt.Visible = false;
+                panelRsa.Visible = true;
+                panelRsaKey.Visible = false;
+                panelProgressState.Visible = false;
+                panelStartPage.Visible = false;
+              }
+              else
+              {
+                // ファイルまたはフォルダーが読み込まれました。暗号化するための公開鍵をここへドラッグ＆ドロップしてください。
+                // The file or folder has been loaded.Drag and drop the public key to be encrypted here.
+                labelRsaMessage.Text = Resources.labelRsaFilesloaded;
+                panelEncrypt.Visible = false;
+                panelEncryptConfirm.Visible = false;
+                panelDecrypt.Visible = false;
+                panelRsa.Visible = true;
+                panelRsaKey.Visible = false;
+                panelProgressState.Visible = false;
+                panelStartPage.Visible = false;
+              }
+            }
+
+            if (AppSettings.Instance.FileList.Count > 0)
+            {
+              // すでに公開鍵が読み込まれている
+              if (string.IsNullOrEmpty(XmlPublicKeyString) == false)
+              {
+                // RSA暗号化を実行する
+                FileIndex = 0;
+                EncryptionProcess();
+                return;
+              }
+              // すでに秘密鍵が読み込まれている
+              else if (string.IsNullOrEmpty(XmlPrivateKeyString) == false)
+              {
+                // RSA復号を実行する
+                FileIndex = 0;
+                DecryptionProcess();
+                return;
+              }
+              else
+              {
+                if (fWaitingForKeyFile == true)
+                {
+                  panelStartPage.Visible = false;
+                  panelEncrypt.Visible = false;
+                  panelEncryptConfirm.Visible = false;
+                  panelDecrypt.Visible = false;
+                  panelRsa.Visible = false;
+                  panelRsaKey.Visible = false;
+                  panelProgressState.Visible = true;
+
+                  // Error
+                  labelProgressPercentText.Text = "- %";
+                  progressBar.Value = 0;
+                  pictureBoxProgress.Image = pictureBoxPublicAndPrivateKey.Image;
+                  labelProgress.Text = Resources.labelRsa;
+                  labelCryptionType.Text = Resources.labelCaptionError;
+                  // 公開鍵または秘密鍵は読み込まれませんでした。
+                  // The public or private key was not loaded.
+                  labelProgressMessageText.Text = Resources.labelKeyFileNotLoaded;
+                  notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+                  AppSettings.Instance.FileList = null;
+                  fWaitingForKeyFile = false;
+                  buttonCancel.Text = Resources.ButtonTextOK;
+
+                  return;
+                }
+                else
+                {
+                  // ただファイルリストを保持しておく
+                  // Just keep the file list.
+                  fWaitingForKeyFile = true;
+                  return;
+                }
+              }
+
+            }
+
           }
           //----------------------------------------------------------------------
           // Password ZIP
@@ -2099,6 +2426,7 @@ namespace AttacheCase
             panelEncryptConfirm.Visible = false;
             panelDecrypt.Visible = false;
             panelRsa.Visible = false;
+            panelRsaKey.Visible = false;
             panelProgressState.Visible = false;
           }
 
@@ -2231,6 +2559,7 @@ namespace AttacheCase
             panelEncryptConfirm.Visible = false;
             panelDecrypt.Visible = true;
             panelRsa.Visible = false;
+            panelRsaKey.Visible = false;
             panelProgressState.Visible = false;
 
             buttonDecryptStart.Focus();
@@ -2285,6 +2614,7 @@ namespace AttacheCase
             panelEncryptConfirm.Visible = true;
             panelDecrypt.Visible = false;
             panelRsa.Visible = false;
+            panelRsaKey.Visible = false;
             panelProgressState.Visible = false;
 
             buttonEncryptStart.Focus();
@@ -2488,13 +2818,13 @@ namespace AttacheCase
           pictureBoxEncryption.Image = pictureBoxExeOn.Image;
           labelEncryption.Text = labelExe.Text;
         }
-        else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
-        {
-          pictureBoxEncryption.Image = pictureBoxRsaOn.Image;
-          labelEncryption.Text = labelZip.Text;
-          pictureBoxEncryption.Image = pictureBoxZipOn.Image;
-          //labelEncryption.Text = labelZip.Text;
-        }
+        //else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
+        //{
+        //  pictureBoxEncryption.Image = pictureBoxRsaOn.Image;
+        //  labelEncryption.Text = labelZip.Text;
+        //  //pictureBoxEncryption.Image = pictureBoxZipOn.Image;
+        //  //labelEncryption.Text = labelZip.Text;
+        //}
         else
         {
           pictureBoxEncryption.Image = pictureBoxAtcOn.Image;
@@ -2707,6 +3037,7 @@ namespace AttacheCase
             panelEncryptConfirm.Visible = false;
             panelDecrypt.Visible = false;
             panelRsa.Visible = false;
+            panelRsaKey.Visible = false;
             panelProgressState.Visible = false;
 
             panelStartPage_VisibleChanged(sender, e);
@@ -2828,7 +3159,7 @@ namespace AttacheCase
       AppSettings.Instance.EncryptionFileType = FILE_TYPE_PASSWORD_ZIP;
       pictureBoxEncryption.Image = pictureBoxRsaOn.Image;
       labelEncryption.Text = labelZip.Text;
-      pictureBoxEncryption.Image = pictureBoxZipOn.Image;
+      //pictureBoxEncryption.Image = pictureBoxZipOn.Image;
       textBoxPassword.Focus();
 
       //In the case of ZIP files, it must be more than one character of the password.
@@ -3111,6 +3442,7 @@ namespace AttacheCase
         panelEncryptConfirm.Visible = true;      // EncryptConfirm
         panelDecrypt.Visible = false;
         panelRsa.Visible = false;
+        panelRsaKey.Visible = false;
         panelProgressState.Visible = false;
       }
       else
@@ -3150,6 +3482,7 @@ namespace AttacheCase
       panelEncryptConfirm.Visible = true;
       panelDecrypt.Visible = false;
       panelRsa.Visible = false;
+      panelRsaKey.Visible = false;
       panelProgressState.Visible = false;
 
     }
@@ -3164,6 +3497,7 @@ namespace AttacheCase
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
       panelRsa.Visible = false;
+      panelRsaKey.Visible = false;
       panelProgressState.Visible = false;
 
     }
@@ -3331,6 +3665,7 @@ namespace AttacheCase
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
       panelRsa.Visible = false;
+      panelRsaKey.Visible = false;
       panelProgressState.Visible = true;
       labelCryptionType.Text = Resources.labelProcessNameEncrypt;
 
@@ -3389,10 +3724,10 @@ namespace AttacheCase
       {
         Extension = AppSettings.Instance.fAddCamoExt == true ? AppSettings.Instance.CamoExt : ".exe";
       }
-      else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
-      {
-        Extension = AppSettings.Instance.fAddCamoExt == true ? AppSettings.Instance.CamoExt : ".zip";
-      }
+      //else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
+      //{
+      //  Extension = AppSettings.Instance.fAddCamoExt == true ? AppSettings.Instance.CamoExt : ".zip";
+      //}
 
       //-----------------------------------
       // Encryption password
@@ -3405,7 +3740,11 @@ namespace AttacheCase
       // ※パスワードファイルは、記憶パスワードや通常の入力されたパスワードよりも優先される。
       // * This password files is priority than memorized encryption password and inputting normal password string.
       byte[] EncryptionPasswordBinary = null;
-      if (AppSettings.Instance.fAllowPassFile == true && AppSettings.Instance.EncryptionFileType != FILE_TYPE_PASSWORD_ZIP)  // ATC(EXE) only
+
+      if (AppSettings.Instance.fAllowPassFile == true && 
+          (AppSettings.Instance.EncryptionFileType == FILE_TYPE_NONE ||
+           AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC || // ATC(EXE) only
+           AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC_EXE))
       {
         // Check specified password file for Decryption
         if (AppSettings.Instance.fCheckPassFile == true)
@@ -3504,21 +3843,6 @@ namespace AttacheCase
           }
         }
       }
-      else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
-      {
-        pictureBoxProgress.Image = pictureBoxRsaOn.Image;
-        labelProgress.Text = labelZip.Text;
-        pictureBoxProgress.Image = pictureBoxZipOn.Image;
-
-        // Save the zip file(s) to the same directory?
-        if (AppSettings.Instance.fZipToSameFldr == true)
-        {
-          if (Directory.Exists(AppSettings.Instance.ZipToSameFldrPath) == true)
-          {
-            OutDirPath = AppSettings.Instance.ZipToSameFldrPath;
-          }
-        }
-      }
 
       string AtcFilePath = "";
 
@@ -3585,6 +3909,7 @@ namespace AttacheCase
             panelEncryptConfirm.Visible = true;
             panelDecrypt.Visible = false;
             panelRsa.Visible = false;
+            panelRsaKey.Visible = false;
             panelProgressState.Visible = false;
             return;
           }
@@ -3687,6 +4012,7 @@ namespace AttacheCase
                   panelEncryptConfirm.Visible = false;
                   panelDecrypt.Visible = false;
                   panelRsa.Visible = false;
+                  panelRsaKey.Visible = false;
                   panelProgressState.Visible = true;
 
                   // Canceled
@@ -3735,6 +4061,14 @@ namespace AttacheCase
         if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC_EXE)
         {
           encryption4.fExecutable = true;
+        }
+
+        //-----------------------------------
+        // RSA lock file string ( public key string )
+        //-----------------------------------
+        if (string.IsNullOrEmpty(XmlPublicKeyString) == false)
+        {
+          encryption4.RsaPublicKeyXmlString = XmlPublicKeyString;
         }
 
         //-----------------------------------
@@ -3895,6 +4229,7 @@ namespace AttacheCase
                   panelEncryptConfirm.Visible = false;
                   panelDecrypt.Visible = false;
                   panelRsa.Visible = false;
+                  panelRsaKey.Visible = false;
                   panelProgressState.Visible = true;
 
                   // Canceled
@@ -3943,6 +4278,14 @@ namespace AttacheCase
         if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC_EXE)
         {
           encryption4.fExecutable = true;
+        }
+
+        //-----------------------------------
+        // RSA lock file string ( public key string )
+        //-----------------------------------
+        if (string.IsNullOrEmpty(XmlPublicKeyString) == false)
+        {
+          encryption4.RsaPublicKeyXmlString = XmlPublicKeyString;
         }
 
         //-----------------------------------
@@ -4103,6 +4446,7 @@ namespace AttacheCase
                   panelEncryptConfirm.Visible = false;
                   panelDecrypt.Visible = false;
                   panelRsa.Visible = false;
+                  panelRsaKey.Visible = false;
                   panelProgressState.Visible = true;
 
                   // Canceled
@@ -4150,6 +4494,14 @@ namespace AttacheCase
         if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC_EXE)
         {
           encryption4.fExecutable = true;
+        }
+
+        //-----------------------------------
+        // RSA lock file string ( public key string )
+        //-----------------------------------
+        if (string.IsNullOrEmpty(XmlPublicKeyString) == false)
+        {
+          encryption4.RsaPublicKeyXmlString = XmlPublicKeyString;
         }
 
         //-----------------------------------
@@ -4215,7 +4567,11 @@ namespace AttacheCase
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
       panelRsa.Visible = false;
+      panelRsaKey.Visible = false;
       panelProgressState.Visible = false;
+
+      // ファイルリストをクリアする
+      AppSettings.Instance.FileList = new List<string>();
 
       panelStartPage_VisibleChanged(sender, e);
 
@@ -4378,6 +4734,7 @@ namespace AttacheCase
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
       panelRsa.Visible = false;
+      panelRsaKey.Visible = false;
       panelProgressState.Visible = true;
 
       labelProgress.Text = labelDecryption.Text;
@@ -4472,7 +4829,7 @@ namespace AttacheCase
         decryption3 = new FileDecrypt3(AtcFilePath);
       }
 
-      if (decryption4.TokenStr == "_AttacheCaseData")
+      if (decryption4.TokenStr == "_AttacheCaseData" || decryption4.TokenStr == "_AttacheCase_Rsa")
       {
         // Encryption data ( O.K. )
       }
@@ -4683,6 +5040,10 @@ namespace AttacheCase
         decryption4.NumberOfFiles = FileIndex + 1;
         decryption4.TotalNumberOfFiles = AppSettings.Instance.FileList.Count;
         decryption4.fSameTimeStamp = AppSettings.Instance.fSameTimeStamp;
+        if (string.IsNullOrEmpty(XmlPrivateKeyString) == false)
+        { // RSA decryption
+          decryption4.RsaPrivateKeyXmlString = XmlPrivateKeyString;
+        }
         decryption4.TempOverWriteOption = (AppSettings.Instance.fDecryptConfirmOverwrite == false ? OVERWRITE_ALL : 0);
         if (LimitOfInputPassword == -1)
         {
@@ -4873,10 +5234,14 @@ namespace AttacheCase
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
       panelRsa.Visible = false;
+      panelRsaKey.Visible = false;
       panelProgressState.Visible = false;
       panelStartPage.Visible = true;
       textBoxDecryptPassword.Text = "";
       AppSettings.Instance.TempDecryptionPassFilePath = "";
+      // ファイルリストをクリアする
+      AppSettings.Instance.FileList = new List<string>();
+
     }
 
     private void pictureBoxDecryptBackButton_MouseEnter(object sender, EventArgs e)
@@ -4914,11 +5279,32 @@ namespace AttacheCase
         panelEncryptConfirm.Visible = false;
         panelDecrypt.Visible = false;
         panelRsa.Visible = false;
+        panelRsaKey.Visible = false;
         panelProgressState.Visible = false;
 
         panelStartPage_VisibleChanged(sender, e);
 
         buttonCancel.Text = Resources.ButtonTextCancel;
+
+        // RSAページを初期値へ戻す
+        // Return RSA pages to their initial values
+        // ---
+        // ここに、暗号化または復号したいファイル・フォルダーをドラッグ＆ドロップしてください。先に公開鍵、秘密鍵をドラッグ＆ドロップすることもできます。
+        // Drag and drop the file or folder you want to encrypt or decrypt here. You can also drag and drop the public key and private key first.
+        labelRsaMessage.Text = Resources.labelRsaMessage;
+        // 公開鍵暗号
+        // Public key Encrypt
+        labelRsa.Text = Resources.labelRsa;
+        pictureBoxRsaPage.Image = pictureBoxPublicAndPrivateKey.Image;
+        AppSettings.Instance.TempDecryptionPassFilePath = "";
+        XmlPublicKeyString = "";
+        XmlPrivateKeyString = "";
+        fWaitingForKeyFile = false;
+        buttonGenerateKey.Visible = true;
+
+        // ファイルリストをクリアする
+        AppSettings.Instance.FileList = null;
+
         return;
       }
       else
@@ -4963,6 +5349,7 @@ namespace AttacheCase
         panelEncryptConfirm.Visible = false;
         panelDecrypt.Visible = false;
         panelRsa.Visible = false;
+        panelRsaKey.Visible = false;
         panelProgressState.Visible = false;
 
         panelStartPage_VisibleChanged(sender, e);
@@ -5305,6 +5692,7 @@ namespace AttacheCase
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
       panelRsa.Visible = true;            // RSA
+      panelRsaKey.Visible = false;
       panelProgressState.Visible = false;
 
     }
@@ -5367,6 +5755,7 @@ namespace AttacheCase
           panelEncryptConfirm.Visible = false;
           panelDecrypt.Visible = true;    //Decrypt
           panelRsa.Visible = false;
+          panelRsaKey.Visible = false;
           panelProgressState.Visible = false;
         }
       }
@@ -5728,8 +6117,8 @@ namespace AttacheCase
       string FileName = Path.GetFileNameWithoutExtension(filePath);
 
       // 公開鍵・秘密鍵のファイルパス
-      var publicKeyFilePath = Path.Combine(DirPath, FileName + ".atclock");
-      var privateFilePath = Path.Combine(DirPath, FileName + ".atckey");
+      var publicKeyFilePath = Path.Combine(DirPath, FileName + ".atcpub");
+      var privateFilePath = Path.Combine(DirPath, FileName + ".atcpvt");
 
       //-----------------------------------
       //RSACryptoServiceProviderオブジェクトの作成
@@ -5796,15 +6185,28 @@ namespace AttacheCase
 
     private void buttonRsaCancel_Click(object sender, EventArgs e)
     {
-      // Cancel, If decryption is not being processed 
+      // Cancel
       panelEncrypt.Visible = false;
       panelEncryptConfirm.Visible = false;
       panelDecrypt.Visible = false;
       panelRsa.Visible = false;
+      panelRsaKey.Visible = false;
       panelProgressState.Visible = false;
       panelStartPage.Visible = true;
-      textBoxDecryptPassword.Text = "";
+      // ここに、暗号化または復号したいファイル・フォルダーをドラッグ＆ドロップしてください。先に公開鍵、秘密鍵をドラッグ＆ドロップすることもできます。
+      // Drag and drop the file or folder you want to encrypt or decrypt here. You can also drag and drop the public key and private key first.
+      labelRsaMessage.Text = Resources.labelRsaMessage;
+      // 公開鍵暗号
+      // Public key Encrypt
+      labelRsa.Text = Resources.labelRsa;
+      pictureBoxRsaPage.Image = pictureBoxPublicAndPrivateKey.Image;
       AppSettings.Instance.TempDecryptionPassFilePath = "";
+      XmlPublicKeyString = "";
+      XmlPrivateKeyString = "";
+      fWaitingForKeyFile = false;
+      buttonGenerateKey.Visible = true;
+      // ファイルリストをクリアする
+      AppSettings.Instance.FileList = new List<string>();
 
     }
 
@@ -5822,13 +6224,102 @@ namespace AttacheCase
     {
       if (panelRsa.Visible == true)
       {
+        if (AppSettings.Instance.FileList == null || AppSettings.Instance.FileList.Count == 0)
+        {
+          buttonGenerateKey.Visible = true;
+        }
+        else
+        {
+          buttonGenerateKey.Visible = false;
+        }
+      }
+    }
 
+    private void buttonRsaKeyCancel_Click(object sender, EventArgs e)
+    {
+      // Cancel
+      panelEncrypt.Visible = false;
+      panelEncryptConfirm.Visible = false;
+      panelDecrypt.Visible = false;
+      panelRsa.Visible = false;
+      panelRsaKey.Visible = false;
+      panelProgressState.Visible = false;
+      panelStartPage.Visible = true;
+      // ここに、暗号化または復号したいファイル・フォルダーをドラッグ＆ドロップしてください。先に公開鍵、秘密鍵をドラッグ＆ドロップすることもできます。
+      // Drag and drop the file or folder you want to encrypt or decrypt here. You can also drag and drop the public key and private key first.
+      labelRsaMessage.Text = Resources.labelRsaMessage;
+      // 公開鍵暗号
+      // Public key Encrypt
+      labelRsa.Text = Resources.labelRsa;
+      pictureBoxRsaPage.Image = pictureBoxPublicAndPrivateKey.Image;
+      AppSettings.Instance.TempDecryptionPassFilePath = "";
+      XmlPublicKeyString = "";
+      XmlPrivateKeyString = "";
+      fWaitingForKeyFile = false;
+      buttonGenerateKey.Visible = true;
+      // ファイルリストをクリアする
+      AppSettings.Instance.FileList = new List<string>();
 
+    }
 
+    private void pictureBoxRsaKeyBackButton_MouseEnter(object sender, EventArgs e)
+    {
+      pictureBoxRsaKeyBackButton.Image = pictureBoxBackButtonOn.Image;
+    }
 
+    private void pictureBoxRsaKeyBackButton_MouseLeave(object sender, EventArgs e)
+    {
+      pictureBoxRsaKeyBackButton.Image = pictureBoxBackButtonOff.Image;
+    }
+
+    private void getXmlFileHash(string FilePath)
+    {
+ 
+      XmlHashStringList = new Dictionary<string, string>();
+
+      // GUID
+      XElement xmlElement = XElement.Load(FilePath);
+      XmlHashStringList.Add("GUID", xmlElement.Element("id").Value);
+
+      using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+      {
+        // MD5
+        var md5 = new MD5CryptoServiceProvider();
+        byte[] bs = md5.ComputeHash(fs);
+        md5.Clear();
+        XmlHashStringList.Add("MD5", BitConverter.ToString(bs).ToLower().Replace("-", ""));
+      }
+
+      using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+      {
+        // SHA-1
+        var sha1 = new SHA1CryptoServiceProvider();
+        byte[] bs = sha1.ComputeHash(fs);
+        sha1.Clear();
+        XmlHashStringList.Add("SHA-1", BitConverter.ToString(bs).ToLower().Replace("-", ""));
+      }
+
+      using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+      {
+        // SHA-256
+        var sha256 = new SHA256CryptoServiceProvider();
+        byte[] bs = sha256.ComputeHash(fs);
+        sha256.Clear();
+        XmlHashStringList.Add("SHA-256", BitConverter.ToString(bs).ToLower().Replace("-", ""));
       }
 
     }
+
+    private void comboBoxHashList_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      // GUID
+      // MD5
+      // SHA-1
+      // SHA-256
+      string selectedItem = comboBoxHashList.SelectedItem.ToString();
+      textBoxHashString.Text = XmlHashStringList[selectedItem];
+    }
+
 
   }// end public partial class Form1 : Form;
 

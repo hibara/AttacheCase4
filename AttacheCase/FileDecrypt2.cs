@@ -67,7 +67,8 @@ namespace AttacheCase
     private const int FILE_NOT_FOUND           = -113;
     private const int PATH_TOO_LONG            = -114;
     private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
-    private const int IO_EXCEPTION             = -116;
+    private const int RSA_KEY_GUID_NOT_MATCH   = -116;
+    private const int IO_EXCEPTION             = -117;
 
     // Overwrite Option
     //private const int USER_CANCELED = -1;

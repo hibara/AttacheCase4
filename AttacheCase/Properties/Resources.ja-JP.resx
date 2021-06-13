@@ -635,6 +635,47 @@
     <value>有効なコードです。</value>
   </data>
   <data name="DialogTitleSavePublicAndPrivateKey" xml:space="preserve">
-    <value>ロックファイル（公開鍵）とキーファイル（秘密鍵）の保存</value>
+    <value>公開鍵と秘密鍵の保存</value>
+  </data>
+  <data name="labelRsaEncryptedFileloaded" xml:space="preserve">
+    <value>暗号化ファイルが読み込まれました。復号するための秘密鍵をここへドラッグ＆ドロップしてください。</value>
+  </data>
+  <data name="labelRsaFilesloaded" xml:space="preserve">
+    <value>ファイルまたはフォルダーが読み込まれました。暗号化するための公開鍵をここへドラッグ＆ドロップしてください。</value>
+  </data>
+  <data name="labelRsaPrivateKeyloaded" xml:space="preserve">
+    <value>秘密鍵が読み込まれました。復号する暗号化ファイルをここへドラッグ＆ドロップしてください。</value>
+  </data>
+  <data name="labelRsaPublicKeyloaded" xml:space="preserve">
+    <value>公開鍵が読み込まれました。暗号化したいファイルまたはフォルダーをここへドラッグ＆ドロップしてください。</value>
+  </data>
+  <data name="DialogMessageInvalidPrivateKey" xml:space="preserve">
+    <value>暗号化されたペアの秘密鍵ではありません。復号できませんでした。</value>
+  </data>
+  <data name="labelRsaPrivateKey" xml:space="preserve">
+    <value>秘密鍵</value>
+  </data>
+  <data name="labelRsaPublicKey" xml:space="preserve">
+    <value>公開鍵</value>
+  </data>
+  <data name="labelRsaDescription" xml:space="preserve">
+    <value>ここに、暗号化または復号したいファイル・フォルダーをドラッグ＆ドロップしてください。先に公開鍵、秘密鍵をドラッグ＆ドロップすることもできます。</value>
+  </data>
+  <data name="DialogMessageRsaKeyGuidNotMatch" xml:space="preserve">
+    <value>RSAで暗号化された公開鍵と異なるペアの鍵が指定されています。復号できません。
+処理を中止します。</value>
+  </data>
+  <data name="DialogMessageCryptographicException" xml:space="preserve">
+    <value>RSA公開鍵または秘密鍵の形式が違うか、XMLファイル形式ではありません。
+処理を中止します。</value>
+  </data>
+  <data name="labelKeyFileNotLoaded" xml:space="preserve">
+    <value>公開鍵または秘密鍵は読み込まれませんでした。</value>
+  </data>
+  <data name="labelRsa" xml:space="preserve">
+    <value>公開鍵暗号</value>
+  </data>
+  <data name="labelRsaMessage" xml:space="preserve">
+    <value>ここに、暗号化または復号したいファイル・フォルダーをドラッグ＆ドロップしてください。先に公開鍵、秘密鍵をドラッグ＆ドロップすることもできます。</value>
   </data>
 </root>

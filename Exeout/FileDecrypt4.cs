@@ -26,6 +26,8 @@ using System.Security.Cryptography;
 using System.IO.Compression;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Xml.Linq;
+using System.Linq;
 #if __MACOS__
 using AppKit;
 #endif
@@ -72,7 +74,8 @@ namespace AttacheCase
     private const int FILE_NOT_FOUND           = -113;
     private const int PATH_TOO_LONG            = -114;
     private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
-    private const int IO_EXCEPTION             = -116;
+    private const int RSA_KEY_GUID_NOT_MATCH   = -116;
+    private const int IO_EXCEPTION             = -117;
 
     // Overwrite Option
     //private const int USER_CANCELED = -1;
@@ -85,6 +88,9 @@ namespace AttacheCase
     private const int SKIP = 5;
     private const int SKIP_ALL = 6;
 
+    byte[] GuidData = new byte[16];
+    byte[] RsaPassword = new byte[32];
+    byte[] RsaEncryptedPassword = new byte[256];
 
     private const int BUFFER_SIZE = 4096;
 
@@ -202,6 +208,13 @@ namespace AttacheCase
       get { return this._fSalvageIgnoreHashCheck; }
       set { this._fSalvageIgnoreHashCheck = value; }
     }
+    // 公開鍵暗号（RSA暗号）によるデータ
+    // RSA encrypted data
+    private bool _fRsaEncryptionType = false;
+    public bool fRsaEncryptionType
+    {
+      get { return this._fRsaEncryptionType; }
+    }
 
     //----------------------------------------------------------------------
     // The return value of error ( ReadOnly)
@@ -251,7 +264,7 @@ namespace AttacheCase
     private ArrayList _MessageList;
     public ArrayList MessageList
     {
-        get { return this._MessageList; }
+      get { return this._MessageList; }
     }
 
     //----------------------------------------------------------------------
@@ -335,6 +348,32 @@ namespace AttacheCase
       get { return this._DecryptionTimeString; }
     }
 
+    // Guid
+    private string _GuidString;
+    public string GuidString
+    {
+      get { return this._GuidString; }
+      set { this._GuidString = value; }
+    }
+
+    // RSA decryption private key XML string
+    private string _RsaPrivateKeyXmlString;
+    public string RsaPrivateKeyXmlString
+    {
+      get { return this._RsaPrivateKeyXmlString; }
+      set
+      {
+        this._RsaPrivateKeyXmlString = value;
+        this._fRsaEncryption = true;
+      }
+    }
+    // RSA Decryption
+    private bool _fRsaEncryption = false;
+    public bool fRsaEncryption
+    {
+      get { return this._fRsaEncryption; }
+    }
+
     /// <summary>
     /// Constructor
     /// </summary>
@@ -350,6 +389,10 @@ namespace AttacheCase
       // _Atc_Broken_Data
       //byte[] AtcBrokenTokenByte = { 0x5F, 0x41, 0x74, 0x63, 0x5F, 0x42, 0x72, 0x6F, 0x6B, 0x65, 0x6E, 0x5F, 0x44, 0x61, 0x74, 0x61 };
       int[] AtcBrokenTokenByte = { 95, 65, 116, 99, 95, 66, 114, 111, 104, 101, 110, 95, 68, 97, 116, 97 };
+
+      // _AttacheCase_Rsa
+      //byte[] AtcRsaTokenByte = { 0x5F, 0x41, 0x74, 0x74, 0x61, 0x63, 0x68, 0x65, 0x43, 0x61, 0x73, 0x65, 0x5F, 0x52, 0x73, 0x61 };
+      int[] AtcRsaTokenByte = { 95, 65, 116, 116, 97, 99, 104, 101, 67, 97, 115, 101, 95, 82, 115, 97 };
 
       try
       {
@@ -461,12 +504,17 @@ namespace AttacheCase
           fs.Read(byteArray, 0, 4);
           _AtcHeaderSize = BitConverter.ToInt32(byteArray, 0);   // AtcHeaderSize ( encrypted header data size )
 
-          byteArray = new byte[16];
-          fs.Read(byteArray, 0, 16);
-          //_AtcHeaderSize = BitConverter.ToInt32(byteArray, 0);   // GUID
+          fs.Read(GuidData, 0, 16);                              // GUID
 
           // salt
           fs.Read(_salt, 0, 8);
+          Console.WriteLine("salt: " + BitConverter.ToString(_salt));
+
+          // RSA encryption
+          if (_TokenStr.Trim() == "_AttacheCase_Rsa")
+          {
+            fs.Read(RsaEncryptedPassword, 0, 256);               // Encrypted 
+          }
 
 #if (DEBUG)
           //System.Windows.Forms.MessageBox.Show("_TokenStr: " + _TokenStr);
@@ -588,6 +636,7 @@ namespace AttacheCase
 
       int len = 0;
       byte[] byteArray;
+      int RsaBlock = 0;
 
       // _FileList = new List<string>();
       // Dictionary<int, FileListData> dic = new Dictionary<int, FileListData>();
@@ -596,12 +645,38 @@ namespace AttacheCase
       if (_TokenStr.Trim() == "_AttacheCaseData")
       {
         // Atc data
+        RsaBlock = 0;
       }
+#if (EXEOUT)
+#else
+      else if (_TokenStr.Trim() == "_AttacheCase_Rsa")
+      {
+        XElement xmlElement = XElement.Parse(_RsaPrivateKeyXmlString);
+        string GuidString = xmlElement.Element("id").Value;
+        Guid guid = Guid.Parse(GuidString);
+        if (GuidData.SequenceEqual(guid.ToByteArray()) == false)
+        {
+          _ReturnCode = RSA_KEY_GUID_NOT_MATCH;
+          _ErrorFilePath = _RsaPrivateKeyXmlString;
+          return (false);
+        }
+
+        RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(2048);
+        rsa.FromXmlString(_RsaPrivateKeyXmlString); //秘密鍵を指定
+        byte[] RsaPasswordData = rsa.Decrypt(RsaEncryptedPassword, RSAEncryptionPadding.OaepSHA1);
+        //string debugString = BitConverter.ToString(RsaPasswordData);
+        //Console.WriteLine(debugString);
+        // RSA decrypted password binary data
+        PasswordBinary = RsaPasswordData;
+        RsaBlock = 256;
+      }
+#endif
       else if (_TokenStr.Trim() == "_Atc_Broken_Data")
       {
         // Atc file is broken
         _ReturnCode = ATC_BROKEN_DATA;
         _ErrorFilePath = FilePath;
+        RsaBlock = 0;
         return (false);
       }
       else
@@ -609,6 +684,7 @@ namespace AttacheCase
         // not AttacheCase data
         _ReturnCode = NOT_ATC_DATA;
         _ErrorFilePath = FilePath;
+        RsaBlock = 0;
         return (false);
       }
 
@@ -624,6 +700,17 @@ namespace AttacheCase
 
       byte[] key = _deriveBytes.GetBytes(32);
       byte[] iv = _deriveBytes.GetBytes(16);
+
+#if (DEBUG)
+      string debugString = BitConverter.ToString(_salt);
+      Console.WriteLine("salt: " + debugString);
+
+      debugString = BitConverter.ToString(key);
+      Console.WriteLine("key: " + debugString);
+
+      debugString = BitConverter.ToString(iv);
+      Console.WriteLine("iv: " + debugString);
+#endif
 
       try
       {
@@ -641,17 +728,16 @@ namespace AttacheCase
             if (_ExeOutSize > 0)
             {
               // self-executable file
-              fs.Seek(_ExeOutSize + 52, SeekOrigin.Begin);
+              fs.Seek(_ExeOutSize + 52 + RsaBlock, SeekOrigin.Begin);
             }
             else
             {
-              fs.Seek(52, SeekOrigin.Begin);
+              fs.Seek(52 + RsaBlock, SeekOrigin.Begin);
             }
           }
 
           using (MemoryStream ms = new MemoryStream())
           {
-
             // The Header of MemoryStream is encrypted
             using (AesManaged aes = new AesManaged())
             {
@@ -679,7 +765,8 @@ namespace AttacheCase
             ms.Read(byteArray, 0, 4);
 
             // Check Password Token
-            if (Encoding.ASCII.GetString(byteArray).IndexOf(ATC_ENCRYPTED_TOKEN) > -1)
+            string Token = Encoding.UTF8.GetString(byteArray);
+            if (Token.IndexOf(ATC_ENCRYPTED_TOKEN) > -1)
             {
               // Decryption is succeeded.
             }
@@ -918,11 +1005,11 @@ namespace AttacheCase
           int mod = _AtcHeaderSize % 16;
           if (_fExecutableType == true)
           {
-            fs.Seek(_ExeOutSize + 52 + _AtcHeaderSize + 16 - mod, SeekOrigin.Begin);
+            fs.Seek(_ExeOutSize + 52 + RsaBlock + _AtcHeaderSize + 16 - mod, SeekOrigin.Begin);
           }
           else
           {
-            fs.Seek(52 + _AtcHeaderSize + 16 - mod, SeekOrigin.Begin);
+            fs.Seek(52 + RsaBlock + _AtcHeaderSize + 16 - mod, SeekOrigin.Begin);
           }
 
           //-----------------------------------

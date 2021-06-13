@@ -634,6 +634,48 @@ The process is aborted.</value>
     <value>Valid code.</value>
   </data>
   <data name="DialogTitleSavePublicAndPrivateKey" xml:space="preserve">
-    <value>Save a lock file (public key) and key file (private key)</value>
+    <value>Save a public key and private key</value>
+  </data>
+  <data name="labelRsaEncryptedFileloaded" xml:space="preserve">
+    <value>The encrypted file has been loaded. Drag and drop the private key to be decrypted here.</value>
+  </data>
+  <data name="labelRsaFilesloaded" xml:space="preserve">
+    <value>The file or folder has been loaded. Drag and drop public key to be encrypted here.</value>
+  </data>
+  <data name="labelRsaPrivateKeyloaded" xml:space="preserve">
+    <value>The private key has been loaded. Drag and drop the encrypted file to be decrypted here.</value>
+  </data>
+  <data name="labelRsaPublicKeyloaded" xml:space="preserve">
+    <value>The public key has been loaded. Drag and drop the ​file or folder to be encrypted here.</value>
+  </data>
+  <data name="DialogMessageInvalidPrivateKey" xml:space="preserve">
+    <value>This is not the private key of the encrypted pair. Could not decrypt.</value>
+  </data>
+  <data name="labelRsaPrivateKey" xml:space="preserve">
+    <value>Private Key</value>
+  </data>
+  <data name="labelRsaPublicKey" xml:space="preserve">
+    <value>Public Key</value>
+  </data>
+  <data name="labelRsaDescription" xml:space="preserve">
+    <value>Drag and drop the file or folder you want to encrypt or decrypt here. You can also drag and drop the public key and private key first.</value>
+  </data>
+  <data name="DialogMessageRsaKeyGuidNotMatch" xml:space="preserve">
+    <value>A different pair of keys from the RSA-encrypted public key has been specified. Cannot decrypt.
+The process is aborted.</value>
+  </data>
+  <data name="DialogMessageCryptographicException" xml:space="preserve">
+    <value>The RSA public or private key is in a different format or is not in XML file format.
+The process is aborted.</value>
+  </data>
+  <data name="labelKeyFileNotLoaded" xml:space="preserve">
+    <value>The public or private key was not loaded.</value>
+  </data>
+  <data name="labelRsa" xml:space="preserve">
+    <value>Public key
+Encrypt</value>
+  </data>
+  <data name="labelRsaMessage" xml:space="preserve">
+    <value>Drag and drop the file or folder you want to encrypt or decrypt here. You can also drag and drop the public key and private key first.</value>
   </data>
 </root>

@@ -216,6 +216,16 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   The RSA public or private key is in a different format or is not in XML file format.
+        ///The process is aborted. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageCryptographicException {
+            get {
+                return ResourceManager.GetString("DialogMessageCryptographicException", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Encrypted data not found. The file is broken.
         ///Decryption failed. に類似しているローカライズされた文字列を検索します。
         /// </summary>
@@ -457,6 +467,15 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   This is not the private key of the encrypted pair. Could not decrypt. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageInvalidPrivateKey {
+            get {
+                return ResourceManager.GetString("DialogMessageInvalidPrivateKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   No free space on the following disk. The process is aborted. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string DialogMessageNoDiskSpace {
@@ -572,6 +591,16 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   A different pair of keys from the RSA-encrypted public key has been specified. Cannot decrypt.
+        ///The process is aborted. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageRsaKeyGuidNotMatch {
+            get {
+                return ResourceManager.GetString("DialogMessageRsaKeyGuidNotMatch", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Setup tool is not found! に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string DialogMessageSetupToolNotFound {
@@ -680,7 +709,7 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
-        ///   Save a lock file (public key) and key file (private key) に類似しているローカライズされた文字列を検索します。
+        ///   Save a public key and private key に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string DialogTitleSavePublicAndPrivateKey {
             get {
@@ -979,6 +1008,15 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   The public or private key was not loaded. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelKeyFileNotLoaded {
+            get {
+                return ResourceManager.GetString("labelKeyFileNotLoaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Delete Completely に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string labellabelCompletelyDelete {
@@ -1155,6 +1193,88 @@ namespace AttacheCase.Properties {
         public static string labelProcessNameMoveToTrash {
             get {
                 return ResourceManager.GetString("labelProcessNameMoveToTrash", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Public key
+        ///Encrypt に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelRsa {
+            get {
+                return ResourceManager.GetString("labelRsa", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Drag and drop the file or folder you want to encrypt or decrypt here. You can also drag and drop the public key and private key first. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelRsaDescription {
+            get {
+                return ResourceManager.GetString("labelRsaDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The encrypted file has been loaded. Drag and drop the private key to be decrypted here. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelRsaEncryptedFileloaded {
+            get {
+                return ResourceManager.GetString("labelRsaEncryptedFileloaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The file or folder has been loaded. Drag and drop public key to be encrypted here. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelRsaFilesloaded {
+            get {
+                return ResourceManager.GetString("labelRsaFilesloaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Drag and drop the file or folder you want to encrypt or decrypt here. You can also drag and drop the public key and private key first. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelRsaMessage {
+            get {
+                return ResourceManager.GetString("labelRsaMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Private Key に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelRsaPrivateKey {
+            get {
+                return ResourceManager.GetString("labelRsaPrivateKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The private key has been loaded. Drag and drop the encrypted file to be decrypted here. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelRsaPrivateKeyloaded {
+            get {
+                return ResourceManager.GetString("labelRsaPrivateKeyloaded", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Public Key に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelRsaPublicKey {
+            get {
+                return ResourceManager.GetString("labelRsaPublicKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The public key has been loaded. Drag and drop the ​file or folder to be encrypted here. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelRsaPublicKeyloaded {
+            get {
+                return ResourceManager.GetString("labelRsaPublicKeyloaded", resourceCulture);
             }
         }
         

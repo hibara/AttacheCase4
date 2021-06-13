@@ -58,7 +58,8 @@ namespace Exeout
     private const int FILE_NOT_FOUND           = -113;
     private const int PATH_TOO_LONG            = -114;
     private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
-    private const int IO_EXCEPTION             = -116;
+    private const int RSA_KEY_GUID_NOT_MATCH   = -116;
+    private const int IO_EXCEPTION             = -117;
 
     public static BackgroundWorker bkg;
 		public int LimitOfInputPassword = -1;
@@ -347,7 +348,8 @@ namespace Exeout
         private const int FILE_NOT_FOUND           = -113;
         private const int PATH_TOO_LONG            = -114;
         private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
-        private const int IO_EXCEPTION             = -116;
+        private const int RSA_KEY_GUID_NOT_MATCH   = -116;
+        private const int IO_EXCEPTION             = -117;
         */
         switch (decryption.ReturnCode)
         {
@@ -457,6 +459,18 @@ namespace Exeout
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               labelMessage.Text = Resources.labelCaptionAborted;
               labelPercent.Text = "- %";
+            return;
+
+          case RSA_KEY_GUID_NOT_MATCH:
+            // エラー
+            // 暗号化されたペアの秘密鍵ではありません。復号できませんでした。
+            // Error
+            // This is not the private key of the encrypted pair. Could not decrypt.
+            MessageBox.Show(new Form { TopMost = true },
+              Resources.DialogMessageInvalidPrivateKey + Environment.NewLine + decryption.ErrorFilePath,
+              Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            labelMessage.Text = Resources.labelCaptionAborted;
+            labelPercent.Text = "- %";
             return;
 
           //-----------------------------------

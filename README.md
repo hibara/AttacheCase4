@@ -1,15 +1,14 @@
-# AttachéCase#3
+# AttachéCase4
 
-File encryption software for Windows XP/Vista/7/8/10.  
+File encryption software for Windows 10.  
 
 ![main icon & main form](./image/readme/main-icon-and-main-form.png)
 
-１． Support from Microsoft have been terminated, but the application can execute even on Windows XP.  
-２． To run this application that requires [.NET Framework 4.0 Full](https://www.microsoft.com/en-US/download/details.aspx?id=17718), but installer download the .NET Framework 4.0 full automatically if it doesn't exist in your PC.
-
 ## Summary
 
-AttachéCase#3 is focusing on using daily, simplicity and simple operability of appearance, is a powerful file / folder encryption software that uses a cryptographic algorithm of the world standard ( AES - Advanced Encryption Standard ).
+AttachéCase4 is focusing on using daily, simplicity and simple operability of appearance, is a powerful file / folder encryption software that uses a cryptographic algorithm of the world standard ( AES - Advanced Encryption Standard ).
+
+* Windows10 / NET Framework 4.5 later
 
 ## Download & Installing
 
@@ -55,18 +54,6 @@ Random number generates an initialization vector (IV), and then encrypted in CBC
 
 In the [RFC2898](https://tools.ietf.org/html/rfc2898), based on the "PKCS # 5 Password-Based Cryptography Specification Version 2.0 (password-based encryption specification)", Random salt (just that salt) is mixed and repeated 1,000 times on password-based key derivation. And outputs a derived key, an initialization vector (IV) in the order. In encryption, it would use both the IV and the key.
 
-## Responding to the password-protected ZIP output
-
-![Password-protected ZIP file icon](./image/readme/password_zip_icon.png)
-
-Also, the generation function of password-protect ZIP has been added. However, on the specification of a password-protected ZIP, Anyone can open the contents, can see the file name (of course, take out, a password is required).
-
-Encryption strength on standard specification of the password-protected ZIP is weak. However, if you use the option of AES in encryption, archiver differs from software to software, but some of the archiver can't decompress and decrypted. They don't respond to the encryption of AES.
-
-After all, the encryotion function of password-protected ZIP be inferior to other encryption function slightly.
-
-Please note that when you use. In addition, this software don't have a ZIP decryption function for the time being.
-
 ## Web site
 
 This repository ( AttacheCase3/installer/Archives/ ), or my web site below.  
@@ -78,7 +65,7 @@ This repository ( AttacheCase3/installer/Archives/ ), or my web site below.
 
 AttachéCase#3 is applied the GPLv3 license.
 
-Copyright (C) 2018 M.Hibara
+Copyright (C) 2021 M.Hibara
 
 This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
