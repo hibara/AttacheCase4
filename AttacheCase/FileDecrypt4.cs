@@ -26,8 +26,8 @@ using System.Security.Cryptography;
 using System.IO.Compression;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Xml.Linq;
 using System.Linq;
+using System.Xml.Linq;
 #if __MACOS__
 using AppKit;
 #endif
@@ -833,7 +833,14 @@ namespace AttacheCase
               // File path
               //
               string OutFilePath = "";
-              OutFilePath = Path.Combine(OutDirPath, fd.FilePath);
+              if (Path.IsPathRooted(fd.FilePath) == true)
+              {
+                OutFilePath = OutDirPath + fd.FilePath;
+              }
+              else
+              {
+                OutFilePath = Path.Combine(OutDirPath, fd.FilePath);
+              }
 
               //-----------------------------------
               // ディレクトリ・トラバーサル対策
@@ -1413,7 +1420,8 @@ namespace AttacheCase
                       e.Cancel = true;
                       return (false);
                     }
-　                 }// end while(len > 0);
+
+                  }// end while(len > 0);
 
                 }// end while ((len = ds.Read(byteArray, 0, BUFFER_SIZE)) > 0); 
 

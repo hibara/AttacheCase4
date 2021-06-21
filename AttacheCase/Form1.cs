@@ -1909,6 +1909,12 @@ namespace AttacheCase
         }
         else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 3)
         {
+          // Obsolete 
+          // pictureBoxRsa.Image = pictureBoxRsaOn.Image;
+        }
+        else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 4)
+        {
+          // RSA
           pictureBoxRsa.Image = pictureBoxRsaOn.Image;
         }
         else
@@ -2068,14 +2074,25 @@ namespace AttacheCase
 
         ProcessType = AppSettings.Instance.EncryptionSameFileTypeBefore;
 
-        if (AppSettings.Instance.EncryptionSameFileTypeAlways > 0)
+        if (AppSettings.Instance.EncryptionSameFileTypeAlways == 1)
         {
-          ProcessType = AppSettings.Instance.EncryptionSameFileTypeAlways;
+          ProcessType = PROCESS_TYPE_ATC;
         }
-
-        // Specified file type
-        if (ProcessType > 0)
+        else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 2)
         {
+          ProcessType = PROCESS_TYPE_ATC_EXE;
+        }
+        //else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 3)
+        //{
+        //  ProcessType = PROCESS_TYPE_PASSWORD_ZIP;
+        //}
+        else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 4)
+        {
+          ProcessType = PROCESS_TYPE_RSA_ENCRYPTION;
+        }
+        else
+        {
+          // 自動判別
           // Detect file type
           int AtcProcessType = AppSettings.Instance.DetectFileType();
 
@@ -2087,11 +2104,6 @@ namespace AttacheCase
           {
             ProcessType = AppSettings.Instance.DetectFileType();
           }
-        }
-        else
-        {
-          // Detect file type
-          ProcessType = AppSettings.Instance.DetectFileType();
         }
 
         if (AppSettings.Instance.FileList.Count() > 0)
@@ -2259,8 +2271,8 @@ namespace AttacheCase
               //   5: RSA key data ( XML file ), 
               if (AppSettings.Instance.CheckFileType(AppSettings.Instance.FileList[i]) == 5)
               {
-                // The lock file(public key) has been loaded.Drag and drop the ​file or folder to be encrypted here.
-                // ロックファイル（公開鍵）が読み込まれました。暗号化したいファイルまたはフォルダーをここへドラッグ＆ドロップしてください。
+                // The public key has been loaded.Drag and drop the ​file or folder to be encrypted here.
+                // 公開鍵が読み込まれました。暗号化したいファイルまたはフォルダーをここへドラッグ＆ドロップしてください。
                 labelRsaMessage.Text = Resources.labelRsaPublicKeyloaded;
                 labelRsaDescription.Text = Resources.labelRsaPublicKeyloaded;
 
@@ -2277,7 +2289,7 @@ namespace AttacheCase
                   XmlPublicKeyString = sr.ReadToEnd();  // Public key data ( XML data )
                 }
                 getXmlFileHash(AppSettings.Instance.FileList[i]);
-                comboBoxHashList.SelectedIndex = 2;
+                comboBoxHashList.SelectedIndex = 2; // SHA-1
                 labelRsa.Text = Resources.labelRsaPublicKey;
                 labelRsaKeyName.Text = Resources.labelRsaPublicKey;
                 pictureBoxRsaPage.Image = pictureBoxPublicKey.Image;
@@ -2288,8 +2300,8 @@ namespace AttacheCase
               }
               else if (AppSettings.Instance.CheckFileType(AppSettings.Instance.FileList[i]) == 6)
               {
-                // The key file(private key) has been loaded.Drag and drop the encrypted file to be decrypted here.
-                // キーファイル（秘密鍵）が読み込まれました。復号する暗号化ファイルをここへドラッグ＆ドロップしてください。
+                // The private key has been loaded.Drag and drop the encrypted file to be decrypted here.
+                // 秘密鍵が読み込まれました。復号する暗号化ファイルをここへドラッグ＆ドロップしてください。
                 labelRsaMessage.Text = Resources.labelRsaPrivateKeyloaded;
                 labelRsaDescription.Text = Resources.labelRsaPrivateKeyloaded;
 
@@ -2306,7 +2318,7 @@ namespace AttacheCase
                   XmlPrivateKeyString = sr.ReadToEnd();  // Private key data ( XML data )
                 }
                 getXmlFileHash(AppSettings.Instance.FileList[i]);
-                comboBoxHashList.SelectedIndex = 2;
+                comboBoxHashList.SelectedIndex = 0; // GUID
                 labelRsa.Text = Resources.labelRsaPrivateKey;
                 labelRsaKeyName.Text = Resources.labelRsaPrivateKey;
                 pictureBoxRsaPage.Image = pictureBoxPrivateKey.Image;
@@ -2318,8 +2330,8 @@ namespace AttacheCase
               //----------------------------------------------------------------------
               else if (AppSettings.Instance.CheckFileType(AppSettings.Instance.FileList[i]) == 4)
               {
-                // The encrypted file has been loaded. Drag and drop the key file　(private key) to be decrypted here.
-                // 暗号化ファイルが読み込まれました。復号するためのキーファイル（秘密鍵）をここへドラッグ＆ドロップしてください。
+                // The encrypted file has been loaded. Drag and drop the private key to be decrypted here.
+                // 暗号化ファイルが読み込まれました。復号するための秘密鍵をここへドラッグ＆ドロップしてください。
                 labelRsaMessage.Text = Resources.labelRsaEncryptedFileloaded;
                 panelEncrypt.Visible = false;
                 panelEncryptConfirm.Visible = false;
@@ -3153,24 +3165,25 @@ namespace AttacheCase
       buttonEncryptionPasswordOk.Enabled = true;
     }
 
-    private void ToolStripMenuItemZipPassword_Click(object sender, EventArgs e)
+    private void ToolStripMenuItemRsa_Click(object sender, EventArgs e)
     {
-      // Encrypt to Zip file
-      AppSettings.Instance.EncryptionFileType = FILE_TYPE_PASSWORD_ZIP;
-      pictureBoxEncryption.Image = pictureBoxRsaOn.Image;
-      labelEncryption.Text = labelZip.Text;
-      //pictureBoxEncryption.Image = pictureBoxZipOn.Image;
-      textBoxPassword.Focus();
+      // Encrypt to RSA
+      AppSettings.Instance.EncryptionFileType = FILE_TYPE_NONE;
 
-      //In the case of ZIP files, it must be more than one character of the password.
-      if (textBoxPassword.Text == "")
-      {
-        buttonEncryptionPasswordOk.Enabled = false;
-      }
-      else
-      {
-        buttonEncryptionPasswordOk.Enabled = true;
-      }
+      // キーファイル待ち
+      // Waiting for specifying key file
+      fWaitingForKeyFile = true;
+
+      // ファイルまたはフォルダーが読み込まれました。暗号化するための公開鍵をここへドラッグ＆ドロップしてください。
+      // The file or folder has been loaded.Drag and drop the public key to be encrypted here.
+      labelRsaMessage.Text = Resources.labelRsaFilesloaded;
+      panelEncrypt.Visible = false;
+      panelEncryptConfirm.Visible = false;
+      panelDecrypt.Visible = false;
+      panelRsa.Visible = true;
+      panelRsaKey.Visible = false;
+      panelProgressState.Visible = false;
+      panelStartPage.Visible = false;
 
     }
 
@@ -4345,8 +4358,6 @@ namespace AttacheCase
 
         int TotalNumberOfFiles = AppSettings.Instance.FileList.Count();
         string FileListPath = AppSettings.Instance.FileList[FileIndex];
-
-        Console.WriteLine(FileListPath);
 
         if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_NONE ||
             AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC ||

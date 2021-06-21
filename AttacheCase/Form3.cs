@@ -58,10 +58,11 @@ namespace AttacheCase
     private const int FILE_TYPE_NONE         = 0;
     private const int FILE_TYPE_ATC          = 1;
     private const int FILE_TYPE_ATC_EXE      = 2;
-    private const int FILE_TYPE_PASSWORD_ZIP = 3;
+		private const int FILE_TYPE_PASSWORD_ZIP = 3;
+		private const int FILE_TYPE_RSA          = 4;
 
-    // Process Type
-    private const int PROCESS_TYPE_ERROR        = -1;
+		// Process Type
+		private const int PROCESS_TYPE_ERROR        = -1;
     private const int PROCESS_TYPE_NONE         = 0;
     private const int PROCESS_TYPE_ATC          = 1;
     private const int PROCESS_TYPE_ATC_EXE      = 2;
@@ -406,12 +407,18 @@ namespace AttacheCase
       {
         radioButtonEncryptionFileTypeEXE.Checked = true;
       }
-      else if (AppSettings.Instance.EncryptionSameFileTypeAlways == FILE_TYPE_PASSWORD_ZIP)
-      {
-        radioButtonEncryptionFileTypeZIP.Checked = true;
-      }
-      else
-      {
+			else if (AppSettings.Instance.EncryptionSameFileTypeAlways == FILE_TYPE_PASSWORD_ZIP)
+			{
+				// Obsolete
+				// radioButtonEncryptionFileTypeRsa.Checked = true;
+				radioButtonNotSpecified.Checked = true;	// Default
+			}
+			else if (AppSettings.Instance.EncryptionSameFileTypeAlways == FILE_TYPE_RSA)
+			{
+				radioButtonEncryptionFileTypeRsa.Checked = true;
+			}
+			else
+			{
         radioButtonNotSpecified.Checked = true;
       }
 
@@ -1145,9 +1152,9 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         AppSettings.Instance.EncryptionSameFileTypeAlways = FILE_TYPE_ATC_EXE;
         AppSettings.Instance.fSaveToExeout = true;
       }
-      else if (radioButtonEncryptionFileTypeZIP.Checked == true)
+      else if (radioButtonEncryptionFileTypeRsa.Checked == true)
       {
-        AppSettings.Instance.EncryptionSameFileTypeAlways = FILE_TYPE_PASSWORD_ZIP;
+        AppSettings.Instance.EncryptionSameFileTypeAlways = FILE_TYPE_RSA;
       }
       else
       {
