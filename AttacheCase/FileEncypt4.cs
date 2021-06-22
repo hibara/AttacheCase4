@@ -534,9 +534,12 @@ namespace AttacheCase
 #if DEBUG
                 OneLine += ((int)Items[8]).ToString() + "\t";
 #endif
-                // Check sum (MD5)
-                byteArray = (byte[])Items[9];
-                ms.Write(byteArray, 0, 16);
+                if (FileSize > 0)
+                {
+                  // Check sum (MD5)
+                  byteArray = (byte[])Items[9];
+                  ms.Write(byteArray, 0, 16);
+                }
 #if DEBUG
                 OneLine += BitConverter.ToString((byte[])Items[9]).Replace("-", "");
                 DebugList.Add(OneLine);   // デバッグ
@@ -687,9 +690,12 @@ namespace AttacheCase
 #if DEBUG
                     OneLine += ((int)Items[8]).ToString() + "\t";
 #endif
-                    // Check sum (MD5)
-                    byteArray = (Byte[])Items[9];
-                    ms.Write(byteArray, 0, 16);
+                    if (FileSize > 0)
+                    {
+                      // Check sum (MD5)
+                      byteArray = (Byte[])Items[9];
+                      ms.Write(byteArray, 0, 16);
+                    }
 #if DEBUG
                     OneLine += BitConverter.ToString((Byte[])Items[9]).Replace("-", "");
                     DebugList.Add(OneLine);
