@@ -1,5 +1,5 @@
 ﻿//---------------------------------------------------------------------- 
-// "アタッシェケース#3 ( AttachéCase#3 )" -- File encryption software.
+// "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
 // Copyright (C) 2016-2021  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -4898,7 +4898,7 @@ namespace AttacheCase
         {
           if (File.Exists(AppSettings.Instance.PassFilePathDecrypt) == true)
           {
-            if (decryption3.DataFileVersion < 130)
+            if (decryption4.DataFileVersion < 130)
             {
               DecryptionPasswordBinary = GetPasswordFileHash2(AppSettings.Instance.PassFilePathDecrypt);
             }

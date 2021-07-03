@@ -118,34 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="labelBeta.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="labelBeta.Location" type="System.Drawing.Point, System.Drawing">
-    <value>227, 37</value>
-  </data>
-  <data name="labelBeta.Size" type="System.Drawing.Size, System.Drawing">
-    <value>35, 12</value>
-  </data>
-  <data name="labelBeta.TabIndex" type="System.Int32, mscorlib">
-    <value>41</value>
-  </data>
-  <data name="labelBeta.Text" xml:space="preserve">
-    <value>BETA</value>
-  </data>
-  <data name="&gt;&gt;labelBeta.Name" xml:space="preserve">
-    <value>labelBeta</value>
-  </data>
-  <data name="&gt;&gt;labelBeta.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;labelBeta.Parent" xml:space="preserve">
-    <value>panelVersion</value>
-  </data>
-  <data name="&gt;&gt;labelBeta.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="labelEmailAddress.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -153,6 +125,7 @@
   <data name="labelEmailAddress.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="labelEmailAddress.Location" type="System.Drawing.Point, System.Drawing">
     <value>129, 48</value>
   </data>
@@ -388,7 +361,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;panelCommercialLicense.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>0</value>
   </data>
   <data name="labelFreeLicence.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -418,7 +391,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;labelFreeLicence.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>1</value>
   </data>
   <data name="pictureBoxExclamationMark.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -456,7 +429,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;pictureBoxExclamationMark.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>2</value>
   </data>
   <data name="pictureBoxCheckMark.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -502,7 +475,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;pictureBoxCheckMark.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>3</value>
   </data>
   <data name="linkLabelCheckForUpdates.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left</value>
@@ -538,7 +511,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;linkLabelCheckForUpdates.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>4</value>
   </data>
   <data name="pictureBoxProgressCircle.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Left</value>
@@ -587,7 +560,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;pictureBoxProgressCircle.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>5</value>
   </data>
   <data name="buttonOK.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -620,7 +593,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;buttonOK.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>6</value>
   </data>
   <data name="linkLabel2.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -653,7 +626,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;linkLabel2.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>7</value>
   </data>
   <data name="pictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -693,7 +666,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;pictureBox1.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>8</value>
   </data>
   <data name="pictureBoxHome.ErrorImage" type="System.Resources.ResXNullRef, System.Windows.Forms">
     <value />
@@ -738,7 +711,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;pictureBoxHome.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>9</value>
   </data>
   <data name="linkLabel1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -771,7 +744,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;linkLabel1.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>10</value>
   </data>
   <data name="labelCopyright.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -804,7 +777,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;labelCopyright.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>11</value>
   </data>
   <data name="pictureBoxApplicationIcon.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -921,7 +894,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;pictureBoxApplicationIcon.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>12</value>
   </data>
   <data name="labelVersion.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -954,7 +927,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;labelVersion.ZOrder" xml:space="preserve">
-    <value>14</value>
+    <value>13</value>
   </data>
   <data name="labelAppName.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -987,7 +960,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;labelAppName.ZOrder" xml:space="preserve">
-    <value>15</value>
+    <value>14</value>
   </data>
   <data name="buttonRegisterLicense.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -1014,7 +987,7 @@
     <value>panelVersion</value>
   </data>
   <data name="&gt;&gt;buttonRegisterLicense.ZOrder" xml:space="preserve">
-    <value>16</value>
+    <value>15</value>
   </data>
   <data name="panelVersion.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>

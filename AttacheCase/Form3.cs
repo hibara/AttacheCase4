@@ -1,5 +1,5 @@
 ﻿//---------------------------------------------------------------------- 
-// "アタッシェケース#3 ( AttachéCase#3 )" -- File encryption software.
+// "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
 // Copyright (C) 2016-2021  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -285,29 +285,72 @@ namespace AttacheCase
 			// Read settings from AppSettings class 
 			// 各設定を読み込む
 			//======================================================================
+			ReadSettingsAndRefreshControl(sender, e);
 
+			//-----------------------------------
+			splitButton1.Text = toolStripMenuItemOnlineHelp.Text;
+			buttonApply.Enabled = false;
+
+			fLoading = false;
+
+		}
+
+		private void Form3_Shown(object sender, EventArgs e)
+		{
+			// The item in the TreeView in the selected state and same panel is open.
+			//ツリービューで特定の設定項目を選択状態にする（パネル表示も行う）
+			//treeView1.SelectedNode = treeView1.Nodes[0].Nodes[1];
+			int Index = 0;
+			int ActiveIndexNum = (int)AppSettings.Instance.ActiveTreeNode;
+
+			//ツリービューで特定の設定項目を選択状態にする（パネル表示も行う）
+			setTreeViewNodeIndex(treeView1.Nodes, ActiveIndexNum, ref Index);
+
+      //TreeNode treeNode = treeView1.Nodes[AppSettings.Instance.ActiveTreeNode];
+      //treeView1.SelectedNode = treeNode;
+
+      labelTimes.Left = comboBoxMissTypeLimitsNum.Left + comboBoxMissTypeLimitsNum.Width + 4;
+
+      treeView1.Focus();
+
+		}
+
+		private void Form3_FormClosed(object sender, FormClosedEventArgs e)
+		{
+			// Save the index number of the option treeview node
+			//開いているノードのインデックス番号を保存する
+			AppSettings.Instance.ActiveTreeNode = getTreeViewNodeIndex();
+
+		}
+
+		/// <summary>
+		/// Read the settings and reflect them in the each control
+		/// 設定を読み込み各動作設定コントロール表示に反映する
+		/// </summary>
+		private void ReadSettingsAndRefreshControl(object sender, EventArgs e)
+    {
 			//-----------------------------------
 			// General
 			//-----------------------------------
-      #region
+			#region
 			checkBoxEndToExit.Checked = AppSettings.Instance.fEndToExit;
 
 			checkBoxOpenFile.Checked = AppSettings.Instance.fOpenFile;
 
-      checkBoxShowDialogWhenExeFile.Checked = AppSettings.Instance.fShowDialogWhenExeFile;
+			checkBoxShowDialogWhenExeFile.Checked = AppSettings.Instance.fShowDialogWhenExeFile;
 
-      if( AppSettings.Instance.ShowDialogWhenMultipleFilesNum > 0)
-      {
-        checkBoxShowDialogWhenMultipleFiles.Checked = true;
-        numericUpDownLaunchFiles.Value = AppSettings.Instance.ShowDialogWhenMultipleFilesNum;
-      }
+			if (AppSettings.Instance.ShowDialogWhenMultipleFilesNum > 0)
+			{
+				checkBoxShowDialogWhenMultipleFiles.Checked = true;
+				numericUpDownLaunchFiles.Value = AppSettings.Instance.ShowDialogWhenMultipleFilesNum;
+			}
 
-      checkBoxAskEncDecode.Checked = AppSettings.Instance.fAskEncDecode;
+			checkBoxAskEncDecode.Checked = AppSettings.Instance.fAskEncDecode;
 
 			checkBoxNoHidePassword.Checked = AppSettings.Instance.fNotMaskPassword;
 
-      switch (AppSettings.Instance.ThemeColorName)
-      {
+			switch (AppSettings.Instance.ThemeColorName)
+			{
 				case "light":
 					comboBoxThemeColor.SelectedIndex = 1;
 					break;
@@ -336,7 +379,7 @@ namespace AttacheCase
 					comboBoxLanguage.SelectedIndex = 2;
 					break;
 
-				case "":	// Default（既定値）
+				case "":  // Default（既定値）
 				default:
 					if (Thread.CurrentThread.CurrentCulture.Name == "ja-JP")
 					{
@@ -358,12 +401,12 @@ namespace AttacheCase
 			TreeNode treeNode = treeView1.Nodes[AppSettings.Instance.TabSelectedIndex];
 			treeView1.SelectedNode = treeNode;
 
-      #endregion
+			#endregion
 
 			//-----------------------------------
 			// Password
 			//-----------------------------------
-      #region
+			#region
 			checkBoxMyEncodePasswordKeep.Checked = AppSettings.Instance.fMyEncryptPasswordKeep;
 			if (AppSettings.Instance.MyEncryptPasswordString != null)
 			{
@@ -376,14 +419,14 @@ namespace AttacheCase
 			}
 			checkBoxDobyMemorizedPassword.Checked = AppSettings.Instance.fMemPasswordExe;
 
-      checkBoxEnablePassStrengthMeter.Checked = AppSettings.Instance.fPasswordStrengthMeter;
+			checkBoxEnablePassStrengthMeter.Checked = AppSettings.Instance.fPasswordStrengthMeter;
 
-      #endregion
+			#endregion
 
 			//-----------------------------------
 			// Window
 			//-----------------------------------
-      #region
+			#region
 			checkBoxMainWindowMinimize.Checked = AppSettings.Instance.fMainWindowMinimize;
 			checkBoxTaskBarHide.Checked = AppSettings.Instance.fTaskBarHide;
 			checkBoxTaskTrayIcon.Checked = AppSettings.Instance.fTaskTrayIcon;
@@ -400,18 +443,18 @@ namespace AttacheCase
 
 			// Encryption will be the same file type always.
 			if (AppSettings.Instance.EncryptionSameFileTypeAlways == FILE_TYPE_ATC)
-      {
-        radioButtonEncryptionFileTypeATC.Checked = true;
-      }
-      else if (AppSettings.Instance.EncryptionSameFileTypeAlways == FILE_TYPE_ATC_EXE)
-      {
-        radioButtonEncryptionFileTypeEXE.Checked = true;
-      }
+			{
+				radioButtonEncryptionFileTypeATC.Checked = true;
+			}
+			else if (AppSettings.Instance.EncryptionSameFileTypeAlways == FILE_TYPE_ATC_EXE)
+			{
+				radioButtonEncryptionFileTypeEXE.Checked = true;
+			}
 			else if (AppSettings.Instance.EncryptionSameFileTypeAlways == FILE_TYPE_PASSWORD_ZIP)
 			{
 				// Obsolete
 				// radioButtonEncryptionFileTypeRsa.Checked = true;
-				radioButtonNotSpecified.Checked = true;	// Default
+				radioButtonNotSpecified.Checked = true; // Default
 			}
 			else if (AppSettings.Instance.EncryptionSameFileTypeAlways == FILE_TYPE_RSA)
 			{
@@ -419,26 +462,26 @@ namespace AttacheCase
 			}
 			else
 			{
-        radioButtonNotSpecified.Checked = true;
-      }
+				radioButtonNotSpecified.Checked = true;
+			}
 
-      // Save same encryption type that was used to before.
-      if (AppSettings.Instance.fEncryptionSameFileTypeBefore == true)
-      {
-        checkBoxEncryptionSameFileTypeBefore.Checked = true;
-      }
-      else
-      {
-        checkBoxEncryptionSameFileTypeBefore.Checked = false;
-      }
+			// Save same encryption type that was used to before.
+			if (AppSettings.Instance.fEncryptionSameFileTypeBefore == true)
+			{
+				checkBoxEncryptionSameFileTypeBefore.Checked = true;
+			}
+			else
+			{
+				checkBoxEncryptionSameFileTypeBefore.Checked = false;
+			}
 
-      #endregion
+			#endregion
 
-      //-----------------------------------
-      // Save Encrypt
-      //-----------------------------------
-      #region
-      checkBoxSaveToSameFldr.Checked = AppSettings.Instance.fSaveToSameFldr;
+			//-----------------------------------
+			// Save Encrypt
+			//-----------------------------------
+			#region
+			checkBoxSaveToSameFldr.Checked = AppSettings.Instance.fSaveToSameFldr;
 			if (checkBoxSaveToSameFldr.Checked == true)
 			{
 				textBoxSaveEncryptionToSameFolder.Enabled = true;
@@ -453,11 +496,11 @@ namespace AttacheCase
 			}
 			textBoxSaveEncryptionToSameFolder.Text = AppSettings.Instance.SaveToSameFldrPath;
 			checkBoxConfirmSameFileName.Checked = AppSettings.Instance.fEncryptConfirmOverwrite;
-			
+
 			radioButtonNormal.Checked = AppSettings.Instance.fNormal;
 			radioButtonAllFilePack.Checked = AppSettings.Instance.fAllFilePack;
 			radioButtonFilesOneByOne.Checked = AppSettings.Instance.fFilesOneByOne;
-			
+
 			checkBoxKeepTimeStamp.Checked = AppSettings.Instance.fKeepTimeStamp;
 			checkBoxExtInAtcFileName.Checked = AppSettings.Instance.fExtInAtcFileName;
 			checkBoxAutoName.Checked = AppSettings.Instance.fAutoName;
@@ -468,86 +511,86 @@ namespace AttacheCase
 			ToolStripMenuItemNumbers.Checked = AppSettings.Instance.fAutoNameNumbers;
 			ToolStripMenuItemSymbols.Checked = AppSettings.Instance.fAutoNameSymbols;
 
-      #endregion
-			
+			#endregion
+
 			//-----------------------------------
 			// Save Decrypt
 			//-----------------------------------
-      #region
+			#region
 			checkBoxDecodeToSameFldr.Checked = AppSettings.Instance.fDecodeToSameFldr;
-      if (checkBoxDecodeToSameFldr.Checked == true)
-      {
-        textBoxDecodeToSameFldrPath.Enabled = true;
-        textBoxDecodeToSameFldrPath.BackColor = SystemColors.Window;
-        buttonSaveDecryptedFileToFolder.Enabled = true;
-      }
-      else
-      {
-        textBoxDecodeToSameFldrPath.Enabled = false;
-        textBoxDecodeToSameFldrPath.BackColor = SystemColors.ButtonFace;
-        buttonSaveDecryptedFileToFolder.Enabled = false;
-      }
-      textBoxDecodeToSameFldrPath.Text = AppSettings.Instance.DecodeToSameFldrPath;
+			if (checkBoxDecodeToSameFldr.Checked == true)
+			{
+				textBoxDecodeToSameFldrPath.Enabled = true;
+				textBoxDecodeToSameFldrPath.BackColor = SystemColors.Window;
+				buttonSaveDecryptedFileToFolder.Enabled = true;
+			}
+			else
+			{
+				textBoxDecodeToSameFldrPath.Enabled = false;
+				textBoxDecodeToSameFldrPath.BackColor = SystemColors.ButtonFace;
+				buttonSaveDecryptedFileToFolder.Enabled = false;
+			}
+			textBoxDecodeToSameFldrPath.Text = AppSettings.Instance.DecodeToSameFldrPath;
 			checkBoxDecryptConfirmOverwrite.Checked = AppSettings.Instance.fDecryptConfirmOverwrite;
 			checkBoxfNoParentFldr.Checked = AppSettings.Instance.fNoParentFldr;
 			checkBoxSameTimeStamp.Checked = AppSettings.Instance.fSameTimeStamp;
 
-      #endregion
+			#endregion
 
-      //-----------------------------------
-      // Save ZIP
-      //-----------------------------------
-      #region
-      checkBoxZipToSameFldr.Checked = AppSettings.Instance.fZipToSameFldr;
-      textBoxZipToSameFldrPath.Text = AppSettings.Instance.ZipToSameFldrPath;
-      checkBoxZipConfirmOverwrite.Checked = AppSettings.Instance.fZipConfirmOverwrite;
-      comboBoxZipEncryptAlgo.SelectedIndex = AppSettings.Instance.ZipEncryptionAlgorithm;
+			//-----------------------------------
+			// Save ZIP
+			//-----------------------------------
+			#region
+			checkBoxZipToSameFldr.Checked = AppSettings.Instance.fZipToSameFldr;
+			textBoxZipToSameFldrPath.Text = AppSettings.Instance.ZipToSameFldrPath;
+			checkBoxZipConfirmOverwrite.Checked = AppSettings.Instance.fZipConfirmOverwrite;
+			comboBoxZipEncryptAlgo.SelectedIndex = AppSettings.Instance.ZipEncryptionAlgorithm;
 
-      #endregion
+			#endregion
 
-      //-----------------------------------
-      // Delete
-      //-----------------------------------
-      #region
-      checkBoxDelOrgFile.Checked = AppSettings.Instance.fDelOrgFile;
+			//-----------------------------------
+			// Delete
+			//-----------------------------------
+			#region
+			checkBoxDelOrgFile.Checked = AppSettings.Instance.fDelOrgFile;
 			checkBoxEncryptShowDeleteChkBox.Checked = AppSettings.Instance.fEncryptShowDelChkBox;
 			checkBoxConfirmToDeleteAfterEncryption.Checked = AppSettings.Instance.fConfirmToDeleteAfterEncryption;
 			checkBoxDelEncFile.Checked = AppSettings.Instance.fDelEncFile;
 			checkBoxDecryptShowDeleteChkBox.Checked = AppSettings.Instance.fDecryptShowDelChkBox;
 			checkBoxConfirmToDeleteAfterDecryption.Checked = AppSettings.Instance.fConfirmToDeleteAfterDecryption;
 
-      //[0: Not delete, 1: Normal Delete, 2: Send to Trash, 3: Complete erase ]         
-      if (AppSettings.Instance.fCompleteDelFile == 2)
-      {
-        // Send to trash
-        radioNormalDelete.Checked = false;
-        radioButtonSendToTrash.Checked = true;
-        radioButtonCompleteErase.Checked = false;
-      }
-      else if(AppSettings.Instance.fCompleteDelFile == 3)
-      {
-        // Complete erase
-        radioNormalDelete.Checked = false;
-        radioButtonSendToTrash.Checked = false;
-        radioButtonCompleteErase.Checked = true;
-      }
-      else
-      {
-        // Normal Delete
-        radioNormalDelete.Checked = true;
-        radioButtonSendToTrash.Checked = false;
-        radioButtonCompleteErase.Checked = false;
-      }
+			//[0: Not delete, 1: Normal Delete, 2: Send to Trash, 3: Complete erase ]         
+			if (AppSettings.Instance.fCompleteDelFile == 2)
+			{
+				// Send to trash
+				radioNormalDelete.Checked = false;
+				radioButtonSendToTrash.Checked = true;
+				radioButtonCompleteErase.Checked = false;
+			}
+			else if (AppSettings.Instance.fCompleteDelFile == 3)
+			{
+				// Complete erase
+				radioNormalDelete.Checked = false;
+				radioButtonSendToTrash.Checked = false;
+				radioButtonCompleteErase.Checked = true;
+			}
+			else
+			{
+				// Normal Delete
+				radioNormalDelete.Checked = true;
+				radioButtonSendToTrash.Checked = false;
+				radioButtonCompleteErase.Checked = false;
+			}
 
-      if (radioButtonCompleteErase.Checked == true)
-      {
-        groupBoxCompleteDelete.Enabled = true;
-      }
-      else
-      {
-        groupBoxCompleteDelete.Enabled = false;
-      }
-      numericUpDownDelRandNum.Value = AppSettings.Instance.DelRandNum;
+			if (radioButtonCompleteErase.Checked == true)
+			{
+				groupBoxCompleteDelete.Enabled = true;
+			}
+			else
+			{
+				groupBoxCompleteDelete.Enabled = false;
+			}
+			numericUpDownDelRandNum.Value = AppSettings.Instance.DelRandNum;
 			numericUpDownDelZeroNum.Value = AppSettings.Instance.DelZeroNum;
 			numericUpDownDelRandNum.Enabled = false;
 			numericUpDownDelZeroNum.Enabled = false;
@@ -557,12 +600,12 @@ namespace AttacheCase
 			radioButtonCompleteErase_CheckedChanged(sender, e);
 			checkBoxDelOrgFile_CheckedChanged(sender, e);
 
-      #endregion
+			#endregion
 
 			//-----------------------------------
 			// Compress
 			//-----------------------------------
-      #region
+			#region
 			if (AppSettings.Instance.CompressRate > 0)
 			{
 				checkBoxCompressionOption.Checked = true;
@@ -578,40 +621,40 @@ namespace AttacheCase
 
 			trackBarCompressRate_ValueChanged(sender, e);
 
-      #endregion
+			#endregion
 
 			//-----------------------------------
 			// System
 			//-----------------------------------
-      #region
+			#region
 			buttonAssociateAtcFiles.Enabled = true;
 			buttonUnAssociateAtcFiles.Enabled = false;
 
 			// 関連付け設定の確認
-      using (Microsoft.Win32.RegistryKey regAtc = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(@".atc"))
-      {
-        if (regAtc == null)
-        {
-          buttonAssociateAtcFiles.Enabled = true;
-          buttonUnAssociateAtcFiles.Enabled = false;
-        }
-        else
-        {
-          using (Microsoft.Win32.RegistryKey regAppName = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(regAtc + @"\DefaultIcon"))
-          {
-            if (regAppName == null)
-            {
-              buttonAssociateAtcFiles.Enabled = true;
-              buttonUnAssociateAtcFiles.Enabled = true;
-            }
-            else
-            {
-              buttonAssociateAtcFiles.Enabled = true;
-              buttonUnAssociateAtcFiles.Enabled = false;
-            }
-          }
-        }
-      }
+			using (Microsoft.Win32.RegistryKey regAtc = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(@".atc"))
+			{
+				if (regAtc == null)
+				{
+					buttonAssociateAtcFiles.Enabled = true;
+					buttonUnAssociateAtcFiles.Enabled = false;
+				}
+				else
+				{
+					using (Microsoft.Win32.RegistryKey regAppName = Microsoft.Win32.Registry.ClassesRoot.OpenSubKey(regAtc + @"\DefaultIcon"))
+					{
+						if (regAppName == null)
+						{
+							buttonAssociateAtcFiles.Enabled = true;
+							buttonUnAssociateAtcFiles.Enabled = true;
+						}
+						else
+						{
+							buttonAssociateAtcFiles.Enabled = true;
+							buttonUnAssociateAtcFiles.Enabled = false;
+						}
+					}
+				}
+			}
 			//----------------------------------------------------------------------
 			// 関連付けアイコンの設定
 			//----------------------------------------------------------------------
@@ -628,7 +671,7 @@ namespace AttacheCase
 				Bitmap bmpmark = new Bitmap(pictureBoxCheckmarkMyIcon.Image);
 				bmpmark.MakeTransparent();
 
-				g.DrawImage(bmpmark, new Point(0, 0));	// Left, Top
+				g.DrawImage(bmpmark, new Point(0, 0));  // Left, Top
 				g.Dispose();
 
 				pictureBoxMyIcon.Image = canvas;
@@ -649,35 +692,35 @@ namespace AttacheCase
 					case "3":
 						pictureBoxCheckmark03.Visible = true;
 						break;
-					default:	// 0
+					default:  // 0
 						pictureBoxCheckmark00.Visible = true;
 						break;
 				}
 
-      }
+			}
 
-      #endregion
+			#endregion
 
-      //-----------------------------------
-      // Import / Export
-      #region
-      if (AppSettings.Instance.fAlwaysReadIniFile == true)
-      {
-        checkBoxAlwaysReadIniFile.Checked = true;
-      }
-      else
-      {
-        checkBoxAlwaysReadIniFile.Checked = false;
-      }
+			//-----------------------------------
+			// Import / Export
+			#region
+			if (AppSettings.Instance.fAlwaysReadIniFile == true)
+			{
+				checkBoxAlwaysReadIniFile.Checked = true;
+			}
+			else
+			{
+				checkBoxAlwaysReadIniFile.Checked = false;
+			}
 
-      if (AppSettings.Instance.fShowDialogToConfirmToReadIniFile == true)
-      {
-        checkBoxShowDialogToConfirmToReadIniFileAlways.Checked = true;
-      }
-      else
-      {
-        checkBoxShowDialogToConfirmToReadIniFileAlways.Checked = false;
-      }
+			if (AppSettings.Instance.fShowDialogToConfirmToReadIniFile == true)
+			{
+				checkBoxShowDialogToConfirmToReadIniFileAlways.Checked = true;
+			}
+			else
+			{
+				checkBoxShowDialogToConfirmToReadIniFileAlways.Checked = false;
+			}
 			#endregion
 
 			//-----------------------------------
@@ -700,11 +743,11 @@ namespace AttacheCase
 			comboBoxMissTypeLimitsNum.SelectedIndex = AppSettings.Instance.MissTypeLimitsNum - 1;
 			checkBoxBroken.Checked = AppSettings.Instance.fBroken;
 
-      //-----------------------------------
-      // Salvage data
-      checkBoxSalvageIntoSameDirectory.Checked = AppSettings.Instance.fSalvageIntoSameDirectory;
-      checkBoxSalvageToCreateParentFolderOneByOne.Checked = AppSettings.Instance.fSalvageToCreateParentFolderOneByOne;
-      checkBoxSalvageIgnoreHashCheck.Checked = AppSettings.Instance.fSalvageIgnoreHashCheck;
+			//-----------------------------------
+			// Salvage data
+			checkBoxSalvageIntoSameDirectory.Checked = AppSettings.Instance.fSalvageIntoSameDirectory;
+			checkBoxSalvageToCreateParentFolderOneByOne.Checked = AppSettings.Instance.fSalvageToCreateParentFolderOneByOne;
+			checkBoxSalvageIgnoreHashCheck.Checked = AppSettings.Instance.fSalvageIgnoreHashCheck;
 
 			//-----------------------------------
 			// Camouflage Extension
@@ -906,41 +949,6 @@ OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ";
 			#endregion
-
-			//-----------------------------------
-			splitButton1.Text = toolStripMenuItemOnlineHelp.Text;
-			buttonApply.Enabled = false;
-
-			fLoading = false;
-
-		}
-
-		private void Form3_Shown(object sender, EventArgs e)
-		{
-			// The item in the TreeView in the selected state and same panel is open.
-			//ツリービューで特定の設定項目を選択状態にする（パネル表示も行う）
-			//treeView1.SelectedNode = treeView1.Nodes[0].Nodes[1];
-			int Index = 0;
-			int ActiveIndexNum = (int)AppSettings.Instance.ActiveTreeNode;
-
-			//ツリービューで特定の設定項目を選択状態にする（パネル表示も行う）
-			setTreeViewNodeIndex(treeView1.Nodes, ActiveIndexNum, ref Index);
-
-      //TreeNode treeNode = treeView1.Nodes[AppSettings.Instance.ActiveTreeNode];
-      //treeView1.SelectedNode = treeNode;
-
-      labelTimes.Left = comboBoxMissTypeLimitsNum.Left + comboBoxMissTypeLimitsNum.Width + 4;
-
-      treeView1.Focus();
-
-		}
-
-		private void Form3_FormClosed(object sender, FormClosedEventArgs e)
-		{
-			// Save the index number of the option treeview node
-			//開いているノードのインデックス番号を保存する
-			AppSettings.Instance.ActiveTreeNode = getTreeViewNodeIndex();
-
 		}
 
 		/// <summary>
@@ -2236,10 +2244,16 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       openFileDialog1.FileName = "_AtcCase.ini";
       if (openFileDialog1.ShowDialog() == DialogResult.OK)
       {
-        AppSettings.Instance.ReadOptionFromIniFile(saveFileDialog1.FileName);
-      }
+        AppSettings.Instance.ReadOptionFromIniFile(openFileDialog1.FileName);
+				//======================================================================
+				// Read settings from AppSettings class 
+				// 各設定を読み込む
+				//======================================================================
+				ReadSettingsAndRefreshControl(sender, e);
 
-    }
+			}
+
+		}
 
     /// <summary>
     /// Replace the current configuration by this temporary configuration

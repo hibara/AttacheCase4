@@ -32,7 +32,6 @@
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
       this.panelVersion = new System.Windows.Forms.Panel();
-      this.labelBeta = new System.Windows.Forms.Label();
       this.panelCommercialLicense = new System.Windows.Forms.Panel();
       this.labelEmailAddress = new System.Windows.Forms.Label();
       this.labelEmailTitle = new System.Windows.Forms.Label();
@@ -100,7 +99,6 @@
       // 
       // panelVersion
       // 
-      this.panelVersion.Controls.Add(this.labelBeta);
       this.panelVersion.Controls.Add(this.panelCommercialLicense);
       this.panelVersion.Controls.Add(this.labelFreeLicence);
       this.panelVersion.Controls.Add(this.pictureBoxExclamationMark);
@@ -119,11 +117,6 @@
       this.panelVersion.Controls.Add(this.buttonRegisterLicense);
       resources.ApplyResources(this.panelVersion, "panelVersion");
       this.panelVersion.Name = "panelVersion";
-      // 
-      // labelBeta
-      // 
-      resources.ApplyResources(this.labelBeta, "labelBeta");
-      this.labelBeta.Name = "labelBeta";
       // 
       // panelCommercialLicense
       // 
@@ -420,6 +413,5 @@
     private System.Windows.Forms.Label labelCommerciaUseLicense;
     private System.Windows.Forms.Label labelUserName;
     private System.Windows.Forms.LinkLabel linkLabelPurchase;
-    private System.Windows.Forms.Label labelBeta;
   }
 }

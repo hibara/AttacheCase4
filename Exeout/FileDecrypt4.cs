@@ -26,8 +26,8 @@ using System.Security.Cryptography;
 using System.IO.Compression;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Xml.Linq;
 using System.Linq;
+using System.Xml.Linq;
 #if __MACOS__
 using AppKit;
 #endif
@@ -833,7 +833,14 @@ namespace AttacheCase
               // File path
               //
               string OutFilePath = "";
-              OutFilePath = Path.Combine(OutDirPath, fd.FilePath);
+              if (Path.IsPathRooted(fd.FilePath) == true)
+              {
+                OutFilePath = OutDirPath + fd.FilePath;
+              }
+              else
+              {
+                OutFilePath = Path.Combine(OutDirPath, fd.FilePath);
+              }
 
               //-----------------------------------
               // ディレクトリ・トラバーサル対策
@@ -891,7 +898,7 @@ namespace AttacheCase
               byteArray = new byte[4];
               ms.Read(byteArray, 0, 4);
               fd.FileAttribute = BitConverter.ToInt32(byteArray, 0);
-                  
+
               // Last write DateTime;
               TimeZoneInfo tzi = TimeZoneInfo.Local;  // UTC to Local time
                   
@@ -903,7 +910,7 @@ namespace AttacheCase
               LastWriteDateTimeString = LastWriteDateTimeString + BitConverter.ToInt32(byteArray, 0).ToString(" 00:00:00");
               DateTime.TryParse(LastWriteDateTimeString, out fd.LastWriteDateTime);
               fd.LastWriteDateTime = TimeZoneInfo.ConvertTimeFromUtc(fd.LastWriteDateTime, tzi);
-                  
+
               // Creation DateTime
               byteArray = new byte[4];
               ms.Read(byteArray, 0, 4);
@@ -913,7 +920,7 @@ namespace AttacheCase
               CreationDateTimeString = CreationDateTimeString + BitConverter.ToInt32(byteArray, 0).ToString(" 00:00:00");
               DateTime.TryParse(CreationDateTimeString, out fd.CreationDateTime);
               fd.CreationDateTime = TimeZoneInfo.ConvertTimeFromUtc(fd.CreationDateTime, tzi);
-                  
+
               if (fd.FileSize > 0)
               {
                 // Check sum ( MD5 hash )
@@ -1353,7 +1360,7 @@ namespace AttacheCase
 
                         // ハッシュ値のチェック
                         // Check the hash of a file
-                        if (_fSalvageIgnoreHashCheck == false)
+                        if (_fSalvageIgnoreHashCheck == false && FileSize > 0)
                         {
                           byte[] hash = getMd5Hash(FileDataList[FileIndex].FilePath);
                           if (System.Linq.Enumerable.SequenceEqual(hash, FileDataList[FileIndex].Hash) == false )
@@ -1413,7 +1420,8 @@ namespace AttacheCase
                       e.Cancel = true;
                       return (false);
                     }
-　                 }// end while(len > 0);
+
+                  }// end while(len > 0);
 
                 }// end while ((len = ds.Read(byteArray, 0, BUFFER_SIZE)) > 0); 
 

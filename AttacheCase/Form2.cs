@@ -1,5 +1,5 @@
 ﻿//---------------------------------------------------------------------- 
-// "アタッシェケース#3 ( AttachéCase#3 )" -- File encryption software.
+// "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
 // Copyright (C) 2016-2021  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -35,13 +35,13 @@ namespace AttacheCase
 
     private void Form2_Load(object sender, EventArgs e)
     {
-      //labelAppName.Text = Application.ProductName;
+      labelAppName.Text = Application.ProductName;
       labelVersion.Text = "Version." + ApplicationInfo.Version;
       labelCopyright.Text = ApplicationInfo.CopyrightHolder;
       linkLabelCheckForUpdates.Left = pictureBoxApplicationIcon.Left;
 
-      labelBeta.Left = labelVersion.Left + labelVersion.Width + 2;
-      labelBeta.Top = labelVersion.Top + 3;
+      //labelBeta.Left = labelVersion.Left + labelVersion.Width + 2;
+      //labelBeta.Top = labelVersion.Top + 3;
 
       panelVersion.Parent = this.panelMain;
       panelRegistration.Parent = this.panelMain;

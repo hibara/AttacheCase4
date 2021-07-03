@@ -2,7 +2,7 @@
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
 // Copyright (C) 2021  Mitsuhiro Hibara
 //
-// * Required .NET Framework 4.5 or later
+// * Required .NET Framework 4.6 or later
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by

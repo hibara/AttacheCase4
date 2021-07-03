@@ -1702,7 +1702,7 @@ namespace AttacheCase
     /// </summary>
     /// <param name="IniFilePath">Specified INI file</param>
     //----------------------------------------------------------------------
-    public void ReadOptionFromIniFile(string FilePath)
+    public void ReadOptionFromIniFile(string IniFilePath)
     {
       
       string ReturnValue = "";
@@ -1713,7 +1713,7 @@ namespace AttacheCase
       {
 
         Form4 frm4;
-        frm4 = new Form4("ConfirmToReadIniFile", FilePath);
+        frm4 = new Form4("ConfirmToReadIniFile", IniFilePath);
         frm4.ShowDialog();
 
         bool _fReadIniFile = frm4.fReadIniFile;

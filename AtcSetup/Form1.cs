@@ -1,5 +1,5 @@
 ﻿//---------------------------------------------------------------------- 
-// "アタッシェケース#3 ( AttachéCase#3 )" -- File encryption software.
+// "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
 // Copyright (C) 2016-2020  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
