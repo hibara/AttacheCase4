@@ -3930,26 +3930,24 @@ namespace AttacheCase
     public static string GetSystemThemeColor()
     {
       string getmode = "None";
-      // 操作するレジストリ・キーの名前
       string rKeyName = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
-      // 取得処理を行う対象となるレジストリの値の名前
       string rGetValueName = "AppsUseLightTheme";
       // レジストリの取得
       try
       {
-        // レジストリ・キーのパスを指定してレジストリを開く
         using (Microsoft.Win32.RegistryKey rKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(rKeyName))
         {
-          // レジストリの値を取得(DWord)
-          int theme = (int)rKey.GetValue(rGetValueName);
+          // LTSC版だとテーマカラーがないので値を返さない場合がある（1を返す）
+          // The LTSC version does not have a theme color, so it may not return a value (So, returns 1).
+          int theme = (int)rKey.GetValue(rGetValueName, 1); 
           // レジストリの値を
-          // Windows10 May 2019はこの値でOK：Theme.Light = 1, Theme.Dark = 0
+          // Windows10 May 2019 はこの値で OK：Theme.Light = 1, Theme.Dark = 0
           getmode = (theme == 1) ? "light" : "dark";
         }
       }
       catch (NullReferenceException)
       {
-        return "";
+        return "light";
       }
       return getmode;
     }
