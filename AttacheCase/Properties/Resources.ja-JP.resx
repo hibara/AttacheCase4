@@ -249,14 +249,14 @@
   <data name="DialogMessageEncryptionPasswordFileNotFound" xml:space="preserve">
     <value>暗号化時の指定されたパスワードファイルが見つかりません。</value>
   </data>
-  <data name="labelCompressDefault" xml:space="preserve">
-    <value>&lt;標準&gt;</value>
+  <data name="labelCompressTitleOptimal" xml:space="preserve">
+    <value>最適</value>
   </data>
-  <data name="labelCompressMaximum" xml:space="preserve">
-    <value>&lt;最大&gt;</value>
+  <data name="labelCompressTitleFastest" xml:space="preserve">
+    <value>高速</value>
   </data>
-  <data name="labelCompressNone" xml:space="preserve">
-    <value>&lt;無圧縮&gt;</value>
+  <data name="labelCompressTitleNone" xml:space="preserve">
+    <value>無圧縮</value>
   </data>
   <data name="DialogMessageAtcFileBroken" xml:space="preserve">
     <value>この暗号化ファイルは破壊されています。処理を中止します。</value>
@@ -677,5 +677,14 @@
   </data>
   <data name="labelRsaMessage" xml:space="preserve">
     <value>ここに、暗号化または復号したいファイル・フォルダーをドラッグ＆ドロップしてください。先に公開鍵、秘密鍵をドラッグ＆ドロップすることもできます。</value>
+  </data>
+  <data name="labelCompressMsgNone" xml:space="preserve">
+    <value>ファイルに対して圧縮を行いません。</value>
+  </data>
+  <data name="labelCompressMsgOptimal" xml:space="preserve">
+    <value>圧縮操作が完了するまで時間がかかる場合でも、最適な圧縮を行います。</value>
+  </data>
+  <data name="lbelCompressMsgFastest" xml:space="preserve">
+    <value>圧縮後のファイルが最適な圧縮でなくても、圧縮操作はできるだけ迅速に完了します。</value>
   </data>
 </root>

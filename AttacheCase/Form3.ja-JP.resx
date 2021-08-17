@@ -239,6 +239,9 @@
         ZGVMaWNlbnNlAP////8JBAAAAP////8JBAAAAAAAAAAL
 </value>
   </data>
+  <data name="buttonRestoreDefaultSettings.Text" xml:space="preserve">
+    <value>初期設定に戻す</value>
+  </data>
   <data name="comboBoxThemeColor.Items" xml:space="preserve">
     <value>自動</value>
   </data>
@@ -414,12 +417,6 @@
   <data name="radioButtonNotSpecified.Text" xml:space="preserve">
     <value>特に指定しない</value>
   </data>
-  <data name="radioButtonEncryptionFileTypeZIP.Size" type="System.Drawing.Size, System.Drawing">
-    <value>210, 20</value>
-  </data>
-  <data name="radioButtonEncryptionFileTypeZIP.Text" xml:space="preserve">
-    <value>パスワードZIPファイル ( *.zip )</value>
-  </data>
   <data name="radioButtonEncryptionFileTypeEXE.Size" type="System.Drawing.Size, System.Drawing">
     <value>292, 20</value>
   </data>
@@ -454,25 +451,36 @@
         YII=
 </value>
   </data>
-  <data name="pictureBoxZipFile.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="pictureBoxRsaKeys.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAIAAABvFaqvAAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
-        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAANjSURBVDhPlZRdLFthGMcpkyBoxMyEaFjY1ppesA4L
-        MU2oLqslJjHfLFu1y7oR6wStrZUuyIRYfUxI2ml9zErZRoSQ2GIzYq7UR31Tirlx4ap7eDnpaVD75bk4
-        59/3/Z33PO95a2EwGLKysizMQSAQuFwuDD6NAxGM2znE0dERuzZBq9UymUwOh7O/v49mmoATUSgUEok0
-        Pj4+MTGBEoyFhQU+nx8bGwvL393dRZONwYkQcAtLO7o5BomAuLg4cK2urqL5GDiRWq1WqVTh4eExMTEo
-        wcBEQEJCArhmZmaQAnHeHhmLgJSUFEtLy+npaWQBcCI2m52amlpeXl5VVYUSDHiXRjwvDkEW4Lw9AjQa
-        DazF19fX2toaBoSGhsLOIAuAE8E4Ho8nFAqLi4tRgiGRSOztbXP5D4d/1qzp1bOLrXKlgHaLDB/E3t6e
-        qei0HtXX17u7u3z/VbP5t9u4Nna6OE/vg8tUJJfL4eVZLBbsC0oQISEhHd0SmAal6pLwsuNL33G1y21w
-        q9tW3w670dnZab5Hvb29gUFXN3bUUJXvn8NmFRQUpKWlBVCvLK+3Q6hsK4qOjsaJoH9UKnVgYGBoaAgl
-        gFgsZnNYup0OKC/Spb6+PpRHRER8aMyFcHZJ6eDgYL5HIpGIzWWtb6ugvL0vj4yMoJxOp0vrsiHUrjTb
-        2dnhRPPz83A4iUSip6cnSmDLMzIy8goT17fbocRvMyMjI0tKSmBzr133mltWQKjqEoWFhZ3QI0w0OjoK
-        lpyXD9a22rBqaslPz4zOFyRq5mUoiWIEKZVKnAiW4+rq6ubmBgeiv78f+lokTl3daj2j8oWJcO4OJMai
-        pKQk+HDJZDKDwbCyIpRVPFnRN2P143dlafnjP1N1cL2oU6i/iaIYgWCBhpiK/Pz89Hq9TCa7YGNd28Bb
-        0SuMq/B1YnJysouLixPRHgbA8zw8PGA6AicKDg4eGxuztbX52MJf3mxCpfiU1yDPQdcUf9Lg4CB0QKfT
-        DQ8P+/v7IwuAE/X09Pj4+MDTVF+FS5tyVF/63jg7O3zuLmTeuwm9RyOBs0SI6urqi65OnGd379AD5lYa
-        ljZlrwriaTRabW3t0YhDzIuAqakpgUAAf08p6ZFlFY/gZScnJ49+O+YEEXQeXP8LWKRSKbIYDIZ/puBY
-        dcrWuxQAAAAASUVORK5CYII=
+        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
 </value>
   </data>
   <data name="pictureBoxAtcFile.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
@@ -736,10 +744,6 @@
   </data>
   <data name="tabPageDelete.Text" xml:space="preserve">
     <value>削除</value>
-  </data>
-  <data name="label4.Text" xml:space="preserve">
-    <value>暗号化ファイルの圧縮率設定
-（ 無圧縮&lt;0&gt; ～ 最大&lt;9&gt;※但し速度が落ちる）</value>
   </data>
   <data name="checkBoxCompressionOption.Size" type="System.Drawing.Size, System.Drawing">
     <value>85, 20</value>

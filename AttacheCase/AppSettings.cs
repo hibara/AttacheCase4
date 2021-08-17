@@ -821,6 +821,20 @@ namespace AttacheCase
       }
     }
 
+    // ver.4 or later
+    private int _CompressionLevel;          // 圧縮サイズ
+    public int CompressionLevel
+    {
+      get { return this._CompressionLevel; }
+      set
+      {
+        if ((this._CompressionLevel = value) < 0 || (this._CompressionLevel = value) > 2)
+        {
+          this._CompressionLevel = 2;
+        }
+      }
+    }
+
     #endregion
 
     //----------------------------------------------------------------------
@@ -1338,8 +1352,8 @@ namespace AttacheCase
       // Passwords
       using (RegistryKey reg = Registry.CurrentUser.OpenSubKey(RegistryPathMyKey, true))
       {
-        _fMyEncryptPasswordKeep = ((string)reg.GetValue("fMyEncryptPasswordKeep", "0") == "1") ? true : false;
-        _fMyDecryptPasswordKeep = ((string)reg.GetValue("fMyDecryptPasswordKeep", "0") == "1") ? true : false;
+        _fMyEncryptPasswordKeep = (string)reg.GetValue("fMyEncryptPasswordKeep", "0") == "1";
+        _fMyDecryptPasswordKeep = (string)reg.GetValue("fMyDecryptPasswordKeep", "0") == "1";
 
         _MyEncryptPasswordBinary = (byte[])reg.GetValue("MyEncryptPasswordString", null);
         if (_MyEncryptPasswordBinary == null)
@@ -1363,10 +1377,10 @@ namespace AttacheCase
           _MyDecryptPasswordBinary = null;
         }
 
-        _fMemPasswordExe = ((string)reg.GetValue("fMemPasswordExe", "0") == "1") ? true : false;
-        _fNotMaskPassword = ((string)reg.GetValue("fNotMaskPassword", "0") == "1") ? true : false; 
-        
-        _fPasswordStrengthMeter = ((string)reg.GetValue("fPasswordStrengthMeter", "1") == "1") ? true : false;
+        _fMemPasswordExe = (string)reg.GetValue("fMemPasswordExe", "0") == "1";
+        _fNotMaskPassword = (string)reg.GetValue("fNotMaskPassword", "0") == "1";
+
+        _fPasswordStrengthMeter = (string)reg.GetValue("fPasswordStrengthMeter", "1") == "1";
 
       }
 
@@ -1376,87 +1390,88 @@ namespace AttacheCase
       {
         //-----------------------------------
         // General
-        _fEndToExit = ((string)reg.GetValue("fEndToExit", "0") == "1") ? true : false;
-        _fOpenFile = ((string)reg.GetValue("fOpenFile", "0") == "1") ? true : false;
-        _fShowDialogWhenExeFile = ((string)reg.GetValue("fShowDialogWhenExeFile", "1") == "1") ? true : false;
+        _fEndToExit = (string)reg.GetValue("fEndToExit", "0") == "1";
+        _fOpenFile = (string)reg.GetValue("fOpenFile", "0") == "1";
+        _fShowDialogWhenExeFile = ((string)reg.GetValue("fShowDialogWhenExeFile", "1") == "1");
         _ShowDialogWhenMultipleFilesNum = int.Parse((string)reg.GetValue("ShowDialogWhenMultipleFilesNum", "5"));
-        _fAskEncDecode = ((string)reg.GetValue("fAskEncDecode", "0") == "1") ? true : false;
-        _fNoHidePassword = ((string)reg.GetValue("fNoHidePassword", "0") == "1") ? true : false;
-        _fSaveToExeout = ((string)reg.GetValue("fSaveToExeout", "0") == "1") ? true : false;
-        _fShowExeoutChkBox = ((string)reg.GetValue("fShowExeoutChkBox", "1") == "1") ? true : false;
+        _fAskEncDecode = (string)reg.GetValue("fAskEncDecode", "0") == "1";
+        _fNoHidePassword = (string)reg.GetValue("fNoHidePassword", "0") == "1";
+        _fSaveToExeout = (string)reg.GetValue("fSaveToExeout", "0") == "1";
+        _fShowExeoutChkBox = (string)reg.GetValue("fShowExeoutChkBox", "1") == "1";
         _ThemeColorName = (string)reg.GetValue("ThemeColorName", "auto");
        
         //-----------------------------------
         // Window
-        _fMainWindowMinimize = ((string)reg.GetValue("fMainWindowMinimize", "0") == "1") ? true : false;
-        _fTaskBarHide = ((string)reg.GetValue("fTaskBarHide", "0") == "1") ? true : false;
-        _fTaskTrayIcon = ((string)reg.GetValue("fTaskTrayIcon", "0") == "1") ? true : false;
-        _fOpenFolder = ((string)reg.GetValue("fOpenFolder", "0") == "1") ? true : false;
-        _fWindowForeground = ((string)reg.GetValue("fWindowForeground", "1") == "1") ? true : false;
-        _fNoMultipleInstance = ((string)reg.GetValue("fNoMultipleInstance", "0") == "1") ? true : false;
-        _fTurnOnIMEsTextBoxForPasswordEntry = ((string)reg.GetValue("fTurnOnIMEsTextBoxForPasswordEntry", "0") == "1") ? true : false;
+        _fMainWindowMinimize = (string)reg.GetValue("fMainWindowMinimize", "0") == "1";
+        _fTaskBarHide = (string)reg.GetValue("fTaskBarHide", "0") == "1";
+        _fTaskTrayIcon = (string)reg.GetValue("fTaskTrayIcon", "0") == "1";
+        _fOpenFolder = (string)reg.GetValue("fOpenFolder", "0") == "1";
+        _fWindowForeground = (string)reg.GetValue("fWindowForeground", "1") == "1";
+        _fNoMultipleInstance = (string)reg.GetValue("fNoMultipleInstance", "0") == "1";
+        _fTurnOnIMEsTextBoxForPasswordEntry = (string)reg.GetValue("fTurnOnIMEsTextBoxForPasswordEntry", "0") == "1";
 
         //-----------------------------------
         // Save Encrypt
         //Integer = 1: ATC, 2: EXE(ATC), 3: ZIP, 0: Others(Encrypt file?)
         _EncryptionFileType = int.Parse((string)reg.GetValue("EncryptionFileType", "0"));
-        _fEncryptionSameFileTypeAlways = ((string)reg.GetValue("fEncryptionSameFileTypeAlways", "1") == "1") ? true : false;
+        _fEncryptionSameFileTypeAlways = (string)reg.GetValue("fEncryptionSameFileTypeAlways", "1") == "1";
         _EncryptionSameFileTypeAlways = int.Parse((string)reg.GetValue("EncryptionSameFileTypeAlways", "0"));
 
-        _fEncryptionSameFileTypeBefore = ((string)reg.GetValue("fEncryptionSameFileTypeBefore", "1") == "1") ? true : false;
+        _fEncryptionSameFileTypeBefore = (string)reg.GetValue("fEncryptionSameFileTypeBefore", "1") == "1";
         _EncryptionSameFileTypeBefore = int.Parse((string)reg.GetValue("EncryptionSameFileTypeBefore", "0"));
-        _fSaveToSameFldr = ((string)reg.GetValue("fSaveToSameFldr", "0") == "1") ? true : false;
+        _fSaveToSameFldr = (string)reg.GetValue("fSaveToSameFldr", "0") == "1";
         _SaveToSameFldrPath = (string)reg.GetValue("SaveToSameFldrPath", "");
 
-        _fEncryptConfirmOverwrite = ((string)reg.GetValue("fEncryptConfirmOverwrite", "1") == "1") ? true : false;
-        _fAllFilePack = ((string)reg.GetValue("fAllFilePack", "0") == "1") ? true : false;
-        _fFilesOneByOne = ((string)reg.GetValue("fFilesOneByOne", "0") == "1") ? true : false;
-        _fNormal = (_fAllFilePack == false && _fFilesOneByOne == false) ? true : false;
-        _fKeepTimeStamp = ((string)reg.GetValue("fKeepTimeStamp", "0") == "1") ? true : false;
-        _fExtInAtcFileName = ((string)reg.GetValue("fExtInAtcFileName", "0") == "1") ? true : false;
-        _fAutoName = ((string)reg.GetValue("fAutoName", "0") == "1") ? true : false;
+        _fEncryptConfirmOverwrite = ((string)reg.GetValue("fEncryptConfirmOverwrite", "1") == "1");
+        _fAllFilePack = (string)reg.GetValue("fAllFilePack", "0") == "1";
+        _fFilesOneByOne = (string)reg.GetValue("fFilesOneByOne", "0") == "1";
+        _fNormal = _fAllFilePack == false && _fFilesOneByOne == false;
+        _fKeepTimeStamp = (string)reg.GetValue("fKeepTimeStamp", "0") == "1";
+        _fExtInAtcFileName = (string)reg.GetValue("fExtInAtcFileName", "0") == "1";
+        _fAutoName = (string)reg.GetValue("fAutoName", "0") == "1";
         _AutoNameFormatText = (string)reg.GetValue("AutoNameFormatText", "<filename>_<date:yyyy_MM_dd><ext>");
 
-        _fAutoNameAlphabets = ((string)reg.GetValue("fAutoNameAlphabets", "1") == "1") ? true : false;
-        _fAutoNameLowerCase = ((string)reg.GetValue("fAutoNameLowerCase", "1") == "1") ? true : false;
-        _fAutoNameUpperCase = ((string)reg.GetValue("fAutoNameUpperCase", "1") == "1") ? true : false;
-        _fAutoNameNumbers = ((string)reg.GetValue("fAutoNameNumbers", "1") == "1") ? true : false;
-        _fAutoNameSymbols = ((string)reg.GetValue("fAutoNameSymbols", "0") == "1") ? true : false;
+        _fAutoNameAlphabets = (string)reg.GetValue("fAutoNameAlphabets", "1") == "1";
+        _fAutoNameLowerCase = (string)reg.GetValue("fAutoNameLowerCase", "1") == "1";
+        _fAutoNameUpperCase = (string)reg.GetValue("fAutoNameUpperCase", "1") == "1";
+        _fAutoNameNumbers = (string)reg.GetValue("fAutoNameNumbers", "1") == "1";
+        _fAutoNameSymbols = (string)reg.GetValue("fAutoNameSymbols", "0") == "1";
 
         //-----------------------------------
         // Save Decrypt
-        _fDecodeToSameFldr = ((string)reg.GetValue("fDecodeToSameFldr", "0") == "1") ? true : false;
+        _fDecodeToSameFldr = (string)reg.GetValue("fDecodeToSameFldr", "0") == "1";
         _DecodeToSameFldrPath = (string)reg.GetValue("DecodeToSameFldrPath", "");
-        _fDecryptConfirmOverwrite = ((string)reg.GetValue("fDecryptConfirmOverwrite", "1") == "1") ? true : false;
-        _fNoParentFldr = ((string)reg.GetValue("fNoParentFldr", "0") == "1") ? true : false;
-        _fSameTimeStamp = ((string)reg.GetValue("fSameTimeStamp", "0") == "1") ? true : false;
-        _fCompareFile = ((string)reg.GetValue("fCompareFile", "0") == "1") ? true : false;
+        _fDecryptConfirmOverwrite = (string)reg.GetValue("fDecryptConfirmOverwrite", "1") == "1";
+        _fNoParentFldr = (string)reg.GetValue("fNoParentFldr", "0") == "1";
+        _fSameTimeStamp = (string)reg.GetValue("fSameTimeStamp", "0") == "1";
+        _fCompareFile = (string)reg.GetValue("fCompareFile", "0") == "1";
 
         //-----------------------------------
         // Password ZIP
-        _fZipToSameFldr = ((string)reg.GetValue("fZipToSameFldr", "0") == "1") ? true : false;
+        _fZipToSameFldr = (string)reg.GetValue("fZipToSameFldr", "0") == "1";
         _ZipToSameFldrPath = (string)reg.GetValue("ZipToSameFldrPath", "");
-        _fZipConfirmOverwrite = ((string)reg.GetValue("fZipConfirmOverwrite", "1") == "1") ? true : false;
+        _fZipConfirmOverwrite = (string)reg.GetValue("fZipConfirmOverwrite", "1") == "1";
         _ZipEncryptionAlgorithm = int.Parse((string)reg.GetValue("ZipEncryptionAlgorithm", "0"));
 
         //-----------------------------------
         // Delete
-        _fDelOrgFile = ((string)reg.GetValue("fDelOrgFile", "0") == "1") ? true : false;
-        _fEncryptShowDelChkBox = ((string)reg.GetValue("fEncryptShowDelChkBox", "0") == "1") ? true : false;
-        _fConfirmToDeleteAfterEncryption = ((string)reg.GetValue("fConfirmToDeleteAfterEncryption", "1") == "1") ? true : false;
+        _fDelOrgFile = (string)reg.GetValue("fDelOrgFile", "0") == "1";
+        _fEncryptShowDelChkBox = (string)reg.GetValue("fEncryptShowDelChkBox", "0") == "1";
+        _fConfirmToDeleteAfterEncryption = (string)reg.GetValue("fConfirmToDeleteAfterEncryption", "1") == "1";
 
-        _fDelEncFile = ((string)reg.GetValue("fDelEncFile", "0") == "1") ? true : false;
-        _fDecryptShowDelChkBox = ((string)reg.GetValue("fDecryptShowDelChkBox", "0") == "1") ? true : false;
-        _fConfirmToDeleteAfterDecryption = ((string)reg.GetValue("fConfirmToDeleteAfterDecryption", "1") == "1") ? true : false;
+        _fDelEncFile = (string)reg.GetValue("fDelEncFile", "0") == "1";
+        _fDecryptShowDelChkBox = (string)reg.GetValue("fDecryptShowDelChkBox", "0") == "1";
+        _fConfirmToDeleteAfterDecryption = (string)reg.GetValue("fConfirmToDeleteAfterDecryption", "1") == "1";
         
         _fCompleteDelFile = int.Parse((string)reg.GetValue("fCompleteDelFile", "0"));
         _DelRandNum = int.Parse((string)reg.GetValue("DelRandNum", "0"));
         _DelZeroNum = int.Parse((string)reg.GetValue("DelZeroNum", "1"));
-        
+
         //-----------------------------------
         // Compression
         _CompressRate = int.Parse((string)reg.GetValue("CompressRate", "6"));
-        
+        _CompressionLevel = int.Parse((string)reg.GetValue("CompressionLevel", "0"));
+
         //-----------------------------------
         // System
         _fAssociationFile = int.Parse((string)reg.GetValue("fAssociationFile", "1"));
@@ -1465,18 +1480,18 @@ namespace AttacheCase
 
         //-----------------------------------
         // Import / Export
-        _fAlwaysReadIniFile = ((string)reg.GetValue("fAlwaysReadIniFile", "0") == "1") ? true : false;
-        _fShowDialogToConfirmToReadIniFile = ((string)reg.GetValue("fShowDialogToConfirmToReadIniFile", "1") == "1") ? true : false;
+        _fAlwaysReadIniFile = (string)reg.GetValue("fAlwaysReadIniFile", "0") == "1";
+        _fShowDialogToConfirmToReadIniFile = (string)reg.GetValue("fShowDialogToConfirmToReadIniFile", "1") == "1";
         
         //-----------------------------------
         // Password file 
-        _fAllowPassFile = ((string)reg.GetValue("fAllowPassFile", "0") == "1") ? true : false;
-        _fCheckPassFile = ((string)reg.GetValue("fCheckPassFile", "0") == "1") ? true : false;
-        _fCheckPassFileDecrypt = ((string)reg.GetValue("fCheckPassFileDecrypt", "0") == "1") ? true : false;
+        _fAllowPassFile = (string)reg.GetValue("fAllowPassFile", "0") == "1";
+        _fCheckPassFile = (string)reg.GetValue("fCheckPassFile", "0") == "1";
+        _fCheckPassFileDecrypt = (string)reg.GetValue("fCheckPassFileDecrypt", "0") == "1";
         _PassFilePath = (string)reg.GetValue("PassFilePath", "");
         _PassFilePathDecrypt = (string)reg.GetValue("PassFilePathDecrypt", "");
-        _fNoErrMsgOnPassFile = ((string)reg.GetValue("fNoErrMsgOnPassFile", "0") == "1") ? true : false;
-        _fPasswordFileExe = ((string)reg.GetValue("fPasswordFileExe", "0") == "1") ? true : false;
+        _fNoErrMsgOnPassFile = (string)reg.GetValue("fNoErrMsgOnPassFile", "0") == "1";
+        _fPasswordFileExe = (string)reg.GetValue("fPasswordFileExe", "0") == "1";
 
         //-----------------------------------
         // Camouflage Extension 
@@ -1490,12 +1505,12 @@ namespace AttacheCase
         
         //-----------------------------------
         // Salvage
-        _fSalvageToCreateParentFolderOneByOne = ((string)reg.GetValue("fSalvageToCreateParentFolderOneByOne", "0") == "1") ? true : false;
-        _fSalvageIntoSameDirectory = ((string)reg.GetValue("fSalvageIntoSameDirectory", "0") == "1") ? true : false;
+        _fSalvageToCreateParentFolderOneByOne = (string)reg.GetValue("fSalvageToCreateParentFolderOneByOne", "0") == "1";
+        _fSalvageIntoSameDirectory = (string)reg.GetValue("fSalvageIntoSameDirectory", "0") == "1";
 
         //-----------------------------------
         // Developer mode
-        _fDeveloperConsole = ((string)reg.GetValue("fDeveloperConsole", "0") == "1") ? true : false;
+        _fDeveloperConsole = ((string)reg.GetValue("fDeveloperConsole", "0") == "1");
         _DeveloperConsolePosX = int.Parse((string)reg.GetValue("DeveloperConsolePosX", "-1"));
         _DeveloperConsolePosY = int.Parse((string)reg.GetValue("DeveloperConsolePosY", "-1"));
         _DeveloperConsoleWidth = int.Parse((string)reg.GetValue("DeveloperConsoleWidth", "640"));
@@ -1642,6 +1657,7 @@ namespace AttacheCase
         //-----------------------------------
         //Compression
         reg.SetValue("CompressRate", _CompressRate.ToString());
+        reg.SetValue("CompressionLevel", _CompressionLevel.ToString());
 
         //-----------------------------------
         // System
@@ -1847,7 +1863,8 @@ namespace AttacheCase
 
       //Compression
       ReadIniFile(IniFilePath, ref _CompressRate, "Option", "CompressRate", "6");
-          
+      ReadIniFile(IniFilePath, ref _CompressionLevel, "Option", "CompressionLevel", "0");
+
       // System
       ReadIniFile(IniFilePath, ref _fAssociationFile, "Option", "fAssociationFile", "1");
       ReadIniFile(IniFilePath, ref _AtcsFileIconIndex, "Option", "AtcsFileIconIndex", "1");
@@ -2017,7 +2034,8 @@ namespace AttacheCase
       //-----------------------------------
       //Compression
       WriteIniFile(IniFilePath, _CompressRate, "Option", "CompressRate");
-    
+      WriteIniFile(IniFilePath, _CompressionLevel, "Option", "CompressionLevel");
+
       //-----------------------------------
       // System
       WriteIniFile(IniFilePath, _fAssociationFile, "Option", "fAssociationFile");  // int
@@ -2558,11 +2576,15 @@ namespace AttacheCase
             case "/allpack": // 複数のファイルを暗号化する際は一つにまとめる
               if (value == "1")
               {
+                _fNormal = false;
                 _fAllFilePack = true;
+                _fFilesOneByOne = false;
               }
               else if (value == "0")
               {
+                _fNormal = true;
                 _fAllFilePack = false;
+                _fFilesOneByOne = false;
               }
               break;
 
@@ -2571,10 +2593,14 @@ namespace AttacheCase
               if (value == "1")
               {
                 _fFilesOneByOne = true;
+                _fAllFilePack = false;
+                _fNormal = false;
               }
               else if (value == "0")
               {
                 _fFilesOneByOne = false;
+                _fAllFilePack = false;
+                _fNormal = true;
               }
               break;
 
@@ -2604,8 +2630,16 @@ namespace AttacheCase
 
             // Specify the format of the encryption file name
             case "/autoname": // 自動で暗号化ファイル名を付加する
-              _fAutoName = true;
-              _AutoNameFormatText = value;
+              if (value == "")
+              {
+                _fAutoName = false;
+                _AutoNameFormatText = "";
+              }
+              else
+              {
+                _fAutoName = true;
+                _AutoNameFormatText = value;
+              }
               break;
 
             // Encrypted files camouflage with extension
@@ -2820,7 +2854,34 @@ namespace AttacheCase
               {
                 if (-1 < ResultNum || ResultNum < 10)
                 {
+                  switch (ResultNum)
+                  {
+                    case 0:
+                      _CompressionLevel = 0;
+                      break;
+                    case 1:
+                    case 2:
+                    case 3:
+                    case 4:
+                    case 5:
+                      _CompressionLevel = 1;
+                      break;
+                    default:
+                      _CompressionLevel = 2;
+                      break;
+                  }
                   _CompressRate = ResultNum;
+                }
+
+              }
+              break;
+
+            case "/complv": // 圧縮サイズ
+              if (int.TryParse(value, out ResultNum) == true)
+              {
+                if (-1 < ResultNum || ResultNum < 3)
+                {
+                  _CompressionLevel = ResultNum;
                 }
 
               }
@@ -2975,7 +3036,7 @@ namespace AttacheCase
               break;
 
             case "/de": // 明示的な復号処理
-              if (value == "2")
+              if (value == "1")
               {
                 _ProcTypeWithoutAsk = 2;
               }

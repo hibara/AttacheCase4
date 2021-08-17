@@ -214,23 +214,53 @@ namespace AttacheCase
 		{
 			fLoading = true;
 
+			// Add culture change in Form1.
+
+			////-----------------------------------
+			//// Check culture
+			//switch (AppSettings.Instance.Language)
+			//{
+			//	case "ja":
+			//		CultureInfo.CurrentUICulture = CultureInfo.CreateSpecificCulture("ja-JP");
+			//		Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-JP");
+			//		Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP");
+			//		break;
+			//	case "en":
+			//		Thread.CurrentThread.CurrentCulture = new CultureInfo("", true);
+			//		Thread.CurrentThread.CurrentUICulture = new CultureInfo("", true);
+			//		break;
+			//	case "":
+			//	default:
+			//		if (CultureInfo.CurrentCulture.Name == "ja-JP")
+			//		{
+			//			CultureInfo.CurrentUICulture = CultureInfo.CreateSpecificCulture("ja-JP");
+			//			Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-JP");
+			//         Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP");
+			//		}
+			//		else
+			//		{
+			//			Thread.CurrentThread.CurrentCulture = new CultureInfo("", true);
+			//			Thread.CurrentThread.CurrentUICulture = new CultureInfo("", true);
+			//		}
+			//		break;
+			//}
+
 #if (MS_STORE)
       if (treeView1.Nodes.ContainsKey("nodeSystem"))
       {
         treeView1.Nodes.Remove(treeView1.Nodes["nodeSystem"]);
       }
 #endif
-      //-----------------------------------
-      // 読み込み先の表示
+			//-----------------------------------
+			// 読み込み先の表示
 
-      // Registry
-      using (Bitmap bitmap = new Bitmap(pictureBoxRegistryIcon.Image))
+			// Registry
+			using (Bitmap bitmap = new Bitmap(pictureBoxRegistryIcon.Image))
       {
         bitmap.SetResolution(24, 24);
         this.Icon = Icon.FromHandle(bitmap.GetHicon());
         this.Text = Resources.DialogTitleSettings + " - " + Resources.DialogTitleRegistry;
       }
-
 
       // INI file
       if (File.Exists(AppSettings.Instance.IniFilePath) == true)
@@ -606,19 +636,54 @@ namespace AttacheCase
 			// Compress
 			//-----------------------------------
 			#region
-			if (AppSettings.Instance.CompressRate > 0)
-			{
-				checkBoxCompressionOption.Checked = true;
-				trackBarCompressRate.Value = AppSettings.Instance.CompressRate;
-				labelCompressionRateOption.Text = AppSettings.Instance.CompressRate.ToString();
+			if (AppSettings.Instance.CompressionLevel > -1)
+      {
+				switch (AppSettings.Instance.CompressionLevel)
+        {
+					case 1: // Fastest
+						trackBarCompressRate.Value = 1;
+						checkBoxCompressionOption.Checked = true;
+						trackBarCompressRate.Enabled = true;
+						break;
+					case 0: // NoCompression
+						trackBarCompressRate.Value = 0;
+						checkBoxCompressionOption.Checked = false;
+						trackBarCompressRate.Enabled = false;
+						break;
+					case 2: // Optimal
+					default:
+						trackBarCompressRate.Value = 2;
+						checkBoxCompressionOption.Checked = true;
+						trackBarCompressRate.Enabled = true;
+						break;
+				}
 			}
 			else
-			{
-				checkBoxCompressionOption.Checked = false;
-				trackBarCompressRate.Enabled = false;
-				trackBarCompressRate.Value = 0;
+      {
+        switch (AppSettings.Instance.CompressRate)
+        {
+					case 0: // NoCompression
+						trackBarCompressRate.Value = 0;
+						checkBoxCompressionOption.Checked = false;
+						trackBarCompressRate.Value = 0;
+						break;
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+					case 5:	// Fastest
+						trackBarCompressRate.Value = 1;
+						checkBoxCompressionOption.Checked = true;
+						trackBarCompressRate.Enabled = true;
+						break;
+					case 6:
+					default:
+						trackBarCompressRate.Value = 2;
+						checkBoxCompressionOption.Checked = true;
+						trackBarCompressRate.Enabled = true;
+						break;
+				}
 			}
-
 			trackBarCompressRate_ValueChanged(sender, e);
 
 			#endregion
@@ -1246,7 +1311,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
       //-----------------------------------
       // Compression
-      AppSettings.Instance.CompressRate = trackBarCompressRate.Value;
+      switch (trackBarCompressRate.Value)
+      {
+				case 0: // NoCompression
+					AppSettings.Instance.CompressionLevel = 0;
+					break;
+				case 1: // Fastest
+					AppSettings.Instance.CompressionLevel = 1;
+					break;
+				case 2:
+					AppSettings.Instance.CompressionLevel = 2;
+					break;
+      }
 
       //-----------------------------------
       // System
@@ -1925,16 +2001,18 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		{
 			if (checkBoxCompressionOption.Checked == true)
 			{
-				labelCompressionRateOption.Text = trackBarCompressRate.Value.ToString();
+				labelCompressionRate.Text = trackBarCompressRate.Value.ToString();
         trackBarCompressRate.Enabled = true;
-        trackBarCompressRate.Value = 6;
 
-      }
+				if (trackBarCompressRate.Value == 0)
+        {
+					trackBarCompressRate.Value = 2;
+				}
+			}
 			else
 			{
 				trackBarCompressRate.Value = 0;
         trackBarCompressRate.Enabled = false;
-
       }
       buttonApply.Enabled = true;
     }
@@ -1950,25 +2028,31 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 				checkBoxCompressionOption.Checked = false;
 			}
 
-			string CompressMessageText = "";
 			switch (trackBarCompressRate.Value)
 			{
-				case 0:	// None
-					CompressMessageText = Resources.labelCompressNone;
+				case 0: // None（無圧縮）
+					labelCompressionRate.Text = "< 0 > " + Resources.labelCompressTitleNone;
+					// ファイルに対して圧縮を行いません。
+					// No compression should be performed on the file.
+					labelCompressionLevelDescription.Text = Resources.labelCompressMsgNone;
 					break;
-				case 6:	// Default
-					CompressMessageText = Resources.labelCompressDefault;
+				case 1: // Fastest（高速）
+					labelCompressionRate.Text = "< 1 > " + Resources.labelCompressTitleFastest;
+					// 圧縮後のファイルが最適な圧縮でなくても、圧縮操作はできるだけ迅速に完了します。
+					// The compression operation should complete as quickly as possible, even if the resulting file is not optimally compressed.
+					labelCompressionLevelDescription.Text = Resources.lbelCompressMsgFastest;
 					break;
-				case 9:	// Maximum
-					CompressMessageText = Resources.labelCompressMaximum;
+				case 2: // Optimal ( 最適 )
+					labelCompressionRate.Text = "< 2 > " + Resources.labelCompressTitleOptimal;
+					// 圧縮操作が完了するまで時間がかかる場合でも、最適な圧縮を行います。
+					// The compression operation should be optimally compressed, even if the operation takes a longer time to complete.
+					labelCompressionLevelDescription.Text = Resources.labelCompressMsgOptimal;
 					break;
 				default:
-					CompressMessageText = "";
+					labelCompressionLevelDescription.Text = "";
 					break;
 			}
       buttonApply.Enabled = true;
-      labelCompressionRateOption.Text = trackBarCompressRate.Value.ToString() + CompressMessageText;
-		
 		}
 
 #endregion
@@ -2424,9 +2508,160 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     }
 
 
-		#endregion
+    #endregion
 
-	}
+    private void buttonRestoreDefaultSettings_Click(object sender, EventArgs e)
+    {
+
+			#region General
+
+			checkBoxEndToExit.Checked = false;
+			checkBoxOpenFile.Checked = false;
+			checkBoxShowDialogWhenExeFile.Checked = true;
+			checkBoxShowDialogWhenMultipleFiles.Checked = true;
+			numericUpDownLaunchFiles.Value = 5;
+			checkBoxAskEncDecode.Checked = false;
+			checkBoxNoHidePassword.Checked = false;
+			comboBoxThemeColor.SelectedIndex = 0;
+			comboBoxLanguage.SelectedIndex = 0;	// Default
+
+			#endregion
+
+			#region Window
+
+			checkBoxMainWindowMinimize.Checked = false;
+			checkBoxTaskBarHide.Checked = false;
+			checkBoxTaskTrayIcon.Checked = false;
+			checkBoxWindowForeground.Checked = true;
+			checkBoxNoMultipleInstance.Checked = false;
+			checkBoxTurnOnAllIMEs.Checked = false;
+
+			#endregion
+
+			#region Password
+			
+			checkBoxMyEncodePasswordKeep.Checked = false;
+			textBoxMyDecodePassword.Text = new string('*', 16);
+			checkBoxMyDecodePasswordKeep.Checked = false;
+			textBoxMyDecodePassword.Text = new string('*', 16);
+			checkBoxDobyMemorizedPassword.Checked = false;
+			checkBoxEnablePassStrengthMeter.Checked = true;
+
+			#endregion
+
+			#region Save
+
+			radioButtonNotSpecified.Checked = true;
+			checkBoxEncryptionSameFileTypeBefore.Checked = true;
+
+			#endregion
+
+			#region SaveEncrypt
+
+			checkBoxSaveToSameFldr.Checked = false;
+			textBoxSaveEncryptionToSameFolder.Text = "";
+			checkBoxConfirmSameFileName.Checked = false;
+			radioButtonNormal.Checked = true;
+			checkBoxKeepTimeStamp.Checked = false;
+			checkBoxExtInAtcFileName.Checked = false;
+			checkBoxAutoName.Checked = false;
+			textBoxAutoNameFormatText.Text = "<filename>_<date:yyyy_MM_dd><ext>";
+
+			#endregion
+
+			#region SaveDecrypt
+
+			checkBoxDecodeToSameFldr.Checked = false;
+			textBoxDecodeToSameFldrPath.Text = "";
+			checkBoxDecryptConfirmOverwrite.Checked = true;
+			checkBoxfNoParentFldr.Checked = false;
+			checkBoxSameTimeStamp.Checked = false;
+
+			#endregion
+
+			#region Delete
+			checkBoxDelOrgFile.Checked = false;
+			checkBoxEncryptShowDeleteChkBox.Checked = false;
+			checkBoxConfirmToDeleteAfterEncryption.Checked = false;
+			checkBoxDelEncFile.Checked = false;
+			checkBoxDecryptShowDeleteChkBox.Checked = false;
+			checkBoxConfirmToDeleteAfterDecryption.Checked = true;
+			radioNormalDelete.Checked = true;
+			numericUpDownDelRandNum.Value = 0;
+			numericUpDownDelZeroNum.Value = 1;
+
+			#endregion
+
+			#region Compress
+
+			trackBarCompressRate.Value = 2;
+
+			#endregion
+
+			#region System
+
+			if (AppSettings.Instance.AtcsFileIconIndex != 0)
+      {
+				pictureBoxCheckmark00.Visible = true;
+				pictureBoxCheckmark02.Visible = false;
+				pictureBoxCheckmark03.Visible = false;
+				pictureBoxCheckmarkMyIcon.Visible = false;
+				fAssociationSettings = true;
+				buttonApply.Enabled = true;
+			}
+
+      #endregion
+
+      #region Import / Export
+
+      checkBoxAlwaysReadIniFile.Checked = false;
+			checkBoxShowDialogToConfirmToReadIniFileAlways.Checked = true;
+
+			#endregion
+
+			#region PasswordFile
+			
+			checkBoxAllowPassFile.Checked = false;
+			checkBoxCheckPassFile.Checked = false;
+			textBoxPassFilePath.Text = "";
+			checkBoxCheckPassFileDecrypt.Checked = false;
+			textBoxPassFilePathDecrypt.Text = "";
+			checkBoxNoErrMsgOnPassFile.Checked = false;
+			checkBoxDoByPasswordFile.Checked = false;
+
+			#endregion
+
+			#region CamouflageExt
+			
+			checkBoxAddCamoExt.Checked = false;
+			textBoxCamoExt.Text = ".jpg";
+
+			#endregion
+
+			#region PasswordImputLimit
+
+			comboBoxMissTypeLimitsNum.SelectedItem = "3";
+			checkBoxBroken.Checked = false;
+
+			#endregion
+
+			#region Salvage
+
+			checkBoxSalvageToCreateParentFolderOneByOne.Checked = false;
+			checkBoxSalvageIntoSameDirectory.Checked = false;
+			checkBoxSalvageIgnoreHashCheck.Checked = false;
+
+			#endregion
+
+			#region Development
+
+			checkBoxDeveloperConsole.Checked = false;
+
+			#endregion
+
+
+		}
+  }
 
 
 

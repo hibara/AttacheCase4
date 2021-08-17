@@ -137,6 +137,9 @@ Decryption failed.</value>
   <data name="DialogMessageInvalidFilePath" xml:space="preserve">
     <value>The path of files or folders are invalid. The process is aborted.</value>
   </data>
+  <data name="DialogMessageInvalidPrivateKey" xml:space="preserve">
+    <value>This is not the private key of the encrypted pair. Could not decrypt.</value>
+  </data>
   <data name="DialogMessageNoDiskSpace" xml:space="preserve">
     <value>No free space on the disk. The process is aborted.</value>
   </data>

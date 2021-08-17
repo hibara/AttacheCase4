@@ -898,29 +898,47 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
-        ///   &lt;Default&gt; に類似しているローカライズされた文字列を検索します。
+        ///   No compression should be performed on the file. に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string labelCompressDefault {
+        public static string labelCompressMsgNone {
             get {
-                return ResourceManager.GetString("labelCompressDefault", resourceCulture);
+                return ResourceManager.GetString("labelCompressMsgNone", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   &lt;Maximum&gt; に類似しているローカライズされた文字列を検索します。
+        ///   The compression operation should be optimally compressed, even if the operation takes a longer time to complete. に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string labelCompressMaximum {
+        public static string labelCompressMsgOptimal {
             get {
-                return ResourceManager.GetString("labelCompressMaximum", resourceCulture);
+                return ResourceManager.GetString("labelCompressMsgOptimal", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   &lt;None&gt; に類似しているローカライズされた文字列を検索します。
+        ///   Fastest に類似しているローカライズされた文字列を検索します。
         /// </summary>
-        public static string labelCompressNone {
+        public static string labelCompressTitleFastest {
             get {
-                return ResourceManager.GetString("labelCompressNone", resourceCulture);
+                return ResourceManager.GetString("labelCompressTitleFastest", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   NoCompression に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelCompressTitleNone {
+            get {
+                return ResourceManager.GetString("labelCompressTitleNone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Optimal に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelCompressTitleOptimal {
+            get {
+                return ResourceManager.GetString("labelCompressTitleOptimal", resourceCulture);
             }
         }
         
@@ -1284,6 +1302,15 @@ namespace AttacheCase.Properties {
         public static string labelValidCode {
             get {
                 return ResourceManager.GetString("labelValidCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The compression operation should complete as quickly as possible, even if the resulting file is not optimally compressed. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string lbelCompressMsgFastest {
+            get {
+                return ResourceManager.GetString("lbelCompressMsgFastest", resourceCulture);
             }
         }
         

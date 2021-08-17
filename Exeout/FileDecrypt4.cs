@@ -2,7 +2,7 @@
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
 // Copyright (C) 2021  Mitsuhiro Hibara
 //
-// * Required .NET Framework 4.5 or later
+// * Required .NET Framework 4.6 or later
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -1087,7 +1087,7 @@ namespace AttacheCase
                         //-----------------------------------
                         // Create directory
                         //-----------------------------------
-                        if (FileDataList[FileIndex].FilePath.EndsWith("\\") == true || FileDataList[FileIndex].FilePath.EndsWith("/") == true)
+                        if (FileDataList[FileIndex].FilePath.EndsWith("\\") == true)
                         {
                           string path = Path.Combine(OutDirPath, FileDataList[FileIndex].FilePath);
                           DirectoryInfo di = new DirectoryInfo(path);
@@ -1229,7 +1229,6 @@ namespace AttacheCase
                               }
                               else
                               {
-
                                 // Show dialog of comfirming to overwrite. 
                                 dialog(1, path);
 
@@ -1286,7 +1285,22 @@ namespace AttacheCase
                           }
                           else
                           {
-                            outfs = new FileStream(path, FileMode.Create, FileAccess.Write);
+                            try
+                            {
+                              outfs = new FileStream(path, FileMode.Create, FileAccess.Write);
+                            }
+                            catch(IOException ioe)
+                            {
+                              // フォルダが通っていない場合は例外が発生するので親フォルダーを作成して改めてファイルを開く
+                              // If there is no parent folders, an exception will occur, so create a parent folders and open the file again
+                              FileInfo fileInfo = new FileInfo(path);
+                              if (!fileInfo.Directory.Exists)
+                              {
+                                fileInfo.Directory.Create();
+                              }
+                              outfs = new FileStream(path, FileMode.Create, FileAccess.Write);
+
+                            }
                           }
 
                           _OutputFileList.Add(path);

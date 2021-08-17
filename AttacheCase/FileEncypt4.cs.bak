@@ -407,13 +407,10 @@ namespace AttacheCase
 #if __MACOS__
               NewArchiveName = NewArchiveName + "/";
 #else
-              if (NewArchiveName.EndsWith("\\") == false)
-              {
-                NewArchiveName = NewArchiveName + "\\";
-              }
+              NewArchiveName = NewArchiveName + "\\";
 #endif
               // File name length
-              int FileLen = Encoding.UTF8.GetByteCount(NewArchiveName);
+              int FileLen = Encoding.UTF8.GetByteCount(NewArchiveName + "\\");
               byteArray = BitConverter.GetBytes((Int16)FileLen);
 #if DEBUG
               OneLine += FileLen.ToString() + "\t";
@@ -421,9 +418,9 @@ namespace AttacheCase
               ms.Write(byteArray, 0, 2);
               
               // File name
-              byteArray = Encoding.UTF8.GetBytes(NewArchiveName);
+              byteArray = Encoding.UTF8.GetBytes(NewArchiveName + "\\");
 #if DEBUG
-              OneLine += NewArchiveName + "\t";
+              OneLine += NewArchiveName + "\\" + "\t";
 #endif
               ms.Write(byteArray, 0, FileLen);
               
@@ -481,22 +478,11 @@ namespace AttacheCase
               ParentPath = Path.GetDirectoryName(FilePath);
 
 #if __MACOS__
-              if (ParentPath.EndsWith("/") == false)
-              {
-                ParentPath = ParentPath + "/";
-              }
-
 #else
               if (ParentPath == null)  // In case of 'C:\\' root direcroy.
               {
                 ParentPath = FilePath;
               }
-
-              if (ParentPath.EndsWith("\\") == false)
-              {
-                ParentPath = ParentPath + "\\";
-              }
-
 #endif
 
               if ((worker.CancellationPending == true))

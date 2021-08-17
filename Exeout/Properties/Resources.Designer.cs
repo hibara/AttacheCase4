@@ -31,13 +31,11 @@ namespace Exeout.Properties {
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
         internal Resources() {
         }
-
-    public static string DialogMessageInvalidPrivateKey { get; internal set; }
-
-    /// <summary>
-    ///   このクラスで使用されているキャッシュされた ResourceManager インスタンスを返します。
-    /// </summary>
-    [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
+        
+        /// <summary>
+        ///   このクラスで使用されているキャッシュされた ResourceManager インスタンスを返します。
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
@@ -115,6 +113,15 @@ namespace Exeout.Properties {
         internal static string DialogMessageInvalidFilePath {
             get {
                 return ResourceManager.GetString("DialogMessageInvalidFilePath", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   This is not the private key of the encrypted pair. Could not decrypt. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        internal static string DialogMessageInvalidPrivateKey {
+            get {
+                return ResourceManager.GetString("DialogMessageInvalidPrivateKey", resourceCulture);
             }
         }
         

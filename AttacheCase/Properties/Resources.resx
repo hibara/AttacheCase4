@@ -250,8 +250,8 @@ Do you restart AttacheCase now?</value>
   <data name="labelProcessNameMoveToTrash" xml:space="preserve">
     <value>Move to Trash...</value>
   </data>
-  <data name="labelCompressMaximum" xml:space="preserve">
-    <value>&lt;Maximum&gt;</value>
+  <data name="labelCompressTitleFastest" xml:space="preserve">
+    <value>Fastest</value>
   </data>
   <data name="DialogTitleEncryptSelectFiles" xml:space="preserve">
     <value>Select files to encrypt</value>
@@ -389,11 +389,11 @@ But, open all of the files associated with application?</value>
   <data name="DialogTitleSelectPasswordFile" xml:space="preserve">
     <value>Select Password file</value>
   </data>
-  <data name="labelCompressNone" xml:space="preserve">
-    <value>&lt;None&gt;</value>
+  <data name="labelCompressTitleNone" xml:space="preserve">
+    <value>NoCompression</value>
   </data>
-  <data name="labelCompressDefault" xml:space="preserve">
-    <value>&lt;Default&gt;</value>
+  <data name="labelCompressTitleOptimal" xml:space="preserve">
+    <value>Optimal</value>
   </data>
   <data name="DialogMessageBrokenAlready" xml:space="preserve">
     <value>The encrypted file has already been destroyed.</value>
@@ -677,5 +677,14 @@ Encrypt</value>
   </data>
   <data name="labelRsaMessage" xml:space="preserve">
     <value>Drag and drop the file or folder you want to encrypt or decrypt here. You can also drag and drop the public key and private key first.</value>
+  </data>
+  <data name="labelCompressMsgNone" xml:space="preserve">
+    <value>No compression should be performed on the file.</value>
+  </data>
+  <data name="labelCompressMsgOptimal" xml:space="preserve">
+    <value>The compression operation should be optimally compressed, even if the operation takes a longer time to complete.</value>
+  </data>
+  <data name="lbelCompressMsgFastest" xml:space="preserve">
+    <value>The compression operation should complete as quickly as possible, even if the resulting file is not optimally compressed.</value>
   </data>
 </root>

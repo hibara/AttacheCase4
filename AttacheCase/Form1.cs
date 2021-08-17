@@ -31,6 +31,7 @@ using System.Threading.Tasks;
 using System.Runtime.InteropServices;
 using System.Xml.Linq;
 using System.Text;
+using System.Globalization;
 
 namespace AttacheCase
 {
@@ -1492,7 +1493,7 @@ namespace AttacheCase
             //
             // Error
             // The path of files or folders are invalid. The process is aborted.
-                        if (decryption4 != null)
+            if (decryption4 != null)
             {
               ErrorFilePath = decryption4.ErrorFilePath;
             }
@@ -1889,6 +1890,35 @@ namespace AttacheCase
     {
       if (panelStartPage.Visible == true)
       {
+        //-----------------------------------
+        // Check culture
+        switch (AppSettings.Instance.Language)
+        {
+          case "ja":
+            CultureInfo.CurrentUICulture = CultureInfo.CreateSpecificCulture("ja-JP");
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-JP");
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP");
+            break;
+          case "en":
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("", true);
+            Thread.CurrentThread.CurrentUICulture = new CultureInfo("", true);
+            break;
+          case "":
+          default:
+            if (CultureInfo.CurrentCulture.Name == "ja-JP")
+            {
+              CultureInfo.CurrentUICulture = CultureInfo.CreateSpecificCulture("ja-JP");
+              Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-JP");
+              Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP");
+            }
+            else
+            {
+              Thread.CurrentThread.CurrentCulture = new CultureInfo("", true);
+              Thread.CurrentThread.CurrentUICulture = new CultureInfo("", true);
+            }
+            break;
+        }
+
         // Show Option form
         Form3 frm3 = new Form3();
         frm3.ShowDialog();
@@ -3681,6 +3711,8 @@ namespace AttacheCase
       panelRsaKey.Visible = false;
       panelProgressState.Visible = true;
       labelCryptionType.Text = Resources.labelProcessNameEncrypt;
+      pictureBoxProgress.Image = pictureBoxAtcOn.Image;
+      labelProgress.Text = labelAtc.Text;
 
       if (FileIndex > AppSettings.Instance.FileList.Count - 1)
       {
@@ -3722,6 +3754,13 @@ namespace AttacheCase
         // The folder to save is not found! Process is aborted.
         DialogResult ret = MessageBox.Show(new Form { TopMost = true }, Resources.DialogMessageDirectoryNotFount + Environment.NewLine + OutDirPath,
         Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+        labelProgressPercentText.Text = "- %";
+        progressBar.Value = 0;
+        labelCryptionType.Text = Resources.labelCaptionAborted;
+        notifyIcon1.Text = "- % " + Resources.labelCaptionAborted;
+        AppSettings.Instance.FileList = null;
+        this.Update();
         return;
       }
 
@@ -3780,6 +3819,12 @@ namespace AttacheCase
                 Resources.DialogMessageEncryptionPasswordFileNotFound + Environment.NewLine + AppSettings.Instance.PassFilePath,
                 Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
+            labelProgressPercentText.Text = "- %";
+            progressBar.Value = 0;
+            labelCryptionType.Text = Resources.labelCaptionError;
+            notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+            AppSettings.Instance.FileList = null;
+            this.Update();
             return;
           }
         }
@@ -3829,9 +3874,6 @@ namespace AttacheCase
       //-----------------------------------
       if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_NONE || AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC)
       {
-        pictureBoxProgress.Image = pictureBoxAtcOn.Image;
-        labelProgress.Text = labelAtc.Text;
-
         // Save to the same directory?
         if (AppSettings.Instance.fSaveToSameFldr == true)
         {
@@ -3900,6 +3942,7 @@ namespace AttacheCase
           // Input encrypted file name for putting together
           // 一つにまとめる暗号化ファイル名入力
           saveFileDialog1.Title = Resources.DialogTitleAllPackFiles;
+          saveFileDialog1.OverwritePrompt = false;
 
           if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC_EXE)
           {
@@ -4048,6 +4091,12 @@ namespace AttacheCase
                   // 暗号化の処理はキャンセルされました。
                   // Encryption was canceled.
                   labelProgressMessageText.Text = Resources.labelEncryptionCanceled;
+                  labelProgressPercentText.Text = "- %";
+                  progressBar.Value = 0;
+                  labelCryptionType.Text = Resources.labelCaptionCanceled;
+                  notifyIcon1.Text = "- % " + Resources.labelCaptionCanceled;
+                  AppSettings.Instance.FileList = null;
+                  this.Update();
                   return;
                 }
                 else
@@ -4100,11 +4149,29 @@ namespace AttacheCase
         buttonCancel.Text = Resources.ButtonTextCancel;
 
         //-----------------------------------
-        // Encryption start
+        // Compression Level
         //-----------------------------------
+        System.IO.Compression.CompressionLevel compressionLevel;
+        switch (AppSettings.Instance.CompressionLevel)
+        {
+          case 1: // Fastest
+            compressionLevel = System.IO.Compression.CompressionLevel.Fastest;
+            break;
+          case 0: // No compression
+            compressionLevel = System.IO.Compression.CompressionLevel.NoCompression;
+            break;
+          case 2: // Optional
+          default:
+            compressionLevel = System.IO.Compression.CompressionLevel.Optimal;
+            break;
+        }
 
-        // BackgroundWorker event handler
-        bkg = new BackgroundWorker();
+       //-----------------------------------
+       // Encryption start
+       //-----------------------------------
+
+       // BackgroundWorker event handler
+       bkg = new BackgroundWorker();
 
         if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_NONE ||
             AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC ||
@@ -4116,7 +4183,8 @@ namespace AttacheCase
             AppSettings.Instance.FileList.ToArray(),
             AtcFilePath,
             EncryptionPassword, EncryptionPasswordBinary,
-            Path.GetFileNameWithoutExtension(AtcFilePath));
+            Path.GetFileNameWithoutExtension(AtcFilePath),
+            compressionLevel);
         }
 
         FileIndex = AppSettings.Instance.FileList.Count;
@@ -4312,6 +4380,24 @@ namespace AttacheCase
         buttonCancel.Text = Resources.ButtonTextCancel;
 
         //-----------------------------------
+        // Compression Level
+        //-----------------------------------
+        System.IO.Compression.CompressionLevel compressionLevel;
+        switch (AppSettings.Instance.CompressionLevel)
+        {
+          case 1: // Fastest
+            compressionLevel = System.IO.Compression.CompressionLevel.Fastest;
+            break;
+          case 0: // No compression
+            compressionLevel = System.IO.Compression.CompressionLevel.NoCompression;
+            break;
+          case 2: // Optional
+          default:
+            compressionLevel = System.IO.Compression.CompressionLevel.Optimal;
+            break;
+        }
+
+        //-----------------------------------
         // Encryption start
         //-----------------------------------
 
@@ -4328,7 +4414,8 @@ namespace AttacheCase
               new string[] { AppSettings.Instance.FileList[FileIndex] },
               AtcFilePath,
               EncryptionPassword, EncryptionPasswordBinary,
-              "");
+              "",
+              compressionLevel);
           };
         }
 
@@ -4393,9 +4480,15 @@ namespace AttacheCase
           OutDirPath = Path.GetDirectoryName(FileListPath);
         }
   
+        if (FileListPath.EndsWith(":\\") == true) // For the root directory, such as C:\, etc.
+        {
+          // Extract the first drive letter only
+          FileListPath = FileListPath.Substring(0, 1);
+        }
+
         //-----------------------------------
         //Create encrypted file including extension
-        string FileListName = Path.GetFileName(FileListPath);
+        string FileListName;
         if (AppSettings.Instance.fExtInAtcFileName == true)
         {
           FileListName = Path.GetFileName(FileListPath) + Extension;
@@ -4530,6 +4623,24 @@ namespace AttacheCase
         //-----------------------------------
         buttonCancel.Text = Resources.ButtonTextCancel;
 
+        //-----------------------------------
+        // Compression Level
+        //-----------------------------------
+        System.IO.Compression.CompressionLevel compressionLevel;
+        switch (AppSettings.Instance.CompressionLevel)
+        {
+          case 0: // No compression
+            compressionLevel = System.IO.Compression.CompressionLevel.NoCompression;
+            break;
+          case 1: // Fastest
+            compressionLevel = System.IO.Compression.CompressionLevel.Fastest;
+            break;
+          case 2: // Optional
+          default:
+            compressionLevel = System.IO.Compression.CompressionLevel.Optimal;
+            break;
+        }
+
         //----------------------------------------------------------------------
         // Encrypt
         //----------------------------------------------------------------------
@@ -4547,7 +4658,8 @@ namespace AttacheCase
             new string[] { AppSettings.Instance.FileList[FileIndex] },
             AtcFilePath,
             EncryptionPassword, EncryptionPasswordBinary,
-            "");
+            "",
+            compressionLevel);
         }
 
         bkg.RunWorkerCompleted += backgroundWorker_Encryption_RunWorkerCompleted;
