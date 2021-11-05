@@ -3554,10 +3554,11 @@ namespace AttacheCase
     public int CheckFileType(string FilePath)
     {
       //const string SignatureZip = "50-4B-03-04";  // ZIPファイル
-      const string SignatureAtc =       "_AttacheCaseData";
-      const string SignatureAtcBroken = "_Atc_Broken_Data";
-      const string SignatureRsaData =   "_AttacheCase_Rsa";
-      const string SignatureXmlData =   "EF-BB-BF-3C-3F-78-6D-6C";   // BOM + "<?xml "
+      const string SignatureAtc        = "_AttacheCaseData";
+      const string SignatureAtcBroken  = "_Atc_Broken_Data";
+      const string SignatureRsaData    = "_AttacheCase_Rsa";
+      const string SignatureBomXmlData = "EF-BB-BF-3C-3F-78-6D-6C";   // BOM + "<?xml "
+      const string SignatureXmlData    = "3C-3F-78-6D-6C-20-76-65";   // "<?xml ve"
 
       //-----------------------------------
       // ディレクトリー
@@ -3613,7 +3614,7 @@ namespace AttacheCase
         bufferSignature = new byte[8];
         fs.Read(bufferSignature, 0, 8);
         SignatureText = BitConverter.ToString(bufferSignature);
-        if (SignatureText == SignatureXmlData)
+        if (SignatureText == SignatureBomXmlData || SignatureText == SignatureXmlData)
         {
           XElement xmlElement = XElement.Load(FilePath);
           if (xmlElement.Element("token").Value == "AttacheCase")

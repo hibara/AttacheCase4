@@ -2102,33 +2102,35 @@ namespace AttacheCase
         // private const int PROCESS_TYPE_RSA_ENCRYPTION =  5;
         // private const int PROCESS_TYPE_RSA_DECRYPTION =  6;
 
-        ProcessType = AppSettings.Instance.EncryptionSameFileTypeBefore;
+        // 自動判別
+        // Detect file type
+        ProcessType = AppSettings.Instance.DetectFileType();
 
-        if (AppSettings.Instance.EncryptionSameFileTypeAlways == 1)
+        if (ProcessType == PROCESS_TYPE_DECRYPTION)
         {
-          ProcessType = PROCESS_TYPE_ATC;
-        }
-        else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 2)
-        {
-          ProcessType = PROCESS_TYPE_ATC_EXE;
-        }
-        //else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 3)
-        //{
-        //  ProcessType = PROCESS_TYPE_PASSWORD_ZIP;
-        //}
-        else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 4)
-        {
-          ProcessType = PROCESS_TYPE_RSA_ENCRYPTION;
+          // Decryption
         }
         else
         {
-          // 自動判別
-          // Detect file type
-          int AtcProcessType = AppSettings.Instance.DetectFileType();
+          // Encryption
 
-          if (AtcProcessType == PROCESS_TYPE_DECRYPTION)
+          ProcessType = AppSettings.Instance.EncryptionSameFileTypeBefore;
+
+          if (AppSettings.Instance.EncryptionSameFileTypeAlways == FILE_TYPE_ATC)
           {
-            ProcessType = AtcProcessType;
+            ProcessType = PROCESS_TYPE_ATC;
+          }
+          else if (AppSettings.Instance.EncryptionSameFileTypeAlways == FILE_TYPE_ATC_EXE)
+          {
+            ProcessType = PROCESS_TYPE_ATC_EXE;
+          }
+          //else if (AppSettings.Instance.EncryptionSameFileTypeAlways == PROCESS_TYPE_PASSWORD_ZIP)
+          //{
+          //  ProcessType = PROCESS_TYPE_PASSWORD_ZIP;
+          //}
+          else if (AppSettings.Instance.EncryptionSameFileTypeAlways == PROCESS_TYPE_DECRYPTION)
+          {
+            ProcessType = PROCESS_TYPE_RSA_ENCRYPTION;
           }
           else
           {
@@ -6355,6 +6357,10 @@ namespace AttacheCase
         {
           buttonGenerateKey.Visible = false;
         }
+
+        this.AcceptButton = buttonGenerateKey;
+        this.CancelButton = buttonRsaCancel;
+
       }
     }
 
@@ -6382,6 +6388,8 @@ namespace AttacheCase
       buttonGenerateKey.Visible = true;
       // ファイルリストをクリアする
       AppSettings.Instance.FileList = new List<string>();
+
+      this.CancelButton = buttonRsaKeyCancel;
 
     }
 

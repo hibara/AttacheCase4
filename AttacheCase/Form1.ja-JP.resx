@@ -1799,6 +1799,9 @@ ATC</value>
   <data name="pictureBoxDecryptBackButton.ToolTip1" xml:space="preserve">
     <value />
   </data>
+  <data name="labelDecryption.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 217</value>
+  </data>
   <data name="labelDecryption.Text" xml:space="preserve">
     <value>復号する
 (元に戻す)</value>
