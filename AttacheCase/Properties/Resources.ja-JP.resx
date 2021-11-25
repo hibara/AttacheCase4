@@ -687,4 +687,7 @@
   <data name="lbelCompressMsgFastest" xml:space="preserve">
     <value>圧縮後のファイルが最適な圧縮でなくても、圧縮操作はできるだけ迅速に完了します。</value>
   </data>
+  <data name="labelDecryptionCanceled" xml:space="preserve">
+    <value>復号処理はキャンセルされました。</value>
+  </data>
 </root>

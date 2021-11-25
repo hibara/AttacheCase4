@@ -541,7 +541,7 @@
     <value>splitButton2</value>
   </data>
   <data name="&gt;&gt;splitButton2.Type" xml:space="preserve">
-    <value>AttacheCase.SplitButton, AttacheCase, Version=3.5.1.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>AttacheCase.SplitButton, AttacheCase, Version=4.0.2.5, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;splitButton2.Parent" xml:space="preserve">
     <value>panelOverwriteConfirm</value>
@@ -613,7 +613,7 @@
     <value>splitButton1</value>
   </data>
   <data name="&gt;&gt;splitButton1.Type" xml:space="preserve">
-    <value>AttacheCase.SplitButton, AttacheCase, Version=3.5.1.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>AttacheCase.SplitButton, AttacheCase, Version=4.0.2.5, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;splitButton1.Parent" xml:space="preserve">
     <value>panelOverwriteConfirm</value>
@@ -631,10 +631,10 @@
     <value>NoControl</value>
   </data>
   <data name="buttonOverwriteCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>379, 128</value>
+    <value>370, 128</value>
   </data>
   <data name="buttonOverwriteCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>92, 32</value>
+    <value>101, 32</value>
   </data>
   <data name="buttonOverwriteCancel.TabIndex" type="System.Int32, mscorlib">
     <value>18</value>

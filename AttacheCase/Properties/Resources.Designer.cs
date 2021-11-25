@@ -945,6 +945,15 @@ namespace AttacheCase.Properties {
         /// <summary>
         ///   Decryption was canceled. に類似しているローカライズされた文字列を検索します。
         /// </summary>
+        public static string labelDecryptionCanceled {
+            get {
+                return ResourceManager.GetString("labelDecryptionCanceled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Decryption was canceled. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
         public static string labelDecyptionCanceled {
             get {
                 return ResourceManager.GetString("labelDecyptionCanceled", resourceCulture);

@@ -1509,11 +1509,12 @@ namespace AttacheCase
       }
       catch (Exception ex)
       {
-        // ユーザーキャンセルを行うタイミングで例外が発生してしまうため、エラーコードはユーザーキャンセルをそのまま返す。
-        // The error code returns the user cancel as it is because the exception occurs at the time of user cancel.
-        if (_ReturnCode == USER_CANCELED)
+#if __MACOS__
+        // macOSの場合、ユーザーキャンセルを行うタイミングで例外が発生してしまうため、エラーコードはユーザーキャンセルをそのまま返す。
+        // In the case of macOS, the error code returns the user cancel as it is because the exception occurs at the time of user cancel.
+        if (_ReturnCode == -1)
         {
-          _ReturnCode = USER_CANCELED;
+          _ReturnCode = -1;
           _ErrorMessage = "";
           return (false);
         }
@@ -1522,7 +1523,7 @@ namespace AttacheCase
           _ReturnCode = DECRYPT_SUCCEEDED;
           return (true);
         }
-
+#endif
         _ReturnCode = IO_EXCEPTION;
         _ErrorMessage = ex.Message;
         return (false);

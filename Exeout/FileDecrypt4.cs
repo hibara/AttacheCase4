@@ -942,6 +942,8 @@ namespace AttacheCase
         }//end using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read));
 
 #if DEBUG
+#if __MACOS__
+#else
         //----------------------------------------------------------------------
         // Output debug log
         //----------------------------------------------------------------------
@@ -963,6 +965,7 @@ namespace AttacheCase
                 sw.WriteLine(OneLine);
             }
         }
+#endif
 #endif
 
         //----------------------------------------------------------------------
@@ -1087,7 +1090,8 @@ namespace AttacheCase
                         //-----------------------------------
                         // Create directory
                         //-----------------------------------
-                        if (FileDataList[FileIndex].FilePath.EndsWith("\\") == true)
+                        if (FileDataList[FileIndex].FilePath.EndsWith("\\") == true ||
+                            FileDataList[FileIndex].FilePath.EndsWith("/") == true)
                         {
                           string path = Path.Combine(OutDirPath, FileDataList[FileIndex].FilePath);
                           DirectoryInfo di = new DirectoryInfo(path);
@@ -1289,7 +1293,7 @@ namespace AttacheCase
                             {
                               outfs = new FileStream(path, FileMode.Create, FileAccess.Write);
                             }
-                            catch(IOException ioe)
+                            catch
                             {
                               // フォルダが通っていない場合は例外が発生するので親フォルダーを作成して改めてファイルを開く
                               // If there is no parent folders, an exception will occur, so create a parent folders and open the file again
@@ -1505,6 +1509,20 @@ namespace AttacheCase
       }
       catch (Exception ex)
       {
+        // ユーザーキャンセルを行うタイミングで例外が発生してしまうため、エラーコードはユーザーキャンセルをそのまま返す。
+        // The error code returns the user cancel as it is because the exception occurs at the time of user cancel.
+        if (_ReturnCode == USER_CANCELED)
+        {
+          _ReturnCode = USER_CANCELED;
+          _ErrorMessage = "";
+          return (false);
+        }
+        else if (_ReturnCode == DECRYPT_SUCCEEDED)
+        {
+          _ReturnCode = DECRYPT_SUCCEEDED;
+          return (true);
+        }
+
         _ReturnCode = IO_EXCEPTION;
         _ErrorMessage = ex.Message;
         return (false);

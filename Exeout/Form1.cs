@@ -359,7 +359,26 @@ namespace Exeout
             progressBar1.Value = progressBar1.Maximum;
             labelPercent.Text = "100%";
             labelMessage.Text = Resources.labelCaptionCompleted;
+
             this.Update();
+
+            decryption = null;
+            return;
+
+          //-----------------------------------
+          case USER_CANCELED:
+            // Canceled
+            labelPercent.Text = "- %";
+            progressBar1.Style = ProgressBarStyle.Continuous;
+            progressBar1.Value = 0;
+            // キャンセルされました。
+            // Canceled.
+            labelMessage.Text = Resources.labelCaptionCanceled;
+
+            this.Update();
+
+            decryption = null;
+
             return;
 
           //-----------------------------------
@@ -376,6 +395,7 @@ namespace Exeout
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               labelMessage.Text = Resources.labelCaptionAborted;
               labelPercent.Text = "- %";
+            decryption = null;
             return;
 
           //-----------------------------------
@@ -390,6 +410,7 @@ namespace Exeout
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               labelMessage.Text = Resources.labelCaptionAborted;
               labelPercent.Text = "- %";
+            decryption = null;
             return;
 
           //-----------------------------------
@@ -404,7 +425,7 @@ namespace Exeout
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               labelMessage.Text = Resources.labelCaptionAborted;
               labelPercent.Text = "- %";
-
+            decryption = null;
             return;
 
           //-----------------------------------
@@ -418,6 +439,7 @@ namespace Exeout
               Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               labelMessage.Text = Resources.labelCaptionAborted;
               labelPercent.Text = "- %";
+            decryption = null;
             return;
 
           //-----------------------------------
@@ -431,6 +453,7 @@ namespace Exeout
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               labelMessage.Text = Resources.labelCaptionAborted;
               labelPercent.Text = "- %";
+            decryption = null;
             return;
 
           //-----------------------------------
@@ -445,6 +468,7 @@ namespace Exeout
             MessageBox.Show(new Form { TopMost = true },
               Resources.DialogMessageNotSameHash + Environment.NewLine + decryption.ErrorFilePath,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            decryption = null;
             return;
 
           //-----------------------------------
@@ -459,6 +483,7 @@ namespace Exeout
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               labelMessage.Text = Resources.labelCaptionAborted;
               labelPercent.Text = "- %";
+            decryption = null;
             return;
 
           case RSA_KEY_GUID_NOT_MATCH:
@@ -471,6 +496,7 @@ namespace Exeout
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             labelMessage.Text = Resources.labelCaptionAborted;
             labelPercent.Text = "- %";
+            decryption = null;
             return;
 
           //-----------------------------------
@@ -486,6 +512,7 @@ namespace Exeout
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               labelMessage.Text = Resources.labelCaptionAborted;
               labelPercent.Text = "- %";
+            decryption = null;
             return;
 
           //-----------------------------------
@@ -499,7 +526,8 @@ namespace Exeout
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
               labelMessage.Text = Resources.labelCaptionAborted;
               labelPercent.Text = "- %";
-            break;
+            decryption = null;
+            return;
 
           //-----------------------------------
           case PASSWORD_TOKEN_NOT_FOUND:
@@ -540,6 +568,7 @@ namespace Exeout
               }
 
             }
+            decryption = null;
             return;
 
         }// end switch();

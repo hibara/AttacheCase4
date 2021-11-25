@@ -687,4 +687,7 @@ Encrypt</value>
   <data name="lbelCompressMsgFastest" xml:space="preserve">
     <value>The compression operation should complete as quickly as possible, even if the resulting file is not optimally compressed.</value>
   </data>
+  <data name="labelDecryptionCanceled" xml:space="preserve">
+    <value>Decryption was canceled.</value>
+  </data>
 </root>
