@@ -311,7 +311,7 @@
   <data name="labelGettingReadyForEncryption" xml:space="preserve">
     <value>暗号化するための準備をしています...</value>
   </data>
-  <data name="DialogMessagefTemporarySettings" xml:space="preserve">
+  <data name="DialogMessageTempSettingsFromCommandLine" xml:space="preserve">
     <value>コマンドラインオプションからの一時設定を利用しているため、メインの設定を反映させることができません。</value>
   </data>
   <data name="DialogMessageNotDirectoryInPasswordFile" xml:space="preserve">
@@ -689,5 +689,23 @@
   </data>
   <data name="labelDecryptionCanceled" xml:space="preserve">
     <value>復号処理はキャンセルされました。</value>
+  </data>
+  <data name="DialogTitleSelectEncryptedFiles" xml:space="preserve">
+    <value>暗号化ファイルを選択</value>
+  </data>
+  <data name="DialogMessageTempSettingsToCurrent" xml:space="preserve">
+    <value>一時的に読み込まれた設定を現在の設定としてレジストリに反映させます。よろしいですか？</value>
+  </data>
+  <data name="DialogMessageDicardTempSettingsAndLoadRegistry" xml:space="preserve">
+    <value>一時的に読み込まれた設定を破棄してレジストリから設定を読み込みます。よろしいですか？</value>
+  </data>
+  <data name="DialogMessageTempSettingsFromIniFile" xml:space="preserve">
+    <value>INIファイルからの一時設定を利用しているため、メインの設定を反映させることができません。</value>
+  </data>
+  <data name="groupBoxCanNotChange" xml:space="preserve">
+    <value>設定ファイル（INIファイル）読み込み中は変更できません</value>
+  </data>
+  <data name="groupBoxReadIniFile" xml:space="preserve">
+    <value>設定ファイル（INIファイル）オプション：</value>
   </data>
 </root>

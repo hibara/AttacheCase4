@@ -541,7 +541,7 @@
     <value>splitButton2</value>
   </data>
   <data name="&gt;&gt;splitButton2.Type" xml:space="preserve">
-    <value>AttacheCase.SplitButton, AttacheCase, Version=4.0.2.5, Culture=neutral, PublicKeyToken=null</value>
+    <value>AttacheCase.SplitButton, AttacheCase, Version=4.0.2.7, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;splitButton2.Parent" xml:space="preserve">
     <value>panelOverwriteConfirm</value>
@@ -613,7 +613,7 @@
     <value>splitButton1</value>
   </data>
   <data name="&gt;&gt;splitButton1.Type" xml:space="preserve">
-    <value>AttacheCase.SplitButton, AttacheCase, Version=4.0.2.5, Culture=neutral, PublicKeyToken=null</value>
+    <value>AttacheCase.SplitButton, AttacheCase, Version=4.0.2.7, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;splitButton1.Parent" xml:space="preserve">
     <value>panelOverwriteConfirm</value>
@@ -1308,36 +1308,6 @@
   <data name="&gt;&gt;tabPageInvalidChar.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="checkBoxConfirmToReadIniFile.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="checkBoxConfirmToReadIniFile.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="checkBoxConfirmToReadIniFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 137</value>
-  </data>
-  <data name="checkBoxConfirmToReadIniFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>210, 16</value>
-  </data>
-  <data name="checkBoxConfirmToReadIniFile.TabIndex" type="System.Int32, mscorlib">
-    <value>34</value>
-  </data>
-  <data name="checkBoxConfirmToReadIniFile.Text" xml:space="preserve">
-    <value>Do not display this dialog box again.</value>
-  </data>
-  <data name="&gt;&gt;checkBoxConfirmToReadIniFile.Name" xml:space="preserve">
-    <value>checkBoxConfirmToReadIniFile</value>
-  </data>
-  <data name="&gt;&gt;checkBoxConfirmToReadIniFile.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBoxConfirmToReadIniFile.Parent" xml:space="preserve">
-    <value>panelConfirmToReadIniFile</value>
-  </data>
-  <data name="&gt;&gt;checkBoxConfirmToReadIniFile.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="labelConfirmToReadIniFileAlert.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -1366,7 +1336,7 @@
     <value>panelConfirmToReadIniFile</value>
   </data>
   <data name="&gt;&gt;labelConfirmToReadIniFileAlert.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>0</value>
   </data>
   <data name="labelIniFilePath.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -1393,7 +1363,7 @@
     <value>panelConfirmToReadIniFile</value>
   </data>
   <data name="&gt;&gt;labelIniFilePath.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>1</value>
   </data>
   <data name="buttonConfirmToReadIniFileYes.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -1426,7 +1396,7 @@
     <value>panelConfirmToReadIniFile</value>
   </data>
   <data name="&gt;&gt;buttonConfirmToReadIniFileYes.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>2</value>
   </data>
   <data name="buttonConfirmToReadIniFileNo.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -1459,7 +1429,7 @@
     <value>panelConfirmToReadIniFile</value>
   </data>
   <data name="&gt;&gt;buttonConfirmToReadIniFileNo.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>3</value>
   </data>
   <data name="labelConfirmToReadIniFile.Font" type="System.Drawing.Font, System.Drawing">
     <value>MS UI Gothic, 12pt</value>
@@ -1489,7 +1459,7 @@
     <value>panelConfirmToReadIniFile</value>
   </data>
   <data name="&gt;&gt;labelConfirmToReadIniFile.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>4</value>
   </data>
   <data name="pictureBox3.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -1554,7 +1524,7 @@
     <value>panelConfirmToReadIniFile</value>
   </data>
   <data name="&gt;&gt;pictureBox3.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>5</value>
   </data>
   <data name="panelConfirmToReadIniFile.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>
@@ -1655,6 +1625,9 @@
   <data name="&gt;&gt;panelOuter.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>ja-JP</value>
+  </metadata>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>

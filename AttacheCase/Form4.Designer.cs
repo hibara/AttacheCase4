@@ -74,7 +74,6 @@
       this.pictureBox2 = new System.Windows.Forms.PictureBox();
       this.tabPageConfirmToReadIniFile = new System.Windows.Forms.TabPage();
       this.panelConfirmToReadIniFile = new System.Windows.Forms.Panel();
-      this.checkBoxConfirmToReadIniFile = new System.Windows.Forms.CheckBox();
       this.labelConfirmToReadIniFileAlert = new System.Windows.Forms.Label();
       this.labelIniFilePath = new System.Windows.Forms.Label();
       this.buttonConfirmToReadIniFileYes = new System.Windows.Forms.Button();
@@ -405,7 +404,6 @@
       // 
       // panelConfirmToReadIniFile
       // 
-      this.panelConfirmToReadIniFile.Controls.Add(this.checkBoxConfirmToReadIniFile);
       this.panelConfirmToReadIniFile.Controls.Add(this.labelConfirmToReadIniFileAlert);
       this.panelConfirmToReadIniFile.Controls.Add(this.labelIniFilePath);
       this.panelConfirmToReadIniFile.Controls.Add(this.buttonConfirmToReadIniFileYes);
@@ -414,12 +412,6 @@
       this.panelConfirmToReadIniFile.Controls.Add(this.pictureBox3);
       resources.ApplyResources(this.panelConfirmToReadIniFile, "panelConfirmToReadIniFile");
       this.panelConfirmToReadIniFile.Name = "panelConfirmToReadIniFile";
-      // 
-      // checkBoxConfirmToReadIniFile
-      // 
-      resources.ApplyResources(this.checkBoxConfirmToReadIniFile, "checkBoxConfirmToReadIniFile");
-      this.checkBoxConfirmToReadIniFile.Name = "checkBoxConfirmToReadIniFile";
-      this.checkBoxConfirmToReadIniFile.UseVisualStyleBackColor = true;
       // 
       // labelConfirmToReadIniFileAlert
       // 
@@ -520,7 +512,6 @@
     private System.Windows.Forms.PictureBox pictureBox2;
     private System.Windows.Forms.TabPage tabPageConfirmToReadIniFile;
     private System.Windows.Forms.Panel panelConfirmToReadIniFile;
-    private System.Windows.Forms.CheckBox checkBoxConfirmToReadIniFile;
     private System.Windows.Forms.Label labelConfirmToReadIniFileAlert;
     private System.Windows.Forms.Label labelIniFilePath;
     private System.Windows.Forms.Button buttonConfirmToReadIniFileYes;

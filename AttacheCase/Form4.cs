@@ -500,27 +500,17 @@ namespace AttacheCase
 
     private void buttonConfirmToReadIniFileYes_Click(object sender, EventArgs e)
     {
-      if (checkBoxConfirmToReadIniFile.Checked == true)
-      {
-        AppSettings.Instance.fShowDialogToConfirmToReadIniFile = false;
-      }
-      AppSettings.Instance.fAlwaysReadIniFile = true;
       _fReadIniFile = true;
       this.Close();
     }
 
     private void buttonConfirmToReadIniFileNo_Click(object sender, EventArgs e)
     {
-      if (checkBoxConfirmToReadIniFile.Checked == true)
-      {
-        AppSettings.Instance.fShowDialogToConfirmToReadIniFile = false;
-      }
-      AppSettings.Instance.fAlwaysReadIniFile = false;
       _fReadIniFile = false;
       this.Close();
     }
 
-        #endregion
+    #endregion
 
     }
 

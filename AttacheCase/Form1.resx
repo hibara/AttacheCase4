@@ -2851,7 +2851,7 @@ ATC</value>
     <value>textBoxPassword</value>
   </data>
   <data name="&gt;&gt;textBoxPassword.Type" xml:space="preserve">
-    <value>AttacheCase.DelayTextBox, AttacheCase, Version=4.0.2.2, Culture=neutral, PublicKeyToken=null</value>
+    <value>AttacheCase.DelayTextBox, AttacheCase, Version=4.0.2.6, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;textBoxPassword.Parent" xml:space="preserve">
     <value>panelEncrypt</value>
@@ -7673,9 +7673,6 @@ ATC</value>
         Hm4dHR1wKCgoay8vL3c/Pz9tf39/AgAAAAAAAAAAAAAAAAAAAAAAfwAAAAMAAAAAAAAAAAAAAAAAAAAA
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAD4DwAA
 </value>
-  </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
   </data>
   <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
     <value>560, 495</value>

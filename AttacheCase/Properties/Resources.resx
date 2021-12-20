@@ -188,8 +188,8 @@ Do you restart AttacheCase now?</value>
   <data name="DialogMessageFileAssociationToolNotFound" xml:space="preserve">
     <value>File association tool is not found.</value>
   </data>
-  <data name="DialogMessagefTemporarySettings" xml:space="preserve">
-    <value>Because you are using the temporary settings from the command line option, it will not be able to reflect the change of main setting.</value>
+  <data name="DialogMessageTempSettingsFromCommandLine" xml:space="preserve">
+    <value>Since it is using temporary settings from command line options, it cannot reflect the main settings.</value>
   </data>
   <data name="DialogMessageDecryptionPasswordFileNotFound" xml:space="preserve">
     <value>The specified password file is not found in decryption. The process is aborted.</value>
@@ -689,5 +689,23 @@ Encrypt</value>
   </data>
   <data name="labelDecryptionCanceled" xml:space="preserve">
     <value>Decryption was canceled.</value>
+  </data>
+  <data name="DialogTitleSelectEncryptedFiles" xml:space="preserve">
+    <value>Select encrypted files.</value>
+  </data>
+  <data name="DialogMessageTempSettingsToCurrent" xml:space="preserve">
+    <value>Reflects the temporarily loaded settings in the registry as the current settings. Are you sure?</value>
+  </data>
+  <data name="DialogMessageDicardTempSettingsAndLoadRegistry" xml:space="preserve">
+    <value>Discard the loaded temporary settings and load the settings from the registry. Are you sure?</value>
+  </data>
+  <data name="DialogMessageTempSettingsFromIniFile" xml:space="preserve">
+    <value>Since it is using temporary settings from INI files, it cannot reflect the main settings.</value>
+  </data>
+  <data name="groupBoxCanNotChange" xml:space="preserve">
+    <value>Can't be changed while loading the configuration file (INI file)</value>
+  </data>
+  <data name="groupBoxReadIniFile" xml:space="preserve">
+    <value>Setting file (INI file) option:</value>
   </data>
 </root>

@@ -120,48 +120,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\AttacheCase\CommonSrc\CRC32.cs">
-      <Link>CommonSrc\CRC32.cs</Link>
-    </Compile>
-    <Compile Include="..\AttacheCase\CommonSrc\Iso8859Dash1Encoding.cs">
-      <Link>CommonSrc\Iso8859Dash1Encoding.cs</Link>
-    </Compile>
-    <Compile Include="..\AttacheCase\Zlib\Deflate.cs">
-      <Link>Zlib\Deflate.cs</Link>
-    </Compile>
-    <Compile Include="..\AttacheCase\Zlib\DeflateStream.cs">
-      <Link>Zlib\DeflateStream.cs</Link>
-    </Compile>
-    <Compile Include="..\AttacheCase\Zlib\GZipStream.cs">
-      <Link>Zlib\GZipStream.cs</Link>
-    </Compile>
-    <Compile Include="..\AttacheCase\Zlib\Inflate.cs">
-      <Link>Zlib\Inflate.cs</Link>
-    </Compile>
-    <Compile Include="..\AttacheCase\Zlib\InfTree.cs">
-      <Link>Zlib\InfTree.cs</Link>
-    </Compile>
-    <Compile Include="..\AttacheCase\Zlib\ParallelDeflateOutputStream.cs">
-      <Link>Zlib\ParallelDeflateOutputStream.cs</Link>
-    </Compile>
-    <Compile Include="..\AttacheCase\Zlib\Tree.cs">
-      <Link>Zlib\Tree.cs</Link>
-    </Compile>
-    <Compile Include="..\AttacheCase\Zlib\Zlib.cs">
-      <Link>Zlib\Zlib.cs</Link>
-    </Compile>
-    <Compile Include="..\AttacheCase\Zlib\ZlibBaseStream.cs">
-      <Link>Zlib\ZlibBaseStream.cs</Link>
-    </Compile>
-    <Compile Include="..\AttacheCase\Zlib\ZlibCodec.cs">
-      <Link>Zlib\ZlibCodec.cs</Link>
-    </Compile>
-    <Compile Include="..\AttacheCase\Zlib\ZlibConstants.cs">
-      <Link>Zlib\ZlibConstants.cs</Link>
-    </Compile>
-    <Compile Include="..\AttacheCase\Zlib\ZlibStream.cs">
-      <Link>Zlib\ZlibStream.cs</Link>
-    </Compile>
     <Compile Include="FileDecrypt4.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

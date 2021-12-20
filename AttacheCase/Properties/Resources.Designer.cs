@@ -272,6 +272,15 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   Discard the loaded temporary settings and load the settings from the registry. Are you sure? に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageDicardTempSettingsAndLoadRegistry {
+            get {
+                return ResourceManager.GetString("DialogMessageDicardTempSettingsAndLoadRegistry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   A part of the file or directory cannot be found.
         ///The process is aborted. に類似しているローカライズされた文字列を検索します。
         /// </summary>
@@ -439,15 +448,6 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
-        ///   Because you are using the temporary settings from the command line option, it will not be able to reflect the change of main setting. に類似しているローカライズされた文字列を検索します。
-        /// </summary>
-        public static string DialogMessagefTemporarySettings {
-            get {
-                return ResourceManager.GetString("DialogMessagefTemporarySettings", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   This file has been encrypted with a higher version.
         ///It can not be decrypted. The process is aborted. に類似しているローカライズされた文字列を検索します。
         /// </summary>
@@ -610,6 +610,33 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   Since it is using temporary settings from command line options, it cannot reflect the main settings. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageTempSettingsFromCommandLine {
+            get {
+                return ResourceManager.GetString("DialogMessageTempSettingsFromCommandLine", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Since it is using temporary settings from INI files, it cannot reflect the main settings. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageTempSettingsFromIniFile {
+            get {
+                return ResourceManager.GetString("DialogMessageTempSettingsFromIniFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Reflects the temporarily loaded settings in the registry as the current settings. Are you sure? に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageTempSettingsToCurrent {
+            get {
+                return ResourceManager.GetString("DialogMessageTempSettingsToCurrent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Unexpected decrypted files. It stopped the process. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string DialogMessageUnexpectedDecryptedFiles {
@@ -718,6 +745,15 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   Select encrypted files. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogTitleSelectEncryptedFiles {
+            get {
+                return ResourceManager.GetString("DialogTitleSelectEncryptedFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Select Password file に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string DialogTitleSelectPasswordFile {
@@ -759,6 +795,24 @@ namespace AttacheCase.Properties {
         public static string folderBrowserDialogSaveToZipFile {
             get {
                 return ResourceManager.GetString("folderBrowserDialogSaveToZipFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Can&apos;t be changed while loading the configuration file (INI file) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string groupBoxCanNotChange {
+            get {
+                return ResourceManager.GetString("groupBoxCanNotChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Setting file (INI file) option: に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string groupBoxReadIniFile {
+            get {
+                return ResourceManager.GetString("groupBoxReadIniFile", resourceCulture);
             }
         }
         

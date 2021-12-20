@@ -189,9 +189,6 @@
   <data name="&gt;&gt;folderBrowserDialog1.Type" xml:space="preserve">
     <value>System.Windows.Forms.FolderBrowserDialog, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="checkBoxAlwaysReadIniFile.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
   <data name="&gt;&gt;checkBoxAddCamoExt.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -356,7 +353,7 @@
     <value>* Decrypt all file other than a directory, can be salvaged certainly. But, It will avoid duplication by automatic numbering, when there is the same file name.</value>
   </data>
   <data name="checkBoxShowDialogToConfirmToReadIniFileAlways.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
+    <value>14</value>
   </data>
   <data name="&gt;&gt;buttonOpenSendToFolder.Name" xml:space="preserve">
     <value>buttonOpenSendToFolder</value>
@@ -496,9 +493,6 @@
   <data name="splitContainer1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
-  <data name="checkBoxAlwaysReadIniFile.Text" xml:space="preserve">
-    <value>Always read the setting file "_AtcCase.ini"</value>
-  </data>
   <data name="checkBoxSameTimeStamp.Size" type="System.Drawing.Size, System.Drawing">
     <value>426, 20</value>
   </data>
@@ -549,9 +543,6 @@
   </data>
   <data name="ToolStripMenuItemrandomNumber.Size" type="System.Drawing.Size, System.Drawing">
     <value>162, 22</value>
-  </data>
-  <data name="label12.Size" type="System.Drawing.Size, System.Drawing">
-    <value>412, 82</value>
   </data>
   <data name="checkBoxCheckPassFileDecrypt.Font" type="System.Drawing.Font, System.Drawing">
     <value>MS UI Gothic, 12pt</value>
@@ -620,7 +611,7 @@
     <value>Fill</value>
   </data>
   <data name="groupBox9.Location" type="System.Drawing.Point, System.Drawing">
-    <value>14, 133</value>
+    <value>14, 171</value>
   </data>
   <data name="textBoxSaveEncryptionToSameFolder.Enabled" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -852,6 +843,9 @@
   <data name="checkBoxMyDecodePasswordKeep.Size" type="System.Drawing.Size, System.Drawing">
     <value>266, 20</value>
   </data>
+  <data name="groupBoxIniFileOption.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
   <data name="&gt;&gt;radioButtonAllFilePack.Parent" xml:space="preserve">
     <value>groupBox1</value>
   </data>
@@ -878,6 +872,9 @@
   </data>
   <data name="pictureBoxCheckmark00.TabIndex" type="System.Int32, mscorlib">
     <value>25</value>
+  </data>
+  <data name="buttonDiscardIniSetting.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="tabPageSaveEncryptOption.Size" type="System.Drawing.Size, System.Drawing">
     <value>452, 444</value>
@@ -1103,6 +1100,9 @@
   <data name="&gt;&gt;tabPageSaveEncryptOption.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
+  <data name="comboBoxAlwaysReadIniFile.Items" xml:space="preserve">
+    <value>Don't load the setting file "_AtcCase.ini"</value>
+  </data>
   <data name="pictureBoxMyIcon.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
@@ -1200,6 +1200,9 @@
   </data>
   <data name="panelSystemOption.Size" type="System.Drawing.Size, System.Drawing">
     <value>446, 438</value>
+  </data>
+  <data name="buttonExportCurrentConf.Text" xml:space="preserve">
+    <value>Export this current configuration to INI file</value>
   </data>
   <data name="&gt;&gt;panelPasswordsOption.ZOrder" xml:space="preserve">
     <value>0</value>
@@ -1495,8 +1498,8 @@
   <data name="&gt;&gt;label13.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="checkBoxAlwaysReadIniFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>27, 28</value>
+  <data name="&gt;&gt;openFileDialog1.Name" xml:space="preserve">
+    <value>openFileDialog1</value>
   </data>
   <data name="&gt;&gt;checkBoxNoHidePassword.ZOrder" xml:space="preserve">
     <value>9</value>
@@ -1554,6 +1557,9 @@
   </data>
   <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
     <value>389, 52</value>
+  </data>
+  <data name="comboBoxAlwaysReadIniFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>399, 24</value>
   </data>
   <data name="&gt;&gt;tabPageLicense.ZOrder" xml:space="preserve">
     <value>15</value>
@@ -1683,7 +1689,7 @@
     <value>panelLicenseOption</value>
   </data>
   <data name="&gt;&gt;splitButton1.Type" xml:space="preserve">
-    <value>AttacheCase.SplitButton, AttacheCase, Version=4.0.2.1, Culture=neutral, PublicKeyToken=null</value>
+    <value>AttacheCase.SplitButton, AttacheCase, Version=4.0.2.7, Culture=neutral, PublicKeyToken=null</value>
   </data>
   <data name="&gt;&gt;textBoxSaveEncryptionToSameFolder.Parent" xml:space="preserve">
     <value>panelSaveEncryptOption</value>
@@ -1703,8 +1709,8 @@
   <data name="panelSettingImportExportOption.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
-  <data name="label15.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
+  <data name="&gt;&gt;panelPasswordInputLimitOption.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="pictureBoxIniFileIcon.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
@@ -1794,7 +1800,7 @@
     <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;label15.Parent" xml:space="preserve">
-    <value>panelSettingImportExportOption</value>
+    <value>groupBoxIniFileOption</value>
   </data>
   <data name="&gt;&gt;panelSettingImportExportOption.Type" xml:space="preserve">
     <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1859,6 +1865,9 @@
   <data name="&gt;&gt;buttonSaveEncryptedFileToFolder.Parent" xml:space="preserve">
     <value>panelSaveEncryptOption</value>
   </data>
+  <data name="&gt;&gt;groupBoxIniFileOption.Parent" xml:space="preserve">
+    <value>panelSettingImportExportOption</value>
+  </data>
   <data name="ToolStripMenuItemSymbols.Text" xml:space="preserve">
     <value>Symbols</value>
   </data>
@@ -1918,7 +1927,10 @@
     <value>panelSystemOption</value>
   </data>
   <data name="label15.Size" type="System.Drawing.Size, System.Drawing">
-    <value>243, 16</value>
+    <value>271, 16</value>
+  </data>
+  <data name="panelDevelopmentOption.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
   </data>
   <data name="&gt;&gt;panelSaveEncryptOption.Parent" xml:space="preserve">
     <value>tabPageSaveEncryptOption</value>
@@ -1931,9 +1943,6 @@
   </data>
   <data name="&gt;&gt;buttonInsertFormat.Parent" xml:space="preserve">
     <value>panelSaveEncryptOption</value>
-  </data>
-  <data name="checkBoxAlwaysReadIniFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>310, 20</value>
   </data>
   <data name="&gt;&gt;groupBox8.Parent" xml:space="preserve">
     <value>panelSystemOption</value>
@@ -2115,6 +2124,9 @@
   <data name="groupBox9.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
+  <data name="toolStripMenuItemCmdReference.Text" xml:space="preserve">
+    <value>Command-Line Reference</value>
+  </data>
   <data name="checkBoxShowDialogWhenExeFile.Font" type="System.Drawing.Font, System.Drawing">
     <value>MS UI Gothic, 12pt</value>
   </data>
@@ -2144,9 +2156,6 @@
   </data>
   <data name="&gt;&gt;radioButtonCompleteErase.Name" xml:space="preserve">
     <value>radioButtonCompleteErase</value>
-  </data>
-  <data name="&gt;&gt;checkBoxAlwaysReadIniFile.ZOrder" xml:space="preserve">
-    <value>2</value>
   </data>
   <data name="groupBox5.Size" type="System.Drawing.Size, System.Drawing">
     <value>418, 266</value>
@@ -2340,7 +2349,7 @@
     <value>fileNameToolStripMenuItem</value>
   </data>
   <data name="&gt;&gt;buttonReplaceCurrentByTemporary.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>2</value>
   </data>
   <data name="groupBox10.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -2375,8 +2384,8 @@
   <data name="radioButtonCompleteErase.Location" type="System.Drawing.Point, System.Drawing">
     <value>23, 81</value>
   </data>
-  <data name="panelDevelopmentOption.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+  <data name="comboBoxAlwaysReadIniFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>13, 30</value>
   </data>
   <data name="&gt;&gt;groupBox8.Name" xml:space="preserve">
     <value>groupBox8</value>
@@ -2515,8 +2524,8 @@
   <data name="panelSystemOption.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="buttonExportCurrentConf.Text" xml:space="preserve">
-    <value>Export this current configuration to INI file</value>
+  <data name="&gt;&gt;buttonReplaceCurrentByTemporary.Parent" xml:space="preserve">
+    <value>panelSettingImportExportOption</value>
   </data>
   <data name="buttonUnAssociateAtcFiles.FlatStyle" type="System.Windows.Forms.FlatStyle, System.Windows.Forms">
     <value>System</value>
@@ -2532,9 +2541,6 @@
   </data>
   <data name="checkBoxKeepTimeStamp.Font" type="System.Drawing.Font, System.Drawing">
     <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>644, 525</value>
   </data>
   <data name="&gt;&gt;checkBoxKeepTimeStamp.Name" xml:space="preserve">
     <value>checkBoxKeepTimeStamp</value>
@@ -2842,6 +2848,9 @@
   <data name="radioButtonAllFilePack.Location" type="System.Drawing.Point, System.Drawing">
     <value>17, 47</value>
   </data>
+  <data name="&gt;&gt;groupBoxIniFileOption.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="&gt;&gt;checkBoxMyDecodePasswordKeep.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
@@ -2887,6 +2896,9 @@
   <data name="checkBoxDobyMemorizedPassword.Size" type="System.Drawing.Size, System.Drawing">
     <value>364, 17</value>
   </data>
+  <data name="buttonDiscardIniSetting.Size" type="System.Drawing.Size, System.Drawing">
+    <value>399, 36</value>
+  </data>
   <data name="checkBoxShowDialogToConfirmToReadIniFileAlways.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -2917,6 +2929,9 @@
   <data name="&gt;&gt;label6.Name" xml:space="preserve">
     <value>label6</value>
   </data>
+  <data name="buttonDiscardIniSetting.Enabled" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
   <data name="checkBoxSalvageIntoSameDirectory.Text" xml:space="preserve">
     <value>Decrypt all files into the directory of the same hierarchy</value>
   </data>
@@ -2925,6 +2940,9 @@
   </data>
   <data name="tabPageSettingsImportExport.Text" xml:space="preserve">
     <value>Import/Export</value>
+  </data>
+  <data name="&gt;&gt;buttonDiscardIniSetting.Name" xml:space="preserve">
+    <value>buttonDiscardIniSetting</value>
   </data>
   <data name="checkBoxBroken.Font" type="System.Drawing.Font, System.Drawing">
     <value>MS UI Gothic, 12pt</value>
@@ -3084,7 +3102,7 @@
     <value>24, 29</value>
   </data>
   <data name="&gt;&gt;label15.ZOrder" xml:space="preserve">
-    <value>1</value>
+    <value>2</value>
   </data>
   <data name="radioButtonEncryptionFileTypeATC.Location" type="System.Drawing.Point, System.Drawing">
     <value>55, 44</value>
@@ -3142,6 +3160,9 @@
   </data>
   <data name="buttonInsertFormat.Location" type="System.Drawing.Point, System.Drawing">
     <value>401, 322</value>
+  </data>
+  <data name="pictureBoxCommandLineIcon.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="buttonRestoreDefaultSettings.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -3249,7 +3270,7 @@
     <value>0</value>
   </data>
   <data name="&gt;&gt;checkBoxShowDialogToConfirmToReadIniFileAlways.ZOrder" xml:space="preserve">
-    <value>0</value>
+    <value>1</value>
   </data>
   <data name="buttonCancel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -3257,8 +3278,8 @@
   <data name="&gt;&gt;buttonSaveEncryptedFileToFolder.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="buttonRestoreDefaultSettings.Location" type="System.Drawing.Point, System.Drawing">
-    <value>21, 420</value>
+  <data name="&gt;&gt;comboBoxAlwaysReadIniFile.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="pictureBoxArrow.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -3414,6 +3435,9 @@
   <data name="checkBoxConfirmSameFileName.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
+  <data name="buttonRestoreDefaultSettings.Location" type="System.Drawing.Point, System.Drawing">
+    <value>21, 420</value>
+  </data>
   <data name="checkBoxSameTimeStamp.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
@@ -3437,6 +3461,9 @@
   </data>
   <data name="&gt;&gt;tabPageSettingsImportExport.Name" xml:space="preserve">
     <value>tabPageSettingsImportExport</value>
+  </data>
+  <data name="groupBoxIniFileOption.Text" xml:space="preserve">
+    <value>Setting file (INI file) option</value>
   </data>
   <data name="&gt;&gt;groupBox5.Parent" xml:space="preserve">
     <value>panelSaveOption</value>
@@ -3497,6 +3524,9 @@
   </data>
   <data name="buttonImportCurrentConf.Size" type="System.Drawing.Size, System.Drawing">
     <value>397, 32</value>
+  </data>
+  <data name="&gt;&gt;buttonDiscardIniSetting.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;buttonExportCurrentConf.Name" xml:space="preserve">
     <value>buttonExportCurrentConf</value>
@@ -3700,7 +3730,7 @@
     <value>5</value>
   </data>
   <data name="&gt;&gt;checkBoxShowDialogToConfirmToReadIniFileAlways.Parent" xml:space="preserve">
-    <value>panelSettingImportExportOption</value>
+    <value>groupBoxIniFileOption</value>
   </data>
   <data name="treeView1.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -3955,6 +3985,9 @@
   <data name="&gt;&gt;pictureBoxCommandLineIcon.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="&gt;&gt;comboBoxAlwaysReadIniFile.Parent" xml:space="preserve">
+    <value>groupBoxIniFileOption</value>
+  </data>
   <data name="checkBoxEndToExit.Text" xml:space="preserve">
     <value>Exit AttacheCase after process</value>
   </data>
@@ -4064,6 +4097,9 @@
   <data name="checkBoxSalvageIntoSameDirectory.Font" type="System.Drawing.Font, System.Drawing">
     <value>MS UI Gothic, 12pt</value>
   </data>
+  <data name="&gt;&gt;groupBoxIniFileOption.Name" xml:space="preserve">
+    <value>groupBoxIniFileOption</value>
+  </data>
   <data name="checkBoxWindowForeground.Font" type="System.Drawing.Font, System.Drawing">
     <value>MS UI Gothic, 12pt</value>
   </data>
@@ -4103,8 +4139,8 @@
   <data name="&gt;&gt;pictureBoxRegistryIcon.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="toolStripMenuItemCmdReference.Text" xml:space="preserve">
-    <value>Command-Line Reference</value>
+  <data name="buttonDiscardIniSetting.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
   </data>
   <data name="radioButtonCompleteErase.Size" type="System.Drawing.Size, System.Drawing">
     <value>133, 20</value>
@@ -4208,7 +4244,7 @@
     <value>11, 40</value>
   </data>
   <data name="&gt;&gt;groupBox9.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>3</value>
   </data>
   <data name="checkBoxAddCamoExt.Text" xml:space="preserve">
     <value>Camouflage with extension ( include period )</value>
@@ -4300,6 +4336,9 @@
   <data name="checkBoxfNoParentFldr.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
+  <data name="groupBoxIniFileOption.Location" type="System.Drawing.Point, System.Drawing">
+    <value>14, 27</value>
+  </data>
   <data name="&gt;&gt;checkBoxDeveloperConsole.Name" xml:space="preserve">
     <value>checkBoxDeveloperConsole</value>
   </data>
@@ -4388,7 +4427,7 @@
     <value>Top, Left, Right</value>
   </data>
   <data name="checkBoxShowDialogToConfirmToReadIniFileAlways.Location" type="System.Drawing.Point, System.Drawing">
-    <value>27, 86</value>
+    <value>13, 89</value>
   </data>
   <data name="labelPreset02.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -4410,6 +4449,9 @@
   </data>
   <data name="checkBoxMyEncodePasswordKeep.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
+  </data>
+  <data name="&gt;&gt;groupBoxIniFileOption.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="checkBoxZipToSameFldr.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -4438,11 +4480,11 @@
   <data name="buttonSaveDecryptedFileToFolder.Size" type="System.Drawing.Size, System.Drawing">
     <value>32, 32</value>
   </data>
-  <data name="&gt;&gt;checkBoxAlwaysReadIniFile.Name" xml:space="preserve">
-    <value>checkBoxAlwaysReadIniFile</value>
+  <data name="buttonDiscardIniSetting.TabIndex" type="System.Int32, mscorlib">
+    <value>11</value>
   </data>
-  <data name="&gt;&gt;label13.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;comboBoxAlwaysReadIniFile.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;buttonInputDecryptionPassword.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -4594,14 +4636,14 @@
   <data name="&gt;&gt;buttonAddSendToFolder.Name" xml:space="preserve">
     <value>buttonAddSendToFolder</value>
   </data>
-  <data name="&gt;&gt;openFileDialog1.Name" xml:space="preserve">
-    <value>openFileDialog1</value>
-  </data>
   <data name="&gt;&gt;checkBoxNoMultipleInstance.Parent" xml:space="preserve">
     <value>panelWindowOption</value>
   </data>
   <data name="&gt;&gt;checkBoxMyEncodePasswordKeep.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;comboBoxAlwaysReadIniFile.Name" xml:space="preserve">
+    <value>comboBoxAlwaysReadIniFile</value>
   </data>
   <data name="panelCamouflageExtOption.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -4765,8 +4807,8 @@
   <data name="&gt;&gt;radioButtonEncryptionFileTypeATC.Parent" xml:space="preserve">
     <value>groupBox5</value>
   </data>
-  <data name="&gt;&gt;checkBoxAlwaysReadIniFile.Parent" xml:space="preserve">
-    <value>panelSettingImportExportOption</value>
+  <data name="label12.Size" type="System.Drawing.Size, System.Drawing">
+    <value>412, 82</value>
   </data>
   <data name="checkBoxExtInAtcFileName.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -4858,6 +4900,9 @@
   </data>
   <data name="ToolStripMenuItemrandomNumber.Text" xml:space="preserve">
     <value>Random number</value>
+  </data>
+  <data name="comboBoxAlwaysReadIniFile.Items1" xml:space="preserve">
+    <value>Always read the setting file "_AtcCase.ini"</value>
   </data>
   <data name="checkBoxTaskBarHide.Location" type="System.Drawing.Point, System.Drawing">
     <value>24, 71</value>
@@ -4952,9 +4997,6 @@
   <data name="labelEncryptedFileNameFormat.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="checkBoxAlwaysReadIniFile.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
@@ -4979,9 +5021,6 @@
   <data name="&gt;&gt;panel1.Name" xml:space="preserve">
     <value>panel1</value>
   </data>
-  <data name="&gt;&gt;panelPasswordInputLimitOption.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="panelSaveZipOption.Size" type="System.Drawing.Size, System.Drawing">
     <value>446, 438</value>
   </data>
@@ -4996,6 +5035,9 @@
   </data>
   <data name="&gt;&gt;checkBoxZipConfirmOverwrite.Parent" xml:space="preserve">
     <value>panelSaveZipOption</value>
+  </data>
+  <data name="groupBoxIniFileOption.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
   </data>
   <data name="buttonApply.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Bottom, Right</value>
@@ -5017,6 +5059,9 @@
   </data>
   <data name="pictureBoxCheckmark02.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Left</value>
+  </data>
+  <data name="buttonDiscardIniSetting.Location" type="System.Drawing.Point, System.Drawing">
+    <value>27, 379</value>
   </data>
   <data name="checkBoxfNoParentFldr.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -5050,9 +5095,6 @@
   </data>
   <data name="ToolStripMenuItemUpperCase.Text" xml:space="preserve">
     <value>Upper case</value>
-  </data>
-  <data name="checkBoxShowDialogToConfirmToReadIniFileAlways.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
   </data>
   <data name="checkBoxMainWindowMinimize.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -5194,7 +5236,7 @@
     <value>261, 20</value>
   </data>
   <data name="label15.TabIndex" type="System.Int32, mscorlib">
-    <value>9</value>
+    <value>13</value>
   </data>
   <data name="&gt;&gt;checkBoxDelEncFile.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -5238,8 +5280,8 @@
   <data name="&gt;&gt;panelSaveZipOption.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="comboBoxMissTypeLimitsNum.Location" type="System.Drawing.Point, System.Drawing">
-    <value>22, 33</value>
+  <data name="comboBoxAlwaysReadIniFile.TabIndex" type="System.Int32, mscorlib">
+    <value>15</value>
   </data>
   <data name="tabPageLicense.Size" type="System.Drawing.Size, System.Drawing">
     <value>452, 444</value>
@@ -5346,9 +5388,6 @@
         jKLRd0j+Rlv5APf6O8B7ksPDAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="checkBoxAlwaysReadIniFile.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
-  </data>
   <data name="groupBox9.Font" type="System.Drawing.Font, System.Drawing">
     <value>MS UI Gothic, 12pt</value>
   </data>
@@ -5452,7 +5491,7 @@
     <value>Input password without masking</value>
   </data>
   <data name="label15.Location" type="System.Drawing.Point, System.Drawing">
-    <value>50, 53</value>
+    <value>14, 57</value>
   </data>
   <data name="pictureBoxCheckmark03.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Left</value>
@@ -5475,11 +5514,11 @@
   <data name="checkBoxSalvageIgnoreHashCheck.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
-  <data name="checkBoxAlwaysReadIniFile.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>644, 525</value>
   </data>
-  <data name="&gt;&gt;buttonReplaceCurrentByTemporary.Parent" xml:space="preserve">
-    <value>panelSettingImportExportOption</value>
+  <data name="buttonDiscardIniSetting.Text" xml:space="preserve">
+    <value>Discard temporary settings and load from the registry</value>
   </data>
   <data name="buttonInputDecryptionPassword.Size" type="System.Drawing.Size, System.Drawing">
     <value>30, 30</value>
@@ -5572,9 +5611,6 @@
   <data name="&gt;&gt;label12.Name" xml:space="preserve">
     <value>label12</value>
   </data>
-  <data name="&gt;&gt;checkBoxAlwaysReadIniFile.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="checkBoxDelEncFile.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
   </data>
@@ -5642,7 +5678,7 @@
     <value>10</value>
   </data>
   <data name="label15.Text" xml:space="preserve">
-    <value>* There is a security risk when ON.</value>
+    <value>* Read the setting file is a security risk</value>
   </data>
   <data name="pictureBoxIcon02.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -5684,7 +5720,7 @@
     <value>MS UI Gothic, 12pt</value>
   </data>
   <data name="buttonReplaceCurrentByTemporary.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 9pt</value>
+    <value>MS UI Gothic, 12pt</value>
   </data>
   <data name="&gt;&gt;checkBoxTaskTrayIcon.Name" xml:space="preserve">
     <value>checkBoxTaskTrayIcon</value>
@@ -5926,6 +5962,9 @@
   <data name="&gt;&gt;comboBoxThemeColor.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;label13.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;checkBoxZipToSameFldr.Type" xml:space="preserve">
     <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -6012,6 +6051,9 @@
   </data>
   <data name="checkBoxSaveToSameFldr.Font" type="System.Drawing.Font, System.Drawing">
     <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="&gt;&gt;buttonDiscardIniSetting.Parent" xml:space="preserve">
+    <value>panelSettingImportExportOption</value>
   </data>
   <data name="checkBoxOpenFile.Text" xml:space="preserve">
     <value>After decryption, open the associated files or folder</value>
@@ -6517,6 +6559,9 @@
   <data name="checkBoxfNoParentFldr.Size" type="System.Drawing.Size, System.Drawing">
     <value>279, 20</value>
   </data>
+  <data name="&gt;&gt;buttonDiscardIniSetting.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="panelSettingImportExportOption.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
@@ -6593,7 +6638,7 @@
     <value>1</value>
   </data>
   <data name="buttonReplaceCurrentByTemporary.Location" type="System.Drawing.Point, System.Drawing">
-    <value>27, 295</value>
+    <value>27, 325</value>
   </data>
   <data name="&gt;&gt;label14.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -6763,7 +6808,7 @@
     <value>NoControl</value>
   </data>
   <data name="buttonReplaceCurrentByTemporary.Text" xml:space="preserve">
-    <value>Replace the current configuration by this temporary configuration</value>
+    <value>Replace current settings by this temporary settings</value>
   </data>
   <data name="checkBoxAskEncDecode.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -6788,6 +6833,9 @@
   </data>
   <data name="&gt;&gt;panelDeleteOption.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="groupBoxIniFileOption.Size" type="System.Drawing.Size, System.Drawing">
+    <value>427, 128</value>
   </data>
   <data name="splitContainer1.Panel1MinSize" type="System.Int32, mscorlib">
     <value>18</value>
@@ -6891,8 +6939,8 @@
   <data name="&gt;&gt;labelPreset01.Parent" xml:space="preserve">
     <value>groupBox8</value>
   </data>
-  <data name="pictureBoxCommandLineIcon.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="comboBoxMissTypeLimitsNum.Location" type="System.Drawing.Point, System.Drawing">
+    <value>22, 33</value>
   </data>
   <data name="tabPageSaveZipOption.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>

@@ -5856,7 +5856,7 @@ namespace AttacheCase
     private void pictureBoxDec_Click(object sender, EventArgs e)
     {
       AppSettings.Instance.FileList = null;
-      openFileDialog1.Title = Resources.DialogTitleEncryptSelectFiles;
+      openFileDialog1.Title = Resources.DialogTitleSelectEncryptedFiles;
       openFileDialog1.Filter = Resources.SaveDialogFilterAtcFiles;
       openFileDialog1.InitialDirectory = AppSettings.Instance.InitDirPath;
       openFileDialog1.Multiselect = true;

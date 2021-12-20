@@ -1171,6 +1171,12 @@
   <data name="tabPageSystem.Text" xml:space="preserve">
     <value>システム</value>
   </data>
+  <data name="comboBoxAlwaysReadIniFile.Items" xml:space="preserve">
+    <value>設定ファイル「_AtcCase.ini」を読み込まない</value>
+  </data>
+  <data name="comboBoxAlwaysReadIniFile.Items1" xml:space="preserve">
+    <value>常に設定ファイル「_AtcCase.ini」を読み込む</value>
+  </data>
   <data name="checkBoxShowDialogToConfirmToReadIniFileAlways.Size" type="System.Drawing.Size, System.Drawing">
     <value>334, 20</value>
   </data>
@@ -1178,16 +1184,13 @@
     <value>毎回、確認のためのダイアログ ボックスを表示する</value>
   </data>
   <data name="label15.Size" type="System.Drawing.Size, System.Drawing">
-    <value>266, 16</value>
+    <value>378, 16</value>
   </data>
   <data name="label15.Text" xml:space="preserve">
-    <value>※ONにするとセキュリティリスクがあります。</value>
+    <value>※設定ファイルの読み込みはセキュリティ上のリスクがあります</value>
   </data>
-  <data name="checkBoxAlwaysReadIniFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>311, 20</value>
-  </data>
-  <data name="checkBoxAlwaysReadIniFile.Text" xml:space="preserve">
-    <value>常に、設定ファイル「_AtcCase.ini」を読み込む</value>
+  <data name="buttonDiscardIniSetting.Text" xml:space="preserve">
+    <value>一時的な設定を破棄し、レジストリから設定を読み込む</value>
   </data>
   <data name="buttonReplaceCurrentByTemporary.Text" xml:space="preserve">
     <value>一時的な設定を現在の設定に置き換える</value>
@@ -1199,7 +1202,7 @@
     <value>現在の設定をINIファイルへ保存</value>
   </data>
   <data name="groupBox9.Text" xml:space="preserve">
-    <value>設定のインポートとエクスポート</value>
+    <value>設定のインポートとエクスポート：</value>
   </data>
   <data name="tabPageSettingsImportExport.Text" xml:space="preserve">
     <value>設定の保存/復元</value>

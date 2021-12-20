@@ -164,9 +164,11 @@
       this.buttonAssociateAtcFiles = new System.Windows.Forms.Button();
       this.tabPageSettingsImportExport = new System.Windows.Forms.TabPage();
       this.panelSettingImportExportOption = new System.Windows.Forms.Panel();
+      this.groupBoxIniFileOption = new System.Windows.Forms.GroupBox();
+      this.comboBoxAlwaysReadIniFile = new System.Windows.Forms.ComboBox();
       this.checkBoxShowDialogToConfirmToReadIniFileAlways = new System.Windows.Forms.CheckBox();
       this.label15 = new System.Windows.Forms.Label();
-      this.checkBoxAlwaysReadIniFile = new System.Windows.Forms.CheckBox();
+      this.buttonDiscardIniSetting = new System.Windows.Forms.Button();
       this.buttonReplaceCurrentByTemporary = new System.Windows.Forms.Button();
       this.groupBox9 = new System.Windows.Forms.GroupBox();
       this.buttonImportCurrentConf = new System.Windows.Forms.Button();
@@ -292,6 +294,7 @@
       this.groupBox7.SuspendLayout();
       this.tabPageSettingsImportExport.SuspendLayout();
       this.panelSettingImportExportOption.SuspendLayout();
+      this.groupBoxIniFileOption.SuspendLayout();
       this.groupBox9.SuspendLayout();
       this.tabPagePasswordFileOption.SuspendLayout();
       this.panelPasswordFileOption.SuspendLayout();
@@ -1407,18 +1410,39 @@
       // panelSettingImportExportOption
       // 
       resources.ApplyResources(this.panelSettingImportExportOption, "panelSettingImportExportOption");
-      this.panelSettingImportExportOption.Controls.Add(this.checkBoxShowDialogToConfirmToReadIniFileAlways);
-      this.panelSettingImportExportOption.Controls.Add(this.label15);
-      this.panelSettingImportExportOption.Controls.Add(this.checkBoxAlwaysReadIniFile);
+      this.panelSettingImportExportOption.Controls.Add(this.groupBoxIniFileOption);
+      this.panelSettingImportExportOption.Controls.Add(this.buttonDiscardIniSetting);
       this.panelSettingImportExportOption.Controls.Add(this.buttonReplaceCurrentByTemporary);
       this.panelSettingImportExportOption.Controls.Add(this.groupBox9);
       this.panelSettingImportExportOption.Name = "panelSettingImportExportOption";
+      // 
+      // groupBoxIniFileOption
+      // 
+      resources.ApplyResources(this.groupBoxIniFileOption, "groupBoxIniFileOption");
+      this.groupBoxIniFileOption.Controls.Add(this.comboBoxAlwaysReadIniFile);
+      this.groupBoxIniFileOption.Controls.Add(this.checkBoxShowDialogToConfirmToReadIniFileAlways);
+      this.groupBoxIniFileOption.Controls.Add(this.label15);
+      this.groupBoxIniFileOption.Name = "groupBoxIniFileOption";
+      this.groupBoxIniFileOption.TabStop = false;
+      // 
+      // comboBoxAlwaysReadIniFile
+      // 
+      resources.ApplyResources(this.comboBoxAlwaysReadIniFile, "comboBoxAlwaysReadIniFile");
+      this.comboBoxAlwaysReadIniFile.BackColor = System.Drawing.SystemColors.Window;
+      this.comboBoxAlwaysReadIniFile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+      this.comboBoxAlwaysReadIniFile.FormattingEnabled = true;
+      this.comboBoxAlwaysReadIniFile.Items.AddRange(new object[] {
+            resources.GetString("comboBoxAlwaysReadIniFile.Items"),
+            resources.GetString("comboBoxAlwaysReadIniFile.Items1")});
+      this.comboBoxAlwaysReadIniFile.Name = "comboBoxAlwaysReadIniFile";
+      this.comboBoxAlwaysReadIniFile.SelectedIndexChanged += new System.EventHandler(this.options_ComponentChanged);
       // 
       // checkBoxShowDialogToConfirmToReadIniFileAlways
       // 
       resources.ApplyResources(this.checkBoxShowDialogToConfirmToReadIniFileAlways, "checkBoxShowDialogToConfirmToReadIniFileAlways");
       this.checkBoxShowDialogToConfirmToReadIniFileAlways.Name = "checkBoxShowDialogToConfirmToReadIniFileAlways";
       this.checkBoxShowDialogToConfirmToReadIniFileAlways.UseVisualStyleBackColor = true;
+      this.checkBoxShowDialogToConfirmToReadIniFileAlways.CheckedChanged += new System.EventHandler(this.options_ComponentChanged);
       // 
       // label15
       // 
@@ -1426,11 +1450,13 @@
       this.label15.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
       this.label15.Name = "label15";
       // 
-      // checkBoxAlwaysReadIniFile
+      // buttonDiscardIniSetting
       // 
-      resources.ApplyResources(this.checkBoxAlwaysReadIniFile, "checkBoxAlwaysReadIniFile");
-      this.checkBoxAlwaysReadIniFile.Name = "checkBoxAlwaysReadIniFile";
-      this.checkBoxAlwaysReadIniFile.UseVisualStyleBackColor = true;
+      resources.ApplyResources(this.buttonDiscardIniSetting, "buttonDiscardIniSetting");
+      this.buttonDiscardIniSetting.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.buttonDiscardIniSetting.Name = "buttonDiscardIniSetting";
+      this.buttonDiscardIniSetting.UseVisualStyleBackColor = true;
+      this.buttonDiscardIniSetting.Click += new System.EventHandler(this.buttonDiscardIniSetting_Click);
       // 
       // buttonReplaceCurrentByTemporary
       // 
@@ -1438,6 +1464,7 @@
       this.buttonReplaceCurrentByTemporary.ForeColor = System.Drawing.SystemColors.ControlText;
       this.buttonReplaceCurrentByTemporary.Name = "buttonReplaceCurrentByTemporary";
       this.buttonReplaceCurrentByTemporary.UseVisualStyleBackColor = true;
+      this.buttonReplaceCurrentByTemporary.Click += new System.EventHandler(this.buttonReplaceCurrentByTemporary_Click);
       // 
       // groupBox9
       // 
@@ -2040,7 +2067,8 @@
       this.groupBox7.PerformLayout();
       this.tabPageSettingsImportExport.ResumeLayout(false);
       this.panelSettingImportExportOption.ResumeLayout(false);
-      this.panelSettingImportExportOption.PerformLayout();
+      this.groupBoxIniFileOption.ResumeLayout(false);
+      this.groupBoxIniFileOption.PerformLayout();
       this.groupBox9.ResumeLayout(false);
       this.tabPagePasswordFileOption.ResumeLayout(false);
       this.panelPasswordFileOption.ResumeLayout(false);
@@ -2253,9 +2281,6 @@
     private System.Windows.Forms.ToolStripMenuItem dateToolStripMenuItem;
     private System.Windows.Forms.CheckBox checkBoxSalvageIgnoreHashCheck;
     private System.Windows.Forms.Label label14;
-    private System.Windows.Forms.CheckBox checkBoxShowDialogToConfirmToReadIniFileAlways;
-    private System.Windows.Forms.Label label15;
-    private System.Windows.Forms.CheckBox checkBoxAlwaysReadIniFile;
     private System.Windows.Forms.CheckBox checkBoxEnablePassStrengthMeter;
     private System.Windows.Forms.TabPage tabPageSaveDecryptOption;
     private System.Windows.Forms.Panel panelSaveDecryptOption;
@@ -2283,5 +2308,10 @@
     private System.Windows.Forms.ComboBox comboBoxThemeColor;
     private System.Windows.Forms.Label labelThemeColor;
     private System.Windows.Forms.Button buttonRestoreDefaultSettings;
+    private System.Windows.Forms.Button buttonDiscardIniSetting;
+    private System.Windows.Forms.GroupBox groupBoxIniFileOption;
+    private System.Windows.Forms.ComboBox comboBoxAlwaysReadIniFile;
+    private System.Windows.Forms.CheckBox checkBoxShowDialogToConfirmToReadIniFileAlways;
+    private System.Windows.Forms.Label label15;
   }
 }

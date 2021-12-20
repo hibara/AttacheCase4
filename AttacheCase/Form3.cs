@@ -41,7 +41,7 @@ namespace AttacheCase
     }
 
 		private string OneLineHelpURL = "https://hibara.org/software/attachecase/help/";
-		private string CommandLineReferenceURL = "https://hibara.org/software/attachecase/help/howto/#command-line-option";
+		private string CommandLineReferenceURL = "https://hibara.org/software/attachecase/help/settings/#command-line-option";
 
     private const int BCM_FIRST = 0x1600;
 		private const int BCM_SETSHIELD = BCM_FIRST + 0x000C;
@@ -254,6 +254,10 @@ namespace AttacheCase
 			//-----------------------------------
 			// 読み込み先の表示
 
+			fTemporarySettings = false;
+			buttonReplaceCurrentByTemporary.Enabled = false;
+			buttonDiscardIniSetting.Enabled = false;
+
 			// Registry
 			using (Bitmap bitmap = new Bitmap(pictureBoxRegistryIcon.Image))
       {
@@ -274,11 +278,12 @@ namespace AttacheCase
 				}
         fTemporarySettings = true;
         buttonReplaceCurrentByTemporary.Enabled = true;
+				buttonDiscardIniSetting.Enabled = true;
 
-      }
-      
-      // Command line 
-      if (AppSettings.Instance.CommandLineArgsNum > 0)
+			}
+
+			// Command line 
+			if (AppSettings.Instance.CommandLineArgsNum > 0)
 			{
 				using (Bitmap bitmap = new Bitmap(pictureBoxCommandLineIcon.Image))
 				{
@@ -288,8 +293,9 @@ namespace AttacheCase
 				}
         fTemporarySettings = true;
         buttonReplaceCurrentByTemporary.Enabled = true;
+				buttonDiscardIniSetting.Enabled = true;
 
-      }
+			}
 
 			//-----------------------------------
 			// 盾アイコンの取得とボタン上での表示
@@ -769,16 +775,17 @@ namespace AttacheCase
 			//-----------------------------------
 			// Import / Export
 			#region
+
 			if (AppSettings.Instance.fAlwaysReadIniFile == true)
 			{
-				checkBoxAlwaysReadIniFile.Checked = true;
+				comboBoxAlwaysReadIniFile.SelectedIndex = 1;
 			}
 			else
 			{
-				checkBoxAlwaysReadIniFile.Checked = false;
+				comboBoxAlwaysReadIniFile.SelectedIndex = 0;
 			}
 
-			if (AppSettings.Instance.fShowDialogToConfirmToReadIniFile == true)
+			if (AppSettings.Instance.fShowConfirmationDialogToReadIniFile == true)
 			{
 				checkBoxShowDialogToConfirmToReadIniFileAlways.Checked = true;
 			}
@@ -786,6 +793,25 @@ namespace AttacheCase
 			{
 				checkBoxShowDialogToConfirmToReadIniFileAlways.Checked = false;
 			}
+
+			if (File.Exists(AppSettings.Instance.IniFilePath) == true)
+      {
+				// Can't be changed while loading the configuration file (INI file).
+				// 設定ファイル（INIファイル）読み込み中は変更できません。
+				groupBoxIniFileOption.Text = Resources.groupBoxCanNotChange;
+				groupBoxIniFileOption.Enabled = false;
+
+				comboBoxAlwaysReadIniFile.Enabled = false;
+				checkBoxShowDialogToConfirmToReadIniFileAlways.Enabled = false;
+			}
+      else
+      {
+				// Setting file (INI file) option
+				// 設定ファイル（INIファイル）オプション
+				groupBoxIniFileOption.Text = Resources.groupBoxReadIniFile;
+
+			}
+
 			#endregion
 
 			//-----------------------------------
@@ -1140,17 +1166,27 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 		{
       if(AppSettings.Instance.CommandLineArgsNum > 0 && fTemporarySettings == true)
       {
-        DialogResult ret = MessageBox.Show(Resources.DialogMessagefTemporarySettings,
+				// Since it is using temporary settings from command line options, it cannot reflect the main settings.
+				// コマンドラインオプションからの一時設定を利用しているため、メインの設定を反映させることができません。
+				DialogResult ret = MessageBox.Show(Resources.DialogMessageTempSettingsFromCommandLine,
         Resources.DialogTitleQuestion, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
         return;
       }
-      
-      //-----------------------------------
-      // Save settings to AppSettings class 
-      // 変更した各設定をクラスに格納する
-      //-----------------------------------
-      // General
-      AppSettings.Instance.fEndToExit = checkBoxEndToExit.Checked;
+			else if (File.Exists(AppSettings.Instance.IniFilePath) == true && fTemporarySettings == true)
+      {
+				// Since it is using temporary settings from INI files, it cannot reflect the main settings.
+				// INIファイルからの一時設定を利用しているため、メインの設定を反映させることができません。
+				DialogResult ret = MessageBox.Show(Resources.DialogMessageTempSettingsFromIniFile,
+				Resources.DialogTitleQuestion, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+				return;
+			}
+
+			//-----------------------------------
+			// Save settings to AppSettings class 
+			// 変更した各設定をクラスに格納する
+			//-----------------------------------
+			// General
+			AppSettings.Instance.fEndToExit = checkBoxEndToExit.Checked;
 			AppSettings.Instance.fOpenFile = checkBoxOpenFile.Checked;
 
       AppSettings.Instance.fShowDialogWhenExeFile = checkBoxShowDialogWhenExeFile.Checked;
@@ -1361,8 +1397,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
       //-----------------------------------
       // Import / Export
-      AppSettings.Instance.fAlwaysReadIniFile = checkBoxAlwaysReadIniFile.Checked;
-      AppSettings.Instance.fShowDialogToConfirmToReadIniFile = checkBoxAlwaysReadIniFile.Checked; 
+      AppSettings.Instance.fAlwaysReadIniFile = (comboBoxAlwaysReadIniFile.SelectedIndex == 1 ? true : false);
+      AppSettings.Instance.fShowConfirmationDialogToReadIniFile = checkBoxShowDialogToConfirmToReadIniFileAlways.Checked; 
       
       //-----------------------------------
       // Password file
@@ -1501,7 +1537,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         // 
         DialogResult ret = MessageBox.Show(Resources.DialogMessageApplicationRestart,
 				Resources.DialogTitleQuestion, MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-				if (ret == System.Windows.Forms.DialogResult.Yes)
+				if (ret == DialogResult.Yes)
 				{
 					// Save the setting and then, restart this application.
 					buttonOK_Click(sender, e);
@@ -2343,27 +2379,66 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
     /// Replace the current configuration by this temporary configuration
     /// 一時的な設定を現在の設定に適用する
     /// </summary>
-    /// <param name="sender"></param>
+    /// <param name="sender"></param>                                                                                                                    
     /// <param name="e"></param>
     private void buttonReplaceCurrentByTemporary_Click(object sender, EventArgs e)
 		{
-      fTemporarySettings = false;
-      using (Bitmap bitmap = new Bitmap(pictureBoxRegistryIcon.Image))
-      {
-        bitmap.SetResolution(24, 24);
-        this.Icon = Icon.FromHandle(bitmap.GetHicon());
-        this.Text = Resources.DialogTitleSettings + " - " + Resources.DialogTitleRegistry;
-      }
-      buttonApply.Enabled = true;
+			// 問い合わせ
+			// 一時的に読み込まれた設定を現在の設定としてレジストリに反映させます。よろしいですか？
+			//
+			// Question
+			// Reflects the temporarily loaded settings in the registry as the current settings. Are you sure?
+			// 
+			DialogResult ret = MessageBox.Show(Resources.DialogMessageTempSettingsToCurrent,
+			Resources.DialogTitleQuestion, MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2);
+			if (ret == DialogResult.Yes)
+			{
+				fTemporarySettings = false;
+				AppSettings.Instance.IniFilePath = "";
+				using (Bitmap bitmap = new Bitmap(pictureBoxRegistryIcon.Image))
+				{
+					bitmap.SetResolution(24, 24);
+					this.Icon = Icon.FromHandle(bitmap.GetHicon());
+					this.Text = Resources.DialogTitleSettings + " - " + Resources.DialogTitleRegistry;
+				}
+				buttonApply_Click(sender, e);
+				this.Close();
+			}
 
-    }
+		}
 
-    #endregion
+		private void buttonDiscardIniSetting_Click(object sender, EventArgs e)
+		{
+			// 問い合わせ
+			// 一時的に読み込まれた設定を破棄してレジストリから設定を読み込みます。よろしいですか？
+			//
+			// Question
+			// Discard the loaded temporary settings and load the settings from the registry. Are you sure?
+			// 
+			DialogResult ret = MessageBox.Show(Resources.DialogMessageDicardTempSettingsAndLoadRegistry,
+			Resources.DialogTitleQuestion, MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2);
+			if (ret == DialogResult.Yes)
+			{
+				fTemporarySettings = false;
+				AppSettings.Instance.IniFilePath = "";
+				using (Bitmap bitmap = new Bitmap(pictureBoxRegistryIcon.Image))
+				{
+					bitmap.SetResolution(24, 24);
+					this.Icon = Icon.FromHandle(bitmap.GetHicon());
+					this.Text = Resources.DialogTitleSettings + " - " + Resources.DialogTitleRegistry;
+				}
+				// Load from registry
+				AppSettings.Instance.ReadOptionsFromRegistry();
+				this.Close();
+			}
+		}
 
-    //======================================================================
-    // PasswordFile
-    //======================================================================
-#region
+		#endregion
+
+		//======================================================================
+		// PasswordFile
+		//======================================================================
+		#region
 		private void checkBoxCheckPassFile_CheckedChanged(object sender, EventArgs e)
 		{
 			if (checkBoxCheckPassFile.Checked == true)
@@ -2614,7 +2689,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
       #region Import / Export
 
-      checkBoxAlwaysReadIniFile.Checked = false;
+      comboBoxAlwaysReadIniFile.SelectedIndex = 0;
 			checkBoxShowDialogToConfirmToReadIniFileAlways.Checked = true;
 
 			#endregion
@@ -2661,6 +2736,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 		}
+
+
   }
 
 

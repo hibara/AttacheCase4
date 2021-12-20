@@ -350,7 +350,7 @@ namespace AttacheCase
     private bool _fPasswordStrengthMeter;
     public bool fPasswordStrengthMeter
     {
-      get { return this._fPasswordStrengthMeter;　}
+      get { return this._fPasswordStrengthMeter;}
       set { this._fPasswordStrengthMeter = value; }
     }
           
@@ -889,11 +889,21 @@ namespace AttacheCase
 
     // 毎回、確認のためのダイアログ ボックスを表示する
     // Show a dialog box to confirm always.
-    private bool _fShowDialogToConfirmToReadIniFile;
-    public bool fShowDialogToConfirmToReadIniFile
+    //private bool _fShowDialogToConfirmToReadIniFile;
+    //public bool fShowDialogToConfirmToReadIniFile
+    //{
+    //  get { return this._fShowDialogToConfirmToReadIniFile; }
+    //  set { this._fShowDialogToConfirmToReadIniFile = value; }
+    //}
+
+    // 毎回、確認のためのダイアログ ボックスを表示する
+    // Show a dialog box to confirm always.
+    // ver.4.0.2.7～
+    private bool _fShowConfirmationDialogToReadIniFile;
+    public bool fShowConfirmationDialogToReadIniFile
     {
-      get { return this._fShowDialogToConfirmToReadIniFile; }
-      set { this._fShowDialogToConfirmToReadIniFile = value; }
+      get { return this._fShowConfirmationDialogToReadIniFile; }
+      set { this._fShowConfirmationDialogToReadIniFile = value; }
     }
 
     #endregion
@@ -1481,8 +1491,9 @@ namespace AttacheCase
         //-----------------------------------
         // Import / Export
         _fAlwaysReadIniFile = (string)reg.GetValue("fAlwaysReadIniFile", "0") == "1";
-        _fShowDialogToConfirmToReadIniFile = (string)reg.GetValue("fShowDialogToConfirmToReadIniFile", "1") == "1";
-        
+        //_fShowDialogToConfirmToReadIniFile = (string)reg.GetValue("fShowDialogToConfirmToReadIniFile", "1") == "1";
+        _fShowConfirmationDialogToReadIniFile = (string)reg.GetValue("fShowConfirmationDialogToReadIniFile", "1") == "1";
+
         //-----------------------------------
         // Password file 
         _fAllowPassFile = (string)reg.GetValue("fAllowPassFile", "0") == "1";
@@ -1668,7 +1679,8 @@ namespace AttacheCase
         //----------------------------------------------------------------------
         // Import / Export
         reg.SetValue("fAlwaysReadIniFile", _fAlwaysReadIniFile == true ? "1" : "0");
-        reg.SetValue("fShowDialogToConfirmToReadIniFile", _fShowDialogToConfirmToReadIniFile == true ? "1" : "0");
+        //reg.SetValue("fShowDialogToConfirmToReadIniFile", _fShowDialogToConfirmToReadIniFile == true ? "1" : "0");
+        reg.SetValue("fShowConfirmationDialogToReadIniFile", _fShowConfirmationDialogToReadIniFile == true ? "1" : "0");
 
         //-----------------------------------
         //Password file
@@ -1723,11 +1735,9 @@ namespace AttacheCase
       
       string ReturnValue = "";
 
-      //----------------------------------------------------------------------
       // Whether to read the found setting file (_AtcCase.ini)?
-      if ( _fShowDialogToConfirmToReadIniFile == true)
+      if (_fShowConfirmationDialogToReadIniFile == true)
       {
-
         Form4 frm4;
         frm4 = new Form4("ConfirmToReadIniFile", IniFilePath);
         frm4.ShowDialog();
@@ -1736,12 +1746,25 @@ namespace AttacheCase
 
         if (_fReadIniFile == true)
         {
+          // Read INI file
           frm4.Dispose();
         }
         else
         {
           _IniFilePath = "";
           frm4.Dispose();
+          return;
+        }
+      }
+      else
+      {
+        if (_fAlwaysReadIniFile == true)
+        {
+          // Read INI file
+        }
+        else
+        {
+          _IniFilePath = "";
           return;
         }
       }
@@ -1791,6 +1814,7 @@ namespace AttacheCase
       // Options
       //-----------------------------------
 
+      //-----------------------------------
       // General
       ReadIniFile(IniFilePath, ref _fEndToExit, "Option", "fEndToExit", "0");
       ReadIniFile(IniFilePath, ref _fOpenFile, "Option", "fOpenFile", "0");
@@ -1802,6 +1826,7 @@ namespace AttacheCase
       ReadIniFile(IniFilePath, ref _fShowExeoutChkBox, "Option", "fShowExeoutChkBox", "1");
       ReadIniFile(IniFilePath, ref _ThemeColorName, "Option", "ThemeColorName", "auto");
 
+      //-----------------------------------
       // Window
       ReadIniFile(IniFilePath, ref _fMainWindowMinimize, "Option", "fMainWindowMinimize", "0");
       ReadIniFile(IniFilePath, ref _fTaskBarHide, "Option", "fTaskBarHide", "0");
@@ -1811,6 +1836,7 @@ namespace AttacheCase
       ReadIniFile(IniFilePath, ref _fNoMultipleInstance, "Option", "fNoMultipleInstance", "1");
       ReadIniFile(IniFilePath, ref _fTurnOnIMEsTextBoxForPasswordEntry, "Option", "fTurnOnIMEsTextBoxForPasswordEntry", "0");
 
+      //-----------------------------------
       // Save Encrypt
 
       //Integer = 1: ATC, 2: EXE(ATC), 3: ZIP, 0: Others(Encrypt file?)
@@ -1836,6 +1862,7 @@ namespace AttacheCase
       ReadIniFile(IniFilePath, ref _fAutoNameNumbers, "Option", "fAutoNameNumbers", "1");
       ReadIniFile(IniFilePath, ref _fAutoNameSymbols, "Option", "fAutoNameSymbols", "0");
 
+      //-----------------------------------
       // Save Decrypt
       ReadIniFile(IniFilePath, ref _fDecodeToSameFldr, "Option", "fDecodeToSameFldr", "0");
       ReadIniFile(IniFilePath, ref _DecodeToSameFldrPath, "Option", "DecodeToSameFldrPath", "");
@@ -1844,12 +1871,14 @@ namespace AttacheCase
       ReadIniFile(IniFilePath, ref _fSameTimeStamp, "Option", "fSameTimeStamp", "0");
       ReadIniFile(IniFilePath, ref _fCompareFile, "Option", "fCompareFile", "0");
 
+      //-----------------------------------
       // Password ZIP
       ReadIniFile(IniFilePath, ref _fZipToSameFldr, "Option", "fZipToSameFldr", "0");
       ReadIniFile(IniFilePath, ref _ZipToSameFldrPath, "Option", "ZipToSameFldrPath", "");
       ReadIniFile(IniFilePath, ref _fZipConfirmOverwrite, "Option", "fZipConfirmOverwrite", "1");
       ReadIniFile(IniFilePath, ref _ZipEncryptionAlgorithm, "Option", "ZipEncryptionAlgorithm", "0"); // int
 
+      //-----------------------------------
       // Delete
       ReadIniFile(IniFilePath, ref _fDelOrgFile, "Option", "fDelOrgFile", "0");
       ReadIniFile(IniFilePath, ref _fEncryptShowDelChkBox, "Option", "fEncryptShowDelChkBox", "0");
@@ -1861,15 +1890,23 @@ namespace AttacheCase
       ReadIniFile(IniFilePath, ref _DelRandNum, "Option", "DelRandNum", "0");
       ReadIniFile(IniFilePath, ref _DelZeroNum, "Option", "DelZeroNum", "1");
 
+      //-----------------------------------
       //Compression
       ReadIniFile(IniFilePath, ref _CompressRate, "Option", "CompressRate", "6");
       ReadIniFile(IniFilePath, ref _CompressionLevel, "Option", "CompressionLevel", "0");
 
+      //-----------------------------------
       // System
       ReadIniFile(IniFilePath, ref _fAssociationFile, "Option", "fAssociationFile", "1");
       ReadIniFile(IniFilePath, ref _AtcsFileIconIndex, "Option", "AtcsFileIconIndex", "1");
       ReadIniFile(IniFilePath, ref _UserRegIconFilePath, "Option", "UserRegIconFilePath", "");
 
+      //-----------------------------------
+      // Import / Export (depends on the registry)
+      //ReadIniFile(IniFilePath, ref _fAlwaysReadIniFile, "Option", "fAlwaysReadIniFile", "0");
+      //ReadIniFile(IniFilePath, ref _fShowConfirmationDialogToReadIniFile, "Option", "fShowConfirmationDialogToReadIniFile", "1");
+
+      //-----------------------------------
       //Password file 
       ReadIniFile(IniFilePath, ref _fAllowPassFile, "Option", "fAllowPassFile", "0");
       ReadIniFile(IniFilePath, ref _fCheckPassFile, "Option", "fCheckPassFile", "0");
@@ -1880,18 +1917,22 @@ namespace AttacheCase
       ReadIniFile(IniFilePath, ref _fNoErrMsgOnPassFile, "Option", "fNoErrMsgOnPassFile", "0");
       ReadIniFile(IniFilePath, ref _fPasswordFileExe, "Option", "fPasswordFileExe", "0");
 
+      //-----------------------------------
       //Camouflage Extension
       ReadIniFile(IniFilePath, ref _fAddCamoExt, "Option", "fAddCamoExt", "0");
       ReadIniFile(IniFilePath, ref _CamoExt, "Option", "CamoExt", ".jpg");
 
+      //-----------------------------------
       // Input Password limit
       ReadIniFile(IniFilePath, ref _MissTypeLimitsNum, "Option", "MissTypeLimitsNum", "3");
       ReadIniFile(IniFilePath, ref _fBroken, "Option", "fBroken", "0");
-      
+
+      //-----------------------------------
       // Salvage
       ReadIniFile(IniFilePath, ref _fSalvageToCreateParentFolderOneByOne, "Option", "fSalvageToCreateParentFolderOneByOne", "0");
       ReadIniFile(IniFilePath, ref _fSalvageIntoSameDirectory, "Option", "fSalvageIntoSameDirectory", "0");
 
+      //-----------------------------------
       // Developer mode
       ReadIniFile(IniFilePath, ref _fDeveloperConsole, "Option", "fDeveloperConsole", "0");
       ReadIniFile(IniFilePath, ref _DeveloperConsolePosX, "Option", "DeveloperConsolePosX", "-1");
@@ -1899,6 +1940,7 @@ namespace AttacheCase
       ReadIniFile(IniFilePath, ref _DeveloperConsoleWidth, "Option", "DeveloperConsoleWidth", "640");
       ReadIniFile(IniFilePath, ref _DeveloperConsoleHeight, "Option", "DeveloperConsoleHeight", "480");
 
+      //-----------------------------------
       // Others
       ReadIniFile(IniFilePath, ref _Language, "Option", "Language", "");
       ReadIniFile(IniFilePath, ref _SaveToIniDirPath, "Option", "SaveToIniDirPath", "");
@@ -2040,6 +2082,11 @@ namespace AttacheCase
       // System
       WriteIniFile(IniFilePath, _fAssociationFile, "Option", "fAssociationFile");  // int
       WriteIniFile(IniFilePath, _UserRegIconFilePath, "Option", "UserRegIconFilePath");
+
+      //-----------------------------------
+      // Import / Export (depends on the registry)
+      //WriteIniFile(IniFilePath, _fAlwaysReadIniFile, "Option", "fAlwaysReadIniFile");  // int
+      //WriteIniFile(IniFilePath, _fShowConfirmationDialogToReadIniFile, "Option", "fShowConfirmationDialogToReadIniFile");
 
       //-----------------------------------
       //Password file
