@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
-// "アタッシェケース#3 ( AttachéCase#3 )" -- File encryption software.
-// Copyright (C) 2016-2021  Mitsuhiro Hibara
+// "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
+// Copyright (C) 2016-2022  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -19,11 +19,22 @@ using System;
 using System.Windows.Forms;
 using System.Threading;
 using System.Globalization;
+using System.Runtime.InteropServices;
 
 namespace AttacheCase
 {
   static class Program
   {
+    [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
+    static extern bool SetDllDirectory(string lpPathName);
+    [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
+    static extern bool SetDefaultDllDirectories(uint directoryFlags);
+    // LOAD_LIBRARY_SEARCH_APPLICATION_DIR : 0x00000200
+    // LOAD_LIBRARY_SEARCH_DEFAULT_DIRS    : 0x00001000
+    // LOAD_LIBRARY_SEARCH_SYSTEM32        : 0x00000800
+    // LOAD_LIBRARY_SEARCH_USER_DIRS       : 0x00000400
+    private const uint DllSearchFlags = 0x00000800;
+
     /// <summary>
     /// This is the main entry point for this application.
     /// アプリケーションのメイン エントリ ポイントです。
@@ -31,6 +42,11 @@ namespace AttacheCase
     [STAThread]
     static void Main()
     {
+      // DLLプリロード攻撃対策
+      // Prevent DLL preloading attacks
+      SetDllDirectory(null);
+      SetDefaultDllDirectories(DllSearchFlags);
+
       Application.EnableVisualStyles();
       Application.SetCompatibleTextRenderingDefault(false);
 
@@ -115,5 +131,50 @@ namespace AttacheCase
 
   }
 
+  //----------------------------------------------------------------------
+  // アンマネージドDLLを動的にロードする
+  // Dynamically load unmanaged DLLs
+  // ref. https://stackoverflow.com/questions/8836093/how-can-i-specify-a-dllimport-path-at-runtime
+  // ref. https://anis774.net/codevault/loadlibrary.html
+  public class UnManagedDll : IDisposable
+  {
+    [DllImport("kernel32")]
+    static extern IntPtr LoadLibrary(string lpFileName);
+    [DllImport("kernel32")]
+    static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
+    [DllImport("kernel32")]
+    static extern bool FreeLibrary(IntPtr hModule);
+
+    IntPtr moduleHandle;
+
+    public UnManagedDll(string lpFileName)
+    {
+      moduleHandle = LoadLibrary(lpFileName);
+    }
+
+    public IntPtr ModuleHandle
+    {
+      get
+      {
+        return moduleHandle;
+      }
+    }
+
+    public T GetProcDelegate<T>(string method) where T : class
+    {
+      IntPtr methodHandle = GetProcAddress(moduleHandle, method);
+      T r = Marshal.GetDelegateForFunctionPointer(methodHandle, typeof(T)) as T;
+      return r;
+    }
+
+    public void Dispose()
+    {
+      FreeLibrary(moduleHandle);
+    }
+
+
+
+  }
+  
 }
 

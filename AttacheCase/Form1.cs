@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2021  Mitsuhiro Hibara
+// Copyright (C) 2016-2022  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -37,6 +37,8 @@ namespace AttacheCase
 {
   public partial class Form1 : Form
   {
+    private const uint DllSearchFlags = 0x00000800;
+
     // Status Code
     private const int ENCRYPT_SUCCEEDED = 1; // Encrypt is succeeded
     private const int DECRYPT_SUCCEEDED = 2; // Decrypt is succeeded
@@ -5945,24 +5947,36 @@ namespace AttacheCase
     // Change theme color ( "dark" or "light" )
     // テーマカラーの変更（ダークテーマ、ライトテーマ）
     // ref. https://stackoverflow.com/questions/61145347/c-how-to-make-a-dark-mode-theme-in-windows-forms-separate-form-as-select-the
-    [DllImport("dwmapi.dll")]
-    private static extern int DwmSetWindowAttribute(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+    delegate int DwmSetWindowAttributeDelegate(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
     private const int DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19;
     private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
 
+    delegate int MessageBoxADelegate(IntPtr hWnd, string lpText, string lpCaption, uint uType);
+
     private void ChangeTheme(Control.ControlCollection container, bool fDark)
     {
-      // キャプションバーのダークモード表示
-      // ref. https://stackoverflow.com/questions/57124243/winforms-dark-title-bar-on-windows-10
-      if (Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= 17763)
+      // dwmapi.dll 読み込みに関する脆弱性対策（直接 system32などのディレクトリーを指定する）
+      // Vulnerability countermeasure for dwmapi.dll loading (specify "system32" etc directory directly)
+      string dllPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "dwmapi.dll");
+
+      using (UnManagedDll dwmapiDll = new UnManagedDll(dllPath))
       {
-        var attribute = DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1;
-        if (Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= 18985)
+        DwmSetWindowAttributeDelegate DwmSetWindowAttribute =
+              dwmapiDll.GetProcDelegate<DwmSetWindowAttributeDelegate>("DwmSetWindowAttribute");
+
+        // キャプションバーのダークモード表示
+        // ref. https://stackoverflow.com/questions/57124243/winforms-dark-title-bar-on-windows-10
+        if (Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= 17763)
         {
-          attribute = DWMWA_USE_IMMERSIVE_DARK_MODE;
+          var attribute = DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1;
+          if (Environment.OSVersion.Version.Major >= 10 && Environment.OSVersion.Version.Build >= 18985)
+          {
+            attribute = DWMWA_USE_IMMERSIVE_DARK_MODE;
+          }
+          int useImmersiveDarkMode = (fDark == true ? 1 : 0);
+          DwmSetWindowAttribute(this.Handle, (int)attribute, ref useImmersiveDarkMode, sizeof(int));
         }
-        int useImmersiveDarkMode = (fDark == true ? 1 : 0);
-        DwmSetWindowAttribute(this.Handle, (int)attribute, ref useImmersiveDarkMode, sizeof(int));
+
       }
 
       // This form

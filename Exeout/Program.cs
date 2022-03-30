@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
-// "アタッシェケース#3 ( AttachéCase#3 )" -- File encryption software.
-// Copyright (C) 2016-2020  Mitsuhiro Hibara
+// "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
+// Copyright (C) 2016-2022  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -17,41 +17,37 @@
 //---------------------------------------------------------------------- 
 using System;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
-
 
 namespace Exeout
 {
 
   static class Program
 	{
-    //[DllImport("kernel32", CharSet = CharSet.Unicode, SetLastError = true)]
-    //internal static extern IntPtr LoadLibrary(string lpFileName);
+		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+		static extern bool SetDllDirectory(string lpPathName);
+		[DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
+		static extern bool SetDefaultDllDirectories(uint directoryFlags);
+		// LOAD_LIBRARY_SEARCH_APPLICATION_DIR : 0x00000200
+		// LOAD_LIBRARY_SEARCH_DEFAULT_DIRS    : 0x00001000
+		// LOAD_LIBRARY_SEARCH_SYSTEM32        : 0x00000800
+		// LOAD_LIBRARY_SEARCH_USER_DIRS       : 0x00000400
+		private const uint DllSearchFlags = 0x00000800;
 
-    //[DllImport("kernel32.dll", SetLastError = true)]
-    //static extern bool SetSearchPathMode(uint Flags);
-
-    //[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-    //[return: MarshalAs(UnmanagedType.Bool)]
-    //public static extern bool SetDllDirectory(string lpPathName);
-
-    /// <summary>
-    /// アプリケーションのメイン エントリ ポイントです。
-    /// </summary>
-    [STAThread]
+		/// <summary>
+		/// アプリケーションのメイン エントリ ポイントです。
+		/// </summary>
+		[STAThread]
 		static void Main()
 		{
+			// DLLプリロード攻撃対策
+			// Prevent DLL preloading attacks
+			SetDllDirectory(null);
+			SetDefaultDllDirectories(DllSearchFlags);
 
-      //SetDllDirectory("");
-      //MessageBox.Show("SetDllDirectory!");
-
-      //IntPtr handle = LoadLibrary("");
-
-      //SetSearchPathMode(0x00000001 | 0x00008000);
-      //IntPtr handle = LoadLibrary("schannel.dll");
-      
-      CultureInfo ci = Thread.CurrentThread.CurrentUICulture;
+			CultureInfo ci = Thread.CurrentThread.CurrentUICulture;
 			//Console.WriteLine(ci.Name);  // ja-JP
 			if (ci.Name == "ja-JP")
 			{
