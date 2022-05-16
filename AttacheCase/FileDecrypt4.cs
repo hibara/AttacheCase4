@@ -508,8 +508,9 @@ namespace AttacheCase
 
           // salt
           fs.Read(_salt, 0, 8);
+#if (DEBUG)
           Console.WriteLine("salt: " + BitConverter.ToString(_salt));
-
+#endif
           // RSA encryption
           if (_TokenStr.Trim() == "_AttacheCase_Rsa")
           {

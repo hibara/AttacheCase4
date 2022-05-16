@@ -322,9 +322,9 @@ namespace AtcSetup
 			// In addition, delete all AttacheCase settings from the Windows registry.
 			if ( checkBoxDeleteAllSettingsFromRegistry.Checked == true)
       {
-        if (Registry.CurrentUser.OpenSubKey(@"Software\Hibara\AttacheCase3", false) != null)
+        if (Registry.CurrentUser.OpenSubKey(@"Software\Hibara\AttacheCase4", false) != null)
         {
-          Registry.CurrentUser.DeleteSubKeyTree(@"Software\Hibara\AttacheCase3");
+          Registry.CurrentUser.DeleteSubKeyTree(@"Software\Hibara\AttacheCase4");
         }
       }
       
@@ -347,7 +347,7 @@ namespace AtcSetup
 		private string getAttacheCaseExeFilePath()
 		{
 			string AppFilePath = string.Empty;
-			using (RegistryKey regkey = Registry.CurrentUser.OpenSubKey(@"Software\Hibara\AttacheCase3\AppInfo"))
+			using (RegistryKey regkey = Registry.CurrentUser.OpenSubKey(@"Software\Hibara\AttacheCase4\AppInfo"))
 			{
 				if (regkey.GetValue("AppPath") != null)
 				{

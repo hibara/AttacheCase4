@@ -118,6 +118,33 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="ToolStripMenuItemDeleteLicense.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABgWlDQ1BzUkdCIElFQzYxOTY2LTIuMQAA
+        KM+Vkc8rRFEUxz/zQyNGIywsLCYNq6ExamJjMWIoLGZGGWxmnvmh5sfrvZkkW2U7RYmNXwv+ArbKWiki
+        JUtZExum57wZNVIW7u2e87nfe8/pnnPBGs0qOd3ug1y+qIVDQfdcbN7teMJOGw5acMQVXZ2OjEf5c7zf
+        YjH9dZ+Zi/+N5qWkroClUXhEUbWi8ITw1EpRNXlLuEPJxJeET4S9mjxQ+MbUEzV+Njld40+TtWh4VGpr
+        FXanf3DiBysZLScslePJZUvK93vMSpzJ/GxEfLesLnTChAjiZpIxRgkwwLDYAH346Zcdf8T7qvEzFCRW
+        EauyisYyaTIU8YpakuxJ8SnRkzKzrJr9/91XPTXor2V3BqHh0TBee8CxCZWyYXwcGEblEGwPcJ6vxxf2
+        YehN9HJd8+yBax1OL+paYhvONqDzXo1r8apkk2VNpeDlGFpi0H4FTQu1nn2fc3QH0TX5qkvY2YVeue9a
+        /AL/72e3UUmE5gAAAAlwSFlzAAALDwAACw8BkvkDpQAAAWhJREFUOE+tktGKgmAQhf8XWB9q9xECIQiC
+        QAgCIwwCo5BCIdGX2a669baXKMi1eomzc2R+0+pu94Dgxf/NmTkz5t+VZZkj33K32+2TJKm2220VRdF+
+        tVotwzD80GfvJeCXfGeBITAEhsAQGAJjsVic5vP5pz7vSmEQzvP8BV6v1xAYs9kMvu93iwjItmvn4/GI
+        +/2ONE0beLPZ4Hq9oigKwphMJqfxeOwoXhfgzLUzYep2uyGO4wamqqpCEAQQGJ7nhYobo4HVbdOZMMVi
+        9p+wZGBhjEajb8WN0bSbmelsO6FY5AnGcDj8UdwYXVVnZutMcQQG2IIxGAweBXTPncAoFrH/ZVliOp1a
+        GP1+/zGCwDySelXtwNg2nQlTl8ul7kJguK77CFFgRx6f+Zireg6MzoQPh4OFT71er3uVvDA9kvaqmplb
+        zhD4/TXywvRIngNrO7+HrQR2BA65Z66KaTMwzvzS9t9lzC/EhrVkHgys0gAAAABJRU5ErkJggg==
+</value>
+  </data>
+  <data name="ToolStripMenuItemDeleteLicense.Size" type="System.Drawing.Size, System.Drawing">
+    <value>176, 22</value>
+  </data>
+  <data name="ToolStripMenuItemDeleteLicense.Text" xml:space="preserve">
+    <value>商用ライセンスを削除</value>
+  </data>
+  <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>177, 26</value>
+  </data>
   <data name="pictureBoxLicenseIcon.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABgWlDQ1BzUkdCIElFQzYxOTY2LTIuMQAA
@@ -127,7 +154,7 @@
         q7A784OTP1jJanlhqRxPPldWvt9jVuJMFWai4rtldaETIUwINxOMMkKQfobEBvERwC87/ojv+4qfpiix
         iliVFTSWyJClhFfUsmRPiU+LnpKZY8Xs/+++6umBQC27MwT2B8N46YHGDahWDON93zCqB2C7h7NCPb64
         B4OvolfqmmcXXGtwcl7Xkltwug6dd2pCS3xJNlnWdBqej6AlDu2X0Dxf69n3OYe3EFuVr7qA7R3olfuu
-        hU9b/Gfh2/nFbAAAAAlwSFlzAAALEwAACxMBAJqcGAAABLpJREFUWEfVVm1MlWUYvsfWXJsunZZSMSDB
+        hU9b/Gfh2/nFbAAAAAlwSFlzAAALEQAACxEBf2RfkQAABLpJREFUWEfVVm1MlWUYvsfWXJsunZZSMSDB
         lpkbp5Wu/kS1auASByGMVSZsmWTLWZNqBIE4F6sZxY9Ki2hkicM6PwgjkMP34ePIETniCTkoqGmUzmLj
         Y+zqvp/nPdJ7cKdzDvSja7t2Hl7evdd1fzz385APbmUunmcGjC+Z+A9oY6Yx/UIih91uR09Pz7yyoKDA
         a8Iv1jMxPj6O+UZZWZkY8CgVPzAZGB4eRmVl5Zw4PT2tvhWSgZqaGlgsljlxYmJCfev/acDpdCInJ2dO
@@ -224,7 +251,7 @@
   <data name="pictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wwAADsMBx2+oZAAAAZNJREFUOE+FUrtKA0EUnd2QEMTJ7DyC2ihaK1iIioLkAwR/wB+wF3sLaztfWIm9
+        wQAADsEBuJFr7QAAAZNJREFUOE+FUrtKA0EUnd2QEMTJ7DyC2ihaK1iIioLkAwR/wB+wF3sLaztfWIm9
         +Akp9BtUREhlIREVTAwG1nNn70Sjm3jgwMy559y7M7PiN5IkWbPWHoK3zpg3Iq1JoxrbclFwWp+NVavp
         MJKHvFnkGwVMuM4L5JG8lMmiALqeU8FoXa9UKouQdqWU9/j8G09r29C2i8XiEnnISxkfRmA5dDbGHHlR
         iFFwJFt60D6iBXmCn7I0vXdupdQCmYYBF1kLfn8fzrkHv7G2gwbT7BsINJiC98NnkBV0Pt402PMvyMtD
@@ -243,7 +270,7 @@
         Fg5kf3H6F6s5UxeWygnq+SX15z1uJb5MYXJC1naZfiySxIkSYJRhYkToYUB8hE566ZIdFeK7v+PHWZRY
         VbzBCiYLZMlhExZ1SbJnZNVEz8jIs+L2/29fLa2vt5TdF4WaB8d56YDaDfgsOs77vuN8HkDVPZwVyvGL
         e9D/KnqxrAV3oWkNTs7LWnoLTteh7c5QTOVbqpLp1TR4PoLGaWi5hPrZUs9+zjm8hdSqfNUFbO9ASO43
-        zX0BHHlnxE/RgH8AAAAJcEhZcwAACxMAAAsTAQCanBgAAAB9SURBVDhPY6A1MIZisoAbEH+GYleQACkg
+        zX0BHHlnxE/RgH8AAAAJcEhZcwAACxEAAAsRAX9kX5EAAAB9SURBVDhPY6A1MIZisoAbEH+GYleQACkg
         Goh/AfF/KAaxo4CYKFACxP+AGKYZhkFixUCMEzACcS8Qo2tExyA1ILUogBWIlwIxNg3Y8BIgBukBAx4g
         3gXE2BTiwyA9IL1wEArE2BRiwyC1GIDqBqwGYhgAsZHlhqsBAwEYGADdH2Vjw1AliwAAAABJRU5ErkJg
         gg==
@@ -258,7 +285,7 @@
         Kv2O5I+ezA/OzS0YX/9Rm9Sn8uOjktvktFIgzhBhNEYYJEKIbvrkDuEjiF9e2KklWw1H5s1lazaTtbUB
         cSKljeQNv1cLBoLSo3z961e5Nr8HvS/gLpZryS04XYfmu3KtYxca1uDkwtQt/bPkluNKp+HpCDwJaLyC
         2qlCuidY2qg+DFUPjvPcCdUb8F50nLd9x3k/kGHx6Dxf8uhLi8NbGFuB6CVs70CXaDdMfwBugGdRbIKr
-        gwAAAAlwSFlzAAALEwAACxMBAJqcGAAAEkxJREFUeF7dmwlwVVWax18gLAlJXl7Wt2Tf2cIalhB2ooAE
+        gwAAAAlwSFlzAAALEQAACxEBf2RfkQAAEkxJREFUeF7dmwlwVVWax18gLAlJXl7Wt2Tf2cIalhB2ooAE
         ZVHZxCjlQjuoYKkzdKs9ruNWLrgwlrbgFNrotIqKUlIiooJKYwpFwLDoIIsim4CQCOTM//8lX/pyc997
         MbGnhz5V/7rJffeee37n+873nXPefa5/cGkDdYRioHgoBUqDsqBcKBPiZ+du6dy5s6+4uLiiqKjo33Jz
         cxdCr2dnZ3+YlZW1MTMzcyeO+/D/wby8vOMFBQWncP2Z7t271/Xp0+d4z549l+Xk5JQ1VHVuFUAPAMhy
@@ -340,10 +367,10 @@
 </value>
   </data>
   <data name="labelAppName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>117, 16</value>
+    <value>108, 16</value>
   </data>
   <data name="labelAppName.Text" xml:space="preserve">
-    <value>アタッシェケース#3</value>
+    <value>アタッシェケース4</value>
   </data>
   <data name="buttonRegisterLicense.Text" xml:space="preserve">
     <value>商用利用登録</value>

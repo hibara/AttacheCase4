@@ -19,7 +19,7 @@ namespace AttacheCase.Properties {
     // または Visual Studio のようなツールを使用して自動生成されました。
     // メンバーを追加または削除するには、.ResX ファイルを編集して、/str オプションと共に
     // ResGen を実行し直すか、または VS プロジェクトをビルドし直します。
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "17.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class Resources {
@@ -250,6 +250,15 @@ namespace AttacheCase.Properties {
         public static string DialogMessageDecryptionPasswordFileNotFound {
             get {
                 return ResourceManager.GetString("DialogMessageDecryptionPasswordFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Remove this commercial license? に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageDeleteCommercialLicense {
+            get {
+                return ResourceManager.GetString("DialogMessageDeleteCommercialLicense", resourceCulture);
             }
         }
         
@@ -590,6 +599,35 @@ namespace AttacheCase.Properties {
             }
         }
         
+        /// <summary>
+        ///   The following specified text file of registration code can not be found! に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageRegistrationCodeFileNotFound {
+            get {
+                return ResourceManager.GetString("DialogMessageRegistrationCodeFileNotFound", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Could not delete registration code. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageRegistrationCodeNotDeleted
+        {
+          get
+          {
+            return ResourceManager.GetString("DialogMessageRegistrationCodeNotDeleted", resourceCulture);
+          }
+        }
+
+        /// <summary>
+        ///   The registration code was not successfully registered. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageRegistrationCodeNotRegistered {
+            get {
+                return ResourceManager.GetString("DialogMessageRegistrationCodeNotRegistered", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   A different pair of keys from the RSA-encrypted public key has been specified. Cannot decrypt.
         ///The process is aborted. に類似しているローカライズされた文字列を検索します。

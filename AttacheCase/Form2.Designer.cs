@@ -28,6 +28,7 @@
     /// </summary>
     private void InitializeComponent()
     {
+      this.components = new System.ComponentModel.Container();
       System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
       this.tabControl1 = new System.Windows.Forms.TabControl();
       this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -36,6 +37,8 @@
       this.labelEmailAddress = new System.Windows.Forms.Label();
       this.labelEmailTitle = new System.Windows.Forms.Label();
       this.pictureBoxLicenseIcon = new System.Windows.Forms.PictureBox();
+      this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+      this.ToolStripMenuItemDeleteLicense = new System.Windows.Forms.ToolStripMenuItem();
       this.labelUserNameTitle = new System.Windows.Forms.Label();
       this.labelCommerciaUseLicense = new System.Windows.Forms.Label();
       this.labelUserName = new System.Windows.Forms.Label();
@@ -69,6 +72,7 @@
       this.panelVersion.SuspendLayout();
       this.panelCommercialLicense.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLicenseIcon)).BeginInit();
+      this.contextMenuStrip1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExclamationMark)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCheckMark)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProgressCircle)).BeginInit();
@@ -83,22 +87,23 @@
       // 
       // tabControl1
       // 
+      resources.ApplyResources(this.tabControl1, "tabControl1");
       this.tabControl1.Controls.Add(this.tabPage1);
       this.tabControl1.Controls.Add(this.tabPage2);
-      resources.ApplyResources(this.tabControl1, "tabControl1");
       this.tabControl1.Multiline = true;
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
       // 
       // tabPage1
       // 
-      this.tabPage1.Controls.Add(this.panelVersion);
       resources.ApplyResources(this.tabPage1, "tabPage1");
+      this.tabPage1.Controls.Add(this.panelVersion);
       this.tabPage1.Name = "tabPage1";
       this.tabPage1.UseVisualStyleBackColor = true;
       // 
       // panelVersion
       // 
+      resources.ApplyResources(this.panelVersion, "panelVersion");
       this.panelVersion.Controls.Add(this.panelCommercialLicense);
       this.panelVersion.Controls.Add(this.labelFreeLicence);
       this.panelVersion.Controls.Add(this.pictureBoxExclamationMark);
@@ -115,11 +120,11 @@
       this.panelVersion.Controls.Add(this.labelVersion);
       this.panelVersion.Controls.Add(this.labelAppName);
       this.panelVersion.Controls.Add(this.buttonRegisterLicense);
-      resources.ApplyResources(this.panelVersion, "panelVersion");
       this.panelVersion.Name = "panelVersion";
       // 
       // panelCommercialLicense
       // 
+      resources.ApplyResources(this.panelCommercialLicense, "panelCommercialLicense");
       this.panelCommercialLicense.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
       this.panelCommercialLicense.Controls.Add(this.labelEmailAddress);
       this.panelCommercialLicense.Controls.Add(this.labelEmailTitle);
@@ -127,7 +132,6 @@
       this.panelCommercialLicense.Controls.Add(this.labelUserNameTitle);
       this.panelCommercialLicense.Controls.Add(this.labelCommerciaUseLicense);
       this.panelCommercialLicense.Controls.Add(this.labelUserName);
-      resources.ApplyResources(this.panelCommercialLicense, "panelCommercialLicense");
       this.panelCommercialLicense.Name = "panelCommercialLicense";
       // 
       // labelEmailAddress
@@ -147,8 +151,23 @@
       // pictureBoxLicenseIcon
       // 
       resources.ApplyResources(this.pictureBoxLicenseIcon, "pictureBoxLicenseIcon");
+      this.pictureBoxLicenseIcon.ContextMenuStrip = this.contextMenuStrip1;
+      this.pictureBoxLicenseIcon.Cursor = System.Windows.Forms.Cursors.Hand;
       this.pictureBoxLicenseIcon.Name = "pictureBoxLicenseIcon";
       this.pictureBoxLicenseIcon.TabStop = false;
+      // 
+      // contextMenuStrip1
+      // 
+      resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
+      this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItemDeleteLicense});
+      this.contextMenuStrip1.Name = "contextMenuStrip1";
+      // 
+      // ToolStripMenuItemDeleteLicense
+      // 
+      resources.ApplyResources(this.ToolStripMenuItemDeleteLicense, "ToolStripMenuItemDeleteLicense");
+      this.ToolStripMenuItemDeleteLicense.Name = "ToolStripMenuItemDeleteLicense";
+      this.ToolStripMenuItemDeleteLicense.Click += new System.EventHandler(this.ToolStripMenuItemDeleteLicense_Click);
       // 
       // labelUserNameTitle
       // 
@@ -265,25 +284,25 @@
       // 
       // buttonRegisterLicense
       // 
-      this.buttonRegisterLicense.ForeColor = System.Drawing.SystemColors.InfoText;
       resources.ApplyResources(this.buttonRegisterLicense, "buttonRegisterLicense");
+      this.buttonRegisterLicense.ForeColor = System.Drawing.SystemColors.InfoText;
       this.buttonRegisterLicense.Name = "buttonRegisterLicense";
       this.buttonRegisterLicense.UseVisualStyleBackColor = true;
       this.buttonRegisterLicense.Click += new System.EventHandler(this.buttonRegisterLicense_Click_1);
       // 
       // tabPage2
       // 
-      this.tabPage2.Controls.Add(this.panelRegistration);
       resources.ApplyResources(this.tabPage2, "tabPage2");
+      this.tabPage2.Controls.Add(this.panelRegistration);
       this.tabPage2.Name = "tabPage2";
       this.tabPage2.UseVisualStyleBackColor = true;
       // 
       // panelRegistration
       // 
+      resources.ApplyResources(this.panelRegistration, "panelRegistration");
       this.panelRegistration.Controls.Add(this.label1);
       this.panelRegistration.Controls.Add(this.textBox1);
       this.panelRegistration.Controls.Add(this.panel1);
-      resources.ApplyResources(this.panelRegistration, "panelRegistration");
       this.panelRegistration.Name = "panelRegistration";
       // 
       // label1
@@ -299,11 +318,11 @@
       // 
       // panel1
       // 
+      resources.ApplyResources(this.panel1, "panel1");
       this.panel1.Controls.Add(this.linkLabelPurchase);
       this.panel1.Controls.Add(this.labelValidation);
       this.panel1.Controls.Add(this.buttonCancel);
       this.panel1.Controls.Add(this.buttonRegister);
-      resources.ApplyResources(this.panel1, "panel1");
       this.panel1.Name = "panel1";
       // 
       // linkLabelPurchase
@@ -336,8 +355,8 @@
       // 
       // panelMain
       // 
-      this.panelMain.Controls.Add(this.tabControl1);
       resources.ApplyResources(this.panelMain, "panelMain");
+      this.panelMain.Controls.Add(this.tabControl1);
       this.panelMain.Name = "panelMain";
       // 
       // Form2
@@ -362,6 +381,7 @@
       this.panelCommercialLicense.ResumeLayout(false);
       this.panelCommercialLicense.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxLicenseIcon)).EndInit();
+      this.contextMenuStrip1.ResumeLayout(false);
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxExclamationMark)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxCheckMark)).EndInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxProgressCircle)).EndInit();
@@ -414,5 +434,7 @@
     private System.Windows.Forms.Label labelCommerciaUseLicense;
     private System.Windows.Forms.Label labelUserName;
     private System.Windows.Forms.LinkLabel linkLabelPurchase;
+    private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+    private System.Windows.Forms.ToolStripMenuItem ToolStripMenuItemDeleteLicense;
   }
 }

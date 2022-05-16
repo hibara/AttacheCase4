@@ -35,7 +35,7 @@ namespace AttacheCase
 
     private void Form2_Load(object sender, EventArgs e)
     {
-      labelAppName.Text = Application.ProductName;
+      //labelAppName.Text = Application.ProductName;
       labelVersion.Text = "Version." + ApplicationInfo.Version;
       labelCopyright.Text = ApplicationInfo.CopyrightHolder;
       linkLabelCheckForUpdates.Left = pictureBoxApplicationIcon.Left;
@@ -66,6 +66,8 @@ namespace AttacheCase
         buttonRegisterLicense.Visible = false; // 登録ボタンの消去
 
         // 商用利用ライセンスパネルの表示
+        panelCommercialLicense.Left = 16;
+        panelCommercialLicense.Width = panelVersion.Width - panelCommercialLicense.Left*2;
         panelCommercialLicense.Visible = true;
         // バージョン情報ページを表示する
         panelRegistration.Visible = false;
@@ -155,8 +157,7 @@ namespace AttacheCase
     private void buttonRegister_Click(object sender, EventArgs e)
     {
       LicenseRegister lcr = new LicenseRegister(textBox1.Text);
-      lcr.Decypt(true);
-      if (lcr.UserNameString != "" && lcr.EmailAddressString != "")
+      if (lcr.Decypt(true) == true)
       {
         // 商用利用適用
         // Commercial Use applicable
@@ -188,6 +189,10 @@ namespace AttacheCase
 
     private void buttonCancel_Click(object sender, EventArgs e)
     {
+      // レジストレーションコード入力欄を空にする
+      // Empty the registration code entry field
+      textBox1.Text = "";
+
       // バージョン情報ページを表示
       panelRegistration.Visible = false;
       panelVersion.Visible = true;
@@ -197,8 +202,7 @@ namespace AttacheCase
     private void textBox1_TextChanged(object sender, EventArgs e)
     {
       LicenseRegister lcr = new LicenseRegister(textBox1.Text.Trim());
-      lcr.Decypt(true);
-      if (lcr.UserNameString != "" && lcr.EmailAddressString !="")
+      if (lcr.Decypt(false) == true)  // レジストリへは書き込まずに判定だけ行う
       {
         labelValidation.ForeColor = Color.FromName("ForestGreen");
         // Valid code.
@@ -221,6 +225,54 @@ namespace AttacheCase
       System.Diagnostics.Process.Start("https://hibara.org/software/attachecase/buy/");
       return;
     }
+
+    // 商用ライセンスの削除メニュー
+    private void ToolStripMenuItemDeleteLicense_Click(object sender, EventArgs e)
+    {
+      // Remove this commercial license?
+      // この商用ライセンスを削除しますか？
+      DialogResult result = MessageBox.Show(
+        Resources.DialogMessageDeleteCommercialLicense, Resources.DialogTitleQuestion,
+        MessageBoxButtons.YesNo,
+        MessageBoxIcon.Exclamation,
+        MessageBoxDefaultButton.Button2);
+
+      if (result == DialogResult.No)
+      {
+        //「いいえ」は抜ける
+        return;
+      }
+
+      LicenseRegister lcr = new LicenseRegister("");
+      if (lcr.DeleteLicense() == true)
+      {
+        // 商用利用表示を削除する
+        // Remove the commercial use mark
+        labelUserName.Text = "";
+        labelEmailAddress.Text = "";
+        labelUserNameTitle.Visible = false;
+        labelEmailTitle.Visible = false;
+        labelUserName.Visible = false;
+        labelEmailAddress.Visible = false;
+
+        // レジストレーションコード入力欄を空にする
+        // Empty the registration code entry field
+        textBox1.Text = ""; 
+
+        labelFreeLicence.Visible = true;      // フリー利用文字を再表示
+        buttonRegisterLicense.Visible = true; // 登録ボタンの表示
+
+        // 商用利用登録パネルの非表示
+        panelCommercialLicense.Visible = false;
+        // バージョン情報ページを表示する
+        panelRegistration.Visible = true;
+        panelVersion.Visible = true;
+        panelVersion.Focus();
+
+      }
+
+    }
+
   }
 
   /// <summary>

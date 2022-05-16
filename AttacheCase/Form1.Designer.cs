@@ -101,6 +101,7 @@
       this.pictureBoxEncryption = new System.Windows.Forms.PictureBox();
       this.buttonEncryptCancel = new System.Windows.Forms.Button();
       this.labelPassword = new System.Windows.Forms.Label();
+      this.textBoxPassword = new AttacheCase.DelayTextBox();
       this.tabPageEncryptConfirm = new System.Windows.Forms.TabPage();
       this.panelEncryptConfirm = new System.Windows.Forms.Panel();
       this.pictureBoxEncryptConfirmBackButton = new System.Windows.Forms.PictureBox();
@@ -186,7 +187,6 @@
       this.toolTipZxcvbnWarning = new System.Windows.Forms.ToolTip(this.components);
       this.toolTipZxcvbnSuggestions = new System.Windows.Forms.ToolTip(this.components);
       this.saveFileDialog2 = new System.Windows.Forms.SaveFileDialog();
-      this.textBoxPassword = new AttacheCase.DelayTextBox();
       this.statusStrip1.SuspendLayout();
       this.menuStrip1.SuspendLayout();
       this.panelOuter.SuspendLayout();
@@ -709,6 +709,7 @@
       resources.ApplyResources(this.checkBoxDeleteOriginalFileAfterEncryption, "checkBoxDeleteOriginalFileAfterEncryption");
       this.checkBoxDeleteOriginalFileAfterEncryption.Name = "checkBoxDeleteOriginalFileAfterEncryption";
       this.checkBoxDeleteOriginalFileAfterEncryption.UseVisualStyleBackColor = true;
+      this.checkBoxDeleteOriginalFileAfterEncryption.CheckedChanged += new System.EventHandler(this.checkBoxDeleteOriginalFileAfterEncryption_CheckedChanged);
       // 
       // checkBoxNotMaskEncryptedPassword
       // 
@@ -812,6 +813,17 @@
       this.labelPassword.Name = "labelPassword";
       this.labelPassword.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
       this.labelPassword.MouseMove += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseMove);
+      // 
+      // textBoxPassword
+      // 
+      resources.ApplyResources(this.textBoxPassword, "textBoxPassword");
+      this.textBoxPassword.Name = "textBoxPassword";
+      this.textBoxPassword.UseSystemPasswordChar = true;
+      this.textBoxPassword.TextChanged += new System.EventHandler(this.textBoxPassword_TextChanged);
+      this.textBoxPassword.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBoxPassword_DragDrop);
+      this.textBoxPassword.DragEnter += new System.Windows.Forms.DragEventHandler(this.textBoxPassword_DragEnter);
+      this.textBoxPassword.DragLeave += new System.EventHandler(this.textBoxPassword_DragLeave);
+      this.textBoxPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxPassword_KeyDown);
       // 
       // tabPageEncryptConfirm
       // 
@@ -1420,17 +1432,6 @@
       // 
       this.toolTipZxcvbnWarning.IsBalloon = true;
       this.toolTipZxcvbnWarning.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Warning;
-      // 
-      // textBoxPassword
-      // 
-      resources.ApplyResources(this.textBoxPassword, "textBoxPassword");
-      this.textBoxPassword.Name = "textBoxPassword";
-      this.textBoxPassword.UseSystemPasswordChar = true;
-      this.textBoxPassword.TextChanged += new System.EventHandler(this.textBoxPassword_TextChanged);
-      this.textBoxPassword.DragDrop += new System.Windows.Forms.DragEventHandler(this.textBoxPassword_DragDrop);
-      this.textBoxPassword.DragEnter += new System.Windows.Forms.DragEventHandler(this.textBoxPassword_DragEnter);
-      this.textBoxPassword.DragLeave += new System.EventHandler(this.textBoxPassword_DragLeave);
-      this.textBoxPassword.KeyDown += new System.Windows.Forms.KeyEventHandler(this.textBoxPassword_KeyDown);
       // 
       // Form1
       // 

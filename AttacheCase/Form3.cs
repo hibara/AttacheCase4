@@ -511,6 +511,17 @@ namespace AttacheCase
 				checkBoxEncryptionSameFileTypeBefore.Checked = false;
 			}
 
+			// Output self-executable files so that they can be decrypted on older OS
+			if (AppSettings.Instance.fOutputExeForOlderOS == true)
+      {
+				checkBoxOutputSelfExeForOlderOS.Checked = true;
+
+			}
+      else
+      {
+				checkBoxOutputSelfExeForOlderOS.Checked= false;
+			}
+
 			#endregion
 
 			//-----------------------------------
@@ -1271,7 +1282,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
       }
 
       AppSettings.Instance.fEncryptionSameFileTypeBefore = checkBoxEncryptionSameFileTypeBefore.Checked;
-      
+			AppSettings.Instance.fOutputExeForOlderOS = checkBoxOutputSelfExeForOlderOS.Checked;
+
       //-----------------------------------
       // Save Encrypt
       AppSettings.Instance.fSaveToSameFldr = checkBoxSaveToSameFldr.Checked;

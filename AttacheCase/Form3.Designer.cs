@@ -69,6 +69,9 @@
       this.checkBoxTaskBarHide = new System.Windows.Forms.CheckBox();
       this.tabPageSaveOption = new System.Windows.Forms.TabPage();
       this.panelSaveOption = new System.Windows.Forms.Panel();
+      this.label4 = new System.Windows.Forms.Label();
+      this.pictureBox1 = new System.Windows.Forms.PictureBox();
+      this.checkBoxOutputSelfExeForOlderOS = new System.Windows.Forms.CheckBox();
       this.checkBoxEncryptionSameFileTypeBefore = new System.Windows.Forms.CheckBox();
       this.groupBox5 = new System.Windows.Forms.GroupBox();
       this.radioButtonNotSpecified = new System.Windows.Forms.RadioButton();
@@ -253,6 +256,7 @@
       this.panelWindowOption.SuspendLayout();
       this.tabPageSaveOption.SuspendLayout();
       this.panelSaveOption.SuspendLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
       this.groupBox5.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureAtcExeFile)).BeginInit();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRsaKeys)).BeginInit();
@@ -661,9 +665,31 @@
       // panelSaveOption
       // 
       resources.ApplyResources(this.panelSaveOption, "panelSaveOption");
+      this.panelSaveOption.Controls.Add(this.label4);
+      this.panelSaveOption.Controls.Add(this.pictureBox1);
+      this.panelSaveOption.Controls.Add(this.checkBoxOutputSelfExeForOlderOS);
       this.panelSaveOption.Controls.Add(this.checkBoxEncryptionSameFileTypeBefore);
       this.panelSaveOption.Controls.Add(this.groupBox5);
       this.panelSaveOption.Name = "panelSaveOption";
+      // 
+      // label4
+      // 
+      resources.ApplyResources(this.label4, "label4");
+      this.label4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+      this.label4.Name = "label4";
+      // 
+      // pictureBox1
+      // 
+      resources.ApplyResources(this.pictureBox1, "pictureBox1");
+      this.pictureBox1.Name = "pictureBox1";
+      this.pictureBox1.TabStop = false;
+      // 
+      // checkBoxOutputSelfExeForOlderOS
+      // 
+      resources.ApplyResources(this.checkBoxOutputSelfExeForOlderOS, "checkBoxOutputSelfExeForOlderOS");
+      this.checkBoxOutputSelfExeForOlderOS.Name = "checkBoxOutputSelfExeForOlderOS";
+      this.checkBoxOutputSelfExeForOlderOS.UseVisualStyleBackColor = true;
+      this.checkBoxOutputSelfExeForOlderOS.CheckedChanged += new System.EventHandler(this.options_ComponentChanged);
       // 
       // checkBoxEncryptionSameFileTypeBefore
       // 
@@ -2015,6 +2041,7 @@
       this.tabPageSaveOption.ResumeLayout(false);
       this.panelSaveOption.ResumeLayout(false);
       this.panelSaveOption.PerformLayout();
+      ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
       this.groupBox5.ResumeLayout(false);
       this.groupBox5.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureAtcExeFile)).EndInit();
@@ -2313,5 +2340,8 @@
     private System.Windows.Forms.ComboBox comboBoxAlwaysReadIniFile;
     private System.Windows.Forms.CheckBox checkBoxShowDialogToConfirmToReadIniFileAlways;
     private System.Windows.Forms.Label label15;
+    private System.Windows.Forms.Label label4;
+    private System.Windows.Forms.PictureBox pictureBox1;
+    private System.Windows.Forms.CheckBox checkBoxOutputSelfExeForOlderOS;
   }
 }

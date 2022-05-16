@@ -475,7 +475,7 @@ Decryption failed.</value>
     <value>The following specified list file can not be found!</value>
   </data>
   <data name="DialogMessageFileListEncodingUnknown" xml:space="preserve">
-    <value>The character encoding of the following specified list file is unknown that can not be read!</value>
+    <value>The character encoding of the following specified file is unknown that can not be read!</value>
   </data>
   <data name="zxcvbnSuggestionAddAnotherWordOrTwo" xml:space="preserve">
     <value>Add another word or two. Uncommon words are better.</value>
@@ -707,5 +707,17 @@ Encrypt</value>
   </data>
   <data name="groupBoxReadIniFile" xml:space="preserve">
     <value>Setting file (INI file) option:</value>
+  </data>
+  <data name="DialogMessageDeleteCommercialLicense" xml:space="preserve">
+    <value>Remove this commercial license?</value>
+  </data>
+  <data name="DialogMessageRegistrationCodeFileNotFound" xml:space="preserve">
+    <value>The following specified text file of registration code can not be found!</value>
+  </data>
+  <data name="DialogMessageRegistrationCodeNotDeleted" xml:space="preserve">
+    <value>Could not delete registration code.</value>
+  </data>
+  <data name="DialogMessageRegistrationCodeNotRegistered" xml:space="preserve">
+    <value>The registration code was not successfully registered.</value>
   </data>
 </root>

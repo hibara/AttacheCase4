@@ -1,4 +1,4 @@
-//---------------------------------------------------------------------- 
+﻿//---------------------------------------------------------------------- 
 // "アタッシェケース#3 ( AttachéCase#3 )" -- File encryption software.
 // Copyright (C) 2016-2022  Mitsuhiro Hibara
 // 
@@ -70,9 +70,15 @@ namespace AttacheCase
     private const int PROCESS_TYPE_DECRYPTION      =  4;
     private const int PROCESS_TYPE_RSA_ENCRYPTION  =  5;
     private const int PROCESS_TYPE_RSA_DECRYPTION  =  6;
-    // Dialog Button
-    private const int MESSAGE_BOX_BUTTONS_YES = 7;
-    private const int MESSAGE_BOX_BUTTONS_NO = 8;
+
+    //
+    // An INI file handling class using C#
+    // http://www.codeproject.com/Articles/1966/An-INI-file-handling-class-using-C
+    //
+    //[DllImport("kernel32")]
+    //private static extern long WritePrivateProfileString(string section, string key, string val, string filePath);
+    //[DllImport("kernel32")]
+    //private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
 
     //-----------------------------------
     // メンバ変数(Member Variable)
@@ -81,13 +87,10 @@ namespace AttacheCase
     // Self instance
     private static AppSettings _Instance;
 
-    private readonly string RegistoryRootPath3 = string.Format(@"Software\Hibara\{0}", "AttacheCase3");
-    private readonly string RegistoryRootPath4 = string.Format(@"Software\Hibara\{0}", "AttacheCase4");
-
-    private readonly string RegistryPathAppInfo = string.Format(@"Software\Hibara\{0}\AppInfo", "AttacheCase4");
-    private readonly string RegistryPathWindowPos = string.Format(@"Software\Hibara\{0}\WindowPos", "AttacheCase4");
-    private readonly string RegistryPathMyKey = string.Format(@"Software\Hibara\{0}\MyKey", "AttacheCase4");
-    private readonly string RegistryPathOption = string.Format(@"Software\Hibara\{0}\Option", "AttacheCase4");
+    private readonly string RegistryPathAppInfo = string.Format(@"Software\Hibara\{0}\AppInfo", "AttacheCase3");
+    private readonly string RegistryPathWindowPos = string.Format(@"Software\Hibara\{0}\WindowPos", "AttacheCase3");
+    private readonly string RegistryPathMyKey = string.Format(@"Software\Hibara\{0}\MyKey", "AttacheCase3");
+    private readonly string RegistryPathOption = string.Format(@"Software\Hibara\{0}\Option", "AttacheCase3");
     
     // Static instance ( Singleton pattern )
     public static AppSettings Instance
@@ -347,7 +350,7 @@ namespace AttacheCase
     private bool _fPasswordStrengthMeter;
     public bool fPasswordStrengthMeter
     {
-      get { return this._fPasswordStrengthMeter;　}
+      get { return this._fPasswordStrengthMeter;}
       set { this._fPasswordStrengthMeter = value; }
     }
           
@@ -467,19 +470,11 @@ namespace AttacheCase
     }
 
     private int _EncryptionSameFileTypeBefore;       // 前に使った暗号化ファイルの種類
-                                                     // Same encryption type that was used to before.
+                                                      // Same encryption type that was used to before.
     public int EncryptionSameFileTypeBefore
     {
       get { return this._EncryptionSameFileTypeBefore; }
       set { this._EncryptionSameFileTypeBefore = value; }
-    }
-
-    private bool _fOutputExeForOlderOS = false;       // 古いOSでも復号化できるように自己実行ファイルを出力する
-                                                      // Output self-executable files so that they can be decrypted on older operating systems
-    public bool fOutputExeForOlderOS
-    {
-      get { return this._fOutputExeForOlderOS; }
-      set { this._fOutputExeForOlderOS = value; }
     }
 
     #endregion
@@ -1217,11 +1212,11 @@ namespace AttacheCase
 
     #endregion
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
     /// Cunstractor（コンストラクタ）
     /// </summary>
-    //======================================================================
+    //----------------------------------------------------------------------
     private AppSettings()
     {
     }
@@ -1231,12 +1226,12 @@ namespace AttacheCase
       RegistryPathMyKey = registryPathMyKey;
     }
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
     /// アタッシェケースの設定を読み込まれたソースから取得する
     /// Get the AttacheCase configuration from the settings of reading sources on the beginning
     /// </summary>
-    //======================================================================
+    //----------------------------------------------------------------------
     public void ReadOptions()
     {
       //----------------------------------------------------------------------
@@ -1283,12 +1278,12 @@ namespace AttacheCase
 
     }
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
     /// アタッシェケースの設定を読み込まれたソースへ保存する（または保存しない）
     /// Save the setting of AttacheCase to source of reading on the beginning (or not to save)
     /// </summary>
-    //======================================================================
+    //----------------------------------------------------------------------
     public void SaveOptions(bool fTemporarySettings)
     {
       //コマンドラインからの設定が読み込まれているときは保存しない
@@ -1310,27 +1305,15 @@ namespace AttacheCase
       SaveOptionsToRegistry();
 
     }
-
-    //======================================================================
+        
+    //----------------------------------------------------------------------
     /// <summary>
     /// Read all options of AttacheCase from sysytem registry
     /// アタッシェケースの設定をレジストリから読み込む
     /// </summary>
-    //======================================================================
+    //----------------------------------------------------------------------
     public void ReadOptionsFromRegistry()
     {
-      //「アタッシェケース4」の設定がなく、「アタッシェケース#3」の設定がある
-      // "AttacheCase4" setting not be found, but "AttacheCase#3" setting be found
-      using (RegistryKey reg3 = Registry.CurrentUser.OpenSubKey(RegistoryRootPath3, false))
-      using (RegistryKey reg4 = Registry.CurrentUser.OpenSubKey(RegistoryRootPath4, true))
-      {
-        if (reg3 != null && reg4 == null)
-        {
-          // Copy 3 to 4
-          RegCopyTo(reg3, Registry.CurrentUser.CreateSubKey(RegistoryRootPath4));
-        }
-      }
-
       using (RegistryKey reg = Registry.CurrentUser.OpenSubKey(RegistryPathAppInfo, false))
       {
         if (reg == null)
@@ -1446,8 +1429,6 @@ namespace AttacheCase
 
         _fEncryptionSameFileTypeBefore = (string)reg.GetValue("fEncryptionSameFileTypeBefore", "1") == "1";
         _EncryptionSameFileTypeBefore = int.Parse((string)reg.GetValue("EncryptionSameFileTypeBefore", "0"));
-        _fOutputExeForOlderOS = (string)reg.GetValue("fOutputExeForOlderOS", "0") == "1";
-
         _fSaveToSameFldr = (string)reg.GetValue("fSaveToSameFldr", "0") == "1";
         _SaveToSameFldrPath = (string)reg.GetValue("SaveToSameFldrPath", "");
 
@@ -1510,6 +1491,7 @@ namespace AttacheCase
         //-----------------------------------
         // Import / Export
         _fAlwaysReadIniFile = (string)reg.GetValue("fAlwaysReadIniFile", "0") == "1";
+        //_fShowDialogToConfirmToReadIniFile = (string)reg.GetValue("fShowDialogToConfirmToReadIniFile", "1") == "1";
         _fShowConfirmationDialogToReadIniFile = (string)reg.GetValue("fShowConfirmationDialogToReadIniFile", "1") == "1";
 
         //-----------------------------------
@@ -1553,12 +1535,12 @@ namespace AttacheCase
 
     }
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
     /// Save options of AtacheCase to system registry
     /// アタッシェケースの設定をレジストリに書き込む
     /// </summary>
-    //======================================================================
+    //----------------------------------------------------------------------
     public void SaveOptionsToRegistry()
     {
       //-----------------------------------
@@ -1638,7 +1620,6 @@ namespace AttacheCase
         reg.SetValue("EncryptionSameFileTypeAlways", _EncryptionSameFileTypeAlways.ToString());
         reg.SetValue("fEncryptionSameFileTypeBefore", _fEncryptionSameFileTypeBefore == true ? "1" : "0");
         reg.SetValue("EncryptionSameFileTypeBefore", _EncryptionSameFileTypeBefore.ToString());
-        reg.SetValue("fOutputExeForOlderOS", _fOutputExeForOlderOS == true ? "1" : "0");
         reg.SetValue("fSaveToSameFldr", _fSaveToSameFldr == true ? "1" : "0");
         reg.SetValue("SaveToSameFldrPath", _SaveToSameFldrPath);
         reg.SetValue("fEncryptConfirmOverwrite", _fEncryptConfirmOverwrite == true ? "1" : "0");
@@ -1742,13 +1723,13 @@ namespace AttacheCase
       }
     }
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
     /// 指定のINIファイルから設定を読み込む
     /// Read options from specified INI file
     /// </summary>
     /// <param name="IniFilePath">Specified INI file</param>
-    //======================================================================
+    //----------------------------------------------------------------------
     public void ReadOptionFromIniFile(string IniFilePath)
     {
       
@@ -1819,7 +1800,7 @@ namespace AttacheCase
 
       ReadIniFile(IniFilePath, ref _fMyDecryptPasswordKeep, "MyKey", "fMyDecryptPasswordKeep", "");
       ReadIniFile(IniFilePath, ref ReturnValue, "MyKey", "MyDecryptPasswordString", "");
-      if (ReturnValue != "")
+      if(ReturnValue != "")
       {
         _MyDecryptPasswordBinary = HexStringToByteArray(ReturnValue.ToString());
         _MyDecryptPasswordString = DecryptMyPassword(_MyDecryptPasswordBinary);
@@ -1864,7 +1845,6 @@ namespace AttacheCase
       ReadIniFile(IniFilePath, ref _EncryptionSameFileTypeAlways, "Option", "EncryptionSameFileTypeAlways", "-1");
       ReadIniFile(IniFilePath, ref _fEncryptionSameFileTypeBefore, "Option", "fEncryptionSameFileTypeBefore", "0");
       ReadIniFile(IniFilePath, ref _EncryptionSameFileTypeBefore, "Option", "EncryptionSameFileTypeBefore", "-1");
-      ReadIniFile(IniFilePath, ref _fOutputExeForOlderOS, "Option", "fOutputExeForOlderOS", "0");
 
       ReadIniFile(IniFilePath, ref _fSaveToSameFldr, "Option", "fSaveToSameFldr", "0");
       ReadIniFile(IniFilePath, ref _SaveToSameFldrPath, "Option", "SaveToSameFldrPath", "");
@@ -1967,13 +1947,13 @@ namespace AttacheCase
 
     }
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
     /// 指定のINIファイルへ設定を書き込む
     /// Write options to specified INI file
     /// </summary>
     /// <param name="IniFilePath">Specified INI file</param>
-    //======================================================================
+    //----------------------------------------------------------------------
     public void WriteOptionToIniFile(string IniFilePath)
     {
       //-----------------------------------
@@ -2045,7 +2025,6 @@ namespace AttacheCase
       WriteIniFile(IniFilePath, _EncryptionSameFileTypeAlways, "Option", "EncryptionSameFileTypeAlways");
       WriteIniFile(IniFilePath, _fEncryptionSameFileTypeBefore, "Option", "fEncryptionSameFileTypeBefore");
       WriteIniFile(IniFilePath, _EncryptionSameFileTypeBefore, "Option", "EncryptionSameFileTypeBefore");
-      WriteIniFile(IniFilePath, _fOutputExeForOlderOS, "Option", "fOutputExeForOlderOS");
       WriteIniFile(IniFilePath, _fSaveToSameFldr, "Option", "fSaveToSameFldr");
       WriteIniFile(IniFilePath, _SaveToSameFldrPath, "Option", "SaveToSameFldrPath");
       WriteIniFile(IniFilePath, _fEncryptConfirmOverwrite, "Option", "fEncryptConfirmOverwrite");
@@ -2105,7 +2084,9 @@ namespace AttacheCase
       WriteIniFile(IniFilePath, _UserRegIconFilePath, "Option", "UserRegIconFilePath");
 
       //-----------------------------------
-      // Import / Export ( Only this setting is written to the registry )
+      // Import / Export (depends on the registry)
+      //WriteIniFile(IniFilePath, _fAlwaysReadIniFile, "Option", "fAlwaysReadIniFile");  // int
+      //WriteIniFile(IniFilePath, _fShowConfirmationDialogToReadIniFile, "Option", "fShowConfirmationDialogToReadIniFile");
 
       //-----------------------------------
       //Password file
@@ -2146,8 +2127,8 @@ namespace AttacheCase
       WriteIniFile(IniFilePath, _Language, "Option", "Language");
       WriteIniFile(IniFilePath, _SaveToIniDirPath, "Option", "SaveToIniDirPath");
     }
-
-    //======================================================================
+        
+    //----------------------------------------------------------------------
     /// <summary>
     /// INIファイルからの読み込み（オーバーロード）
     /// Read options from INI file ( Overload )
@@ -2158,7 +2139,7 @@ namespace AttacheCase
     /// <param name="key">INI file 'key' item</param>
     /// <param name="defval">INI file default value</param>
     /// <returns></returns>
-    //======================================================================
+    //----------------------------------------------------------------------
     public void ReadIniFile(string IniFilePath, ref int o, string section, string key, string defval)  // Integer
     {
       StringBuilder ResultValue = new StringBuilder(255);
@@ -2186,7 +2167,7 @@ namespace AttacheCase
       }
     }
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
     /// INIファイルへの書き込み
     /// Write options to INI file
@@ -2195,7 +2176,7 @@ namespace AttacheCase
     /// <param name="section">INI file 'section' item</param>
     /// <param name="key">INI file 'key' item</param>
     /// <param name="o">Object(int, string, bool)</param>
-    //======================================================================
+    //----------------------------------------------------------------------
     public void WriteIniFile(string IniFilePath, object o, string section, string key)
     {
       string value = "";
@@ -2215,14 +2196,14 @@ namespace AttacheCase
       UnsafeNativeMethods.WritePrivateProfileString(section, key, value, IniFilePath);
 
     }
-
-    //======================================================================
+    
+    //----------------------------------------------------------------------
     /// <summary>
     /// 設定を指定のXMLファイルパスから読み込み、インスタンスへ反映する
     /// Read the configuration from the specified XML file path, reflect to an instance.
     /// </summary>
     /// <param name="FilePath"></param>
-    //======================================================================
+    //----------------------------------------------------------------------
     public void ReadOptionsFromXML(string FilePath)
     {
       XmlSerializer szr =  new XmlSerializer(typeof(AppSettings));
@@ -2234,13 +2215,13 @@ namespace AttacheCase
 
     }
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
     /// 設定を指定のファイルパスにXMLファイルとして出力する
     /// Save the configuration as an XML file to the specified file path.
     /// </summary>
     /// <param name="FilePath"></param>
-    //======================================================================
+    //----------------------------------------------------------------------
     public void SaveOptionsToXML(string FilePath)
     {
       XmlSerializer szr = new XmlSerializer(typeof(AppSettings));
@@ -2252,13 +2233,13 @@ namespace AttacheCase
     
     }
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
     /// 起動時のコマンドライン引数から設定を読み込む
     /// Read the configuration from the startup command line arguments
     /// </summary>
     /// <param name="cmds"></param>
-    //======================================================================
+    //----------------------------------------------------------------------
     public int ParserArguments()
     {
       int ResultNum;
@@ -2602,17 +2583,6 @@ namespace AttacheCase
               {
                 _EncryptionSameFileTypeBefore = 0;
                 _fEncryptionSameFileTypeBefore = false;
-              }
-              break;
-
-            case "/exeolder":  // 古いOSでも復号化できるように自己実行ファイルを出力する
-              if (value == "1")
-              {
-                _fOutputExeForOlderOS = true;
-              }
-              else if (value == "0")
-              {
-                _fOutputExeForOlderOS = false;
               }
               break;
 
@@ -3105,7 +3075,6 @@ namespace AttacheCase
             //その他（コマンドラインからのみ）
             //-----------------------------------
             #region
-            // Explicit encrypt
             case "/en": // 明示的な暗号処理
               if (value == "1")
               {
@@ -3113,7 +3082,6 @@ namespace AttacheCase
               }
               break;
 
-            // Explicit decrypt
             case "/de": // 明示的な復号処理
               if (value == "1")
               {
@@ -3121,7 +3089,6 @@ namespace AttacheCase
               }
               break;
 
-            // Allow files over 4GB
             case "/4gbok": // 4GB超えを容認
               if (value == "1")
               {
@@ -3133,8 +3100,7 @@ namespace AttacheCase
               }
               break;
 
-            // Reading paths list from a text file
-            case "/list": // テキストファイルからのパスリストの読み込み
+            case "/list": // リストファイルからのパスの読み込み
               if (File.Exists(value) == true)
               {
                 int c = 0;
@@ -3150,11 +3116,11 @@ namespace AttacheCase
                 {
                   // 注意
                   // 
-                  // 以下の指定されたファイルの文字エンコードが不明で読み取れません！
+                  // 以下の指定されたリストファイルの文字エンコードが不明で読み取れません！
                   // [FileListPath]
                   //
                   // Alert
-                  // The character encoding of the following specified file is unknown that can not be read!
+                  // The character encoding of the following specified list file is unknown that can not be read!
                   // [FileListPath]
                   MessageBox.Show(Resources.DialogMessageFileListEncodingUnknown + "\n" + value,
                   Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -3209,129 +3175,6 @@ namespace AttacheCase
               }
               break;
 
-            // Loading Commercial Use License File
-            case "/lc": // 商用利用ライセンスファイルの読み込み
-              if (value == "")
-              {
-                // 引数が空文字の場合は商用利用ライセンスを削除する
-                // If the argument is an empty string, the commercial use license is removed
-                LicenseRegister lcr = new LicenseRegister("");
-                if (lcr.DeleteLicense() == false)
-                {
-                  // 注意
-                  // 
-                  // レジストレーションコードを削除できませんでした。
-                  //
-                  // Alert
-                  // Could not delete registration code.
-                  // 
-                  MessageBox.Show(Resources.DialogMessageRegistrationCodeNotDeleted,
-                  Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                  return (-1);
-                }
-              }
-              else if (File.Exists(value) == true)
-              {
-                string line;
-
-                // Detect text encoding
-                byte[] bs = File.ReadAllBytes(value);
-                //文字コードを取得する
-                Encoding enc = DetectEncoding(bs);
-
-                if (enc == null)
-                {
-                  // 注意
-                  // 
-                  // 以下の指定されたファイルの文字エンコードが不明で読み取れません！
-                  // [FileListPath]
-                  //
-                  // Alert
-                  // The character encoding of the following specified file is unknown that can not be read!
-                  // [FileListPath]
-                  MessageBox.Show(Resources.DialogMessageFileListEncodingUnknown + "\n" + value,
-                  Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                  return (-1);
-                }
-
-                // Read the List file and Add to FileList.
-                using (StreamReader sr = new StreamReader(value, enc))
-                {
-                  LicenseRegister lcr;
-                  string HexString = "0123456789abcdef";
-                  string RegistrationCodeString = "";
-                  while ((line = sr.ReadLine()) != null)
-                  {
-                    if (line == "") continue;
-                    System.Globalization.StringInfo si = new System.Globalization.StringInfo(line);
-                    string str = "";
-                    int len = si.LengthInTextElements;
-                    for (int c = 0; c < len; c++)
-                    {
-                      str = si.SubstringByTextElements(c, 1);
-                      // Hex string?
-                      if (HexString.IndexOf(str, StringComparison.OrdinalIgnoreCase) >= 0)
-                      {
-                        RegistrationCodeString += str;
-                        if (RegistrationCodeString.Length >= 512)
-                        {
-                          lcr = new LicenseRegister(RegistrationCodeString);
-                          if (lcr.Decypt(true) == false)
-                          {
-                            // 注意
-                            // 
-                            // 以下の指定されたファイルの文字エンコードが不明で読み取れません！
-                            // [FilePath]
-                            //
-                            // Alert
-                            // The character encoding of the following specified file is unknown that can not be read!
-                            // [FilePath]
-                            MessageBox.Show(Resources.DialogMessageRegistrationCodeNotRegistered + "\n" + value,
-                            Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                            return (-1);
-                          }
-                        }
-                      }
-                    }
-
-                  }
-
-                  lcr = new LicenseRegister(RegistrationCodeString);
-                  if (lcr.Decypt(true) == false)
-                  {
-                    // 注意
-                    // 
-                    // 正常にレジストレーションコードの登録が行われませんでした。
-                    // [FilePath]
-                    //
-                    // Alert
-                    // The registration code was not successfully registered.
-                    // [FilePath]
-                    MessageBox.Show(Resources.DialogMessageRegistrationCodeNotRegistered + "\n" + value,
-                    Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                    return (-1);
-                  }
-
-                }
-
-              }
-              else
-              {
-                // 注意
-                // 
-                // 正常にレジストレーションコードの登録が行われませんでした。
-                // [FilePath]
-                // 
-                // Alert
-                // The registration code was not successfully registered.
-                // [FilePath]
-                MessageBox.Show(Resources.DialogMessageRegistrationCodeNotRegistered + "\n" + value,
-                Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return (-1);
-              }
-
-              break;
-
             #endregion
 
             default:
@@ -3348,13 +3191,13 @@ namespace AttacheCase
 
     }
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
     /// Add more files or directories.
     /// パラメータ以外（ドラッグ＆ドロップなど）からファイルを追加する
     /// </summary>
     /// <param name="FilePath"></param>
-    //======================================================================
+    //----------------------------------------------------------------------
     public void AddArgsFile(string FilePath)
     {
       if (File.Exists(FilePath) == true)
@@ -3366,14 +3209,15 @@ namespace AttacheCase
 
     }
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
     /// Encrypt stored passwords
     /// 記憶パスワードを暗号化する
     /// </summary>
     /// <param name="MyPasswordString"></param>
     /// <returns></returns>
-    //======================================================================
+    //----------------------------------------------------------------------
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:オブジェクトを複数回破棄しない")]
     private byte[] EncryptMyPassword(string MyPasswordString)
     {
       if (MyPasswordString == null)
@@ -3427,14 +3271,15 @@ namespace AttacheCase
 
     }
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
     ///  Decrypt stored passwords
     ///  記憶パスワードを復号して元に戻す
     /// </summary>
     /// <param name="bytesPassword"></param>
     /// <returns></returns>
-    //======================================================================
+    //----------------------------------------------------------------------
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2202:オブジェクトを複数回破棄しない")]
     private string DecryptMyPassword(byte[] MyPasswordBinary)
     {
       // Get the drive name where the application is installed
@@ -3484,8 +3329,8 @@ namespace AttacheCase
       }
 
     }
-
-    //======================================================================
+    
+    //----------------------------------------------------------------------
     /// <summary>
     /// Specify the format of the encryption file name
     /// 指定した書式でファイル名を生成する
@@ -3494,7 +3339,7 @@ namespace AttacheCase
     /// <param name="FilePath"></param>
     /// <param name="fInit"></param>
     /// <returns></returns>
-    //======================================================================
+    //----------------------------------------------------------------------
     public string getSpecifyFileNameFormat(string FormatString, string FilePath)
     {
       // ファイル名            : <filename> 
@@ -3639,13 +3484,13 @@ namespace AttacheCase
       #endregion
     }
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
     /// ドライブボリュームのシリアルナンバーを取得する
     /// Get serial number of the drive volume 
     /// </summary>
-    /// <returns>serial number string</returns>
-    //======================================================================
+    /// <returns></returns>
+    //----------------------------------------------------------------------
     #region
     private string GetDriveSerialNumber()
     {
@@ -3672,14 +3517,13 @@ namespace AttacheCase
     }
     #endregion
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
-    /// Check for the presence of prohibited strings in the Windows file system
     /// Windowsファイルシステムで禁止文字列があるかチェックする
     /// </summary>
-    /// <param name="FileName"></param>
-    /// <returns>boolean</returns>
-    //======================================================================
+    /// <param name="testName"></param>
+    /// <returns></returns>
+    //----------------------------------------------------------------------
     bool IsValidFileName(string FileName)
     {
       Regex containsABadCharacter = new Regex("["  + Regex.Escape(new string(Path.GetInvalidPathChars())) + "]");
@@ -3693,15 +3537,14 @@ namespace AttacheCase
       }
     }
 
-    //======================================================================
+    //----------------------------------------------------------------------
     /// <summary>
-    /// Convert from hexadecimal (Hex) string to binary data
     /// 16進数(Hex)文字列からバイナリデータに変換する
-    /// ref. http://stackoverflow.com/questions/623104/byte-to-hex-string/5919521#5919521
+    /// 参考：http://stackoverflow.com/questions/623104/byte-to-hex-string/5919521#5919521
     /// </summary>
-    /// <param name="Hex">hexadecimal string</param>
+    /// <param name="str"></param>
     /// <returns></returns>
-    //======================================================================
+    //----------------------------------------------------------------------
     public static byte[] HexStringToByteArray(string Hex)
     {
       byte[] Bytes = new byte[Hex.Length / 2];
@@ -3718,14 +3561,12 @@ namespace AttacheCase
       return Bytes;
     }
 
-    //======================================================================
     /// <summary>
-    /// Convert binary data to hexadecimal (Hex) string
     /// バイナリーデータから16進(Hex)文字列に変換する
+    /// 
     /// </summary>
-    /// <param name="bytes">binary data ( bytes[] ) </param>
+    /// <param name="bytes"></param>
     /// <returns></returns>
-    //======================================================================
     public static string BytesToHexString(byte[] bytes)
     {
       return BitConverter.ToString(bytes).Replace("-", string.Empty);
@@ -3745,7 +3586,6 @@ namespace AttacheCase
       return Result.ToString();
     }
 
-    //======================================================================
     /// <summary>
     /// Detect file type to drag and drop ( Directory, ATC, EXE[by ATC], ZIP ).
     /// 投げ込まれたファイルの種類を特定する（ディレクトリ, ATC, EXE[by ATC], ZIP）
@@ -3758,7 +3598,6 @@ namespace AttacheCase
     ///   4: RSA Encryption data, 
     ///   5: RSA key data ( XML file ), 
     ///   0: Others(Encrypt file?)</returns>
-    //======================================================================
     public int CheckFileType(string FilePath)
     {
       //const string SignatureZip = "50-4B-03-04";  // ZIPファイル
@@ -3927,7 +3766,6 @@ namespace AttacheCase
     }
 
     /// <summary>
-    /// Determine to what process based on the dragged and dropped file type
     /// 投げ込まれたファイルタイプから処理内容を決定する
     /// </summary>
     public int DetectFileType()
@@ -3956,13 +3794,6 @@ namespace AttacheCase
         _FileType[CheckFileType(f)]++;
       }
 
-      // Process Type
-      // private const int PROCESS_TYPE_ERROR        = -1;
-      // private const int PROCESS_TYPE_NONE         = 0;
-      // private const int PROCESS_TYPE_ATC          = 1;
-      // private const int PROCESS_TYPE_ATC_EXE      = 2;
-      // private const int PROCESS_TYPE_PASSWORD_ZIP = 3;
-      // private const int PROCESS_TYPE_DECRYPTION   = 4;
       if ((_FileType[1] > 0 || _FileType[2] > 0) && _FileType[0] == 0)
       {
         return PROCESS_TYPE_DECRYPTION;
@@ -4197,27 +4028,26 @@ namespace AttacheCase
     //======================================================================
     /// <summary>
     /// システムのテーマカラーを取得する
-    /// Get the system's theme color
     /// </summary>
     /// <remarks>
     /// ref. https://nln.jp/wp/archives/5653
     /// </remarks>
-    /// <returns>"light"テーマか、"dark"テーマかいずれかを文字列で返す
-    ///           Returns a string indicating whether the theme is a "light" theme or a "dark" theme
-    /// </returns>
+    /// <param name="bytes">文字コードを調べるデータ</param>
+    /// <returns>適当と思われるEncodingオブジェクト。
+    /// 判断できなかった時はnull。</returns>
     //======================================================================
     public static string GetSystemThemeColor()
     {
       string getmode = "None";
       string rKeyName = @"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize";
       string rGetValueName = "AppsUseLightTheme";
+      // レジストリの取得
       try
       {
-        // レジストリの取得
-        using (RegistryKey rKey = Registry.CurrentUser.OpenSubKey(rKeyName))
+        using (Microsoft.Win32.RegistryKey rKey = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(rKeyName))
         {
-          // Windows 10 LTSC版だとテーマカラーがないので値を返さない場合がある（1を返す）
-          // The Windows 10 LTSC version does not have a theme color, so it may not return a value (So, returns 1).
+          // LTSC版だとテーマカラーがないので値を返さない場合がある（1を返す）
+          // The LTSC version does not have a theme color, so it may not return a value (So, returns 1).
           int theme = (int)rKey.GetValue(rGetValueName, 1); 
           // レジストリの値を
           // Windows10 May 2019 はこの値で OK：Theme.Light = 1, Theme.Dark = 0
@@ -4231,35 +4061,5 @@ namespace AttacheCase
       return getmode;
     }
 
-    //======================================================================
-    /// <summary>
-    /// 指定したパスのレジストリーを再帰的に丸ごと別の場所へコピーする
-    /// Recursively copy the entire registry of a specified path to another location
-    /// ref. https://stackoverflow.com/questions/12262536/copying-subcategories-in-registry
-    /// </summary>
-    /// <param name="src">source</param>
-    /// <param name="dst">destination</param>
-    /// <returns></returns>
-    //======================================================================
-    public static void RegCopyTo(RegistryKey src, RegistryKey dst)
-    {
-      // copy the values
-      foreach (var name in src.GetValueNames())
-      {
-        dst.SetValue(name, src.GetValue(name), src.GetValueKind(name));
-      }
-
-      // copy the subkeys
-      foreach (var name in src.GetSubKeyNames())
-      {
-        using (var srcSubKey = src.OpenSubKey(name, false))
-        {
-          var dstSubKey = dst.CreateSubKey(name);
-          RegCopyTo(srcSubKey, dstSubKey);
-        }
-      }
-    }
-
   }
-
 }

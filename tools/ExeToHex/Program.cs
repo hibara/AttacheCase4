@@ -14,12 +14,13 @@ namespace ExeToHex
 
 		static int Main(string[] args)
 		{
-			if (args.Length < 1)
+			if (args.Length < 3)	// 引数の数が足りてない
 			{
+				MessageBox.Show("Not enough arguments!");
 				return (1);
 			}
-
-			// Executable file that is written to binary data
+			//-----------------------------------
+			// args[0]: Executable file that is written to binary data
 			string ExecutableFilePath = args[0];
 			if (File.Exists(ExecutableFilePath) == false)
 			{
@@ -32,7 +33,8 @@ namespace ExeToHex
 				return (1);
 			}
 
-			// CS file that the binary data is written to
+			//-----------------------------------
+			// args[1]: CS file that the binary data is written to
 			string CShrpSourceFilePath = args[1];
 			if (File.Exists(CShrpSourceFilePath) == false)
 			{
@@ -44,22 +46,39 @@ namespace ExeToHex
 				MessageBox.Show("CSharp source file is invalid!");
 				return (1);
 			}
-			
-			//----------------------------------------------------------------------
-			// Read the binary data of "Exeout.exe"
-			//----------------------------------------------------------------------
 
+			//-----------------------------------
+			// args[2]: .NET Framework version of executable file
+			int ToolVersionIndex = -1;
+			string ToolVersion = args[2];
+			if (ToolVersion == "4.0")
+			{
+				ToolVersionIndex = 0;
+			}
+			else if (ToolVersion == "4.6.2")
+			{
+				ToolVersionIndex = 1;
+			}
+			else
+      {
+				MessageBox.Show(".NET Framework version is invalid!");
+				return (1);
+			}
+
+			//----------------------------------------------------------------------
+			// Read and make the binary data array of "Exeout.exe"
+			// MemoryStreamオブジェクトに「Exeout.exe」を格納する
+			//----------------------------------------------------------------------
 			using (MemoryStream ms = new MemoryStream())
 			{
 				using (FileStream fs = new FileStream(ExecutableFilePath, FileMode.Open, FileAccess.Read))
 				{
           ExeOutSize = (int)fs.Length;
-
 					//using (StreamWriter sw = new StreamWriter(ms, Encoding.UTF8))	// BOM付きで挿入されソースにゴミデータが混入する
 					using (StreamWriter sw = new StreamWriter(ms))
 					{
 						ms.Position = 0;
-						sw.WriteLine("    public static byte[] rawData = {");
+						sw.WriteLine("      new byte[]{");
 
 						BinaryReader br = new BinaryReader(fs);
 						byte[] data = new byte[ExeOutSize];
@@ -80,7 +99,7 @@ namespace ExeToHex
 
 							if (count == 0)
               {
-								sw.Write("      " + dataString);
+								sw.Write("        " + dataString);
               }
 							else if (count > 15)
               {
@@ -94,44 +113,10 @@ namespace ExeToHex
 							count++;
 						}
 
-
-						/*
-            while ((len = fs.Read(byteArray, 0, BUFFER_SIZE)) > 0)
-            {
-              List<String> StringList = new List<string>();
-              for (int i = 0; i < len; i++)
-              {
-                StringList.Add(string.Format("0x{0:X2}", byteArray[i]));
-                TotalSize++;
-              }
-
-              string[] OneLineArray = StringList.ToArray();
-
-              string OneLine = "      " + string.Join(", ", OneLineArray);
-
-              if (fs.Position == fs.Length)
-              {
-                sw.WriteLine(OneLine);  // Last line of array.
-								//Console.WriteLine(OneLine);
-              }
-              else
-              {
-                sw.WriteLine(OneLine + ",");
-								//Console.WriteLine(OneLine + ",");
-							}
-
-						}//end while();
-						*/
-
 						sw.WriteLine("");
-						sw.WriteLine("    };");
+						sw.WriteLine("      },");
 
 					}// end using (StreamWriter sw = new StreamWriter(ms, System.Text.Encoding.UTF8));
-
-					//----------------------------------------------------------------------
-					//
-					//System.Windows.Forms.MessageBox.Show("TotalSize: " + TotalSize.ToString());
-					//----------------------------------------------------------------------
 
 				}// end using (FileStream fs = new FileStream(ExecutableFilePath, FileMode.Open, FileAccess.Read));
 						
@@ -146,16 +131,41 @@ namespace ExeToHex
 				bool fDelete = false;
 				for (int i = 0; i < lines.Count(); i++)
 				{
-					if (lines[i].IndexOf("public int ExeOutFileSize") > -1)
+					if (lines[i].IndexOf("public static int[] ExeOutFileSize") > -1)
 					{
-						SrcList.Add(string.Format("    public int ExeOutFileSize = {0};", ExeOutSize));
+						SrcList.Add(lines[i]);
+
+						if (ToolVersionIndex == 0)
+            {
+							SrcList.Add(lines[i+=1]);	                            // {
+							SrcList.Add(string.Format("      {0},", ExeOutSize)); // ExeOutSize[0],
+							SrcList.Add(lines[i+=2]);                             // ExeOutSize[1]
+							SrcList.Add(lines[i+=1]);                             // };
+						}
+            else
+            {
+							SrcList.Add(lines[i+=1]);                             // {
+							SrcList.Add(lines[i+=1]);                             // ExeOutSize[0]
+							SrcList.Add(string.Format("      {0}", ExeOutSize));  // ExeOutSize[1],
+							SrcList.Add(lines[i+=2]);                             // };
+						}
+
 					}
 					else if (lines[i].IndexOf("#region") > -1)
 					{
-						fDelete = true;
-						SrcList.Add(lines[i]);
-            SrcList.Add(Encoding.UTF8.GetString(ms.ToArray()));
-          }
+						if ((ToolVersionIndex == 0 && lines[i].IndexOf("4.0") > -1) || 
+								(ToolVersionIndex == 1 && lines[i].IndexOf("4.6.2") > -1))
+            {
+							fDelete = true;
+							SrcList.Add(lines[i]);
+							SrcList.Add(Encoding.UTF8.GetString(ms.ToArray()));
+						}
+            else
+            {
+							SrcList.Add(lines[i]);
+						}
+
+					}
 					else if (lines[i].IndexOf("#endregion") > -1)
 					{
 						fDelete = false;

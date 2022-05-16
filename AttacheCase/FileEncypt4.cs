@@ -122,6 +122,14 @@ namespace AttacheCase
       get { return this._fExecutable; }
       set { this._fExecutable = value; }
     }
+    // .NET Framework Version of Self-executable file  
+    private string _ExeToolVersionString = "4.6.2";
+    public string ExeToolVersionString
+    {
+      get { return this._ExeToolVersionString; }
+      set { this._ExeToolVersionString = value; }
+    }
+
     // Set the timestamp of encryption file to original files or directories
     private bool _fKeepTimeStamp = false;
     public bool fKeepTimeStamp
@@ -322,8 +330,16 @@ namespace AttacheCase
           {
             // public partial class FileEncrypt4
             // Read from ExeOut4.cs
-            ExeOutFileSize = rawData.Length;
-            outfs.Write(rawData, 0, ExeOutFileSize);
+            if (_ExeToolVersionString == "4.0")
+            {
+              ExeOutFileSize[0] = rawData[0].Length;
+              outfs.Write(rawData[0], 0, ExeOutFileSize[0]);
+            }
+            else // 4.6.2
+            {
+              ExeOutFileSize[1] = rawData[1].Length;
+              outfs.Write(rawData[1], 0, ExeOutFileSize[1]);
+            }
           }
 
           _StartPos = outfs.Seek(0, SeekOrigin.End);
@@ -843,7 +859,14 @@ namespace AttacheCase
           // Back to current positon of 'encrypted file size'
           if (_fExecutable == true)
           {
-            outfs.Seek(ExeOutFileSize + 24, SeekOrigin.Begin);  // self executable file
+            if (_ExeToolVersionString == "4.0")
+            {
+              outfs.Seek(ExeOutFileSize[0] + 24, SeekOrigin.Begin);  // self executable file
+            }
+            else
+            {
+              outfs.Seek(ExeOutFileSize[1] + 24, SeekOrigin.Begin);  // self executable file
+            }
           }
           else
           {

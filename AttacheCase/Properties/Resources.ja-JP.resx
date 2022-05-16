@@ -474,7 +474,7 @@
     <value>以下の指定されたリストファイルが見つかりません！</value>
   </data>
   <data name="DialogMessageFileListEncodingUnknown" xml:space="preserve">
-    <value>以下の指定されたリストファイルの文字エンコードが不明で読み取れません！</value>
+    <value>以下の指定されたファイルの文字エンコードが不明で読み取れません！</value>
   </data>
   <data name="zxcvbnSuggestionAddAnotherWordOrTwo" xml:space="preserve">
     <value>もう１，２単語追加してください。珍しい言葉が優れています。</value>
@@ -707,5 +707,17 @@
   </data>
   <data name="groupBoxReadIniFile" xml:space="preserve">
     <value>設定ファイル（INIファイル）オプション：</value>
+  </data>
+  <data name="DialogMessageDeleteCommercialLicense" xml:space="preserve">
+    <value>この商用ライセンスを削除しますか？</value>
+  </data>
+  <data name="DialogMessageRegistrationCodeFileNotFound" xml:space="preserve">
+    <value>以下の指定された場所にレジストレーションコードのテキストファイルが見つかりません！</value>
+  </data>
+  <data name="DialogMessageRegistrationCodeNotDeleted" xml:space="preserve">
+    <value>レジストレーションコードを削除できませんでした。</value>
+  </data>
+  <data name="DialogMessageRegistrationCodeNotRegistered" xml:space="preserve">
+    <value>正常にレジストレーションコードの登録が行われませんでした。</value>
   </data>
 </root>
