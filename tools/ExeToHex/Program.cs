@@ -128,61 +128,9 @@ namespace ExeToHex
 
 				List<string> SrcList = new List<string>();
 
-				bool fDelete = false;
 				for (int i = 0; i < lines.Count(); i++)
 				{
-					if (lines[i].IndexOf("public static int[] ExeOutFileSize") > -1)
-					{
-						SrcList.Add(lines[i]);
-
-						if (ToolVersionIndex == 0)
-            {
-							SrcList.Add(lines[i+=1]);	                            // {
-							SrcList.Add(string.Format("      {0},", ExeOutSize)); // ExeOutSize[0],
-							SrcList.Add(lines[i+=2]);                             // ExeOutSize[1]
-							SrcList.Add(lines[i+=1]);                             // };
-						}
-            else
-            {
-							SrcList.Add(lines[i+=1]);                             // {
-							SrcList.Add(lines[i+=1]);                             // ExeOutSize[0]
-							SrcList.Add(string.Format("      {0}", ExeOutSize));  // ExeOutSize[1],
-							SrcList.Add(lines[i+=2]);                             // };
-						}
-
-					}
-					else if (lines[i].IndexOf("#region") > -1)
-					{
-						if ((ToolVersionIndex == 0 && lines[i].IndexOf("4.0") > -1) || 
-								(ToolVersionIndex == 1 && lines[i].IndexOf("4.6.2") > -1))
-            {
-							fDelete = true;
-							SrcList.Add(lines[i]);
-							SrcList.Add(Encoding.UTF8.GetString(ms.ToArray()));
-						}
-            else
-            {
-							SrcList.Add(lines[i]);
-						}
-
-					}
-					else if (lines[i].IndexOf("#endregion") > -1)
-					{
-						fDelete = false;
-						SrcList.Add(lines[i]);
-					}
-					else
-					{
-						if (fDelete == true)
-            {
-							// fDeleteフラグ中は書き込まない（削除される）
-            }
-            else  
-						{
-							SrcList.Add(lines[i]);
-						}
-					}
-
+					SrcList.Add(lines[i]);
 				}
 
 				string src = string.Join(Environment.NewLine, SrcList.ToArray());

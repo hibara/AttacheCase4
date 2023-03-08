@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------- 
 // "アタッシェケース#3 ( AttachéCase#3 )" -- File encryption software.
-// Copyright (C) 2016-2022  Mitsuhiro Hibara
+// Copyright (C) 2016-2023  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -347,7 +347,7 @@ namespace AttacheCase
     private bool _fPasswordStrengthMeter;
     public bool fPasswordStrengthMeter
     {
-      get { return this._fPasswordStrengthMeter;　}
+      get { return this._fPasswordStrengthMeter; }
       set { this._fPasswordStrengthMeter = value; }
     }
           
@@ -835,7 +835,7 @@ namespace AttacheCase
       {
         if ((this._CompressionLevel = value) < 0 || (this._CompressionLevel = value) > 2)
         {
-          this._CompressionLevel = 2;
+          this._CompressionLevel = 0;
         }
       }
     }

@@ -7,13 +7,13 @@
         /// </summary>
         private System.ComponentModel.IContainer components = null;
 
-    /// <summary>
-    /// 使用中のリソースをすべてクリーンアップします。
-    /// </summary>
-    /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "cts")]
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_busy")]
-    protected override void Dispose(bool disposing)
+        /// <summary>
+        /// 使用中のリソースをすべてクリーンアップします。
+        /// </summary>
+        /// <param name="disposing">マネージ リソースが破棄される場合 true、破棄されない場合は false です。</param>
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "cts")]
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2213:DisposableFieldsShouldBeDisposed", MessageId = "_busy")]
+        protected override void Dispose(bool disposing)
         {
             if (disposing && (components != null))
             {
@@ -1091,7 +1091,7 @@
       resources.ApplyResources(this.buttonGenerateKey, "buttonGenerateKey");
       this.buttonGenerateKey.Name = "buttonGenerateKey";
       this.buttonGenerateKey.UseVisualStyleBackColor = true;
-      this.buttonGenerateKey.Click += new System.EventHandler(this.button3_Click);
+      this.buttonGenerateKey.Click += new System.EventHandler(this.buttonGenerateKey_Click);
       // 
       // panel6
       // 

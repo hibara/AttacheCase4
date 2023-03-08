@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2022  Mitsuhiro Hibara
+// Copyright (C) 2016-2023  Mitsuhiro Hibara
 //
 // * Required .NET Framework 4.6 or later
 // 
@@ -427,7 +427,7 @@ namespace AttacheCase
             }
 
             //-----------------------------------
-            // Check the token "_AttacheCaseData"
+            // Check the token "_Atc_Broken_Data"
             if (fToken == false && b == AtcBrokenTokenByte[0])
             {
               fToken = true;

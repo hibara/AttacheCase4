@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2022  Mitsuhiro Hibara
+// Copyright (C) 2016-2023  Mitsuhiro Hibara
 //
 // * Required .NET Framework 4.6 or later
 // 

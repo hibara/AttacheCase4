@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2022  Mitsuhiro Hibara
+// Copyright (C) 2016-2023  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -37,8 +37,8 @@ namespace AttacheCase
 {
   public partial class Form1 : Form
   {
-    [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-    private static extern void SHChangeNotify(int wEventId, int uFlags, IntPtr dwItem1, IntPtr dwItem2);
+    //[DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    //private static extern void SHChangeNotify(int wEventId, int uFlags, IntPtr dwItem1, IntPtr dwItem2);
 
     private const uint DllSearchFlags = 0x00000800;
 
@@ -407,6 +407,8 @@ namespace AttacheCase
     // 削除処理 ( Delete files ) 
     //======================================================================
     #region
+    delegate void SHChangeNotifyDelegate(int wEventId, int uFlags, IntPtr dwItem1, IntPtr dwItem2);
+
     private bool DeleteData(List<string> FileList)
     {
       if (AppSettings.Instance.fCompleteDelFile < 1 || AppSettings.Instance.fCompleteDelFile > 3)
@@ -472,8 +474,17 @@ namespace AttacheCase
           });
 
           // 削除後、たまにアイコンが残ることがあるのでアイコンキャッシュをリフレッシュする
-          // Refresh these icons cache be^cause sometimes icons remain after deletion.
-          SHChangeNotify(0x08000000, 0x0000, (IntPtr)null, (IntPtr)null);
+          // Refresh these icons cache because sometimes icons remain after deletion.
+
+          // shell32.dll 読み込みに関する脆弱性対策（直接 system32などのディレクトリーを指定する）
+          // Vulnerability countermeasure for shell32.dll loading (specify "system32" etc directory directly)
+          string dllPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
+
+          using (UnManagedDll shell32Dll = new UnManagedDll(dllPath))
+          {
+            SHChangeNotifyDelegate SHChangeNotify = shell32Dll.GetProcDelegate<SHChangeNotifyDelegate>("SHChangeNotify");
+            SHChangeNotify(0x08000000, 0x0000, (IntPtr)null, (IntPtr)null);
+          }
 
           labelCryptionType.Text = "";
           // 指定のファイル及びフォルダーは削除されました。
@@ -6278,7 +6289,7 @@ namespace AttacheCase
       }
     }
 
-    private void button3_Click(object sender, EventArgs e)
+    private void buttonGenerateKey_Click(object sender, EventArgs e)
     {
       if (File.Exists(AppSettings.Instance.SaveToIniDirPath) == false)
       {
