@@ -2020,6 +2020,7 @@ namespace AttacheCase
       int ProcessType = 0;
       TempOverWriteOption = -1;
 
+
       labelPassword.Text = Resources.labelPassword;
       labelInputPasswordAgain.Text = Resources.labelInputPasswordAgainToConfirm;
 

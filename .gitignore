@@ -292,3 +292,7 @@ icon.png
 
 # Resource Hacker setting file (ResourceHacker.ini)
 tools/resource_hacker/ResourceHacker.ini
+
+# Cryptan.DLL
+Cryptan/
+

@@ -152,7 +152,7 @@ namespace ExeToHex
         //----------------------------------------------------------------------
         string ExeOutSizeString = String.Format("{0:#,0} Bytes", ExeOutSize);
         //MessageBox.Show("以下のファイルに、" + ExeOutSizeString + " を書き込みました。\n" + CShrpSourceFilePath);
-				Console.WriteLine("以下のファイルに、" + ExeOutSizeString + " を書き込みました。\n" + CShrpSourceFilePath);
+				Console.WriteLine("以下のファイルに、" + ExeOutSizeString + "( " + ToolVersion + " )" + " を書き込みました。\n" + CShrpSourceFilePath);
         //----------------------------------------------------------------------
         
       }// end using (MemoryStream ms = new MemoryStream());
