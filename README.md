@@ -1,6 +1,6 @@
 # AttachéCase4
 
-File encryption software for Windows 10.
+File encryption software for Windows 10, 11.
 
 ![main icon & main form](./image/readme/main-icon-and-main-form.png)
 
@@ -8,7 +8,7 @@ File encryption software for Windows 10.
 
 AttachéCase4 is focusing on using daily, simplicity and simple operability of appearance, is a powerful file / folder encryption software that uses a cryptographic algorithm of the world standard ( AES - Advanced Encryption Standard ).
 
-* Windows10 / NET Framework 4.5 later
+* Windows10, 11 / NET Framework 4.5 later
 
 ## Download & Installing
 
