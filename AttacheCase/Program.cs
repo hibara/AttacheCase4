@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2023  Mitsuhiro Hibara
+// Copyright (C) 2016-2024  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -86,10 +86,12 @@ namespace AttacheCase
           case "ja":
             Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-JP");
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP");
+            //MessageBox.Show("ja - ja-JP");  // デバッグ
             break;
           case "en":
             Thread.CurrentThread.CurrentCulture = new CultureInfo("", true);
             Thread.CurrentThread.CurrentUICulture = new CultureInfo("", true);
+            //MessageBox.Show("'' - en"); // デバッグ
             break;
           case "":
           default:
@@ -97,14 +99,19 @@ namespace AttacheCase
             {
               Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-JP");
               Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP");
+              //MessageBox.Show("default - ja-JP"); // デバッグ
             }
             else
             {
               Thread.CurrentThread.CurrentCulture = new CultureInfo("", true);
               Thread.CurrentThread.CurrentUICulture = new CultureInfo("", true);
+              //MessageBox.Show("default - ''");  // デバッグ
             }
             break;
         }
+
+        // 現在のカルチャを表示（デバッグ）
+        //MessageBox.Show(string.Format("CurrentCulture: {0}, CurrentUICulture: {1}", Thread.CurrentThread.CurrentCulture.Name, Thread.CurrentThread.CurrentUICulture.Name));
 
         //-----------------------------------
         // Application executable file path & version
@@ -128,51 +135,6 @@ namespace AttacheCase
         mutex.Close();
       }
     }
-
-  }
-
-  //----------------------------------------------------------------------
-  // アンマネージドDLLを動的にロードする
-  // Dynamically load unmanaged DLLs
-  // ref. https://stackoverflow.com/questions/8836093/how-can-i-specify-a-dllimport-path-at-runtime
-  // ref. https://anis774.net/codevault/loadlibrary.html
-  public class UnManagedDll : IDisposable
-  {
-    [DllImport("kernel32")]
-    static extern IntPtr LoadLibrary(string lpFileName);
-    [DllImport("kernel32")]
-    static extern IntPtr GetProcAddress(IntPtr hModule, string lpProcName);
-    [DllImport("kernel32")]
-    static extern bool FreeLibrary(IntPtr hModule);
-
-    IntPtr moduleHandle;
-
-    public UnManagedDll(string lpFileName)
-    {
-      moduleHandle = LoadLibrary(lpFileName);
-    }
-
-    public IntPtr ModuleHandle
-    {
-      get
-      {
-        return moduleHandle;
-      }
-    }
-
-    public T GetProcDelegate<T>(string method) where T : class
-    {
-      IntPtr methodHandle = GetProcAddress(moduleHandle, method);
-      T r = Marshal.GetDelegateForFunctionPointer(methodHandle, typeof(T)) as T;
-      return r;
-    }
-
-    public void Dispose()
-    {
-      FreeLibrary(moduleHandle);
-    }
-
-
 
   }
   

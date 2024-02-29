@@ -360,6 +360,15 @@
   <data name="tabPagePasswordOption.Text" xml:space="preserve">
     <value>パスワード</value>
   </data>
+  <data name="checkBoxNoMaximizedInTabletMode.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 11.25pt</value>
+  </data>
+  <data name="checkBoxNoMaximizedInTabletMode.Size" type="System.Drawing.Size, System.Drawing">
+    <value>418, 19</value>
+  </data>
+  <data name="checkBoxNoMaximizedInTabletMode.Text" xml:space="preserve">
+    <value>PCがタブレットモードで動作しているとき、最大化モードで起動しない</value>
+  </data>
   <data name="checkBoxTurnOnAllIMEs.Size" type="System.Drawing.Size, System.Drawing">
     <value>408, 20</value>
   </data>
@@ -405,6 +414,24 @@
   <data name="tabPageWindowOption.Text" xml:space="preserve">
     <value>ウィンドウ</value>
   </data>
+  <data name="checkBoxAskSelfExecutableFileExceed4GiB.Size" type="System.Drawing.Size, System.Drawing">
+    <value>438, 20</value>
+  </data>
+  <data name="checkBoxAskSelfExecutableFileExceed4GiB.Text" xml:space="preserve">
+    <value>自己実行可能形式ファイルが 4GiB を超えそうなとき問い合わせる</value>
+  </data>
+  <data name="labelAnnotationOfOver4GiB.Size" type="System.Drawing.Size, System.Drawing">
+    <value>431, 12</value>
+  </data>
+  <data name="labelAnnotationOfOver4GiB.Text" xml:space="preserve">
+    <value>(※実行ファイルとして起動しない可能性がありますが、暗号化ファイルとして復号はできます)</value>
+  </data>
+  <data name="checkBoxAllowSelfExecutableFileLargerThan4GiB.Size" type="System.Drawing.Size, System.Drawing">
+    <value>428, 20</value>
+  </data>
+  <data name="checkBoxAllowSelfExecutableFileLargerThan4GiB.Text" xml:space="preserve">
+    <value>自己実行形式ファイルで 4GiB を超えるサイズの作成を許可する</value>
+  </data>
   <data name="label4.Text" xml:space="preserve">
     <value>.NET Framework 4.6.2がインストールされていない古いOS（Windows7, Vista, XPなど）でも確実に復号できますが、サポート外です。</value>
   </data>
@@ -437,6 +464,12 @@
   </data>
   <data name="radioButtonNotSpecified.Text" xml:space="preserve">
     <value>特に指定しない</value>
+  </data>
+  <data name="radioButtonEncryptionFileTypeRsa.Size" type="System.Drawing.Size, System.Drawing">
+    <value>320, 20</value>
+  </data>
+  <data name="radioButtonEncryptionFileTypeRsa.Text" xml:space="preserve">
+    <value>公開鍵暗号形式 ( RSA: *.atcpub, *.atcpvt )</value>
   </data>
   <data name="radioButtonEncryptionFileTypeEXE.Size" type="System.Drawing.Size, System.Drawing">
     <value>291, 20</value>
@@ -481,7 +514,7 @@
         E7YnqjhSxUpSSwtL5TjSqbxSfo9ZSUssMxeUtUdmNzoB/HixM8U4PjwMMSrewwBuBmXHH/GuYvwsWYlV
         xKusobFCgiQ5nKLmJXtM1rjoMRkp1sz+/+6rHh92l7K3eKH+yTDeesG6Bd8Fw/g8NIzvI6h9hItMJT57
         ACPvohcqmmMfbBtwdlnRIjtwvgldD2pYCxelWpk18Ti8nkDrArRfQ9NSqWflc47vIbQuX3UFu3vQJ/dt
-        yz+Xb2f8yR03aQAAAAlwSFlzAAALEQAACxEBf2RfkQAABJ9JREFUSEutVGtMk2cULg2QFbMAxSZuI5Gs
+        yz+Xb2f8yR03aQAAAAlwSFlzAAALDQAACw0B7QfALAAABJ9JREFUSEutVGtMk2cULg2QFbMAxSZuI5Gs
         AyYbLAEHncCgwJwwoXwsEyu3FZwXMmAIk1CEOS4SEEO8kVDiFuJa+ENWSGZoAvxBfsiMhtQA5VpoKRe5
         qBAyRvTsnLffEp1odPgkJ/36vuc855znPe8reA24oO2yf75BBAXt/OX8+QPrOl0q6PUqqKqKXZLJdjXj
         lrPd43/CycmhqK5u/99W6wWYm7sEMzM/4W8F3L9/BRYXG+Hy5ZQ1odChkHd/bYiuXk14YrPVw+TkUTCZ
@@ -1457,19 +1490,19 @@
     <value>キャンセル(&amp;C)</value>
   </data>
   <data name="fileNameToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>145, 22</value>
+    <value>143, 22</value>
   </data>
   <data name="fileNameToolStripMenuItem.Text" xml:space="preserve">
     <value>ファイル名</value>
   </data>
   <data name="extensionToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>145, 22</value>
+    <value>143, 22</value>
   </data>
   <data name="extensionToolStripMenuItem.Text" xml:space="preserve">
     <value>拡張子</value>
   </data>
   <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>142, 6</value>
+    <value>140, 6</value>
   </data>
   <data name="dateToolStripMenuItem.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -1496,7 +1529,7 @@
 </value>
   </data>
   <data name="dateToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>145, 22</value>
+    <value>143, 22</value>
   </data>
   <data name="dateToolStripMenuItem.Text" xml:space="preserve">
     <value>日付</value>
@@ -1552,7 +1585,7 @@
 </value>
   </data>
   <data name="ToolStripMenuItemrandomNumber.Size" type="System.Drawing.Size, System.Drawing">
-    <value>145, 22</value>
+    <value>143, 22</value>
   </data>
   <data name="ToolStripMenuItemrandomNumber.Text" xml:space="preserve">
     <value>ランダム文字列</value>
@@ -1574,13 +1607,13 @@
 </value>
   </data>
   <data name="ToolStripMenuItemserialNumber.Size" type="System.Drawing.Size, System.Drawing">
-    <value>145, 22</value>
+    <value>143, 22</value>
   </data>
   <data name="ToolStripMenuItemserialNumber.Text" xml:space="preserve">
     <value>連番</value>
   </data>
   <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>146, 120</value>
+    <value>144, 120</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

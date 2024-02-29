@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------- 
 // "アタッシェケース#3 ( AttachéCase#3 )" -- File encryption software.
-// Copyright (C) 2016-2023  Mitsuhiro Hibara
+// Copyright (C) 2016-2024  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -449,7 +449,7 @@ namespace AttacheCase
     public bool Decrypt(
 			object sender, DoWorkEventArgs e,
 			string FilePath, string OutDirPath, string Password, byte[] PasswordBinary, 
-      Action<int,string> dialogOverWrite, Action<string> dialogInvalidChar)
+      Action<int,string, IReadOnlyList<string>> dialogOverWrite, Action<string> dialogInvalidChar)
 		{
 			BackgroundWorker worker = sender as BackgroundWorker;
 			worker.WorkerSupportsCancellation = true;
@@ -1067,7 +1067,7 @@ namespace AttacheCase
                             else
                             {
                               // Show dialog of comfirming to overwrite. 
-                              dialogOverWrite(0, path);
+                              dialogOverWrite(0, path, null);
 
                               // Cancel
                               if (_TempOverWriteOption == USER_CANCELED)
@@ -1161,7 +1161,7 @@ namespace AttacheCase
                               else
                               {
                                 // Show dialog of comfirming to overwrite. 
-                                dialogOverWrite(0, path);
+                                dialogOverWrite(0, path, null);
 
                                 // Cancel
                                 if (_TempOverWriteOption == USER_CANCELED)

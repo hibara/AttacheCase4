@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2023  Mitsuhiro Hibara
+// Copyright (C) 2016-2024  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -469,6 +469,7 @@ namespace AttacheCase
 			checkBoxWindowForeground.Checked = AppSettings.Instance.fWindowForeground;
 			checkBoxNoMultipleInstance.Checked = AppSettings.Instance.fNoMultipleInstance;
 			checkBoxTurnOnAllIMEs.Checked = AppSettings.Instance.fTurnOnIMEsTextBoxForPasswordEntry;
+			checkBoxNoMaximizedInTabletMode.Checked = AppSettings.Instance.fNotMaximizedInTabletMode;
 
 			#endregion
 
@@ -511,8 +512,28 @@ namespace AttacheCase
 				checkBoxEncryptionSameFileTypeBefore.Checked = false;
 			}
 
-			// Output self-executable files so that they can be decrypted on older OS
-			if (AppSettings.Instance.fOutputExeForOlderOS == true)
+      // Allow creation of self-executable files larger than 4GiB
+      if (AppSettings.Instance.fOver4GBok == true)
+			{
+        checkBoxAllowSelfExecutableFileLargerThan4GiB.Checked = true;
+      }
+			else
+			{
+        checkBoxAllowSelfExecutableFileLargerThan4GiB.Checked = false;
+      }
+
+			// Ask when a self-executable file is about to exceed 4GiB
+			if (AppSettings.Instance.fAskAboutToExceed4Gib == true)
+			{
+        checkBoxAskSelfExecutableFileExceed4GiB.Checked = true;
+      }
+			else
+			{
+        checkBoxAskSelfExecutableFileExceed4GiB.Checked = false;
+      }
+
+      // Output self-executable files so that they can be decrypted on older OS
+      if (AppSettings.Instance.fOutputExeForOlderOS == true)
       {
 				checkBoxOutputSelfExeForOlderOS.Checked = true;
 
@@ -1259,6 +1280,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 			AppSettings.Instance.fWindowForeground = checkBoxWindowForeground.Checked;
 			AppSettings.Instance.fNoMultipleInstance = checkBoxNoMultipleInstance.Checked;
 			AppSettings.Instance.fTurnOnIMEsTextBoxForPasswordEntry = checkBoxTurnOnAllIMEs.Checked;
+			AppSettings.Instance.fNotMaximizedInTabletMode = checkBoxNoMaximizedInTabletMode.Checked;
 
 			//-----------------------------------
 			// Save
@@ -1281,6 +1303,8 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
         AppSettings.Instance.EncryptionSameFileTypeAlways = FILE_TYPE_NONE;
       }
 
+			AppSettings.Instance.fOver4GBok = checkBoxAllowSelfExecutableFileLargerThan4GiB.Checked;
+			AppSettings.Instance.fAskAboutToExceed4Gib = checkBoxAskSelfExecutableFileExceed4GiB.Checked;
       AppSettings.Instance.fEncryptionSameFileTypeBefore = checkBoxEncryptionSameFileTypeBefore.Checked;
 			AppSettings.Instance.fOutputExeForOlderOS = checkBoxOutputSelfExeForOlderOS.Checked;
 
@@ -2749,8 +2773,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 		}
 
-
-  }
+	}
 
 
 

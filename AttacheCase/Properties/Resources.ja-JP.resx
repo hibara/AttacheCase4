@@ -160,10 +160,10 @@
   <data name="labelCaptionPasswordValid" xml:space="preserve">
     <value>パスワードが一致しました。有効です。</value>
   </data>
-  <data name="labelComfirmToOverwriteFile" xml:space="preserve">
+  <data name="labelConfirmToOverwriteFile" xml:space="preserve">
     <value>以下のファイルはすでに存在しています。上書きして保存しますか？</value>
   </data>
-  <data name="labelComfirmToOverwriteDir" xml:space="preserve">
+  <data name="labelConfirmToOverwriteDir" xml:space="preserve">
     <value>以下のフォルダーはすでに存在しています。上書きして保存しますか？</value>
   </data>
   <data name="DialogMessageExecutableFile" xml:space="preserve">
@@ -232,7 +232,7 @@
 復号できませんでした。</value>
   </data>
   <data name="labelCaptionCanceled" xml:space="preserve">
-    <value>キャンセルされました。</value>
+    <value>キャンセル</value>
   </data>
   <data name="labelCaptionError" xml:space="preserve">
     <value>エラー</value>
@@ -439,13 +439,13 @@
     <value>破壊トークンを見つけられませんでした。暗号化ファイルではない可能性があります。</value>
   </data>
   <data name="labelCaptionAborted" xml:space="preserve">
-    <value>中止されました。</value>
+    <value>中止</value>
   </data>
   <data name="DialogMessageNotZipDecrypted" xml:space="preserve">
     <value>現状、パスワード付きZIPファイルの復号には対応していません。</value>
   </data>
   <data name="labelCaptionAllSkipped" xml:space="preserve">
-    <value>スキップされました。</value>
+    <value>スキップ</value>
   </data>
   <data name="DialogMessageInvalidFilePath" xml:space="preserve">
     <value>ファイル、またはフォルダーパスが不正です。処理を中止します。</value>
@@ -719,5 +719,48 @@
   </data>
   <data name="DialogMessageRegistrationCodeNotRegistered" xml:space="preserve">
     <value>正常にレジストレーションコードの登録が行われませんでした。</value>
+  </data>
+  <data name="DialogMessageCreateSelfExecutableEileLargerThan4GiB" xml:space="preserve">
+    <value>作成する自己実行可能形式ファイルが、4GiB を超える可能性があります。実行ファイルとして動作しない可能性があります。続行しますか？
+(※実行ファイルとして起動しなくとも、暗号化ファイルとして復号することはできます。)</value>
+  </data>
+  <data name="labelEncryptionAbortedToExceed4GiB" xml:space="preserve">
+    <value>自己実行形式ファイルが 4GiB を超える可能性があるため、暗号化処理を中止しました。</value>
+  </data>
+  <data name="labelDeleteTypeRandom" xml:space="preserve">
+    <value>乱数</value>
+  </data>
+  <data name="labelDeleteTypeZeros" xml:space="preserve">
+    <value>ゼロ</value>
+  </data>
+  <data name="labelDeleteMessageBytes" xml:space="preserve">
+    <value>バイト</value>
+  </data>
+  <data name="MessageBoxShowDetails" xml:space="preserve">
+    <value>詳細を表示(&amp;D)</value>
+  </data>
+  <data name="MessageBoxHideDetails" xml:space="preserve">
+    <value>詳細を隠す(&amp;D)</value>
+  </data>
+  <data name="MessageBoxFileVerifyFailed" xml:space="preserve">
+    <value>以下のファイルの確認に失敗しました。ファイルが変更されたか、破損している可能性があります。どのように進めますか？</value>
+  </data>
+  <data name="MessageBoxButtonProceed" xml:space="preserve">
+    <value>続行する(&amp;P)</value>
+  </data>
+  <data name="MessageBoxButtonAbort" xml:space="preserve">
+    <value>中止する(&amp;A)</value>
+  </data>
+  <data name="MessageBoxButtonCancel" xml:space="preserve">
+    <value>キャンセル(&amp;C)</value>
+  </data>
+  <data name="MessageBoxDetailedInformation" xml:space="preserve">
+    <value>詳細情報：
+ファイルが正しく復号されるか、暗号化前にその元ファイルの一意の値（MD5ハッシュ）を書き込んでおき、復号時にそれを確認します。
+
+- 暗号化ファイルのハッシュ値: {0}
+- 復号後のファイルハッシュ値: {1}
+
+もし、これらのハッシュ値が一致しない場合、ファイルは元の状態から変更されているか、破損している可能性があります。この情報をもとに、復号を続行するかどうかをご判断ください。</value>
   </data>
 </root>

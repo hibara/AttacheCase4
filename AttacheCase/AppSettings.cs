@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------- 
 // "アタッシェケース#3 ( AttachéCase#3 )" -- File encryption software.
-// Copyright (C) 2016-2023  Mitsuhiro Hibara
+// Copyright (C) 2016-2024  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -100,10 +100,7 @@ namespace AttacheCase
         }
         return _Instance;
       }
-      set 
-      { 
-        _Instance = value; 
-      }
+      set => _Instance = value;
     }
 
     //----------------------------------------------------------------------
@@ -111,8 +108,8 @@ namespace AttacheCase
     private List<string> _FileList = new List<string>();
     public List<string> FileList
     {
-      get { return this._FileList; }
-      set { this._FileList = value; }
+      get => this._FileList;
+      set => this._FileList = value;
     }
 
     //----------------------------------------------------------------------
@@ -122,8 +119,8 @@ namespace AttacheCase
     private string _IniFilePath;
     public string IniFilePath
     {
-      get { return this._IniFilePath; }
-      set { this._IniFilePath = value; }
+      get => this._IniFilePath;
+      set => this._IniFilePath = value;
     }
 
     #endregion
@@ -135,44 +132,44 @@ namespace AttacheCase
     private int _FormTop;
     public int FormTop
     {
-      get { return this._FormTop; }
-      set { this._FormTop = value; }
+      get => this._FormTop;
+      set => this._FormTop = value;
     }
     private int _FormLeft;
     public int FormLeft
     {
-      get { return this._FormLeft; }
-      set { this._FormLeft = value; }
+      get => this._FormLeft;
+      set => this._FormLeft = value;
     }
     private int _FormWidth;
     public int FormWidth
     {
-      get { return this._FormWidth; }
-      set { this._FormWidth = value; }
+      get => this._FormWidth;
+      set => this._FormWidth = value;
     }
     private int _FormHeight;
     public int FormHeight
     {
-      get { return this._FormHeight; }
-      set { this._FormHeight = value; }
+      get => this._FormHeight;
+      set => this._FormHeight = value;
     }
     private int _FormStyle;
     public int FormStyle
     {
-      get { return this._FormStyle; }
-      set { this._FormStyle = value; }
+      get => this._FormStyle;
+      set => this._FormStyle = value;
     }
     private int _TabSelectedIndex;
     public int TabSelectedIndex
     {
-      get { return this._TabSelectedIndex; }
-      set { this._TabSelectedIndex = value; }
+      get => this._TabSelectedIndex;
+      set => this._TabSelectedIndex = value;
     }
     private string _InitDirPath;
     public string InitDirPath
     {
-      get { return this._InitDirPath; }
-      set { this._InitDirPath = value; }
+      get => this._InitDirPath;
+      set => this._InitDirPath = value;
     }
 
     #endregion
@@ -186,82 +183,77 @@ namespace AttacheCase
     //Exit AttacheCase after process.
     public bool fEndToExit
     {
-      get { return this._fEndToExit; }
-      set { this._fEndToExit = value; }
+      get => this._fEndToExit;
+      set => this._fEndToExit = value;
     }
 
     private bool _fOpenFile;              // 復号したファイルを関連付けされたソフトで開く
     //Open decrypted files by associated application
     public bool fOpenFile
     {
-      get { return this._fOpenFile; }
-      set { this._fOpenFile = value; }
+      get => this._fOpenFile;
+      set => this._fOpenFile = value;
     }
 
     private bool _fShowDialogWhenExeFile; // 復号したファイルに実行ファイルが含まれるとき警告ダイアログを出す
     //Show dialog when containing the executable file.
     public bool fShowDialogWhenExeFile
     {
-      get { return this._fShowDialogWhenExeFile; }
-      set { this._fShowDialogWhenExeFile = value; }
+      get => this._fShowDialogWhenExeFile;
+      set => this._fShowDialogWhenExeFile = value;
     }
 
     private int _ShowDialogWhenMultipleFilesNum; // 復号したファイルが複数個あるとき警告ダイアログを出す
     //Show dialog when more than multiple files
     public int ShowDialogWhenMultipleFilesNum
     {
-      get { return this._ShowDialogWhenMultipleFilesNum; }
-      set { this._ShowDialogWhenMultipleFilesNum = value; }
+      get => this._ShowDialogWhenMultipleFilesNum;
+      set => this._ShowDialogWhenMultipleFilesNum = value;
     }
 
     private bool _fAskEncDecode;                 // 暗号/復号処理かを問い合わせる
     //Ask to encrypt or decrypt regardless of file content
     public bool fAskEncDecode
     {
-      get { return this._fAskEncDecode; }
-      set { this._fAskEncDecode = value; }
+      get => this._fAskEncDecode;
+      set => this._fAskEncDecode = value;
     }
 
     private bool _fNoHidePassword;               //「*」で隠さずパスワードを確認しながら入力する
     //Confirm inputting password without masking
     public bool fNoHidePassword
     {
-      get { return this._fNoHidePassword; }
-      set { this._fNoHidePassword = value; }
+      get => this._fNoHidePassword;
+      set => this._fNoHidePassword = value;
     }
 
     //Always output to Executable file
     private bool _fSaveToExeout;                // 常に自己実行形式で出力する
     public bool fSaveToExeout
     {
-      get { return this._fSaveToExeout; }
-      set { this._fSaveToExeout = value; }
+      get => this._fSaveToExeout;
+      set => this._fSaveToExeout = value;
     }
 
     private bool _fShowExeoutChkBox;            // メインフォームにチェックボックスを表示する
     //Always display chekbox of this option
     public bool fShowExeoutChkBox
     {
-      get { return this._fShowExeoutChkBox; }
-      set { this._fShowExeoutChkBox = value; }
+      get => this._fShowExeoutChkBox;
+      set => this._fShowExeoutChkBox = value;
     }
 
     private string _ThemeColorName;            // テーマカラー名
     // Window theme color option ( name )
     public string ThemeColorName
     {
-      get { return this._ThemeColorName; }
-      set { this._ThemeColorName = value; }
+      get => this._ThemeColorName;
+      set => this._ThemeColorName = value;
     }
 
     // 「自動」が選択されているときのテーマカラー名
     // Window theme color option ( name )
-    public string CurrentThemeColorName
-    {
-      get { 
-        return _ThemeColorName == "auto" ? GetSystemThemeColor() : _ThemeColorName;
-      }
-    }
+    public string CurrentThemeColorName => _ThemeColorName == "auto" ? GetSystemThemeColor() : _ThemeColorName;
 
     #endregion
 
@@ -273,82 +265,82 @@ namespace AttacheCase
     //Remember password for encryption
     public bool fMyEncryptPasswordKeep
     {
-      get { return this._fMyEncryptPasswordKeep; }
-      set { this._fMyEncryptPasswordKeep = value; }
+      get => this._fMyEncryptPasswordKeep;
+      set => this._fMyEncryptPasswordKeep = value;
     }
 
     private string _MyEncryptPasswordString;          // 暗号化パスワード（文字列）
     public string MyEncryptPasswordString
     {
-      get { return this._MyEncryptPasswordString; }
-      set { this._MyEncryptPasswordString = value; }
+      get => this._MyEncryptPasswordString;
+      set => this._MyEncryptPasswordString = value;
     }
 
     private byte[] _MyEncryptPasswordBinary;          // 暗号化パスワード（バイナリ）
     public byte[] MyEncryptPasswordBinary
     {
-      get { return this._MyEncryptPasswordBinary; }
-      set { this._MyEncryptPasswordBinary = value; }
+      get => this._MyEncryptPasswordBinary;
+      set => this._MyEncryptPasswordBinary = value;
     }
 
     private string _EncryptPasswordStringFromCommandLine; // コマンドラインからの暗号化パスワード（文字列）
     public string EncryptPasswordStringFromCommandLine
     {
-      get { return this._EncryptPasswordStringFromCommandLine; }
-      set { this._EncryptPasswordStringFromCommandLine = value; }
+      get => this._EncryptPasswordStringFromCommandLine;
+      set => this._EncryptPasswordStringFromCommandLine = value;
     }
                   
     private bool _fMyDecryptPasswordKeep;             // 復号パスワードを記憶するか
     //Remember &Decryption password
     public bool fMyDecryptPasswordKeep
     {
-      get { return this._fMyDecryptPasswordKeep; }
-      set { this._fMyDecryptPasswordKeep = value; }
+      get => this._fMyDecryptPasswordKeep;
+      set => this._fMyDecryptPasswordKeep = value;
     }
 
     private string _MyDecryptPasswordString;           // 復号パスワード（文字列）
     public string MyDecryptPasswordString
     {
-      get { return this._MyDecryptPasswordString; }
-      set { this._MyDecryptPasswordString = value; }
+      get => this._MyDecryptPasswordString;
+      set => this._MyDecryptPasswordString = value;
     }
 
     private byte[] _MyDecryptPasswordBinary;           // 復号パスワード（バイナリ）
     public byte[] MyDecryptPasswordBinary
     {
-      get { return this._MyDecryptPasswordBinary; }
-      set { this._MyDecryptPasswordBinary = value; }
+      get => this._MyDecryptPasswordBinary;
+      set => this._MyDecryptPasswordBinary = value;
     }
 
     private string _DecryptPasswordStringFromCommandLine; // コマンドラインからの復号パスワード（文字列）
     public string DecryptPasswordStringFromCommandLine
     {
-      get { return this._DecryptPasswordStringFromCommandLine; }
-      set { this._EncryptPasswordStringFromCommandLine = value; }
+      get => this._DecryptPasswordStringFromCommandLine;
+      set => this._EncryptPasswordStringFromCommandLine = value;
     }
 
     private bool _fMemPasswordExe;                 //記憶パスワードで確認なく実行する
     //Encrypt/Decrypt by &memorized password without confirming
     public bool fMemPasswordExe
     {
-      get { return this._fMemPasswordExe; }
-      set { this._fMemPasswordExe = value; }
+      get => this._fMemPasswordExe;
+      set => this._fMemPasswordExe = value;
     }
 
     // Not mask password character
     private bool _fNotMaskPassword;
     public bool fNotMaskPassword
     {
-      get { return this._fNotMaskPassword; }
-      set { this._fNotMaskPassword = value; }
+      get => this._fNotMaskPassword;
+      set => this._fNotMaskPassword = value;
     }
 
     // Enable password strength meter display
     private bool _fPasswordStrengthMeter;
     public bool fPasswordStrengthMeter
     {
-      get { return this._fPasswordStrengthMeter; }
-      set { this._fPasswordStrengthMeter = value; }
+      get => this._fPasswordStrengthMeter;
+      set => this._fPasswordStrengthMeter = value;
     }
           
     #endregion
@@ -361,58 +353,66 @@ namespace AttacheCase
     //Always execute by minimize the window
     public bool fMainWindowMinimize
     {
-      get { return this._fMainWindowMinimize; }
-      set { this._fMainWindowMinimize = value; }
+      get => this._fMainWindowMinimize;
+      set => this._fMainWindowMinimize = value;
     }
 
     private bool _fTaskBarHide;           // タスクバーに表示しない
     //Minimizing a window without appearing in the taskbar
     public bool fTaskBarHide
     {
-      get { return this._fTaskBarHide; }
-      set { this._fTaskBarHide = value; }
+      get => this._fTaskBarHide;
+      set => this._fTaskBarHide = value;
     }
 
     private bool _fTaskTrayIcon;          // タスクトレイにアイコンを表示する
     //Display in the task tray
     public bool fTaskTrayIcon
     {
-      get { return this._fTaskTrayIcon; }
-      set { this._fTaskTrayIcon = value; }
+      get => this._fTaskTrayIcon;
+      set => this._fTaskTrayIcon = value;
     }
 
     private bool _fOpenFolder;              // フォルダの場合に復号後に開くか
     //In the case of the folder, open it in Explorer after decrypting
     public bool fOpenFolder
     {
-      get { return this._fOpenFolder; }
-      set { this._fOpenFolder = value; }
+      get => this._fOpenFolder;
+      set => this._fOpenFolder = value;
     }
 
     private bool _fWindowForeground;       // デスクトップで最前面にウィンドウを表示する
-    //Bring AttcheCase window in front of Desktop
+    //Bring AttacheCase window in front of Desktop
     public bool fWindowForeground
     {
-      get { return this._fWindowForeground; }
-      set { this._fWindowForeground = value; }
+      get => this._fWindowForeground;
+      set => this._fWindowForeground = value;
     }
 
     private bool _fNoMultipleInstance;    // 複数起動しない
-    //Not Allow multiple in&stance of AttcheCase
+    //Not Allow multiple in&stance of AttacheCase
     public bool fNoMultipleInstance
     {
-      get { return this._fNoMultipleInstance; }
-      set { this._fNoMultipleInstance = value; }
+      get => this._fNoMultipleInstance;
+      set => this._fNoMultipleInstance = value;
     }
 
     private bool _fTurnOnIMEsTextBoxForPasswordEntry; // パスワード入力用のすべてのテキストボックスでIMEをオンにする
     // Turn on IMEs in all text box for password entry
     public bool fTurnOnIMEsTextBoxForPasswordEntry
     {
-      get { return this._fTurnOnIMEsTextBoxForPasswordEntry; }
-      set { this._fTurnOnIMEsTextBoxForPasswordEntry = value; }
+      get => this._fTurnOnIMEsTextBoxForPasswordEntry;
+      set => this._fTurnOnIMEsTextBoxForPasswordEntry = value;
     }
-       
+
+    private bool _fNotMaximizedInTabletMode;  // PCがタブレットモードで動作しているとき、最大化モードで起動しない
+    // Doesn't start in maximized mode when PC is operating in tablet mode
+    public bool fNotMaximizedInTabletMode
+    {
+      get => this._fNotMaximizedInTabletMode;
+      set => this._fNotMaximizedInTabletMode = value;
+    }
+    
     #endregion
 
     //----------------------------------------------------------------------
@@ -423,63 +423,81 @@ namespace AttacheCase
     // Temporary option for overwriting
     public int TempOverWriteOption
     {
-      get { return this._TempOverWriteOption; }
-      set { this._TempOverWriteOption = value; }
+      get => this._TempOverWriteOption;
+      set => this._TempOverWriteOption = value;
     }
     // Temporay option for overwriting for new date only.
     private bool _OverWriteForNewDate;
     public bool OverWriteForNewDate
     {
-      get { return this._OverWriteForNewDate; }
-      set { this._OverWriteForNewDate = value; }
+      get => this._OverWriteForNewDate;
+      set => this._OverWriteForNewDate = value;
     }
 
     private int _EncryptionFileType = 0;              // 暗号化ファイルの種類
                                                       // Encryption type
     public int EncryptionFileType
     {
-      get { return this._EncryptionFileType; }
-      set { this._EncryptionFileType = value; }
+      get => this._EncryptionFileType;
+      set => this._EncryptionFileType = value;
     }
 
     private bool _fEncryptionSameFileTypeAlways;      // 常に同じ暗号化ファイルの種類にする
                                                       // Save same encryption type always.
     public bool fEncryptionSameFileTypeAlways
     {
-      get { return this._fEncryptionSameFileTypeAlways; }
-      set { this._fEncryptionSameFileTypeAlways = value; }
+      get => this._fEncryptionSameFileTypeAlways;
+      set => this._fEncryptionSameFileTypeAlways = value;
     }
 
     private int _EncryptionSameFileTypeAlways;        // 常に同じ暗号化ファイルの種類
                                                       // Same encryption type always.
     public int EncryptionSameFileTypeAlways
     {
-      get { return this._EncryptionSameFileTypeAlways; }
-      set { this._EncryptionSameFileTypeAlways = value; }
+      get => this._EncryptionSameFileTypeAlways;
+      set => this._EncryptionSameFileTypeAlways = value;
+    }
+
+    // 4GBを超えるファイルサイズの作成を許可する
+    // Allow more than 4GB of file size to be created
+    private bool _fOver4GBok = false;
+    public bool fOver4GBok
+    {
+      get => this._fOver4GBok;
+      set => this._fOver4GBok = value;
+    }
+
+    // 作成される自己実行可能形式ファイルが 4GiB を超えそうなとき問い合わせる
+    // Ask when a self-executable file to be created is about to exceed 4GiB
+    private bool _fAskAboutToExceed4Gib = true;
+    public bool fAskAboutToExceed4Gib
+    {
+      get => this._fAskAboutToExceed4Gib;
+      set => this._fAskAboutToExceed4Gib = value;
     }
 
     private bool _fEncryptionSameFileTypeBefore;      // 前に使った暗号化ファイルの種類にする
     // Save same encryption type that was used to before.
     public bool fEncryptionSameFileTypeBefore
     {
-      get { return this._fEncryptionSameFileTypeBefore; }
-      set { this._fEncryptionSameFileTypeBefore = value; }
+      get => this._fEncryptionSameFileTypeBefore;
+      set => this._fEncryptionSameFileTypeBefore = value;
     }
 
     private int _EncryptionSameFileTypeBefore;       // 前に使った暗号化ファイルの種類
                                                      // Same encryption type that was used to before.
     public int EncryptionSameFileTypeBefore
     {
-      get { return this._EncryptionSameFileTypeBefore; }
-      set { this._EncryptionSameFileTypeBefore = value; }
+      get => this._EncryptionSameFileTypeBefore;
+      set => this._EncryptionSameFileTypeBefore = value;
     }
 
     private bool _fOutputExeForOlderOS = false;       // 古いOSでも復号化できるように自己実行ファイルを出力する
                                                       // Output self-executable files so that they can be decrypted on older operating systems
     public bool fOutputExeForOlderOS
     {
-      get { return this._fOutputExeForOlderOS; }
-      set { this._fOutputExeForOlderOS = value; }
+      get => this._fOutputExeForOlderOS;
+      set => this._fOutputExeForOlderOS = value;
     }
 
     #endregion
@@ -493,31 +511,31 @@ namespace AttacheCase
     //Save to same folder in &encryption
     public bool fSaveToSameFldr
     {
-      get { return this._fSaveToSameFldr; }
-      set { this._fSaveToSameFldr = value; }
+      get => this._fSaveToSameFldr;
+      set => this._fSaveToSameFldr = value;
     }
 
     private string _SaveToSameFldrPath;           // その保存場所
     // The folder path
     public string SaveToSameFldrPath
     {
-      get { return this._SaveToSameFldrPath; }
-      set { this._SaveToSameFldrPath = value; }
+      get => this._SaveToSameFldrPath;
+      set => this._SaveToSameFldrPath = value;
     }
 
     private bool _fEncryptConfirmOverwrite;      // 同名ファイルの上書きを確認するか
     //Confirm overwriting when same filename exists
     public bool fEncryptConfirmOverwrite
     {
-      get { return this._fEncryptConfirmOverwrite; }
-      set { this._fEncryptConfirmOverwrite = value; }
+      get => this._fEncryptConfirmOverwrite;
+      set => this._fEncryptConfirmOverwrite = value;
     }
 
     private bool _fNormal;                // 何もしない
     //Normal
     public bool fNormal
     {
-      get { return this._fNormal; }
+      get => this._fNormal;
       set
       {
         if ((this._fNormal = value) == true)
@@ -532,7 +550,7 @@ namespace AttacheCase
     //Create one encrypted file from files
     public bool fAllFilePack
     {
-      get { return this._fAllFilePack; }
+      get => this._fAllFilePack;
       set
       {
         if ((this._fAllFilePack = value) == true)
@@ -547,7 +565,7 @@ namespace AttacheCase
     //Encrypt or decrypt files in directory one by one
     public bool fFilesOneByOne
     {
-      get { return this._fFilesOneByOne; }
+      get => this._fFilesOneByOne;
       set
       {
         if ((this._fFilesOneByOne = value) == true)
@@ -562,71 +580,71 @@ namespace AttacheCase
     //Set the timestamp of encryption file to original files or directories
     public bool fKeepTimeStamp
     {
-      get { return this._fKeepTimeStamp; }
-      set { this._fKeepTimeStamp = value; }
+      get => this._fKeepTimeStamp;
+      set => this._fKeepTimeStamp = value;
     }
 
     private bool _fExtInAtcFileName;      // 暗号化ファイル名に拡張子を含める
     //Create encrypted file &including extension
     public bool fExtInAtcFileName
     {
-      get { return this._fExtInAtcFileName; }
-      set { this._fExtInAtcFileName = value; }
+      get => this._fExtInAtcFileName;
+      set => this._fExtInAtcFileName = value;
     }
 
     private bool _fAutoName;              // 自動で暗号化ファイル名を付加する
     //Specify the format of the encryption file name
     public bool fAutoName
     {
-      get { return this._fAutoName; }
-      set { this._fAutoName = value; }
+      get => this._fAutoName;
+      set => this._fAutoName = value;
     }
 
     private string _AutoNameFormatText;    // 自動で付加するファイル名書式
     public string AutoNameFormatText
     {
-      get { return this._AutoNameFormatText; }
-      set { this._AutoNameFormatText = value; }
+      get => this._AutoNameFormatText;
+      set => this._AutoNameFormatText = value;
     }
 
     private bool _fAutoNameAlphabets;      // アルファベットを使う
     // Use alphabets
     public bool fAutoNameAlphabets
     {
-      get { return this._fAutoNameAlphabets; }
-      set { this._fAutoNameAlphabets = value; }
+      get => this._fAutoNameAlphabets;
+      set => this._fAutoNameAlphabets = value;
     }
 
     private bool _fAutoNameLowerCase;      // アルファベットの小文字を使う
     // Use alphabets for lower case
     public bool fAutoNameLowerCase
     {
-      get { return this._fAutoNameLowerCase; }
-      set { this._fAutoNameLowerCase = value; }
+      get => this._fAutoNameLowerCase;
+      set => this._fAutoNameLowerCase = value;
     }
 
     private bool _fAutoNameUpperCase;      // アルファベットの大文字を使う
     // Use alphabets for upper case
     public bool fAutoNameUpperCase
     {
-      get { return this._fAutoNameUpperCase; }
-      set { this._fAutoNameUpperCase = value; }
+      get => this._fAutoNameUpperCase;
+      set => this._fAutoNameUpperCase = value;
     }
 
     private bool _fAutoNameNumbers;       // 数字を使う
     // Use string of numbers
     public bool fAutoNameNumbers
     {
-      get { return this._fAutoNameNumbers; }
-      set { this._fAutoNameNumbers = value; }
+      get => this._fAutoNameNumbers;
+      set => this._fAutoNameNumbers = value;
     }
 
     private bool _fAutoNameSymbols;       // 記号を使う
     // Use symbols
     public bool fAutoNameSymbols
     {
-      get { return this._fAutoNameSymbols; }
-      set { this._fAutoNameSymbols = value; }
+      get => this._fAutoNameSymbols;
+      set => this._fAutoNameSymbols = value;
     }
 
     #endregion
@@ -640,48 +658,48 @@ namespace AttacheCase
     private bool _fDecodeToSameFldr;                  // 常に同じ場所へファイルを復号するか
     public bool fDecodeToSameFldr
     {
-      get { return this._fDecodeToSameFldr; }
-      set { this._fDecodeToSameFldr = value; }
+      get => this._fDecodeToSameFldr;
+      set => this._fDecodeToSameFldr = value;
     }
 
     private string _DecodeToSameFldrPath;             // その保存場所
     // The folder path
     public string DecodeToSameFldrPath
     {
-      get { return this._DecodeToSameFldrPath; }
-      set { this._DecodeToSameFldrPath = value; }
+      get => this._DecodeToSameFldrPath;
+      set => this._DecodeToSameFldrPath = value;
     }
 
     private bool _fDecryptConfirmOverwrite;          // 同名ファイルの上書きを確認するか
     //Confirm overwriting when same filename exists
     public bool fDecryptConfirmOverwrite
     {
-      get { return this._fDecryptConfirmOverwrite; }
-      set { this._fDecryptConfirmOverwrite = value; }
+      get => this._fDecryptConfirmOverwrite;
+      set => this._fDecryptConfirmOverwrite = value;
     }
 
     private bool _fNoParentFldr;                     // 復号するときに親フォルダを生成しない
     //Create no parent folder in decryption
     public bool fNoParentFldr
     {
-      get { return this._fNoParentFldr; }
-      set { this._fNoParentFldr = value; }
+      get => this._fNoParentFldr;
+      set => this._fNoParentFldr = value;
     }
 
     private bool _fSameTimeStamp;                   // ファイル、フォルダーのタイムスタンプを復号時に合わせる
     //Set the timestamp to decrypted files or directories
     public bool fSameTimeStamp
     {
-      get { return this._fSameTimeStamp; }
-      set { this._fSameTimeStamp = value; }
+      get => this._fSameTimeStamp;
+      set => this._fSameTimeStamp = value;
     }
 
     private bool _fCompareFile;                    // 暗号処理後にファイルコンペアを行うか
     //Com&pare data files after encryption
     public bool fCompareFile
     {
-      get { return this._fCompareFile; }
-      set { this._fCompareFile = value; }
+      get => this._fCompareFile;
+      set => this._fCompareFile = value;
     }
 
     #endregion
@@ -694,29 +712,29 @@ namespace AttacheCase
     private bool _fZipToSameFldr;                // 常に同じ場所へファイルを復号するか
     public bool fZipToSameFldr
     {
-      get { return this._fZipToSameFldr; }
-      set { this._fZipToSameFldr = value; }
+      get => this._fZipToSameFldr;
+      set => this._fZipToSameFldr = value;
     }
 
     private string _ZipToSameFldrPath;           // その保存場所
     public string ZipToSameFldrPath              // The folder path
     {
-      get { return this._ZipToSameFldrPath; }
-      set { this._ZipToSameFldrPath = value; }
+      get => this._ZipToSameFldrPath;
+      set => this._ZipToSameFldrPath = value;
     }
 
     private bool _fZipConfirmOverwrite;          // 同名ファイルの上書きを確認するか
     public bool fZipConfirmOverwrite             // Confirm overwriting when the same filename exists
     {
-      get { return this._fZipConfirmOverwrite; }
-      set { this._fZipConfirmOverwrite = value; }
+      get => this._fZipConfirmOverwrite;
+      set => this._fZipConfirmOverwrite = value;
     }
 
     private int _ZipEncryptionAlgorithm;           // 暗号アルゴリズム
     public int ZipEncryptionAlgorithm              // 0: PkzipWeak, 1: WinZipAes128, 2: WinZipAes256 
     {
-      get { return this._ZipEncryptionAlgorithm; }
-      set { this._ZipEncryptionAlgorithm = value; }
+      get => this._ZipEncryptionAlgorithm;
+      set => this._ZipEncryptionAlgorithm = value;
     }
 
     #endregion
@@ -730,55 +748,55 @@ namespace AttacheCase
     //Delete original files or directories after encryption
     public bool fDelOrgFile
     {
-      get { return this._fDelOrgFile; }
-      set { this._fDelOrgFile = value; }
+      get => this._fDelOrgFile;
+      set => this._fDelOrgFile = value;
     }
 
     private bool _fEncryptShowDelChkBox;            // メインフォームにチェックボックスを表示する
     //Show the check box in main form window
     public bool fEncryptShowDelChkBox
     {
-      get { return this._fEncryptShowDelChkBox; }
-      set { this._fEncryptShowDelChkBox = value; }
+      get => this._fEncryptShowDelChkBox;
+      set => this._fEncryptShowDelChkBox = value;
     }
 
     private bool _fConfirmToDeleteAfterEncryption;  // 暗号化後に元ファイルまたはフォルダの削除確認メッセージを表示するか
     //Show confirmation dialog to delete file or directories
     public bool fConfirmToDeleteAfterEncryption
     {
-      get { return this._fConfirmToDeleteAfterEncryption; }
-      set { this._fConfirmToDeleteAfterEncryption = value; }
+      get => this._fConfirmToDeleteAfterEncryption;
+      set => this._fConfirmToDeleteAfterEncryption = value;
     }
 
     private bool _fDelEncFile;                     // 復号した後、暗号化ファイルを削除する
     //Delete encrypted file after decryption
     public bool fDelEncFile
     {
-      get { return this._fDelEncFile; }
-      set { this._fDelEncFile = value; }
+      get => this._fDelEncFile;
+      set => this._fDelEncFile = value;
     }
 
     private bool _fDecryptShowDelChkBox;            // メインフォームにチェックボックスを表示する
     //Show the check box in main form window
     public bool fDecryptShowDelChkBox
     {
-      get { return this._fDecryptShowDelChkBox; }
-      set { this._fDecryptShowDelChkBox = value; }
+      get => this._fDecryptShowDelChkBox;
+      set => this._fDecryptShowDelChkBox = value;
     }
 
     private bool _fConfirmToDeleteAfterDecryption;  // 復号後に元の暗号化ファイルを削除確認メッセージを表示するか
     //Show confirmation dialog to delete file or directories
     public bool fConfirmToDeleteAfterDecryption
     {
-      get { return this._fConfirmToDeleteAfterDecryption; }
-      set { this._fConfirmToDeleteAfterDecryption = value; }
+      get => this._fConfirmToDeleteAfterDecryption;
+      set => this._fConfirmToDeleteAfterDecryption = value;
     }
       
     private int _fCompleteDelFile;                 // 完全削除を行うか(0:通常，1:ごみ箱, 2:完全削除）
     //Advanced Delete Option [0: Normal Delete, 1: Complete erase, 2: Send to Trash ]
     public int fCompleteDelFile
     {
-      get { return this._fCompleteDelFile; }
+      get => this._fCompleteDelFile;
       set
       {
         if ((this._fCompleteDelFile = value) < 0 || (this._fCompleteDelFile = value) > 3)
@@ -793,16 +811,16 @@ namespace AttacheCase
     //Number of Random data
     public int DelRandNum
     {
-      get { return this._DelRandNum; }
-      set { this._DelRandNum = value; }
+      get => this._DelRandNum;
+      set => this._DelRandNum = value;
     }
 
     private int _DelZeroNum;                 // NULLを何回書き込み消去するか
     //Number of Zeros 
     public int DelZeroNum
     {
-      get { return this._DelZeroNum; }
-      set { this._DelZeroNum = value; }
+      get => this._DelZeroNum;
+      set => this._DelZeroNum = value;
     }
 
     #endregion
@@ -816,7 +834,7 @@ namespace AttacheCase
     // Enable compression
     public int CompressRate
     {
-      get { return this._CompressRate; }
+      get => this._CompressRate;
       set
       {
         if ((this._CompressRate = value) < 0 || (this._CompressRate = value) > 9)
@@ -830,7 +848,7 @@ namespace AttacheCase
     private int _CompressionLevel;          // 圧縮サイズ
     public int CompressionLevel
     {
-      get { return this._CompressionLevel; }
+      get => this._CompressionLevel;
       set
       {
         if ((this._CompressionLevel = value) < 0 || (this._CompressionLevel = value) > 2)
@@ -851,15 +869,15 @@ namespace AttacheCase
     //Association with AttacheCase files ( *.atc )
     public int fAssociationFile
     {
-      get { return this._fAssociationFile; }
-      set { this._fAssociationFile = value; }
+      get => this._fAssociationFile;
+      set => this._fAssociationFile = value;
     }
 
     private int _AtcsFileIconIndex;               // ファイルアイコン番号
     // Number of preset icon
     public int AtcsFileIconIndex
     {
-      get { return this._AtcsFileIconIndex; }
+      get => this._AtcsFileIconIndex;
       set
       {
         if ((this._AtcsFileIconIndex = value) < 0 || (this._AtcsFileIconIndex = value) > 4)
@@ -873,8 +891,8 @@ namespace AttacheCase
                                                // Specify the my file icon path
     public string UserRegIconFilePath
     {
-      get { return this._UserRegIconFilePath; }
-      set { this._UserRegIconFilePath = value; }
+      get => this._UserRegIconFilePath;
+      set => this._UserRegIconFilePath = value;
     }
 
     #endregion
@@ -888,8 +906,8 @@ namespace AttacheCase
     private bool _fAlwaysReadIniFile;
     public bool fAlwaysReadIniFile
     {
-      get { return this._fAlwaysReadIniFile; }
-      set { this._fAlwaysReadIniFile = value; }
+      get => this._fAlwaysReadIniFile;
+      set => this._fAlwaysReadIniFile = value;
     }
 
     // 毎回、確認のためのダイアログ ボックスを表示する
@@ -907,8 +925,8 @@ namespace AttacheCase
     private bool _fShowConfirmationDialogToReadIniFile;
     public bool fShowConfirmationDialogToReadIniFile
     {
-      get { return this._fShowConfirmationDialogToReadIniFile; }
-      set { this._fShowConfirmationDialogToReadIniFile = value; }
+      get => this._fShowConfirmationDialogToReadIniFile;
+      set => this._fShowConfirmationDialogToReadIniFile = value;
     }
 
     #endregion
@@ -922,32 +940,32 @@ namespace AttacheCase
     //Allow a password file to drag and drop
     public bool fAllowPassFile
     {
-      get { return this._fAllowPassFile; }
-      set { this._fAllowPassFile = value; }
+      get => this._fAllowPassFile;
+      set => this._fAllowPassFile = value;
     }
 
     private bool _fCheckPassFile;                  // 暗号化時にパスワードファイルを自動チェックする
     //Check password file for Encryption
     public bool fCheckPassFile
     {
-      get { return this._fCheckPassFile; }
-      set { this._fCheckPassFile = value; }
+      get => this._fCheckPassFile;
+      set => this._fCheckPassFile = value;
     }
 
     private string _PassFilePath;                 // 暗号時のパスワードファイルパス
                                                   //Password file path for encryption
     public string PassFilePath
     {
-      get { return this._PassFilePath; }
-      set { this._PassFilePath = value; }
+      get => this._PassFilePath;
+      set => this._PassFilePath = value;
     }
 
     private string _TempEncryptionPassFilePath;    // 暗号時の一時パスワードファイルパス（保存されない）
     //The path of the password file that is dragged and dropped by user
     public string TempEncryptionPassFilePath
     {
-      get { return this._TempEncryptionPassFilePath; }
-      set { this._TempEncryptionPassFilePath = value; }
+      get => this._TempEncryptionPassFilePath;
+      set => this._TempEncryptionPassFilePath = value;
     }
 
 
@@ -955,38 +973,38 @@ namespace AttacheCase
     //Check password file for Decryption
     public bool fCheckPassFileDecrypt
     {
-      get { return this._fCheckPassFileDecrypt; }
-      set { this._fCheckPassFileDecrypt = value; }
+      get => this._fCheckPassFileDecrypt;
+      set => this._fCheckPassFileDecrypt = value;
     }
 
     private string _PassFilePathDecrypt;          // 復号時のパスワードファイルパス
     //Password file path for decryption
     public string PassFilePathDecrypt
     {
-      get { return this._PassFilePathDecrypt; }
-      set { this._PassFilePathDecrypt = value; }
+      get => this._PassFilePathDecrypt;
+      set => this._PassFilePathDecrypt = value;
     }
 
     private string _TempDecryptionPassFilePath;    // 暗号時の一時パスワードファイルパス（保存されない）
                                                    //The path of the password file that is dragged and dropped by user
     public string TempDecryptionPassFilePath
     {
-      get { return this._TempDecryptionPassFilePath; }
-      set { this._TempDecryptionPassFilePath = value; }
+      get => this._TempDecryptionPassFilePath;
+      set => this._TempDecryptionPassFilePath = value;
     }
 
     private bool _fNoErrMsgOnPassFile;            // パスワードファイルがない場合エラーを出さない
     public bool fNoErrMsgOnPassFile               // //It's not issued an error message when password file doesn't exists
     {
-      get { return this._fNoErrMsgOnPassFile; }
-      set { this._fNoErrMsgOnPassFile = value; }
+      get => this._fNoErrMsgOnPassFile;
+      set => this._fNoErrMsgOnPassFile = value;
     }
 
     private bool _fPasswordFileExe;               //パスワードファイルで確認なく実行する
     public bool fPasswordFileExe                  //Encrypt/Decrypt by the password of Password file without confirming.
     {
-      get { return this._fPasswordFileExe; }
-      set { this._fPasswordFileExe = value; }
+      get => this._fPasswordFileExe;
+      set => this._fPasswordFileExe = value;
     }
 
     #endregion
@@ -999,16 +1017,16 @@ namespace AttacheCase
                                           // Encrypted files camouflage with extension
     public bool fAddCamoExt
     {
-      get { return this._fAddCamoExt; }
-      set { this._fAddCamoExt = value; }
+      get => this._fAddCamoExt;
+      set => this._fAddCamoExt = value;
     }
 
     private string _CamoExt;              // その拡張子
                                           // It's extension string
     public string CamoExt
     {
-      get { return this._CamoExt; }
-      set { this._CamoExt = value; }
+      get => this._CamoExt;
+      set => this._CamoExt = value;
     }
 
     #endregion
@@ -1022,7 +1040,7 @@ namespace AttacheCase
     //Set number of times to input password in encrypt files:
     public int MissTypeLimitsNum
     {
-      get { return this._MissTypeLimitsNum; }
+      get => this._MissTypeLimitsNum;
       set
       {
         if ((this._MissTypeLimitsNum = value) < 0 || (this._MissTypeLimitsNum = value) > 10)
@@ -1036,8 +1054,8 @@ namespace AttacheCase
     //If input wrong password to the number of times, destroy it
     public bool fBroken
     {
-      get { return this._fBroken; }
-      set { this._fBroken = value; }
+      get => this._fBroken;
+      set => this._fBroken = value;
     }
 
     #endregion
@@ -1049,24 +1067,24 @@ namespace AttacheCase
     // Decrypt one by one while creating the parent folder.
     public bool fSalvageToCreateParentFolderOneByOne
     {
-      get { return this._fSalvageToCreateParentFolderOneByOne; }
-      set { this._fSalvageToCreateParentFolderOneByOne = value; }
+      get => this._fSalvageToCreateParentFolderOneByOne;
+      set => this._fSalvageToCreateParentFolderOneByOne = value;
     }
     
     private bool _fSalvageIntoSameDirectory;
     // Decrypt all files into the directory of the same hierarchy.
     public bool fSalvageIntoSameDirectory
     {
-      get { return this._fSalvageIntoSameDirectory; }
-      set { this._fSalvageIntoSameDirectory = value; }
+      get => this._fSalvageIntoSameDirectory;
+      set => this._fSalvageIntoSameDirectory = value;
     }
 
     private bool _fSalvageIgnoreHashCheck;
     // Ignore file hash value check.
     public bool fSalvageIgnoreHashCheck
     {
-      get { return this._fSalvageIgnoreHashCheck; }
-      set { this._fSalvageIgnoreHashCheck = value; }
+      get => this._fSalvageIgnoreHashCheck;
+      set => this._fSalvageIgnoreHashCheck = value;
     }
     #endregion
 
@@ -1077,36 +1095,36 @@ namespace AttacheCase
     // Ignore file hash value check.
     public bool fDeveloperConsole
     {
-      get { return this._fDeveloperConsole; }
-      set { this._fDeveloperConsole = value; }
+      get => this._fDeveloperConsole;
+      set => this._fDeveloperConsole = value;
     }
 
     private int _DeveloperConsolePosX;
     public int DeveloperConsolePosX
     {
-      get { return this._DeveloperConsolePosX; }
-      set { this._DeveloperConsolePosX = value; }
+      get => this._DeveloperConsolePosX;
+      set => this._DeveloperConsolePosX = value;
     }
 
     private int _DeveloperConsolePosY;
     public int DeveloperConsolePosY
     {
-      get { return this._DeveloperConsolePosY; }
-      set { this._DeveloperConsolePosY = value; }
+      get => this._DeveloperConsolePosY;
+      set => this._DeveloperConsolePosY = value;
     }
 
     private int _DeveloperConsoleWidth;
     public int DeveloperConsoleWidth
     {
-      get { return this._DeveloperConsoleWidth; }
-      set { this._DeveloperConsoleWidth = value; }
+      get => this._DeveloperConsoleWidth;
+      set => this._DeveloperConsoleWidth = value;
     }
 
     private int _DeveloperConsoleHeight;
     public int DeveloperConsoleHeight
     {
-      get { return this._DeveloperConsoleHeight; }
-      set { this._DeveloperConsoleHeight = value; }
+      get => this._DeveloperConsoleHeight;
+      set => this._DeveloperConsoleHeight = value;
     }
     #endregion
 
@@ -1117,49 +1135,35 @@ namespace AttacheCase
 
     // The sum of the command line arguments
     private int _CommandLineArgsNum = 0;          // コマンドライン引数の合計
-    public int CommandLineArgsNum
-    {
-      get { return this._CommandLineArgsNum; }
-    }
-    
-    private bool _fOver4GBok = false;             // 4GB超えを容認
-    //Allow more than 4GB of file size to be created   
-    public bool fOver4GBok
-    {
-      get { return this._fOver4GBok; }
-      set { this._fOver4GBok = value; }
-    }
+    public int CommandLineArgsNum => this._CommandLineArgsNum;
 
     private bool _fHideMainForm = false;          // メインフォームを非表示
     //When running on the command line, do not display the main form
     public bool fHideMainForm
     {
-      get { return this._fHideMainForm; }
-      set { this._fHideMainForm = value; }
+      get => this._fHideMainForm;
+      set => this._fHideMainForm = value;
     }
 
     private bool _fNoErrorMsg = false;            // エラーメッセージ表示の抑制
     //When running on the command line, do not display error message
     public bool fNoErrorMsg
     {
-      get { return this._fNoErrorMsg; }
-      set { this._fNoErrorMsg = value; }
+      get => this._fNoErrorMsg;
+      set => this._fNoErrorMsg = value;
     }
 
     private int _ProcTypeWithoutAsk = 0;         // 暗号/復号処理か（動作設定にはない。コマンドラインのみ）
     //On the command line, specify encryption or decryption ( 1: Encrypt, 2: Decrypt )
     public int ProcTypeWithoutAsk
     {
-      get { return this._ProcTypeWithoutAsk; }
-      set { this._ProcTypeWithoutAsk = value; }
+      get => this._ProcTypeWithoutAsk;
+      set => this._ProcTypeWithoutAsk = value;
     }
 
     // 1: ATC, 2: EXE(ATC), 3: ZIP, 0: Others(Encrypt file?);
     private int[] _FileType = new int[4] { 0, 0, 0, 0 }; 
-    public int[] FileType
-    {
-      get { return this._FileType; }
-    }
+    public int[] FileType => this._FileType;
 
     #endregion
 
@@ -1172,47 +1176,47 @@ namespace AttacheCase
     //Language
     public string Language
     {
-      get { return this._Language; }
-      set { this._Language = value; }
+      get => this._Language;
+      set => this._Language = value;
     }
 
     private string _CurrentConfiguration;         //現在の設定
     //Language
     public string CurrentConfiguration
     {
-      get { return this._CurrentConfiguration; }
-      set { this._CurrentConfiguration = value; }
+      get => this._CurrentConfiguration;
+      set => this._CurrentConfiguration = value;
     }
 
     private string _ApplicationPath;              //アタッシェケース本体（EXE）の場所
     public string ApplicationPath
     {
-      get { return this._ApplicationPath;  }
-      set { this._ApplicationPath = value; }
+      get => this._ApplicationPath;
+      set => this._ApplicationPath = value;
     }
 
     private int _AppVersion;                      //アタッシェケースのバージョン
     // Get this application version
     public int AppVersion
     {
-      get { return this._AppVersion; }
-      set { this._AppVersion = value; }
+      get => this._AppVersion;
+      set => this._AppVersion = value;
     }
 
     private int _ActiveTreeNode;                  // 開いていたツリービュー項目
     // Active option panel 
     public int ActiveTreeNode
     {
-      get { return this._ActiveTreeNode; }
-      set { this._ActiveTreeNode = value; }
+      get => this._ActiveTreeNode;
+      set => this._ActiveTreeNode = value;
     }
 
     private string _SaveToIniDirPath;             // 保存ダイアログの初期ディレクトリ
     // Active option panel 
     public string SaveToIniDirPath
     {
-      get { return this._SaveToIniDirPath; }
-      set { this._SaveToIniDirPath = value; }
+      get => this._SaveToIniDirPath;
+      set => this._SaveToIniDirPath = value;
     }
 
     #endregion
@@ -1436,18 +1440,22 @@ namespace AttacheCase
         _fWindowForeground = (string)reg.GetValue("fWindowForeground", "1") == "1";
         _fNoMultipleInstance = (string)reg.GetValue("fNoMultipleInstance", "0") == "1";
         _fTurnOnIMEsTextBoxForPasswordEntry = (string)reg.GetValue("fTurnOnIMEsTextBoxForPasswordEntry", "0") == "1";
+        _fNotMaximizedInTabletMode = (string)reg.GetValue("fNotMaximizedInTabletMode", "0") == "1";
 
         //-----------------------------------
-        // Save Encrypt
-        //Integer = 1: ATC, 2: EXE(ATC), 3: ZIP, 0: Others(Encrypt file?)
+        // Save
+        // 1: ATC, 2: EXE(ATC), 3: ZIP, 0: Others(Encrypt file?)
         _EncryptionFileType = int.Parse((string)reg.GetValue("EncryptionFileType", "0"));
         _fEncryptionSameFileTypeAlways = (string)reg.GetValue("fEncryptionSameFileTypeAlways", "1") == "1";
         _EncryptionSameFileTypeAlways = int.Parse((string)reg.GetValue("EncryptionSameFileTypeAlways", "0"));
-
         _fEncryptionSameFileTypeBefore = (string)reg.GetValue("fEncryptionSameFileTypeBefore", "1") == "1";
         _EncryptionSameFileTypeBefore = int.Parse((string)reg.GetValue("EncryptionSameFileTypeBefore", "0"));
+        _fOver4GBok = (string)reg.GetValue("fOver4GBok", "0") == "1";
+        _fAskAboutToExceed4Gib = (string)reg.GetValue("fAskAboutToExceed4Gib", "1") == "1";
         _fOutputExeForOlderOS = (string)reg.GetValue("fOutputExeForOlderOS", "0") == "1";
 
+        //-----------------------------------
+        // Save Encrypt
         _fSaveToSameFldr = (string)reg.GetValue("fSaveToSameFldr", "0") == "1";
         _SaveToSameFldrPath = (string)reg.GetValue("SaveToSameFldrPath", "");
 
@@ -1555,7 +1563,7 @@ namespace AttacheCase
 
     //======================================================================
     /// <summary>
-    /// Save options of AtacheCase to system registry
+    /// Save options of AttacheCase to system registry
     /// アタッシェケースの設定をレジストリに書き込む
     /// </summary>
     //======================================================================
@@ -1630,15 +1638,21 @@ namespace AttacheCase
         reg.SetValue("fWindowForeground", _fWindowForeground == true ? "1" : "0");
         reg.SetValue("fNoMultipleInstance", _fNoMultipleInstance == true ? "1" : "0");
         reg.SetValue("fTurnOnIMEsTextBoxForPasswordEntry", _fTurnOnIMEsTextBoxForPasswordEntry == true ? "1" : "0");
-
+        reg.SetValue("fNotMaximizedInTabletMode", _fNotMaximizedInTabletMode == true ? "1" : "0");
+        
         //-----------------------------------
-        // Save Encrypt
+        // Save
         reg.SetValue("EncryptionFileType", _EncryptionFileType.ToString());
         reg.SetValue("fEncryptionSameFileTypeAlways", _fEncryptionSameFileTypeAlways == true ? "1" : "0");
         reg.SetValue("EncryptionSameFileTypeAlways", _EncryptionSameFileTypeAlways.ToString());
         reg.SetValue("fEncryptionSameFileTypeBefore", _fEncryptionSameFileTypeBefore == true ? "1" : "0");
         reg.SetValue("EncryptionSameFileTypeBefore", _EncryptionSameFileTypeBefore.ToString());
+        reg.SetValue("fOver4GBok", _fOver4GBok == true ? "1" : "0");
+        reg.SetValue("fAskAboutToExceed4Gib", _fAskAboutToExceed4Gib == true ? "1" : "0");
         reg.SetValue("fOutputExeForOlderOS", _fOutputExeForOlderOS == true ? "1" : "0");
+
+        //-----------------------------------
+        // Save Encrypt
         reg.SetValue("fSaveToSameFldr", _fSaveToSameFldr == true ? "1" : "0");
         reg.SetValue("SaveToSameFldrPath", _SaveToSameFldrPath);
         reg.SetValue("fEncryptConfirmOverwrite", _fEncryptConfirmOverwrite == true ? "1" : "0");
@@ -1713,7 +1727,7 @@ namespace AttacheCase
         reg.SetValue("fPasswordFileExe", _fPasswordFileExe == true ? "1" : "0");
 
         //-----------------------------------
-        //Camoufage Extension
+        //Camouflage Extension
         reg.SetValue("fAddCamoExt", _fAddCamoExt == true ? "1" : "0");
         reg.SetValue("CamoExt", _CamoExt);
 
@@ -1854,18 +1868,23 @@ namespace AttacheCase
       ReadIniFile(IniFilePath, ref _fWindowForeground, "Option", "fWindowForeground", "1");
       ReadIniFile(IniFilePath, ref _fNoMultipleInstance, "Option", "fNoMultipleInstance", "1");
       ReadIniFile(IniFilePath, ref _fTurnOnIMEsTextBoxForPasswordEntry, "Option", "fTurnOnIMEsTextBoxForPasswordEntry", "0");
+      ReadIniFile(IniFilePath, ref _fNotMaximizedInTabletMode, "Option", "fNotMaximizedInTabletMode", "0");
 
       //-----------------------------------
-      // Save Encrypt
+      // Save
 
-      //Integer = 1: ATC, 2: EXE(ATC), 3: ZIP, 0: Others(Encrypt file?)
+      // 1: ATC, 2: EXE(ATC), 3: ZIP, 0: Others(Encrypt file?)
       ReadIniFile(IniFilePath, ref _EncryptionFileType, "Option", "EncryptionFileType", "0");
       ReadIniFile(IniFilePath, ref _fEncryptionSameFileTypeAlways, "Option", "fEncryptionSameFileTypeAlways", "0");
       ReadIniFile(IniFilePath, ref _EncryptionSameFileTypeAlways, "Option", "EncryptionSameFileTypeAlways", "-1");
       ReadIniFile(IniFilePath, ref _fEncryptionSameFileTypeBefore, "Option", "fEncryptionSameFileTypeBefore", "0");
       ReadIniFile(IniFilePath, ref _EncryptionSameFileTypeBefore, "Option", "EncryptionSameFileTypeBefore", "-1");
+      ReadIniFile(IniFilePath, ref _fOver4GBok, "Option", "fOver4GBok", "0");
+      ReadIniFile(IniFilePath, ref _fAskAboutToExceed4Gib, "Option", "fAskAboutToExceed4Gib", "1");
       ReadIniFile(IniFilePath, ref _fOutputExeForOlderOS, "Option", "fOutputExeForOlderOS", "0");
 
+      //-----------------------------------
+      // Save Encrypt
       ReadIniFile(IniFilePath, ref _fSaveToSameFldr, "Option", "fSaveToSameFldr", "0");
       ReadIniFile(IniFilePath, ref _SaveToSameFldrPath, "Option", "SaveToSameFldrPath", "");
       ReadIniFile(IniFilePath, ref _fEncryptConfirmOverwrite, "Option", "fEncryptConfirmOverwrite", "1");
@@ -2037,15 +2056,21 @@ namespace AttacheCase
       WriteIniFile(IniFilePath, _fWindowForeground, "Option", "fWindowForeground");
       WriteIniFile(IniFilePath, _fNoMultipleInstance, "Option", "fNoMultipleInstance");
       WriteIniFile(IniFilePath, _fTurnOnIMEsTextBoxForPasswordEntry, "Option", "fTurnOnIMEsTextBoxForPasswordEntry");
+      WriteIniFile(IniFilePath, _fNotMaximizedInTabletMode, "Option", "fNotMaximizedInTabletMode");
 
       //-----------------------------------
-      // Save Encrypt
+      // Save
       WriteIniFile(IniFilePath, _EncryptionFileType, "Option", "EncryptionFileType");
       WriteIniFile(IniFilePath, _fEncryptionSameFileTypeAlways, "Option", "fEncryptionSameFileTypeAlways");
       WriteIniFile(IniFilePath, _EncryptionSameFileTypeAlways, "Option", "EncryptionSameFileTypeAlways");
       WriteIniFile(IniFilePath, _fEncryptionSameFileTypeBefore, "Option", "fEncryptionSameFileTypeBefore");
       WriteIniFile(IniFilePath, _EncryptionSameFileTypeBefore, "Option", "EncryptionSameFileTypeBefore");
+      WriteIniFile(IniFilePath, _fOver4GBok, "Option", "fOver4GBok");
+      WriteIniFile(IniFilePath, _fAskAboutToExceed4Gib, "Option", "fAskAboutToExceed4Gib");
       WriteIniFile(IniFilePath, _fOutputExeForOlderOS, "Option", "fOutputExeForOlderOS");
+
+      //-----------------------------------
+      // Save Encrypt
       WriteIniFile(IniFilePath, _fSaveToSameFldr, "Option", "fSaveToSameFldr");
       WriteIniFile(IniFilePath, _SaveToSameFldrPath, "Option", "SaveToSameFldrPath");
       WriteIniFile(IniFilePath, _fEncryptConfirmOverwrite, "Option", "fEncryptConfirmOverwrite");
@@ -2530,6 +2555,19 @@ namespace AttacheCase
                 _fTurnOnIMEsTextBoxForPasswordEntry = false;
               }
               break;
+            
+            // Doesn't start in maximized mode when PC is operating in tablet mode
+            case "/notmaximized":  // PCがタブレットモードで動作しているとき、最大化モードで起動しない
+              if (value == "1")
+              {
+                _fNotMaximizedInTabletMode = true;
+              }
+              else if (value == "0")
+              {
+                _fNotMaximizedInTabletMode = false;
+              }
+              break;
+              
 
             #endregion
 
@@ -3777,7 +3815,7 @@ namespace AttacheCase
         return (0);
       }
       // ファイルが存在しない
-      // File does not exists.
+      // File does not exist.
       else if (File.Exists(FilePath) == false)
       {
         return (0);
@@ -3825,13 +3863,14 @@ namespace AttacheCase
         if (SignatureText == SignatureBomXmlData || SignatureText == SignatureXmlData)
         {
           XElement xmlElement = XElement.Load(FilePath);
-          if (xmlElement.Element("token").Value == "AttacheCase")
+          // Nullが入ってきた場合は許容しない
+          if (xmlElement.Element("token")?.Value == "AttacheCase")
           {
-            if (xmlElement.Element("type").Value == "public")
+            if (xmlElement.Element("type")?.Value == "public")
             {
               return (5); // RSA Encryption process
             }
-            else if (xmlElement.Element("type").Value == "private")
+            else if (xmlElement.Element("type")?.Value == "private")
             {
               return (6); // RSA Decryption process
             }
@@ -3873,7 +3912,7 @@ namespace AttacheCase
               if (fToken == true)
               {
                 if (pos > 20)
-                { // Self executabel file
+                { // Self executable file
                   return (2);
                 }
               }

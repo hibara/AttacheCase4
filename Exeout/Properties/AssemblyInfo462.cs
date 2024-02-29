@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle("AttachéCase ( Self executable file )")]
-[assembly: AssemblyDescription(".NET Framework 4.6.2 based.")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HiBARA Software")]
-[assembly: AssemblyProduct("Exeout")]
+[assembly: AssemblyProduct("Exeout (.NET Framework 4.6.2 based.)")]
 [assembly: AssemblyCopyright("© 2006-2024 M.Hibara, All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

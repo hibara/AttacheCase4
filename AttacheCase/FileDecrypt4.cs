@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2023  Mitsuhiro Hibara
+// Copyright (C) 2016-2024  Mitsuhiro Hibara
 //
 // * Required .NET Framework 4.6 or later
 // 
@@ -52,7 +52,7 @@ namespace AttacheCase
     private const int DELETE_SUCCEEDED  = 3; // Delete is succeeded.
     private const int READY_FOR_ENCRYPT = 4; // Getting ready for encryption or decryption.
     private const int READY_FOR_DECRYPT = 5; // Getting ready for encryption or decryption.
-    private const int ENCRYPTING        = 6; // Ecrypting.
+    private const int ENCRYPTING        = 6; // Encrypting.
     private const int DECRYPTING        = 7; // Decrypting.
     private const int DELETING          = 8; // Deleting.
 
@@ -87,6 +87,8 @@ namespace AttacheCase
     // Skip Option
     private const int SKIP = 5;
     private const int SKIP_ALL = 6;
+    // MD5 hash mismatch
+    private const int CONTINUE = 7;
 
     byte[] GuidData = new byte[16];
     byte[] RsaPassword = new byte[32];
@@ -117,12 +119,9 @@ namespace AttacheCase
 #endif
 
     //----------------------------------------------------------------------
-    // For thie file list after description, open associated with file or folder.
+    // For this file list after description, open associated with file or folder.
     private readonly List<string> _OutputFileList = new List<string>();
-    public List<string> OutputFileList
-    {
-      get { return _OutputFileList; }
-    }
+    public List<string> OutputFileList => _OutputFileList;
 
     // Temporary option for overwriting
     // private const int USER_CANCELED  = -1;
@@ -132,235 +131,188 @@ namespace AttacheCase
     // private const int KEEP_NEWER_ALL = 4;
     // private const int SKIP           = 5;
     // private const int SKIP_ALL       = 6;
-    private int _TempOverWriteOption = -1;
+    private int _TempOverWriteOption = USER_CANCELED;
     public int TempOverWriteOption
     {
-      get { return this._TempOverWriteOption; }
-      set { this._TempOverWriteOption = value; }
+      get => this._TempOverWriteOption;
+      set => this._TempOverWriteOption = value;
+    }
+    // MD5ハッシュ不一致でも処理を続行するか
+    // private const int USER_CANCELED  = -1;
+    // private const int CONTINUE       = 7;
+    private int _tempMd5HashMismatchContinueOption = USER_CANCELED;
+    public int TempMd5HashMismatchContinueOption
+    {
+      get => this._tempMd5HashMismatchContinueOption;
+      set => _tempMd5HashMismatchContinueOption = value;
     }
     // 処理した暗号化ファイルの数
     // The number of ATC files to be decrypted
     private int _NumberOfFiles = 0;
     public int NumberOfFiles
     {
-      get { return this._NumberOfFiles; }
-      set { this._NumberOfFiles = value; }
+      get => this._NumberOfFiles;
+      set => this._NumberOfFiles = value;
     }
     // 処理する暗号化ファイルの合計数
     // Total number of ATC files to be decrypted
     private int _TotalNumberOfFiles = 1;
     public int TotalNumberOfFiles
     {
-      get { return this._TotalNumberOfFiles; }
-      set { this._TotalNumberOfFiles = value; }
+      get => this._TotalNumberOfFiles;
+      set => this._TotalNumberOfFiles = value;
     }
     // 親フォルダーを生成しないか否か
     //Create no parent folder in decryption
     private bool _fNoParentFolder = false;
     public bool fNoParentFolder
     {
-      get { return this._fNoParentFolder; }
-      set { this._fNoParentFolder = value; }
+      get => this._fNoParentFolder;
+      set => this._fNoParentFolder = value;
     }
     // パスワード入力回数制限（読み取り専用）
     //Get limit of times to input password in encrypt files ( readonly ).
     private char _MissTypeLimits = (char)3;
-    public char MissTypeLimits
-    {
-      get { return this._MissTypeLimits; }
-    }
+    public char MissTypeLimits => this._MissTypeLimits;
+
     // ファイル、フォルダーのタイムスタンプを復号時に合わせる
     private bool _fSameTimeStamp = false;
     //Set the timestamp to decrypted files or directories
     public bool fSameTimeStamp
     {
-      get { return this._fSameTimeStamp; }
-      set { this._fSameTimeStamp = value; }
+      get => this._fSameTimeStamp;
+      set => this._fSameTimeStamp = value;
     }
     // 一つずつ親フォルダーを確認、生成しながら復号する（サルベージモード）
     private bool _fSalvageToCreateParentFolderOneByOne = false;
     // Decrypt one by one while creating the parent folder ( Salvage mode ).
     public bool fSalvageToCreateParentFolderOneByOne
     {
-      get { return this._fSalvageToCreateParentFolderOneByOne; }
-      set { this._fSalvageToCreateParentFolderOneByOne = value; }
+      get => this._fSalvageToCreateParentFolderOneByOne;
+      set => this._fSalvageToCreateParentFolderOneByOne = value;
     }
     // すべてのファイルを同じ階層のディレクトリーに復号する（サルベージモード）
     private bool _fSalvageIntoSameDirectory = false;
     // Decrypt all files into the directory of the same hierarchy ( Salvage mode ). 
     public bool fSalvageIntoSameDirectory
     {
-      get { return this._fSalvageIntoSameDirectory; }
-      set { this._fSalvageIntoSameDirectory = value; }
+      get => this._fSalvageIntoSameDirectory;
+      set => this._fSalvageIntoSameDirectory = value;
     }
     // 自己実行形式タイプのファイルか
     // Self-executable file
     private bool _fExecutableType = false;
-    public bool fExecutableType
-    {
-      get { return this._fExecutableType; }
-    }
+    public bool fExecutableType => this._fExecutableType;
+
     // ファイルのハッシュ値チェックを無視する
     // ignore checking hash data of files
     private bool _fSalvageIgnoreHashCheck = false;
     public bool fSalvageIgnoreHashCheck
     {
-      get { return this._fSalvageIgnoreHashCheck; }
-      set { this._fSalvageIgnoreHashCheck = value; }
+      get => this._fSalvageIgnoreHashCheck;
+      set => this._fSalvageIgnoreHashCheck = value;
     }
     // 公開鍵暗号（RSA暗号）によるデータ
     // RSA encrypted data
     private bool _fRsaEncryptionType = false;
-    public bool fRsaEncryptionType
-    {
-      get { return this._fRsaEncryptionType; }
-    }
+    public bool fRsaEncryptionType => this._fRsaEncryptionType;
 
     //----------------------------------------------------------------------
     // The return value of error ( ReadOnly)
     //----------------------------------------------------------------------
     // Input "Error code" for value
     private int _ReturnCode = 0;
-    public int ReturnCode
-    {
-      get { return this._ReturnCode; }
-    }
+    public int ReturnCode => this._ReturnCode;
+
     // File path that caused the error
     private string _ErrorFilePath = "";
-    public string ErrorFilePath
-    {
-      get { return this._ErrorFilePath; }
-    }
+    public string ErrorFilePath => this._ErrorFilePath;
+
     // Drive name to decrypt
     private string _DriveName = "";
-    public string DriveName
-    {
-      get { return this._DriveName; }
-    }
+    public string DriveName => this._DriveName;
+
     // Total file number
     private Int64 _TotalFileNumber = 0;
-    public Int64 TotalFileNumber
-    {
-      get { return this._TotalFileNumber; }
-    }
+    public Int64 TotalFileNumber => this._TotalFileNumber;
+
     // Total file size of files to be decrypted
     private Int64 _TotalFileSize = -1;
-    public Int64 TotalFileSize
-    {
-      get { return this._TotalFileSize; }
-    }
+    public Int64 TotalFileSize => this._TotalFileSize;
+
     // Free space on the drive to decrypt the file
     private Int64 _AvailableFreeSpace = -1;
-    public Int64 AvailableFreeSpace
-    {
-      get { return this._AvailableFreeSpace; }
-    }
+    public Int64 AvailableFreeSpace => this._AvailableFreeSpace;
+
     // Error message by the exception
     private string _ErrorMessage = "";
-    public string ErrorMessage
-    {
-      get { return this._ErrorMessage; }
-    }
+    public string ErrorMessage => this._ErrorMessage;
     private ArrayList _MessageList;
-    public ArrayList MessageList
-    {
-      get { return this._MessageList; }
-    }
+    public ArrayList MessageList => this._MessageList;
 
     //----------------------------------------------------------------------
     // The plain text header data of encrypted file ( ReadOnly)
     //----------------------------------------------------------------------
     // Data Sub Version ( ver.2.00~ = "5", ver.2.70~ = "6" )
     private int _DataSebVersion = 0;
-    public int DataSebVersion
-    {
-      get { return this._DataSebVersion; }
-    }
+    public int DataSebVersion => this._DataSebVersion;
+
     // The broken status of file
     private bool _fBroken = false;
-    public bool fBroken
-    {
-      get { return this._fBroken; }
-    }
+    public bool fBroken => this._fBroken;
+
     // Internal token string ( Whether or not the file is broken )  = "_AttacheCaseData" or "_Atc_Broken_Data"
     private string _TokenStr = "";
-    public string TokenStr
-    {
-      get { return this._TokenStr; }
-    }
+    public string TokenStr => this._TokenStr;
+
     // Data File Version ( DATA_FILE_VERSION = 140 )
     private int _DataFileVersion = 0;
-    public int DataFileVersion
-    {
-      get { return this._DataFileVersion; }
-    }
-    // TYPE_ALGORISM = 1:Rijndael	
+    public int DataFileVersion => this._DataFileVersion;
+
+    // TYPE_ALGORITHM = 1:Rijndael	
     private int _TypeAlgorism = 0;
-    public int TypeAlgorism
-    {
-      get { return this._TypeAlgorism; }
-    }
+    public int TypeAlgorism => this._TypeAlgorism;
+
     // The size of encrypted header data
     private int _AtcHeaderSize = 0;
-    public int AtcHeaderSize
-    {
-      get { return this._AtcHeaderSize; }
-    }
+    public int AtcHeaderSize => this._AtcHeaderSize;
 
     // Just this ATC file to decrypt
     private string _AtcFilePath = "";
-    public string AtcFilePath
-    {
-      get { return this._AtcFilePath; }
-    }
+    public string AtcFilePath => this._AtcFilePath;
 
     // App version
     private Int16 _AppVersion = 0;
-    public Int16 AppVersion
-    {
-      get { return this._AppVersion; }
-    }
+    public Int16 AppVersion => this._AppVersion;
 
     // The salt used in Rfc2898DeriveBytes
     private byte[] _salt = new byte[8];
-    public byte[] salt
-    {
-      get { return this._salt; }
-    }
+    public byte[] salt => this._salt;
 
     private Rfc2898DeriveBytes _deriveBytes;
-    public Rfc2898DeriveBytes deriveBytes
-    {
-      get { return this._deriveBytes; }
-    }
+    public Rfc2898DeriveBytes deriveBytes => this._deriveBytes;
 
     // List of files to decrypt
     private List<string> _FileList;
-    public List<string> FileList
-    {
-      get { return this._FileList; }
-    }
+    public List<string> FileList => this._FileList;
 
     // Decryption time
     private string _DecryptionTimeString;
-    public string DecryptionTimeString
-    {
-      get { return this._DecryptionTimeString; }
-    }
+    public string DecryptionTimeString => this._DecryptionTimeString;
 
     // Guid
     private string _GuidString;
     public string GuidString
     {
-      get { return this._GuidString; }
-      set { this._GuidString = value; }
+      get => this._GuidString;
+      set => this._GuidString = value;
     }
 
     // RSA decryption private key XML string
     private string _RsaPrivateKeyXmlString;
     public string RsaPrivateKeyXmlString
     {
-      get { return this._RsaPrivateKeyXmlString; }
+      get => this._RsaPrivateKeyXmlString;
       set
       {
         this._RsaPrivateKeyXmlString = value;
@@ -369,10 +321,7 @@ namespace AttacheCase
     }
     // RSA Decryption
     private bool _fRsaEncryption = false;
-    public bool fRsaEncryption
-    {
-      get { return this._fRsaEncryption; }
-    }
+    public bool fRsaEncryption => this._fRsaEncryption;
 
     /// <summary>
     /// Constructor
@@ -418,7 +367,7 @@ namespace AttacheCase
               if (fToken == true)
               {
                 if (fs.Position > 20)
-                { // Self executabel file
+                { // Self executable file
                   _fExecutableType = true;
                   _ExeOutSize = fs.Position - 20;
                 }
@@ -443,7 +392,7 @@ namespace AttacheCase
               if (fToken == true)
               {
                 if (fs.Position > 20)
-                { // Self executabel file
+                { // Self executable file
                   _fExecutableType = true;
                   _fBroken = true;
                   _ExeOutSize = fs.Position - 20;
@@ -452,11 +401,6 @@ namespace AttacheCase
               }
             }
 
-            //-----------------------------------
-            if (fToken == true)
-            {
-              break;
-            }
             //-----------------------------------
 
           }// end while();
@@ -598,8 +542,8 @@ namespace AttacheCase
     /// ユーザーが設定したパスワードによって、AESによって暗号化されたファイルを元のファイル、またはフォルダーに復号して戻す。
     /// </summary>
     /// <param name="FilePath">File path or directory path is encrypted</param>
-    /// <param name="OutFileDir">The directory of outputing encryption file.</param>
-    /// <param name="Password">Encription password string</param>
+    /// <param name="OutFileDir">The directory of outputting encryption file.</param>
+    /// <param name="Password">Encryption password string</param>
     /// <returns>bool true: Success, false: Failed</returns>
 #if __MACOS__
     public bool Decrypt(
@@ -611,7 +555,7 @@ namespace AttacheCase
     public bool Decrypt(
       object sender, DoWorkEventArgs e,
       string FilePath, string OutDirPath, string Password, byte[] PasswordBinary,
-      Action<int, string> dialog)
+      Action<int, string, IReadOnlyList<string>> dialog)
     {
 #endif
       string LastWriteDateTimeString;
@@ -814,14 +758,14 @@ namespace AttacheCase
              //-----------------------------------
              // Parent folder is not created.
              //
-             if (_fNoParentFolder == true)
+             if (_fNoParentFolder)
              {
                 // root directory
                 if (FileNum == 0)
                 {
                   ParentFolder = fd.FilePath;
                 }
-                // not root directroy ( files )
+                // not root directory ( files )
                 else
                 {
                   StringBuilder sb = new StringBuilder(fd.FilePath);
@@ -834,7 +778,7 @@ namespace AttacheCase
               // File path
               //
               string OutFilePath = "";
-              if (Path.IsPathRooted(fd.FilePath) == true)
+              if (Path.IsPathRooted(fd.FilePath))
               {
                 OutFilePath = OutDirPath + fd.FilePath;
               }
@@ -881,7 +825,7 @@ namespace AttacheCase
               }
 
               // Error: Directory traversal countermeasures
-              if (fDirectoryTraversal == true)
+              if (fDirectoryTraversal)
               {
                 _ReturnCode = INVALID_FILE_PATH;
                 _ErrorFilePath = InvalidFilePath;
@@ -953,10 +897,10 @@ namespace AttacheCase
         {
             for (int i = 0; i < FileDataList.Count; i++)
             {
-                string OneLine = i.ToString() + "\t";
+                string OneLine = i + "\t";
                 OneLine += FileDataList[i].FilePath + "\t";
-                OneLine += FileDataList[i].FileSize.ToString() + "\t";
-                OneLine += FileDataList[i].FileAttribute.ToString() + "\t";
+                OneLine += FileDataList[i].FileSize + "\t";
+                OneLine += FileDataList[i].FileAttribute + "\t";
                 OneLine += FileDataList[i].LastWriteDateTime.ToString("yyyy/MM/dd H:mm:s") + "\t";
                 OneLine += FileDataList[i].CreationDateTime.ToString("yyyy/MM/dd H:mm:s") + "\t";
                 if (FileDataList[i].FileSize > 0)   // MD5 hash
@@ -1014,7 +958,7 @@ namespace AttacheCase
           //-----------------------------------
           // Adjust the header data in 16 bytes ( Block size )
           int mod = _AtcHeaderSize % 16;
-          if (_fExecutableType == true)
+          if (_fExecutableType)
           {
             fs.Seek(_ExeOutSize + 52 + RsaBlock + _AtcHeaderSize + 16 - mod, SeekOrigin.Begin);
           }
@@ -1024,7 +968,7 @@ namespace AttacheCase
           }
 
           //-----------------------------------
-          // Decyption
+          // Decryption
           using (AesManaged aes = new AesManaged())
           {
             aes.BlockSize = 128;             // BlockSize = 16bytes
@@ -1049,9 +993,9 @@ namespace AttacheCase
 
                 bool fSkip = false;
 
-                if (_fNoParentFolder == true)
+                if (_fNoParentFolder)
                 {
-                  if (FileDataList[0].FilePath.EndsWith("\\") == true || FileDataList[0].FilePath.EndsWith("/") == true)
+                  if (FileDataList[0].FilePath.EndsWith("\\") || FileDataList[0].FilePath.EndsWith("/"))
                   {
                     FileIndex = 1;  // Ignore parent folder.
                   }
@@ -1080,7 +1024,7 @@ namespace AttacheCase
                     if (outfs == null)
                     {
                       //-----------------------------------
-                      // Create file or dirctories.
+                      // Create file or directories.
                       if (FileIndex > FileDataList.Count - 1)
                       {
                         _ReturnCode = DECRYPT_SUCCEEDED;
@@ -1091,14 +1035,14 @@ namespace AttacheCase
                         //-----------------------------------
                         // Create directory
                         //-----------------------------------
-                        if (FileDataList[FileIndex].FilePath.EndsWith("\\") == true ||
-                            FileDataList[FileIndex].FilePath.EndsWith("/") == true)
+                        if (FileDataList[FileIndex].FilePath.EndsWith("\\") ||
+                            FileDataList[FileIndex].FilePath.EndsWith("/"))
                         {
                           string path = Path.Combine(OutDirPath, FileDataList[FileIndex].FilePath);
                           DirectoryInfo di = new DirectoryInfo(path);
 
                           // File already exists.
-                          if (Directory.Exists(path) == true)
+                          if (Directory.Exists(path))
                           {
                             // Temporary option for overwriting
                             // private const int USER_CANCELED  = -1;
@@ -1126,8 +1070,8 @@ namespace AttacheCase
                             else
                             {
 
-                              // Show dialog of comfirming to overwrite. 
-                              dialog(0, path);
+                              // Show dialog of confirming to overwrite. 
+                              dialog(0, path, null);
 
                               // Cancel
                               if (_TempOverWriteOption == USER_CANCELED)
@@ -1195,13 +1139,13 @@ namespace AttacheCase
                           FileInfo fi = new FileInfo(path);
 
                           // File already exists.
-                          if (File.Exists(path) == true)
+                          if (File.Exists(path))
                           {
                             // Salvage Data Mode
-                            if (_fSalvageIntoSameDirectory == true)
+                            if (_fSalvageIntoSameDirectory)
                             {
                               int SerialNum = 0;
-                              while (File.Exists(path) == true)
+                              while (File.Exists(path))
                               {
                                 path = getFileNameWithSerialNumber(path, SerialNum);
                                 SerialNum++;
@@ -1234,8 +1178,8 @@ namespace AttacheCase
                               }
                               else
                               {
-                                // Show dialog of comfirming to overwrite. 
-                                dialog(1, path);
+                                // Show dialog of confirming to overwrite. 
+                                dialog(1, path, null);
 
                                 // Cancel
                                 if (_TempOverWriteOption == USER_CANCELED)
@@ -1278,13 +1222,13 @@ namespace AttacheCase
 
                           // Salvage data mode
                           // サルベージ・モード
-                          if (_fSalvageToCreateParentFolderOneByOne == true)
+                          if (_fSalvageToCreateParentFolderOneByOne)
                           {
                             // Decrypt one by one while creating the parent folder.
                             Directory.CreateDirectory(Path.GetDirectoryName(path));
                           }
 
-                          if (fSkip == true)
+                          if (fSkip)
                           {
                             // Not create file
                           }
@@ -1322,7 +1266,7 @@ namespace AttacheCase
                     //----------------------------------------------------------------------
                     if (FileSize + len < FileDataList[FileIndex].FileSize)
                     {
-                      if (outfs != null || fSkip == true)
+                      if (outfs != null || fSkip)
                       {
                         // まだまだ書き込める
                         // can write more
@@ -1370,8 +1314,8 @@ namespace AttacheCase
 
                         // タイムスタンプの復元
                         // Restore the timestamp of a file
-                        fi.CreationTime = (DateTime)FileDataList[FileIndex].CreationDateTime;
-                        fi.LastWriteTime = (DateTime)FileDataList[FileIndex].LastWriteDateTime;
+                        fi.CreationTime = FileDataList[FileIndex].CreationDateTime;
+                        fi.LastWriteTime = FileDataList[FileIndex].LastWriteDateTime;
 
                         // ファイル属性の復元
                         // Restore file attribute.
@@ -1382,11 +1326,33 @@ namespace AttacheCase
                         if (_fSalvageIgnoreHashCheck == false && FileSize > 0)
                         {
                           byte[] hash = getMd5Hash(FileDataList[FileIndex].FilePath);
-                          if (System.Linq.Enumerable.SequenceEqual(hash, FileDataList[FileIndex].Hash) == false )
+                          // ハッシュ値が異なるか
+                          // Do the hash values differ?
+                          if (hash.SequenceEqual(FileDataList[FileIndex].Hash) == false )
                           {
-                            _ReturnCode = NOT_CORRECT_HASH_VALUE;
-                            _ErrorFilePath = FileDataList[FileIndex].FilePath;
-                            return (false);
+                            var hashList = new []
+                            {
+                              BitConverter.ToString(FileDataList[FileIndex].Hash).Replace("-", "").ToLower(), 
+                              BitConverter.ToString(hash).Replace("-", "").ToLower()
+                            };
+                            
+                            // ハッシュ値が異なるので、処理を続行するかキャンセルするかを問い合わせる
+                            // Confirm whether to continue or cancel the process because the hash values are different
+                            dialog(2, FileDataList[FileIndex].FilePath, hashList);
+
+                            // キャンセルが返ってきたときのみ、処理を抜ける
+                            // Exit the process only when a cancellation is returned.
+                            if (_tempMd5HashMismatchContinueOption == USER_CANCELED)
+                            {
+                              _ReturnCode = NOT_CORRECT_HASH_VALUE;
+                              _ErrorFilePath = FileDataList[FileIndex].FilePath;
+                              return (false);
+                            }
+                            else
+                            {
+                              _tempMd5HashMismatchContinueOption = CONTINUE;
+                            }
+                            
                           }
                         }
 
@@ -1409,7 +1375,7 @@ namespace AttacheCase
                     string MessageText = "";
                     if (_TotalNumberOfFiles > 1)
                     {
-                      MessageText = FilePath + " ( " + _NumberOfFiles.ToString() + "/" + _TotalNumberOfFiles.ToString() + " files" + " )";
+                      MessageText = FilePath + " ( " + _NumberOfFiles + "/" + _TotalNumberOfFiles + " files" + " )";
                     }
                     else
                     {
@@ -1429,7 +1395,7 @@ namespace AttacheCase
                     }
 
                     // User cancel
-                    if (worker.CancellationPending == true)
+                    if (worker.CancellationPending)
                     {
                       if (outfs != null)
                       {
@@ -1518,15 +1484,24 @@ namespace AttacheCase
           _ErrorMessage = "";
           return (false);
         }
+        else if (_ReturnCode == NOT_CORRECT_HASH_VALUE)
+        {
+          _ReturnCode = NOT_CORRECT_HASH_VALUE;
+          _ErrorMessage = _ErrorFilePath;
+          return (false);
+        }
         else if (_ReturnCode == DECRYPT_SUCCEEDED)
         {
           _ReturnCode = DECRYPT_SUCCEEDED;
           return (true);
         }
-
-        _ReturnCode = IO_EXCEPTION;
-        _ErrorMessage = ex.Message;
-        return (false);
+        else
+        {
+          _ReturnCode = IO_EXCEPTION;
+          _ErrorMessage = ex.Message;
+          return (false);
+        }
+        
       }
       finally
       {

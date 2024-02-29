@@ -3,82 +3,36 @@ using System.IO;
 using System.Security.Cryptography;
 using Microsoft.VisualBasic.FileIO;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Collections;
+using System.Diagnostics;
+using System.Linq;
+using AttacheCase.Properties;
 
 namespace AttacheCase
 {
   public class Wipe
   {
     // Status code
-    private const int ENCRYPT_SUCCEEDED = 1; // Encrypt is succeeded.
-    private const int DECRYPT_SUCCEEDED = 2; // Decrypt is succeeded.
-    private const int DELETE_SUCCEEDED  = 3; // Delete is succeeded.
-    private const int READY_FOR_ENCRYPT = 4; // Getting ready for encryption or decryption.
-    private const int READY_FOR_DECRYPT = 5; // Getting ready for encryption or decryption.
-    private const int ENCRYPTING        = 6; // Ecrypting.
-    private const int DECRYPTING        = 7; // Decrypting.
-    private const int DELETING          = 8; // Deleting.
+    private const int EncryptSucceeded = 1; // Encrypt is succeeded.
+    private const int DecryptSucceeded = 2; // Decrypt is succeeded.
+    private const int DeleteSucceeded  = 3; // Delete is succeeded.
+    private const int ReadyForEncrypt = 4; // Getting ready for encryption or decryption.
+    private const int ReadyForDecrypt = 5; // Getting ready for encryption or decryption.
+    private const int Encrypting        = 6; // Encrypting.
+    private const int Decrypting        = 7; // Decrypting.
+    private const int Deleting          = 8; // Deleting.
 
     // Error code
-    private const int USER_CANCELED            = -1;   // User cancel.
-    private const int ERROR_UNEXPECTED         = -100;
-    private const int NOT_ATC_DATA             = -101;
-    private const int ATC_BROKEN_DATA          = -102;
-    private const int NO_DISK_SPACE            = -103;
-    private const int FILE_INDEX_NOT_FOUND     = -104;
-    private const int PASSWORD_TOKEN_NOT_FOUND = -105;
+    private const int UserCanceled            = -1;   // User cancel.
+    private const int ErrorUnexpected         = -100;
+    private const int NotAtcData             = -101;
+    private const int AtcBrokenData          = -102;
+    private const int NoDiskSpace            = -103;
+    private const int FileIndexNotFound     = -104;
+    private const int PasswordTokenNotFound = -105;
 
-    // çÌèúíÜÇÃÉtÉ@ÉCÉãÉpÉX
-    // A file path being deleted.
-    private string _DeletingFilePath = "";
-    public string DeletingFilePath
-    {
-      get { return this._DeletingFilePath; }
-    }
-
-    // èàóùíÜÇÃçáåvÉZÉNÉ^êî
-    // Total sectors progress
-    private Int64 _TotalSectors = 0;
-    public Int64 TotalSectors
-    {
-      get { return this._TotalSectors; }
-    }
-
-    // èàóùÇ∑ÇÈç≈ëÂÇÃçáåvÉZÉNÉ^êî
-    // The maximum value to be processed
-    private Int64 _TotalFileSectors = 0;
-    public Int64 TotalFileSectors
-    {
-      get { return this._TotalFileSectors; }
-    }
-
-    // É[ÉçñÑÇﬂÅAÇ‹ÇΩÇÕÉâÉìÉ_ÉÄñÑÇﬂÇÃèàóùÇµÇΩçáåvêî
-    // Total progress of Zero fill and Random fill
-    private int _NumOfTimes = 0;
-    public int NumOfTimes
-    {
-      get { return this._NumOfTimes; }
-    }
-
-    // èàóùÇ∑ÇÈÉ[ÉçñÑÇﬂÅAÇ‹ÇΩÇÕÉâÉìÉ_ÉÄñÑÇﬂÇÃçáåvêî
-    // Total times of Zero fill and Random fill
-    private int _TotalTimes = 0;
-    public int TotalTimes
-    {
-      get { return this._TotalTimes; }
-    }
-
-    // ÉÜÅ[ÉUÅ[ÉLÉÉÉìÉZÉã
-    // User cancel
-    private bool _fUserCancel = false;
-    public bool fUserCancel
-    {
-      get { return this._fUserCancel; }
-      set { this._fUserCancel = value; }
-    }
-
+    private const int BufferSize = 4096;
 
     /// <summary>
     /// Deletes a file in a secure way by overwriting it with
@@ -86,146 +40,146 @@ namespace AttacheCase
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    /// <param name="FilePaths">Array of file paths</param>
-    /// <param name="DelRand/*Num">Number of Random data</param>
-    /// <param name="DelZeroNum">Number of Zeros </param>
-    public int WipeFile(
+    /// <param name="filePaths">Array of file paths</param>
+    /// <param name="delRandNum">Number of Random data</param>
+    /// <param name="delZeroNum">Number of Zeros </param>
+    public static int WipeFile(
       object sender, DoWorkEventArgs e,
-      List<string> FilePaths, int DelRandNum, int DelZeroNum)
+      List<string> filePaths, int delRandNum, int delZeroNum)
     {
+      var swProgress = new Stopwatch();
+      swProgress.Start();
+
       try
       {
-        Int64 TotalSectors = 0;
-        Int64 TotalFileSectors = 0;
+        List<string> fileList = new List<string>();
 
-        List<string> FileList = new List<string>();
-
-        ArrayList MessageList = new ArrayList();
-
-        foreach(string FilePath in FilePaths)
+        foreach (string filePath in filePaths)
         {
-          if (File.Exists(FilePath) == true)
+          if (File.Exists(filePath))
           {
-            FileList.Add(FilePath);
+            fileList.Add(filePath);
           }
-          else if (Directory.Exists(FilePath) == true)
+          else if (Directory.Exists(filePath))
           {
-            foreach (string f in GetFileList("*", FilePath))
-            {
-              FileList.Add(f);
-            }
+            fileList.AddRange(GetFileList("*", filePath));
           }
         }
 
-        FilePaths = FileList;
+        filePaths = fileList;
 
+        // var options = new ParallelOptions
+        // {
+        //   MaxDegreeOfParallelism = Environment.ProcessorCount
+        // };
+        // Parallel.ForEach(filePaths, options, filePath =>
+        // {
+        //   if (!File.Exists(filePath)) return;
+        //   // „Éï„Ç°„Ç§„É´„É™„Çπ„Éà„ÅÆ„Éï„Ç°„Ç§„É´„Çµ„Ç§„Ç∫ÂêàË®à„ÇíË®àÁÆó
+        //   lock (filePaths) totalFileListSize += new FileInfo(filePath).Length;
+        // });
+       
+        // „Éï„Ç°„Ç§„É´„É™„Çπ„Éà„ÅÆ„Éï„Ç°„Ç§„É´„Çµ„Ç§„Ç∫ÂêàË®à„ÇíË®àÁÆó
+        var totalFileListSize = filePaths.AsParallel()
+          .Where(File.Exists)
+          .Select(filePath => new FileInfo(filePath).Length)
+          .Sum();
 
-        ParallelOptions options = new ParallelOptions();
-        options.MaxDegreeOfParallelism = Environment.ProcessorCount;
-        Parallel.ForEach(FilePaths, options, FilePath =>
-        {
-          if (File.Exists(FilePath))
-          {
-            // Calculate the total number of sectors in the file.
-            lock (FilePaths) TotalFileSectors += (Int64)Math.Ceiling(new FileInfo(FilePath).Length / 512.0);
-          }
-        });
-
-        /*
-        foreach (string path in FilePaths)
-        {
-          {
-            if (File.Exists(path))
-            {
-              // Calculate the total number of sectors in the file.
-              TotalFileSectors += (Int64)Math.Ceiling(new FileInfo(path).Length / 512.0);
-            }
-          }
-        }
-        */
-
-        TotalFileSectors = TotalFileSectors * (DelRandNum + DelZeroNum);
-
-        BackgroundWorker worker = sender as BackgroundWorker;
+        totalFileListSize *= (delRandNum + delZeroNum);
+        
+        var worker = sender as BackgroundWorker;
         worker.WorkerSupportsCancellation = true;
-        e.Result = DELETING;
+        e.Result = Deleting;
 
-        foreach (string FilePath in FilePaths)
+        Int64 countSize = 0;
+        
+        foreach (var filePath in filePaths)
         {
-          if (File.Exists(FilePath) == false)
+          if (File.Exists(filePath) == false)
           {
             continue;
           }
-          int _TotalTimes = DelRandNum + DelZeroNum;
-          int RandNum = DelRandNum;
-          int ZeroNum = DelZeroNum;
+
+          var totalTimes = delRandNum + delZeroNum;
+          var randNum = delRandNum;
+          var zeroNum = delZeroNum;
 
           // Set the files attributes to normal in case it's read-only.
-          File.SetAttributes(FilePath, FileAttributes.Normal);
+          File.SetAttributes(filePath, FileAttributes.Normal);
 
           // Calculate the total number of sectors in the file.
-          double sectors = Math.Ceiling(new FileInfo(FilePath).Length / 512.0);
+          var totalFileSize = new FileInfo(filePath).Length;
 
           // Create a dummy-buffer the size of a sector.
-          byte[] dummyBuffer = new byte[512];
+          var dummyBuffer = new byte[BufferSize];
 
           // Open a FileStream to the file.
-          using (FileStream fs = new FileStream(FilePath, FileMode.Open))
+          using (var fs = new FileStream(filePath, FileMode.Open))
           {
-            while (RandNum > 0 || ZeroNum > 0)
+            while (randNum > 0 || zeroNum > 0)
             {
-
-              _NumOfTimes = _TotalTimes - (RandNum + ZeroNum) + 1;
+              // ÂâäÈô§ÁµåÈÅéÂõûÊï∞
+              var numOfTimes = totalTimes - (randNum + zeroNum) + 1;
 
               // Go to the beginning of the stream
               fs.Position = 0;
 
+              Int64 totalSize = 0;
+
               // Loop all sectors
-              for (int sectorsWritten = 0; sectorsWritten < sectors; sectorsWritten++)
+              while( totalSize < totalFileSize)
               {
-                TotalSectors++;
-
-                if (TotalSectors % 10 == 0)
+                // „Éó„É≠„Ç∞„É¨„Çπ„Éê„Éº„ÅÆÊõ¥Êñ∞ÈñìÈöî„Çí100ms„Å´Ë™øÊï¥
+                if (swProgress.ElapsedMilliseconds > 100)
                 {
-                  string _DeleteType = "";
-                  if(RandNum > 0)
+                  var deleteType = "";
+                  if (randNum > 0)
                   {
-                    _DeleteType = "Random";
+                    deleteType = Resources.labelDeleteTypeRandom;  // "Random"
                   }
-                  else if (ZeroNum > 0 )
+                  else if (zeroNum > 0)
                   {
-                    _DeleteType = "Zeros";
+                    deleteType = Resources.labelDeleteTypeZeros;    // "Zeros"
                   }
 
-                  string MessageText =
-                  String.Format("{0} ({1}: {2}/{3}) - {4}/{5} sectors",
-                    Path.GetFileName(FilePath), // {0}
-                    _DeleteType,                // {1}
-                    _NumOfTimes,                // {2}
-                    _TotalTimes,                // {3}
-                    TotalSectors.ToString(),    // {4}
-                    TotalFileSectors.ToString() // {5}
-                    );
-                  
-                  float percent = ((float)TotalSectors / TotalFileSectors);
-                  MessageList = new ArrayList();
-                  MessageList.Add(DELETING);
-                  MessageList.Add(MessageText);
-                  System.Random r = new System.Random();
-                  if (r.Next(0, 20) == 4)
+                  var messageText = String.Format("{0} ({1}: {2}/{3}) - {4}/{5}",
+                    Path.GetFileName(filePath), // {0}
+                    deleteType, // {1}
+                    numOfTimes, // {2}
+                    totalTimes, // {3}
+                    FormatFileSizeString(countSize, false), // {4}
+                    FormatFileSizeString(totalFileListSize, true) // {5}
+                  );
+
+                  var percent = ((float)countSize / totalFileListSize);
+                  var messageList = new ArrayList
                   {
-                    worker.ReportProgress((int)(percent * 10000), MessageList);
-                  }
+                    Deleting,
+                    messageText
+                  };
+
+                  worker.ReportProgress((int)(percent * 10000), messageList);
+                  swProgress.Restart();
+
+                }
+
+                //-----------------------------------
+                // User cancel
+                if (worker.CancellationPending)
+                {
+                  fs.Close();
+                  e.Cancel = true;
+                  return (UserCanceled);
                 }
 
                 //-----------------------------------
                 // Random number fills
-                if (RandNum > 0)
+                if (randNum > 0)
                 {
                   // Create a cryptographic Random Number Generator.
                   // This is what I use to create the garbage data.
                   // Fill the dummy-buffer with random data
-                  RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+                  var rng = new RNGCryptoServiceProvider();
                   rng.GetBytes(dummyBuffer);
                 }
                 //-----------------------------------
@@ -233,40 +187,37 @@ namespace AttacheCase
                 else
                 {
                   // Zeros fills
-                  Array.Clear(dummyBuffer, 0, 512);
+                  Array.Clear(dummyBuffer, 0, BufferSize);
                 }
+
                 //-----------------------------------
                 // Write it to the stream
-                fs.Write(dummyBuffer, 0, 512);
+                fs.Write(dummyBuffer, 0, BufferSize);
 
-                // Cancel
-                if (worker.CancellationPending == true)
-                {
-                  e.Cancel = true;
-                  return (USER_CANCELED);
-                }
+                //-----------------------------------
+                totalSize += BufferSize;
+                countSize += BufferSize;
 
-              }// end for (int sectorsWritten = 0; sectorsWritten < sectors; sectorsWritten++);
-             
-              if (RandNum > 0)
+
+              } // end while(totalSize < fileSize);
+
+              if (randNum > 0)
               {
-                RandNum--;
+                randNum--;
               }
-              else if (ZeroNum > 0)
+              else if (zeroNum > 0)
               {
-                ZeroNum--;
+                zeroNum--;
               }
 
               // Truncate the file to 0 bytes.
               // This will hide the original file-length if you try to recover the file.
-              if (RandNum == 0 && ZeroNum == 0)
+              if (randNum == 0 && zeroNum == 0)
               {
                 fs.SetLength(0);
+                fs.Close();
                 break;
               }
-
-              // Close the stream.
-              //inputStream.Close();
 
             } // end while (RandNum > 0 || ZeroNum > 0);
 
@@ -276,17 +227,17 @@ namespace AttacheCase
 
           // As an extra precaution I change the dates of the file so the
           // original dates are hidden if you try to recover the file.
-          DateTime dt = new DateTime(2037, 1, 1, 0, 0, 0);
-          File.SetCreationTime(FilePath, dt);
-          File.SetLastAccessTime(FilePath, dt);
-          File.SetLastWriteTime(FilePath, dt);
+          var dt = new DateTime(2037, 1, 1, 0, 0, 0);
+          File.SetCreationTime(filePath, dt);
+          File.SetLastAccessTime(filePath, dt);
+          File.SetLastWriteTime(filePath, dt);
 
-          File.SetCreationTimeUtc(FilePath, dt);
-          File.SetLastAccessTimeUtc(FilePath, dt);
-          File.SetLastWriteTimeUtc(FilePath, dt);
+          File.SetCreationTimeUtc(filePath, dt);
+          File.SetLastAccessTimeUtc(filePath, dt);
+          File.SetLastWriteTimeUtc(filePath, dt);
 
           // Finally, delete the file
-          File.Delete(FilePath);
+          File.Delete(filePath);
 
         } // end foreach (string FilePath in FilePaths);
 
@@ -294,54 +245,80 @@ namespace AttacheCase
       }
       catch (Exception ex)
       {
-        System.Windows.Forms.MessageBox.Show(ex.Message.ToString());
-        e.Result = ERROR_UNEXPECTED;
-        return (ERROR_UNEXPECTED);
+        System.Windows.Forms.MessageBox.Show(ex.Message);
+        e.Result = ErrorUnexpected;
+        return (ErrorUnexpected);
+      }
+      finally
+      {
+        swProgress.Stop();
       }
 
       // Delete root directory
-      if (Directory.Exists(FilePaths[0]) == true)
+      if (Directory.Exists(filePaths[0]))
       {
         FileSystem.DeleteDirectory(
-          FilePaths[0],
+          filePaths[0],
           UIOption.OnlyErrorDialogs,
           RecycleOption.DeletePermanently,
           UICancelOption.ThrowException
         );
       }
 
-      e.Result = DELETE_SUCCEEDED;
-      return (DELETE_SUCCEEDED);
+      e.Result = DeleteSucceeded;
+      return (DeleteSucceeded);
 
     }
 
     /// <summary>
-    /// 
+    /// Retrieves a list of files matching the specified search pattern in the given root folder path.
     /// </summary>
-    /// <remarks>http://stackoverflow.com/questions/2106877/is-there-a-faster-way-than-this-to-find-all-the-files-in-a-directory-and-all-sub</remarks>
-    /// <param name="fileSearchPattern"></param>
-    /// <param name="rootFolderPath"></param>
-    /// <returns></returns>
-    public static IEnumerable<string> GetFileList(string fileSearchPattern, string rootFolderPath)
+    /// <param name="fileSearchPattern">The search pattern to match against the file names.</param>
+    /// <param name="rootFolderPath">The root folder path to start the search.</param>
+    /// <returns>An enumerable collection of file paths matching the search pattern.</returns>
+    private static IEnumerable<string> GetFileList(string fileSearchPattern, string rootFolderPath)
     {
-      Queue<string> pending = new Queue<string>();
+      var pending = new Queue<string>();
       pending.Enqueue(rootFolderPath);
-      string[] tmp;
       while (pending.Count > 0)
       {
         rootFolderPath = pending.Dequeue();
         yield return rootFolderPath;
-        tmp = Directory.GetFiles(rootFolderPath, fileSearchPattern);
-        for (int i = 0; i < tmp.Length; i++)
+        var tmp = Directory.GetFiles(rootFolderPath, fileSearchPattern);
+        foreach (var t in tmp)
         {
-          yield return tmp[i];
+          yield return t;
         }
         tmp = Directory.GetDirectories(rootFolderPath);
-        for (int i = 0; i < tmp.Length; i++)
+        foreach (var t in tmp)
         {
-          pending.Enqueue(tmp[i]);
+          pending.Enqueue(t);
         }
       }
+    }
+    
+    /// <summary>
+    /// Formats the given file size in bytes as a human-readable string.
+    /// </summary>
+    /// <param name="size">The file size in bytes.</param>
+    /// <param name="fStringByte">Whether "KiB" is added at the end or not</param>
+    /// <returns>The formatted file size string.</returns>
+    private static string FormatFileSizeString(Int64 size, bool fStringByte)
+    {
+      double sizeInKiB = size / 1024.0;
+
+      string sizeFormatted;
+      if (sizeInKiB >= 10)
+      {
+        // sizeInKiB „Åå10‰ª•‰∏ä„ÅÆ„Å®„Åç„ÅØÂ∞èÊï∞ÁÇπ‰ª•‰∏ã„ÇíË°®Á§∫„Åó„Å™„ÅÑ
+        sizeFormatted = sizeInKiB.ToString("N0") + (fStringByte ? @"KiB" : "");
+      }
+      else
+      {
+        // sizeInKiB „Åå10Êú™Ê∫Ä„ÅÆ„Å®„Åç„ÅØÂ∞èÊï∞ÁÇπ‰ª•‰∏ã2Ê°Å„Åæ„ÅßË°®Á§∫„Åô„Çã
+        sizeFormatted = sizeInKiB.ToString("N2") + (fStringByte ? @"KiB" : "");
+      }
+      return sizeFormatted;
     }
 
   }

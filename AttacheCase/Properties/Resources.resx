@@ -157,7 +157,7 @@
     <value>Files or folders that move to trash is not found.</value>
   </data>
   <data name="labelCaptionCompleted" xml:space="preserve">
-    <value>Completed.</value>
+    <value>Completed</value>
   </data>
   <data name="DialogMessageNoXpCompatiblityMode" xml:space="preserve">
     <value>Setting of Windows XP compatibility mode could not be completed. If Setting is not completed, the application can not be started.
@@ -213,7 +213,7 @@ Do you restart AttacheCase now?</value>
     <value>Password does not match, it is invalid.</value>
   </data>
   <data name="labelCaptionAborted" xml:space="preserve">
-    <value>Aborted.</value>
+    <value>Aborted</value>
   </data>
   <data name="linkLabelLatestVersion" xml:space="preserve">
     <value>Your version is latest.</value>
@@ -245,7 +245,7 @@ Do you restart AttacheCase now?</value>
     <value>Internal file index is invalid in encrypted file.</value>
   </data>
   <data name="labelProcessNameEncrypt" xml:space="preserve">
-    <value>Encypting...</value>
+    <value>Encrypting...</value>
   </data>
   <data name="labelProcessNameMoveToTrash" xml:space="preserve">
     <value>Move to Trash...</value>
@@ -345,7 +345,7 @@ But, open all of the files associated with application?</value>
     <value>Getting updates information is failed.</value>
   </data>
   <data name="labelCaptionAllSkipped" xml:space="preserve">
-    <value>Skipped.</value>
+    <value>Skipped</value>
   </data>
   <data name="DialogMessageSetupToolNotFound" xml:space="preserve">
     <value>Setup tool is not found!</value>
@@ -359,7 +359,7 @@ But, open all of the files associated with application?</value>
   <data name="SaveDialogFilterIniFilles" xml:space="preserve">
     <value>INI files (*.ini)|*.ini|All files (*.*)|*.*</value>
   </data>
-  <data name="labelComfirmToOverwriteDir" xml:space="preserve">
+  <data name="labelConfirmToOverwriteDir" xml:space="preserve">
     <value>The following directory already exists. Do you overwrite the directory to save?</value>
   </data>
   <data name="labelProcessNameDecrypt" xml:space="preserve">
@@ -374,7 +374,7 @@ But, open all of the files associated with application?</value>
   <data name="DialogMessageDecryptionError" xml:space="preserve">
     <value>Password is invalid, or the encrypted file might have been broken. Decryption is aborted.</value>
   </data>
-  <data name="labelComfirmToOverwriteFile" xml:space="preserve">
+  <data name="labelConfirmToOverwriteFile" xml:space="preserve">
     <value>The following file already exists. Do you overwrite the files to save?</value>
   </data>
   <data name="folderBrowserDialogSaveToEncryptedFile" xml:space="preserve">
@@ -405,7 +405,7 @@ But, open all of the files associated with application?</value>
     <value>File association was successful</value>
   </data>
   <data name="labelCaptionCanceled" xml:space="preserve">
-    <value>Canceled.</value>
+    <value>Canceled</value>
   </data>
   <data name="DialogMessageExecutableFile" xml:space="preserve">
     <value>It contains the executable files in the decrypted file.
@@ -719,5 +719,48 @@ Encrypt</value>
   </data>
   <data name="DialogMessageRegistrationCodeNotRegistered" xml:space="preserve">
     <value>The registration code was not successfully registered.</value>
+  </data>
+  <data name="DialogMessageCreateSelfExecutableEileLargerThan4GiB" xml:space="preserve">
+    <value>The self-executable file you create may exceed 4 GiB.The file may not work as an executable.Would you like to continue?
+(*It can be decrypted as an encrypted file even if it is not launched as an executable file.)</value>
+  </data>
+  <data name="labelEncryptionAbortedToExceed4GiB" xml:space="preserve">
+    <value>The encryption process was aborted because the self-executable file could exceed 4GiB.</value>
+  </data>
+  <data name="labelDeleteTypeRandom" xml:space="preserve">
+    <value>Random</value>
+  </data>
+  <data name="labelDeleteTypeZeros" xml:space="preserve">
+    <value>Zeros</value>
+  </data>
+  <data name="labelDeleteMessageBytes" xml:space="preserve">
+    <value>Bytes</value>
+  </data>
+  <data name="MessageBoxShowDetails" xml:space="preserve">
+    <value>Show&amp;Details</value>
+  </data>
+  <data name="MessageBoxHideDetails" xml:space="preserve">
+    <value>Hide &amp;Details</value>
+  </data>
+  <data name="MessageBoxFileVerifyFailed" xml:space="preserve">
+    <value>Failed to verify the following file. The files may have been modified or corrupted. How do I proceed?</value>
+  </data>
+  <data name="MessageBoxButtonProceed" xml:space="preserve">
+    <value>&amp;Proceed</value>
+  </data>
+  <data name="MessageBoxButtonAbort" xml:space="preserve">
+    <value>&amp;Abort</value>
+  </data>
+  <data name="MessageBoxButtonCancel" xml:space="preserve">
+    <value>&amp;Cancel</value>
+  </data>
+  <data name="MessageBoxDetailedInformation" xml:space="preserve">
+    <value>More Info:
+To ensure that the file is decrypted correctly, the unique value (MD5 hash) of the original file is written to the file before encryption and is checked during decryption.
+
+- Encrypted file hash value: {0}
+- File hash value after decryption: {1}.
+
+If these hash values do not match, the file may have been modified from its original state or corrupted. Please use this information to determine if you wish to proceed with decryption.</value>
   </data>
 </root>
