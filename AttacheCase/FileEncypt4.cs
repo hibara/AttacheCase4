@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Reflection;
+using System.Windows;
 using System.Xml;
 using System.Xml.Linq;
 #if __MACOS__
@@ -38,35 +39,35 @@ namespace AttacheCase
   public partial class FileEncrypt4
   {
     // Status code
-    private const int ENCRYPT_SUCCEEDED  = 1; // Encrypt is succeeded.
-    private const int DECRYPT_SUCCEEDED  = 2; // Decrypt is succeeded.
-    private const int DELETE_SUCCEEDED   = 3; // Delete is succeeded.
-    private const int READY_FOR_ENCRYPT  = 4; // Getting ready for encryption or decryption.
-    private const int READY_FOR_DECRYPT  = 5; // Getting ready for encryption or decryption.
-    private const int ENCRYPTING         = 6; // Ecrypting.
-    private const int DECRYPTING         = 7; // Decrypting.
-    private const int DELETING           = 8; // Deleting.
+    private const int ENCRYPT_SUCCEEDED = 1; // Encrypt is succeeded.
+    private const int DECRYPT_SUCCEEDED = 2; // Decrypt is succeeded.
+    private const int DELETE_SUCCEEDED = 3; // Delete is succeeded.
+    private const int READY_FOR_ENCRYPT = 4; // Getting ready for encryption or decryption.
+    private const int READY_FOR_DECRYPT = 5; // Getting ready for encryption or decryption.
+    private const int ENCRYPTING = 6; // Ecrypting.
+    private const int DECRYPTING = 7; // Decrypting.
+    private const int DELETING = 8; // Deleting.
 
     // Error code
-    private const int USER_CANCELED            = -1;   // User cancel.
-    private const int ERROR_UNEXPECTED         = -100;
-    private const int NOT_ATC_DATA             = -101;
-    private const int ATC_BROKEN_DATA          = -102;
-    private const int NO_DISK_SPACE            = -103;
-    private const int FILE_INDEX_NOT_FOUND     = -104;
+    private const int USER_CANCELED = -1;   // User cancel.
+    private const int ERROR_UNEXPECTED = -100;
+    private const int NOT_ATC_DATA = -101;
+    private const int ATC_BROKEN_DATA = -102;
+    private const int NO_DISK_SPACE = -103;
+    private const int FILE_INDEX_NOT_FOUND = -104;
     private const int PASSWORD_TOKEN_NOT_FOUND = -105;
-    private const int NOT_CORRECT_HASH_VALUE   = -106;
-    private const int INVALID_FILE_PATH        = -107;
-    private const int OS_DENIES_ACCESS         = -108;
-    private const int DATA_NOT_FOUND           = -109;
-    private const int DIRECTORY_NOT_FOUND      = -110;
-    private const int DRIVE_NOT_FOUND          = -111;
-    private const int FILE_NOT_LOADED          = -112;
-    private const int FILE_NOT_FOUND           = -113;
-    private const int PATH_TOO_LONG            = -114;
-    private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
-    private const int RSA_KEY_GUID_NOT_MATCH   = -116;
-    private const int IO_EXCEPTION             = -117;
+    private const int NOT_CORRECT_HASH_VALUE = -106;
+    private const int INVALID_FILE_PATH = -107;
+    private const int OS_DENIES_ACCESS = -108;
+    private const int DATA_NOT_FOUND = -109;
+    private const int DIRECTORY_NOT_FOUND = -110;
+    private const int DRIVE_NOT_FOUND = -111;
+    private const int FILE_NOT_LOADED = -112;
+    private const int FILE_NOT_FOUND = -113;
+    private const int PATH_TOO_LONG = -114;
+    private const int CRYPTOGRAPHIC_EXCEPTION = -115;
+    private const int RSA_KEY_GUID_NOT_MATCH = -116;
+    private const int IO_EXCEPTION = -117;
 
     private byte[] buffer;
     private const int BUFFER_SIZE = 4096;
@@ -75,7 +76,7 @@ namespace AttacheCase
     private static bool fBrocken = false;
     private const string STRING_TOKEN_NORMAL = "_AttacheCaseData";
     private const string STRING_TOKEN_BROKEN = "_Atc_Broken_Data";
-    private const string STRING_TOKEN_RSA    = "_AttacheCase_Rsa";
+    private const string STRING_TOKEN_RSA = "_AttacheCase_Rsa";
     private const int DATA_FILE_VERSION = 140;  // ver.4
     private const string ATC_ENCRYPTED_TOKEN = "atc4";
 
@@ -177,7 +178,8 @@ namespace AttacheCase
     public string RsaPublicKeyXmlString
     {
       get { return this._RsaPublicKeyXmlString; }
-      set { 
+      set
+      {
         this._RsaPublicKeyXmlString = value;
         this._fRsaEncryption = true;
       }
@@ -229,6 +231,11 @@ namespace AttacheCase
       get { return this._ErrorMessage; }
     }
 
+#if DEBUG
+    private Stopwatch swDebugEncrypt = new Stopwatch();
+#endif
+
+
     // Constructor
     public FileEncrypt4()
     {
@@ -244,7 +251,7 @@ namespace AttacheCase
     /// <returns>Encryption success(true) or failed(false)</returns>
     public bool Encrypt(
       object sender, DoWorkEventArgs e,
-      string[] FilePaths, string OutFilePath, string Password, byte[] PasswordBinary, 
+      string[] FilePaths, string OutFilePath, string Password, byte[] PasswordBinary,
       string NewArchiveName, CompressionLevel compressionLevel)
     {
 
@@ -254,6 +261,7 @@ namespace AttacheCase
       lg.Info(OutFilePath);
       lg.Info("Encryotion satrt.");
       lg.StopWatchStart();
+      swDebugEncrypt.Start();
 #endif
 
       _AtcFilePath = OutFilePath;
@@ -297,7 +305,7 @@ namespace AttacheCase
 
       // Salt
       Rfc2898DeriveBytes deriveBytes;
-      if(PasswordBinary == null)
+      if (PasswordBinary == null)
       { // String Password
         deriveBytes = new Rfc2898DeriveBytes(Password, 8, 1000);
       }
@@ -397,9 +405,9 @@ namespace AttacheCase
             //RSACryptoServiceProviderオブジェクトの作成
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(2048);
             rsa.FromXmlString(_RsaPublicKeyXmlString); //公開鍵を指定
-           //byte[] outbuffer = new byte[214];  // 剰余サイズ(256bytes) -2 -2 * hLen(SHA-1) = 214 Max 
-            //string debugString = BitConverter.ToString(byteRsaPassword);
-            //Console.WriteLine(debugString);
+                                                       //byte[] outbuffer = new byte[214];  // 剰余サイズ(256bytes) -2 -2 * hLen(SHA-1) = 214 Max 
+                                                       //string debugString = BitConverter.ToString(byteRsaPassword);
+                                                       //Console.WriteLine(debugString);
             byte[] encryptedData = rsa.Encrypt(byteRsaPassword, RSAEncryptionPadding.OaepSHA1); //OAEPパディング=trueでRSA復号
             outfs.Write(encryptedData, 0, encryptedData.Length);  // 256 byte
           }
@@ -435,21 +443,21 @@ namespace AttacheCase
               OneLine += FileLen.ToString() + "\t";
 #endif
               ms.Write(byteArray, 0, 2);
-              
+
               // File name
               byteArray = Encoding.UTF8.GetBytes(NewArchiveName);
 #if DEBUG
               OneLine += NewArchiveName + "\t";
 #endif
               ms.Write(byteArray, 0, FileLen);
-              
+
               // File size
               byteArray = BitConverter.GetBytes((Int64)0);
 #if DEBUG
               OneLine += "0\t";
 #endif
               ms.Write(byteArray, 0, 8);
-              
+
               // File attribute
               byteArray = BitConverter.GetBytes((int)16);
 #if DEBUG
@@ -962,6 +970,14 @@ namespace AttacheCase
           File.SetLastWriteTime(_AtcFilePath, dtUpdate);
         }
 
+#if DEBUG
+        swDebugEncrypt.Stop();
+        var ts = swEncrypt.Elapsed;
+        _EncryptionTimeString = AtcFilePath + Environment.NewLine +
+          Convert.ToString(ts.Hours) + "h" + Convert.ToString(ts.Minutes) + "m" +
+          Convert.ToString(ts.Seconds) + "s" + Convert.ToString(ts.Milliseconds) + "ms";
+        MessageBox.Show(_EncryptionTimeString, "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+#endif
         //Encryption succeed.
         _ReturnCode = ENCRYPT_SUCCEEDED;
         return (true);
@@ -1042,6 +1058,7 @@ namespace AttacheCase
 #if (DEBUG)
         lg.StopWatchStop();
         lg.Info("encryption finished!");
+        swDebugEncrypt.Stop();
 #endif
         swEncrypt.Stop();
         swProgress.Stop();
