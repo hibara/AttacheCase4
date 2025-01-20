@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2024  Mitsuhiro Hibara
+// Copyright (C) 2016-2025  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -24,40 +24,40 @@ using System.Windows.Forms;
 namespace AtcSetup
 {
 
-	static class Program
-	{
+  static class Program
+  {
 
-		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		static extern bool SetDllDirectory(string lpPathName);
-		[DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
-		static extern bool SetDefaultDllDirectories(uint directoryFlags);
-		// LOAD_LIBRARY_SEARCH_APPLICATION_DIR : 0x00000200
-		// LOAD_LIBRARY_SEARCH_DEFAULT_DIRS    : 0x00001000
-		// LOAD_LIBRARY_SEARCH_SYSTEM32        : 0x00000800
-		// LOAD_LIBRARY_SEARCH_USER_DIRS       : 0x00000400
-		private const uint DllSearchFlags = 0x00000800;
+    [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    static extern bool SetDllDirectory(string lpPathName);
+    [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
+    static extern bool SetDefaultDllDirectories(uint directoryFlags);
+    // LOAD_LIBRARY_SEARCH_APPLICATION_DIR : 0x00000200
+    // LOAD_LIBRARY_SEARCH_DEFAULT_DIRS    : 0x00001000
+    // LOAD_LIBRARY_SEARCH_SYSTEM32        : 0x00000800
+    // LOAD_LIBRARY_SEARCH_USER_DIRS       : 0x00000400
+    private const uint DllSearchFlags = 0x00000800;
 
-		/// <summary>
-		/// アプリケーションのメイン エントリ ポイントです。
-		/// </summary>
-		[STAThread]
-		static void Main()
-		{
-			// DLLプリロード攻撃対策
-			// Prevent DLL preloading attacks
-			SetDllDirectory(null);
-			SetDefaultDllDirectories(DllSearchFlags);
+    /// <summary>
+    /// アプリケーションのメイン エントリ ポイントです。
+    /// </summary>
+    [STAThread]
+    static void Main()
+    {
+      // DLLプリロード攻撃対策
+      // Prevent DLL preloading attacks
+      SetDllDirectory(null);
+      SetDefaultDllDirectories(DllSearchFlags);
 
-			CultureInfo ci = Thread.CurrentThread.CurrentUICulture;
-			//Console.WriteLine(ci.Name);  // ja-JP
-			if (ci.Name == "ja-JP")
-			{
-				Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP", true);
-			}
+      CultureInfo ci = Thread.CurrentThread.CurrentUICulture;
+      //Console.WriteLine(ci.Name);  // ja-JP
+      if (ci.Name == "ja-JP")
+      {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP", true);
+      }
 
-			Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
-			Application.Run(new Form1());
-		}
-	}
+      Application.EnableVisualStyles();
+      Application.SetCompatibleTextRenderingDefault(false);
+      Application.Run(new Form1());
+    }
+  }
 }

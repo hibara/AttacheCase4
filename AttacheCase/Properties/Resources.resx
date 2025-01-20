@@ -763,4 +763,7 @@ To ensure that the file is decrypted correctly, the unique value (MD5 hash) of t
 
 If these hash values do not match, the file may have been modified from its original state or corrupted. Please use this information to determine if you wish to proceed with decryption.</value>
   </data>
+  <data name="labelCreatingFileList" xml:space="preserve">
+    <value>Creating file list</value>
+  </data>
 </root>

@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2024  Mitsuhiro Hibara
+// Copyright (C) 2016-2025  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -30,80 +30,80 @@ using System.Text;
 namespace Exeout
 {
   public partial class Form1 : Form
-	{
+  {
     // Status code
     //private const int ENCRYPT_SUCCEEDED   = 1; // Encrypt is succeeded.
-    private const int DECRYPT_SUCCEEDED     = 2; // Decrypt is succeeded.
+    private const int DECRYPT_SUCCEEDED = 2; // Decrypt is succeeded.
     //private const int DELETE_SUCCEEDED    = 3; // Delete is succeeded.
-    private const int HEADER_DATA_READING   = 4; // Header data is reading.
+    private const int HEADER_DATA_READING = 4; // Header data is reading.
     //private const int ENCRYPTING          = 5; // Ecrypting.
-    private const int DECRYPTING            = 6; // Decrypting.
-                                                 //private const int DELETING            = 7; // Deleting.
+    private const int DECRYPTING = 6; // Decrypting.
+                                      //private const int DELETING            = 7; // Deleting.
 
     // Error Code
-    private const int USER_CANCELED            = -1;
-    private const int ERROR_UNEXPECTED         = -100;
-    private const int NOT_ATC_DATA             = -101;
-    private const int ATC_BROKEN_DATA          = -102;
-    private const int NO_DISK_SPACE            = -103;
-    private const int FILE_INDEX_NOT_FOUND     = -104;
+    private const int USER_CANCELED = -1;
+    private const int ERROR_UNEXPECTED = -100;
+    private const int NOT_ATC_DATA = -101;
+    private const int ATC_BROKEN_DATA = -102;
+    private const int NO_DISK_SPACE = -103;
+    private const int FILE_INDEX_NOT_FOUND = -104;
     private const int PASSWORD_TOKEN_NOT_FOUND = -105;
-    private const int NOT_CORRECT_HASH_VALUE   = -106;
-    private const int INVALID_FILE_PATH        = -107;
-    private const int OS_DENIES_ACCESS         = -108;
-    private const int DATA_NOT_FOUND           = -109;
-    private const int DIRECTORY_NOT_FOUND      = -110;
-    private const int DRIVE_NOT_FOUND          = -111;
-    private const int FILE_NOT_LOADED          = -112;
-    private const int FILE_NOT_FOUND           = -113;
-    private const int PATH_TOO_LONG            = -114;
-    private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
-    private const int RSA_KEY_GUID_NOT_MATCH   = -116;
-    private const int IO_EXCEPTION             = -117;
+    private const int NOT_CORRECT_HASH_VALUE = -106;
+    private const int INVALID_FILE_PATH = -107;
+    private const int OS_DENIES_ACCESS = -108;
+    private const int DATA_NOT_FOUND = -109;
+    private const int DIRECTORY_NOT_FOUND = -110;
+    private const int DRIVE_NOT_FOUND = -111;
+    private const int FILE_NOT_LOADED = -112;
+    private const int FILE_NOT_FOUND = -113;
+    private const int PATH_TOO_LONG = -114;
+    private const int CRYPTOGRAPHIC_EXCEPTION = -115;
+    private const int RSA_KEY_GUID_NOT_MATCH = -116;
+    private const int IO_EXCEPTION = -117;
 
     public static BackgroundWorker bkg;
-		public int LimitOfInputPassword = -1;
-		private FileDecrypt4 decryption = null;
-		string TempDecryptionPassFilePath = "";
+    public int LimitOfInputPassword = -1;
+    private FileDecrypt4 decryption = null;
+    string TempDecryptionPassFilePath = "";
 
-		public Form1()
-		{
-			InitializeComponent();
-			this.Text = Path.GetFileName(Application.ExecutablePath);
+    public Form1()
+    {
+      InitializeComponent();
+      this.Text = Path.GetFileName(Application.ExecutablePath);
     }
 
-		private void Form1_Load(object sender, EventArgs e)
-		{
+    private void Form1_Load(object sender, EventArgs e)
+    {
       // Copyright info
       toolStripStatusLabel1.Text = ApplicationInfo.CopyrightHolder;
     }
 
-		private void Form1_Shown(object sender, EventArgs e)
-		{
-			textBox1.Focus();
-			textBox1.SelectAll();
-		}
+    private void Form1_Shown(object sender, EventArgs e)
+    {
+      textBox1.Focus();
+      textBox1.SelectAll();
+    }
 
-		private void checkBoxNotMaskPassword_CheckedChanged(object sender, EventArgs e)
-		{
-			if (checkBoxNotMaskPassword.Checked == true)
-			{
+    private void checkBoxNotMaskPassword_CheckedChanged(object sender, EventArgs e)
+    {
+      if (checkBoxNotMaskPassword.Checked == true)
+      {
         textBox1.PasswordChar = (char)0;
         textBox1.UseSystemPasswordChar = false;
       }
       else
-			{
+      {
         textBox1.UseSystemPasswordChar = true;
       }
     }
 
-		private void textBox1_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (e.KeyCode == Keys.Enter)
-			{
-				buttonDecrypt_Click(sender, e);
-			}
-		}
+    private void textBox1_KeyDown(object sender, KeyEventArgs e)
+    {
+      if (e.KeyCode == Keys.Enter)
+      {
+        buttonDecrypt_Click(sender, e);
+      }
+    }
 
     private void buttonExit_Click(object sender, EventArgs e)
     {
@@ -153,47 +153,47 @@ namespace Exeout
     /// <param name="sender"></param>
     /// <param name="e"></param>
     private void buttonDecrypt_Click(object sender, EventArgs e)
-		{
+    {
       buttonDecrypt.Enabled = false;
-			checkBoxNotMaskPassword.Visible = false;
-			progressBar1.Location = textBox1.Location;
-			progressBar1.Width = textBox1.Width;
-			progressBar1.Visible = true;
-			labelPercent.Text = "- %";
+      checkBoxNotMaskPassword.Visible = false;
+      progressBar1.Location = textBox1.Location;
+      progressBar1.Width = textBox1.Width;
+      progressBar1.Visible = true;
+      labelPercent.Text = "- %";
 
-			//-----------------------------------
-			// Directory to oputput decrypted files
-			//-----------------------------------
-			string OutDirPath = Path.GetDirectoryName(Application.ExecutablePath);
+      //-----------------------------------
+      // Directory to oputput decrypted files
+      //-----------------------------------
+      string OutDirPath = Path.GetDirectoryName(Application.ExecutablePath);
 
-			//-----------------------------------
-			// Decryption password
-			//-----------------------------------
-			string DecryptionPassword = textBox1.Text;
-		
-			//-----------------------------------
-			// Password file
-			//-----------------------------------
+      //-----------------------------------
+      // Decryption password
+      //-----------------------------------
+      string DecryptionPassword = textBox1.Text;
 
-			// Drag & Drop Password file
-			byte[] DecryptionPasswordBinary = null;
-			if (File.Exists(TempDecryptionPassFilePath) == true)
-			{
-				DecryptionPasswordBinary = GetSha256FromFile(TempDecryptionPassFilePath);
-			}
-		
-			//-----------------------------------
-			// Preparing for decrypting
-			// 
-			//-----------------------------------
-			decryption = new FileDecrypt4(Application.ExecutablePath);
+      //-----------------------------------
+      // Password file
+      //-----------------------------------
 
-			if (decryption.TokenStr == "_AttacheCaseData")
-			{
-				// Encryption data ( O.K. )
-			}
-			else if (decryption.TokenStr == "_Atc_Broken_Data")
-			{
+      // Drag & Drop Password file
+      byte[] DecryptionPasswordBinary = null;
+      if (File.Exists(TempDecryptionPassFilePath) == true)
+      {
+        DecryptionPasswordBinary = GetSha256FromFile(TempDecryptionPassFilePath);
+      }
+
+      //-----------------------------------
+      // Preparing for decrypting
+      // 
+      //-----------------------------------
+      decryption = new FileDecrypt4(Application.ExecutablePath);
+
+      if (decryption.TokenStr == "_AttacheCaseData")
+      {
+        // Encryption data ( O.K. )
+      }
+      else if (decryption.TokenStr == "_Atc_Broken_Data")
+      {
         //
         // エラー
         // この暗号化ファイルは壊れています。処理を中止します。
@@ -208,9 +208,9 @@ namespace Exeout
         //labelMessage.Text = "Process of decryption has been aborted.";
 
         return;
-			}
-			else
-			{
+      }
+      else
+      {
         // 
         // エラー
         // 暗号化ファイルではありません。処理を中止します。
@@ -218,7 +218,7 @@ namespace Exeout
         // Alert
         // The file is not encrypted file. The process is aborted.
         // 
-        MessageBox.Show(new Form { TopMost = true }, Resources.DialogMessageNotAtcFile, 
+        MessageBox.Show(new Form { TopMost = true }, Resources.DialogMessageNotAtcFile,
           Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
         labelMessage.Text = Resources.labelCaptionAborted;
@@ -226,12 +226,12 @@ namespace Exeout
         labelPercent.Text = "- %";
 
         return;
-			}
+      }
 
-			if (LimitOfInputPassword == -1)
-			{
-				LimitOfInputPassword = decryption.MissTypeLimits;
-			}
+      if (LimitOfInputPassword == -1)
+      {
+        LimitOfInputPassword = decryption.MissTypeLimits;
+      }
 
 #if (DEBUG)
       System.Windows.Forms.MessageBox.Show("BackgroundWorker event handler.");
@@ -239,9 +239,9 @@ namespace Exeout
       //======================================================================
       // BackgroundWorker event handler
       bkg = new BackgroundWorker();
-			bkg.RunWorkerCompleted += backgroundWorker_RunWorkerCompleted;
-			bkg.ProgressChanged += backgroundWorker_ProgressChanged;
-			bkg.WorkerReportsProgress = true;
+      bkg.RunWorkerCompleted += backgroundWorker_RunWorkerCompleted;
+      bkg.ProgressChanged += backgroundWorker_ProgressChanged;
+      bkg.WorkerReportsProgress = true;
 
 #if (DEBUG)
       System.Windows.Forms.MessageBox.Show("Decryption start.");
@@ -252,24 +252,24 @@ namespace Exeout
       // Refer：http://stackoverflow.com/questions/4807152/sending-arguments-to-background-worker
       //======================================================================
       bkg.DoWork += (s, d) =>
-			{
-				decryption.Decrypt(
-					s, d,
-					Application.ExecutablePath, OutDirPath, DecryptionPassword, DecryptionPasswordBinary,
-					DialogMessageForOverWrite);
-			};
+      {
+        decryption.Decrypt(
+          s, d,
+          Application.ExecutablePath, OutDirPath, DecryptionPassword, DecryptionPasswordBinary,
+          DialogMessageForOverWrite);
+      };
 
-			bkg.RunWorkerAsync();
-			
-		}
+      bkg.RunWorkerAsync();
+
+    }
 
     //======================================================================
     // Backgroundworker
     //======================================================================
-#region
+    #region
 
     private void backgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-		{
+    {
       if (e.ProgressPercentage > 0)
       {
         ArrayList MessageList = (ArrayList)e.UserState;
@@ -295,12 +295,12 @@ namespace Exeout
     }
 
     private void backgroundWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-		{
+    {
 
 #if (DEBUG)
       System.Windows.Forms.MessageBox.Show("backgroundWorker_RunWorkerCompleted");
 #endif
-                                
+
       if (e.Cancelled)
       {
         // Canceled
@@ -393,8 +393,8 @@ namespace Exeout
             // 
             MessageBox.Show(new Form { TopMost = true }, Resources.DialogMessageAccessDeny,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-              labelMessage.Text = Resources.labelCaptionAborted;
-              labelPercent.Text = "- %";
+            labelMessage.Text = Resources.labelCaptionAborted;
+            labelPercent.Text = "- %";
             decryption = null;
             return;
 
@@ -405,11 +405,11 @@ namespace Exeout
             //
             // Error
             // The file is not encrypted file. The process is aborted.
-            MessageBox.Show(new Form { TopMost = true }, 
+            MessageBox.Show(new Form { TopMost = true },
               Resources.DialogMessageNotAtcFile + Environment.NewLine + decryption.ErrorFilePath,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-              labelMessage.Text = Resources.labelCaptionAborted;
-              labelPercent.Text = "- %";
+            labelMessage.Text = Resources.labelCaptionAborted;
+            labelPercent.Text = "- %";
             decryption = null;
             return;
 
@@ -420,11 +420,11 @@ namespace Exeout
             //
             // Error
             // Encrypted file ( atc ) is broken. The process is aborted.
-            MessageBox.Show(new Form { TopMost = true }, 
+            MessageBox.Show(new Form { TopMost = true },
               Resources.DialogMessageAtcFileBroken + Environment.NewLine + decryption.ErrorFilePath,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-              labelMessage.Text = Resources.labelCaptionAborted;
-              labelPercent.Text = "- %";
+            labelMessage.Text = Resources.labelCaptionAborted;
+            labelPercent.Text = "- %";
             decryption = null;
             return;
 
@@ -437,8 +437,8 @@ namespace Exeout
             // No free space on the disk. The process is aborted.
             MessageBox.Show(new Form { TopMost = true }, Resources.DialogMessageNoDiskSpace,
               Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-              labelMessage.Text = Resources.labelCaptionAborted;
-              labelPercent.Text = "- %";
+            labelMessage.Text = Resources.labelCaptionAborted;
+            labelPercent.Text = "- %";
             decryption = null;
             return;
 
@@ -451,8 +451,8 @@ namespace Exeout
             // Internal file index is invalid in encrypted file.
             MessageBox.Show(Resources.DialogMessageFileIndexInvalid,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-              labelMessage.Text = Resources.labelCaptionAborted;
-              labelPercent.Text = "- %";
+            labelMessage.Text = Resources.labelCaptionAborted;
+            labelPercent.Text = "- %";
             decryption = null;
             return;
 
@@ -478,11 +478,11 @@ namespace Exeout
             //
             // Error
             // The path of files or folders are invalid. The process is aborted.
-            MessageBox.Show(new Form { TopMost = true }, 
+            MessageBox.Show(new Form { TopMost = true },
               Resources.DialogMessageInvalidFilePath + Environment.NewLine + decryption.ErrorFilePath,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-              labelMessage.Text = Resources.labelCaptionAborted;
-              labelPercent.Text = "- %";
+            labelMessage.Text = Resources.labelCaptionAborted;
+            labelPercent.Text = "- %";
             decryption = null;
             return;
 
@@ -510,8 +510,8 @@ namespace Exeout
             // Decryption failed.
             MessageBox.Show(new Form { TopMost = true }, Resources.DialogMessageDataNotFound,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-              labelMessage.Text = Resources.labelCaptionAborted;
-              labelPercent.Text = "- %";
+            labelMessage.Text = Resources.labelCaptionAborted;
+            labelPercent.Text = "- %";
             decryption = null;
             return;
 
@@ -524,8 +524,8 @@ namespace Exeout
             // An unexpected error has occurred. And stops processing.
             MessageBox.Show(new Form { TopMost = true }, Resources.DialogMessageUnexpectedError,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-              labelMessage.Text = Resources.labelCaptionAborted;
-              labelPercent.Text = "- %";
+            labelMessage.Text = Resources.labelCaptionAborted;
+            labelPercent.Text = "- %";
             decryption = null;
             return;
 
@@ -575,30 +575,30 @@ namespace Exeout
 
       }
 
-		}
+    }
 
-#endregion
+    #endregion
 
-		//----------------------------------------------------------------------
-		/// <summary>
-		/// 上書きの確認をするダイアログ表示とユーザー応答内容の受け渡し
-		/// Show dialog for confirming to overwrite, and passing user command. 
-		/// </summary>
-		//----------------------------------------------------------------------
-		System.Threading.ManualResetEvent _busy = new System.Threading.ManualResetEvent(false);
-		private void DialogMessageForOverWrite(int FileType, string FilePath)
-		{
-			if (decryption.TempOverWriteOption == 2)
-			{	// Overwrite all
-				return;
-			}
+    //----------------------------------------------------------------------
+    /// <summary>
+    /// 上書きの確認をするダイアログ表示とユーザー応答内容の受け渡し
+    /// Show dialog for confirming to overwrite, and passing user command. 
+    /// </summary>
+    //----------------------------------------------------------------------
+    System.Threading.ManualResetEvent _busy = new System.Threading.ManualResetEvent(false);
+    private void DialogMessageForOverWrite(int FileType, string FilePath)
+    {
+      if (decryption.TempOverWriteOption == 2)
+      { // Overwrite all
+        return;
+      }
 
-			if (!bkg.IsBusy)
-			{
-				bkg.RunWorkerAsync();
-				// Unblock the worker 
-				_busy.Set();
-			}
+      if (!bkg.IsBusy)
+      {
+        bkg.RunWorkerAsync();
+        // Unblock the worker 
+        _busy.Set();
+      }
 
       string DialogMessageText;
       if (File.Exists(FilePath))
@@ -626,19 +626,19 @@ namespace Exeout
 
       _busy.Reset();
 
-		}
+    }
 
-		/// <summary>
-		/// Update to decrypt progress display.
-		/// 復号処理の進捗状況を更新する
-		/// </summary>
-		/// <param name="size"></param>
-		/// <param name="TotalSize"></param>
-		private void UpdateDecryptProgress(Int64 TotalSize, Int64 TotalFileSize, int StatusCode, string MessageText)
-		{
-			float percent = (float)TotalSize / TotalFileSize;
-			bkg.ReportProgress((int)(percent * 10000), MessageText);
-		}
+    /// <summary>
+    /// Update to decrypt progress display.
+    /// 復号処理の進捗状況を更新する
+    /// </summary>
+    /// <param name="size"></param>
+    /// <param name="TotalSize"></param>
+    private void UpdateDecryptProgress(Int64 TotalSize, Int64 TotalFileSize, int StatusCode, string MessageText)
+    {
+      float percent = (float)TotalSize / TotalFileSize;
+      bkg.ReportProgress((int)(percent * 10000), MessageText);
+    }
 
     /// 計算してチェックサム（SHA-256）を得る
     /// Get a check sum (SHA-256) to calculate
@@ -666,47 +666,47 @@ namespace Exeout
     /// <returns></returns>
     //----------------------------------------------------------------------
     public bool BreakTheFile(string FilePath)
-		{
-			using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite))
-			{
-				byte[] byteArray = new byte[16];
-				if (fs.Read(byteArray, 4, 16) == 16)
-				{
-					string TokenStr = System.Text.Encoding.ASCII.GetString(byteArray);
-					if (TokenStr == "_AttacheCaseData")
-					{
-						// Rewriting Token
-						fs.Seek(4, SeekOrigin.Begin);
-						byteArray = System.Text.Encoding.ASCII.GetBytes("_Atc_Broken_Data");
-						fs.Write(byteArray, 0, 16);
+    {
+      using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite))
+      {
+        byte[] byteArray = new byte[16];
+        if (fs.Read(byteArray, 4, 16) == 16)
+        {
+          string TokenStr = System.Text.Encoding.ASCII.GetString(byteArray);
+          if (TokenStr == "_AttacheCaseData")
+          {
+            // Rewriting Token
+            fs.Seek(4, SeekOrigin.Begin);
+            byteArray = System.Text.Encoding.ASCII.GetBytes("_Atc_Broken_Data");
+            fs.Write(byteArray, 0, 16);
 
-						// Break IV of the file
-						byteArray = new byte[32];
-						RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
-						rng.GetNonZeroBytes(byteArray);
+            // Break IV of the file
+            byteArray = new byte[32];
+            RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider();
+            rng.GetNonZeroBytes(byteArray);
 
-						fs.Seek(32, SeekOrigin.Begin);
-						fs.Write(byteArray, 0, 32);
-					}
-					else if (TokenStr == "_Atc_Broken_Data")
-					{
-						// broken already
-						return (true);
-					}
-					else
-					{	// Token is not found.
-						return (false);
-					}
-				}
-				else
-				{
-					return (false);
-				}
+            fs.Seek(32, SeekOrigin.Begin);
+            fs.Write(byteArray, 0, 32);
+          }
+          else if (TokenStr == "_Atc_Broken_Data")
+          {
+            // broken already
+            return (true);
+          }
+          else
+          { // Token is not found.
+            return (false);
+          }
+        }
+        else
+        {
+          return (false);
+        }
 
-			}// end using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read));
+      }// end using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read));
 
-			return (true);
-		}
+      return (true);
+    }
 
   }
 

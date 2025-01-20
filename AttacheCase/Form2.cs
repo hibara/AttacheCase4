@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2024  Mitsuhiro Hibara
+// Copyright (C) 2016-2025  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ namespace AttacheCase
     private void Form2_Load(object sender, EventArgs e)
     {
       //labelAppName.Text = Application.ProductName;
-      labelVersion.Text = "Version." + ApplicationInfo.Version;
+      labelVersion.Text = @"Version." + ApplicationInfo.Version;
       labelCopyright.Text = ApplicationInfo.CopyrightHolder;
       linkLabelCheckForUpdates.Left = pictureBoxApplicationIcon.Left;
 
@@ -50,8 +50,8 @@ namespace AttacheCase
       tabControl1.Visible = false;
 
       // レジストレーションコードのチェック
-      LicenseRegister lcr = new LicenseRegister("");
-      if ( lcr.Decypt(false) == true)
+      var lcr = new LicenseRegister("");
+      if (lcr.Decypt(false) == true)
       {
         // 商用ライセンス適用
         // Commercial license applicable
@@ -67,7 +67,7 @@ namespace AttacheCase
 
         // 商用利用ライセンスパネルの表示
         panelCommercialLicense.Left = 16;
-        panelCommercialLicense.Width = panelVersion.Width - panelCommercialLicense.Left*2;
+        panelCommercialLicense.Width = panelVersion.Width - panelCommercialLicense.Left * 2;
         panelCommercialLicense.Visible = true;
         // バージョン情報ページを表示する
         panelRegistration.Visible = false;
@@ -114,11 +114,11 @@ namespace AttacheCase
         // ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
         using (WebClient webClient = new WebClient())
         {
-          Stream stream = webClient.OpenRead(new Uri("https://hibara.org/software/attachecase/current/index.php"));
-          using (StreamReader sr = new StreamReader(stream))
+          var stream = webClient.OpenRead(new Uri("https://hibara.org/software/attachecase/current/index.php"));
+          using (var sr = new StreamReader(stream))
           {
             var content = sr.ReadToEnd();
-            int current = int.Parse(content);
+            var current = int.Parse(content);
             if (current > AppSettings.Instance.AppVersion)
             {
               pictureBoxProgressCircle.Image = pictureBoxExclamationMark.Image;
@@ -135,7 +135,7 @@ namespace AttacheCase
           }
         }
       }
-      catch(Exception ex)
+      catch (Exception ex)
       {
         // "Getting updates information is failed."
         linkLabelCheckForUpdates.Text = Resources.linkLabelCheckForUpdatesFailed;
@@ -170,7 +170,7 @@ namespace AttacheCase
 
         labelFreeLicence.Visible = false;      // フリー利用文字を非表示
         buttonRegisterLicense.Visible = false; // 登録ボタンの消去
-        
+
         // 商用利用登録パネルの表示
         panelCommercialLicense.Visible = true;
         // バージョン情報ページを表示する
@@ -231,7 +231,7 @@ namespace AttacheCase
     {
       // Remove this commercial license?
       // この商用ライセンスを削除しますか？
-      DialogResult result = MessageBox.Show(
+      var result = MessageBox.Show(
         Resources.DialogMessageDeleteCommercialLicense, Resources.DialogTitleQuestion,
         MessageBoxButtons.YesNo,
         MessageBoxIcon.Exclamation,
@@ -257,7 +257,7 @@ namespace AttacheCase
 
         // レジストレーションコード入力欄を空にする
         // Empty the registration code entry field
-        textBox1.Text = ""; 
+        textBox1.Text = "";
 
         labelFreeLicence.Visible = true;      // フリー利用文字を再表示
         buttonRegisterLicense.Visible = true; // 登録ボタンの表示
@@ -277,61 +277,62 @@ namespace AttacheCase
 
   /// <summary>
   /// アセンブリ情報を取得する
-  /// Get assembly infomations
+  /// Get assembly information
   /// http://stackoverflow.com/questions/909555/how-can-i-get-the-assembly-file-version
   /// </summary>
-  static public class ApplicationInfo
+  public static class ApplicationInfo
   {
-    public static Version Version { get { return Assembly.GetCallingAssembly().GetName().Version; } }
-	  public static string Title
-	  {
-		  get
-		  {
-			  object[] attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
-			  if (attributes.Length > 0)
-			  {
-				  AssemblyTitleAttribute titleAttribute = (AssemblyTitleAttribute)attributes[0];
-				  if (titleAttribute.Title.Length > 0) return titleAttribute.Title;
-			  }
-			  return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
-		  }
-	  }
+    public static Version Version => Assembly.GetCallingAssembly().GetName().Version;
 
-	  public static string ProductName
-	  {
-		  get
-		  {
-			  object[] attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
-			  return attributes.Length == 0 ? "" : ((AssemblyProductAttribute)attributes[0]).Product;
-		  }
-	  }
+    public static string Title
+    {
+      get
+      {
+        var attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyTitleAttribute), false);
+        if (attributes.Length > 0)
+        {
+          var titleAttribute = (AssemblyTitleAttribute)attributes[0];
+          if (titleAttribute.Title.Length > 0) return titleAttribute.Title;
+        }
+        return System.IO.Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().CodeBase);
+      }
+    }
 
-	  public static string Description
-	  {
-		  get
-		  {
-			  object[] attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
-			  return attributes.Length == 0 ? "" : ((AssemblyDescriptionAttribute)attributes[0]).Description;
-		  }
-	  }
+    public static string ProductName
+    {
+      get
+      {
+        var attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyProductAttribute), false);
+        return attributes.Length == 0 ? "" : ((AssemblyProductAttribute)attributes[0]).Product;
+      }
+    }
 
-	  public static string CopyrightHolder
-	  {
-		  get
-		  {
-			  object[] attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
-			  return attributes.Length == 0 ? "" : ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
-		  }
-	  }
+    public static string Description
+    {
+      get
+      {
+        var attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyDescriptionAttribute), false);
+        return attributes.Length == 0 ? "" : ((AssemblyDescriptionAttribute)attributes[0]).Description;
+      }
+    }
 
-	  public static string CompanyName
-	  {
-		  get
-		  {
-			  object[] attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
-			  return attributes.Length == 0 ? "" : ((AssemblyCompanyAttribute)attributes[0]).Company;
-		  }
-	  }
+    public static string CopyrightHolder
+    {
+      get
+      {
+        var attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyCopyrightAttribute), false);
+        return attributes.Length == 0 ? "" : ((AssemblyCopyrightAttribute)attributes[0]).Copyright;
+      }
+    }
+
+    public static string CompanyName
+    {
+      get
+      {
+        var attributes = Assembly.GetCallingAssembly().GetCustomAttributes(typeof(AssemblyCompanyAttribute), false);
+        return attributes.Length == 0 ? "" : ((AssemblyCompanyAttribute)attributes[0]).Company;
+      }
+    }
 
   }
 

@@ -1,12 +1,14 @@
 using System;
 using System.Windows.Forms;
 using System.Timers;
+using System.ComponentModel;
 
 namespace AttacheCase
 {
   /// <summary>
   /// refer to: https://www.codeproject.com/Articles/20068/Custom-TextBox-that-Delays-the-TextChanged-Event
   /// </summary>
+  [ToolboxItem(true)]
   public class DelayTextBox : TextBox
   {
     /// <summary>
@@ -45,7 +47,7 @@ namespace AttacheCase
     // Delay property
     public int Delay
     {
-      set { DELAY_TIME = value; }
+      set => DELAY_TIME = value;
     }
 
     public DelayTextBox()
@@ -57,7 +59,7 @@ namespace AttacheCase
       DelayTimer.Elapsed += new ElapsedEventHandler(DelayTimer_Elapsed);
     }
 
-    void DelayTimer_Elapsed(object sender, ElapsedEventArgs e)
+    private void DelayTimer_Elapsed(object sender, ElapsedEventArgs e)
     {
       // stop timer.
       DelayTimer.Enabled = false;
@@ -100,7 +102,7 @@ namespace AttacheCase
 
     private void DelayOver()
     {
-      OnTextChanged(new EventArgs());
+      OnTextChanged(EventArgs.Empty);
     }
 
   }
