@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2024  Mitsuhiro Hibara
+// Copyright (C) 2016-2025  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -23,84 +23,63 @@ using AttacheCase.Properties;
 namespace AttacheCase
 {
   public partial class Form4 : Form
-	{
+  {
     // Overwrite Option
-    private const int USER_CANCELED  = -1;
-    private const int OVERWRITE      = 1;
-    private const int OVERWRITE_ALL  = 2;
-    private const int KEEP_NEWER     = 3;
+    private const int USER_CANCELED = -1;
+    private const int OVERWRITE = 1;
+    private const int OVERWRITE_ALL = 2;
+    private const int KEEP_NEWER = 3;
     private const int KEEP_NEWER_ALL = 4;
     // ---
     // Skip Option
-    private const int SKIP           = 5;
-    private const int SKIP_ALL       = 6;
+    private const int SKIP = 5;
+    private const int SKIP_ALL = 6;
 
     private int OverwriteButtonTextNum = OVERWRITE;
     private int SkipButtonTextNum = SKIP;
 
     private bool fLoading = false;
 
-		// Show dialog type ( string )
-		private string _FormType;
-		public string FormType
-		{
-			get { return _FormType; }
-			set { _FormType = value; }
-		}
+    // Show dialog type ( string )
+    public string FormType { get; set; }
 
-		// Overwrite opiton
-		private int _OverWriteOption = -1;
-		public int OverWriteOption
-		{
-			get { return _OverWriteOption; }
-		}
+    // Overwrite option
+    public int OverWriteOption { get; private set; } = -1;
 
-		// Ask to encrypt or decrypt regardless of file content.
-		private int _AskEncryptOrDecrypt;
-		public int AskEncryptOrDecrypt
-		{
-			get { return _AskEncryptOrDecrypt; }
-		}
+    // Ask to encrypt or decrypt regardless of file content.
+    public int AskEncryptOrDecrypt { get; private set; }
 
     // When there is an illegal path character string, it asks whether to substitute.
-    private int _InvalidCharOption;
-    public int InvalidCharOption
-    {
-      get { return _InvalidCharOption; }
-    }
+    public int InvalidCharOption { get; private set; }
 
     // Whether to read the found setting file "_AtcCase.ini"?
-    private bool _fReadIniFile;
-    public bool fReadIniFile
-    {
-      get { return _fReadIniFile; }
-    }
-    
+    public bool fReadIniFile { get; private set; }
+
     //-----------------------------------
 
     public Form4(string InputType, string MessageText)
-		{
-			InitializeComponent();
-      
-			fLoading = true;
+    {
+      InitializeComponent();
 
-			tabControl1.Visible = false;
+      fLoading = true;
 
-      panelInputPassword.Parent        = panelOuter;
-      panelOverwriteConfirm.Parent     = panelOuter;
-      panelAskEncryptOrDecrypt.Parent  = panelOuter;
-      panelInvalidChar.Parent          = panelOuter;
+      tabControl1.Visible = false;
+
+      panelInputPassword.Parent = panelOuter;
+      panelOverwriteConfirm.Parent = panelOuter;
+      panelAskEncryptOrDecrypt.Parent = panelOuter;
+      panelInvalidChar.Parent = panelOuter;
       panelConfirmToReadIniFile.Parent = panelOuter;
 
-      panelInputPassword.Visible        = false;
-      panelOverwriteConfirm.Visible     = false;
-      panelAskEncryptOrDecrypt.Visible  = false;
-      panelInvalidChar.Visible          = false;
+      panelInputPassword.Visible = false;
+      panelOverwriteConfirm.Visible = false;
+      panelAskEncryptOrDecrypt.Visible = false;
+      panelInvalidChar.Visible = false;
       panelConfirmToReadIniFile.Visible = false;
 
-      _FormType = InputType;
+      FormType = InputType;
 
-      switch (_FormType)
+      switch (FormType)
       {
         // パスワード入力ウィンドウ
         // Input password window 
@@ -110,12 +89,12 @@ namespace AttacheCase
           this.Text = Resources.DialogTitleQuestion;
           checkBoxNotMaskEncryptedPassword.Checked = AppSettings.Instance.fNotMaskPassword;
 
-          if (_FormType == "EncryptPassword")
+          if (FormType == "EncryptPassword")
           {
             textBoxPassword.Text = AppSettings.Instance.MyEncryptPasswordString;
             textBoxRePassword.Text = AppSettings.Instance.MyEncryptPasswordString;
           }
-          else if (_FormType == "DecryptPassword")
+          else if (FormType == "DecryptPassword")
           {
             textBoxPassword.Text = AppSettings.Instance.MyDecryptPasswordString;
             textBoxRePassword.Text = AppSettings.Instance.MyDecryptPasswordString;
@@ -134,7 +113,7 @@ namespace AttacheCase
           splitButton1.Text = ToolStripMenuItemOverwrite.Text;  // Overwrite ( Default )
           splitButton2.Text = ToolStripMenuItemSkip.Text;       // Skip ( Default )
 
-          if (_FormType == "ComfirmToOverwriteAtc")
+          if (FormType == "ConfirmToOverwriteAtc")
           {
             ToolStripMenuItemKeepNewer.Enabled = false;
             ToolStripMenuItemkeepNewerAll.Enabled = false;
@@ -163,24 +142,24 @@ namespace AttacheCase
           this.Text = Resources.DialogTitleQuestion;
           labelIniFilePath.Text = MessageText;
           break;
-          
+
         // 無指定？
         // None?
         default:
           return;
       }
 
-		}
+    }
 
-		private void Form4_Shown(object sender, EventArgs e)
-		{
-			//-----------------------------------
-			// パスワード入力ウィンドウ
-			// Input password window 
-			if ( panelInputPassword.Visible == true )
-			{
-				textBoxPassword.Focus();
-				textBoxPassword.SelectAll();
+    private void Form4_Shown(object sender, EventArgs e)
+    {
+      //-----------------------------------
+      // パスワード入力ウィンドウ
+      // Input password window 
+      if (panelInputPassword.Visible == true)
+      {
+        textBoxPassword.Focus();
+        textBoxPassword.SelectAll();
         if (AppSettings.Instance.fTurnOnIMEsTextBoxForPasswordEntry == true)
         {
           textBoxPassword.ImeMode = ImeMode.On;
@@ -191,12 +170,12 @@ namespace AttacheCase
         }
         this.CancelButton = buttonPasswordCancel;
       }
-			//-----------------------------------
-			// 上書きウィンドウ
-			// Confirm to overwrite window 
-			else if (panelOverwriteConfirm.Visible == true)
-			{
-				splitButton1.Focus();
+      //-----------------------------------
+      // 上書きウィンドウ
+      // Confirm to overwrite window 
+      else if (panelOverwriteConfirm.Visible == true)
+      {
+        splitButton1.Focus();
         this.CancelButton = buttonOverwriteCancel;
       }
       //-----------------------------------
@@ -209,7 +188,7 @@ namespace AttacheCase
       //-----------------------------------
       // パスに不正な文字列がある場合の警告ウィンドウ
       // Warning window when there is an invalid character string in the path
-      else if(panelInvalidChar.Visible == true)
+      else if (panelInvalidChar.Visible == true)
       {
         this.CancelButton = buttonInvalidCharCancel;
       }
@@ -218,7 +197,7 @@ namespace AttacheCase
       // Confirm whether to load the found setting file "_AtcCase.ini"
       else if (panelConfirmToReadIniFile.Visible == true)
       {
-        if ( AppSettings.Instance.fAlwaysReadIniFile == true)
+        if (AppSettings.Instance.fAlwaysReadIniFile == true)
         {
           buttonConfirmToReadIniFileYes.Focus();
         }
@@ -230,24 +209,24 @@ namespace AttacheCase
       }
 
       //-----------------------------------
-			fLoading = false;
+      fLoading = false;
 
-		}
-		
-		//======================================================================
-		// パスワード入力ウィンドウ
-		// Input password window 
-		//======================================================================
-		#region
-		private void textBoxPassword_TextChanged(object sender, EventArgs e)
-		{
-			if (fLoading == true)
-			{
-				return;
-			}
-			
-			textBoxRePassword.Enabled = true;
-			textBoxRePassword.BackColor = SystemColors.Window;
+    }
+
+    //======================================================================
+    // パスワード入力ウィンドウ
+    // Input password window 
+    //======================================================================
+    #region
+    private void textBoxPassword_TextChanged(object sender, EventArgs e)
+    {
+      if (fLoading == true)
+      {
+        return;
+      }
+
+      textBoxRePassword.Enabled = true;
+      textBoxRePassword.BackColor = SystemColors.Window;
 
       if (textBoxPassword.Text == textBoxRePassword.Text)
       {
@@ -268,82 +247,82 @@ namespace AttacheCase
 
     }
 
-		private void textBoxRePassword_TextChanged(object sender, EventArgs e)
-		{
-			if (fLoading == true)
-			{
-				return;
-			}
+    private void textBoxRePassword_TextChanged(object sender, EventArgs e)
+    {
+      if (fLoading == true)
+      {
+        return;
+      }
 
-			if (textBoxRePassword.Text.Length > 0)
-			{
-				if (textBoxPassword.Text == textBoxRePassword.Text)
-				{
-					// Light green
-					textBoxRePassword.BackColor = Color.Honeydew;
-					buttonPasswordOK.Enabled = true;
-					pictureBoxPasswordValid.Visible = true;
-					labelPasswordValid.Visible = true;
-				}
-				else
-				{
-					// Light pink
-					textBoxRePassword.BackColor = Color.MistyRose;
-					buttonPasswordOK.Enabled = false;
-					pictureBoxPasswordValid.Visible = false;
-					labelPasswordValid.Visible = false;
-				}
-			}
-		}
+      if (textBoxRePassword.Text.Length > 0)
+      {
+        if (textBoxPassword.Text == textBoxRePassword.Text)
+        {
+          // Light green
+          textBoxRePassword.BackColor = Color.Honeydew;
+          buttonPasswordOK.Enabled = true;
+          pictureBoxPasswordValid.Visible = true;
+          labelPasswordValid.Visible = true;
+        }
+        else
+        {
+          // Light pink
+          textBoxRePassword.BackColor = Color.MistyRose;
+          buttonPasswordOK.Enabled = false;
+          pictureBoxPasswordValid.Visible = false;
+          labelPasswordValid.Visible = false;
+        }
+      }
+    }
 
-		private void Form4_KeyDown(object sender, KeyEventArgs e)
-		{
-			if (panelInputPassword.Visible == true)
-			{
-				if (e.KeyCode == Keys.Enter)	// Enter key
-				{
-					if (textBoxPassword.Focused == true)
-					{
-						textBoxRePassword.Focus();
-						textBoxRePassword.SelectAll();
-					}
-					else if (textBoxRePassword.Focused == true)
-					{
-						//OK button
-						buttonPasswordOK_Click(sender, e);
-					}
-				}
-			}
-		}
+    private void Form4_KeyDown(object sender, KeyEventArgs e)
+    {
+      if (panelInputPassword.Visible == true)
+      {
+        if (e.KeyCode == Keys.Enter)  // Enter key
+        {
+          if (textBoxPassword.Focused == true)
+          {
+            textBoxRePassword.Focus();
+            textBoxRePassword.SelectAll();
+          }
+          else if (textBoxRePassword.Focused == true)
+          {
+            //OK button
+            buttonPasswordOK_Click(sender, e);
+          }
+        }
+      }
+    }
 
-		private void buttonPasswordOK_Click(object sender, EventArgs e)
-		{
-			AppSettings.Instance.fNotMaskPassword = checkBoxNotMaskEncryptedPassword.Checked;
+    private void buttonPasswordOK_Click(object sender, EventArgs e)
+    {
+      AppSettings.Instance.fNotMaskPassword = checkBoxNotMaskEncryptedPassword.Checked;
 
-			if (_FormType == "EncryptPassword")
-			{
-				if (textBoxPassword.Text == textBoxRePassword.Text)
-				{
-					AppSettings.Instance.MyEncryptPasswordString = textBoxRePassword.Text;
-					this.Close();
-				}
-			}
-			else if (_FormType == "DecryptPassword")
-			{
-				if (textBoxPassword.Text == textBoxRePassword.Text)
-				{
-					AppSettings.Instance.MyDecryptPasswordString = textBoxRePassword.Text;
-					this.Close();
-				}
-			}
-		}
+      if (FormType == "EncryptPassword")
+      {
+        if (textBoxPassword.Text == textBoxRePassword.Text)
+        {
+          AppSettings.Instance.MyEncryptPasswordString = textBoxRePassword.Text;
+          this.Close();
+        }
+      }
+      else if (FormType == "DecryptPassword")
+      {
+        if (textBoxPassword.Text == textBoxRePassword.Text)
+        {
+          AppSettings.Instance.MyDecryptPasswordString = textBoxRePassword.Text;
+          this.Close();
+        }
+      }
+    }
 
-		private void buttonPasswordCancel_Click(object sender, EventArgs e)
-		{
-			// Not mask password character
-			AppSettings.Instance.fNotMaskPassword = checkBoxNotMaskEncryptedPassword.Checked == true ? true : false;
-			this.Close();
-		}
+    private void buttonPasswordCancel_Click(object sender, EventArgs e)
+    {
+      // Not mask password character
+      AppSettings.Instance.fNotMaskPassword = checkBoxNotMaskEncryptedPassword.Checked == true ? true : false;
+      this.Close();
+    }
 
     private void checkBoxNotMaskEncryptedPassword_CheckedChanged(object sender, EventArgs e)
     {
@@ -429,22 +408,22 @@ namespace AttacheCase
     //-----------------------------------
     private void splitButton1_Click(object sender, EventArgs e)
     {
-      _OverWriteOption = OverwriteButtonTextNum;
+      OverWriteOption = OverwriteButtonTextNum;
       this.Close();
     }
 
     private void splitButton2_Click(object sender, EventArgs e)
     {
-      _OverWriteOption = SkipButtonTextNum;
+      OverWriteOption = SkipButtonTextNum;
       this.Close();
     }
 
     private void buttonOverwriteCancel_Click(object sender, EventArgs e)
-		{
-			_OverWriteOption = USER_CANCELED;
-			this.Close();
-		}
-    
+    {
+      OverWriteOption = USER_CANCELED;
+      this.Close();
+    }
+
     #endregion
 
     //======================================================================
@@ -453,22 +432,22 @@ namespace AttacheCase
     //======================================================================
     #region
     private void buttonEncrypt_Click(object sender, EventArgs e)
-		{
-			_AskEncryptOrDecrypt = 1;
-			this.Close();
-		}
+    {
+      AskEncryptOrDecrypt = 1;
+      this.Close();
+    }
 
-		private void buttonDecrypt_Click(object sender, EventArgs e)
-		{
-			_AskEncryptOrDecrypt = 2;
-			this.Close();
-		}
+    private void buttonDecrypt_Click(object sender, EventArgs e)
+    {
+      AskEncryptOrDecrypt = 2;
+      this.Close();
+    }
 
-		private void buttonAskEncryptOrDecryptCancel_Click(object sender, EventArgs e)
-		{
-			_AskEncryptOrDecrypt = -1;
-			this.Close();
-		}
+    private void buttonAskEncryptOrDecryptCancel_Click(object sender, EventArgs e)
+    {
+      AskEncryptOrDecrypt = -1;
+      this.Close();
+    }
 
     #endregion
 
@@ -480,13 +459,13 @@ namespace AttacheCase
 
     private void buttonInvalidCharYes_Click(object sender, EventArgs e)
     {
-      _InvalidCharOption = 1;
+      InvalidCharOption = 1;
       this.Close();
     }
 
     private void buttonInvalidCharCancel_Click(object sender, EventArgs e)
     {
-      _InvalidCharOption = -1;
+      InvalidCharOption = -1;
       this.Close();
     }
 
@@ -500,18 +479,18 @@ namespace AttacheCase
 
     private void buttonConfirmToReadIniFileYes_Click(object sender, EventArgs e)
     {
-      _fReadIniFile = true;
+      fReadIniFile = true;
       this.Close();
     }
 
     private void buttonConfirmToReadIniFileNo_Click(object sender, EventArgs e)
     {
-      _fReadIniFile = false;
+      fReadIniFile = false;
       this.Close();
     }
 
     #endregion
 
-    }
+  }
 
 }

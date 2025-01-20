@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2024  Mitsuhiro Hibara
+// Copyright (C) 2016-2025  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -57,9 +57,9 @@ namespace AttacheCase
       //-----------------------------------
       // Not Allow multiple in&stance of AttcheCase
       // Create Mutex
-      Mutex mutex = new Mutex(false, "AttacheCase");
+      var mutex = new Mutex(false, "AttacheCase");
 
-      bool mutexHandle = false;
+      var mutexHandle = false;
       try
       {
         try
@@ -117,8 +117,8 @@ namespace AttacheCase
         // Application executable file path & version
         AppSettings.Instance.ApplicationPath = Application.ExecutablePath;
 
-        System.Reflection.Assembly asm = System.Reflection.Assembly.GetExecutingAssembly();
-        System.Version ver = asm.GetName().Version;
+        var asm = System.Reflection.Assembly.GetExecutingAssembly();
+        var ver = asm.GetName().Version;
         AppSettings.Instance.AppVersion = int.Parse(ver.ToString().Replace(".", ""));
 
         //-----------------------------------       
@@ -137,6 +137,6 @@ namespace AttacheCase
     }
 
   }
-  
+
 }
 

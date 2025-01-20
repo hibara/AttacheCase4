@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2024  Mitsuhiro Hibara
+// Copyright (C) 2016-2025  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -26,69 +26,69 @@ using AtcSetup.Properties;
 
 namespace AtcSetup
 {
-	public partial class Form1 : Form
-	{
-		// Shield icon
-		[DllImport("user32.dll")]
-		private static extern IntPtr SendMessage(HandleRef hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-		private const int BCM_FIRST = 0x1600;
-		private const int BCM_SETSHIELD = BCM_FIRST + 0x000C;
+  public partial class Form1 : Form
+  {
+    // Shield icon
+    [DllImport("user32.dll")]
+    private static extern IntPtr SendMessage(HandleRef hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
+    private const int BCM_FIRST = 0x1600;
+    private const int BCM_SETSHIELD = BCM_FIRST + 0x000C;
 
     // Refresh desktop window.
     [DllImport("Shell32.dll")]
     private static extern int SHChangeNotify(int eventId, int flags, IntPtr item1, IntPtr item2);
-         
+
     public Dictionary<string, string> CommandData = new Dictionary<string, string>();
-	
-		public Form1()
-		{
-			InitializeComponent();
-		}
 
-		private void Form1_Load(object sender, EventArgs e)
-		{
-			//-----------------------------------
-			// Get the version of this aooication from assembly infos.
-			Assembly asm = Assembly.GetExecutingAssembly();
-			Version ver = asm.GetName().Version;
-			toolStripStatusLabel1.Text = "ver. " + ver;
+    public Form1()
+    {
+      InitializeComponent();
+    }
 
-			//-----------------------------------
-			// on the center of the screen.
-			this.Left = Screen.GetBounds(this).Width / 2 - this.Width / 2;
-			this.Top = Screen.GetBounds(this).Height / 2 - this.Height / 2;
-			
-			//-----------------------------------
-			// Shield icon
-			// 盾アイコン
-			//-----------------------------------
+    private void Form1_Load(object sender, EventArgs e)
+    {
+      //-----------------------------------
+      // Get the version of this aooication from assembly infos.
+      Assembly asm = Assembly.GetExecutingAssembly();
+      Version ver = asm.GetName().Version;
+      toolStripStatusLabel1.Text = "ver. " + ver;
 
-			//Windows Vista later?
-			if (Environment.OSVersion.Platform != PlatformID.Win32NT ||	Environment.OSVersion.Version.Major < 6)
-			{
-			}
-			else
-			{
-				//FlatStyle=System
-				buttonAssociation.FlatStyle = FlatStyle.System;
-				buttonUnAssociation.FlatStyle = FlatStyle.System;
-				//Shield icon
-				SendMessage(new HandleRef(buttonAssociation, buttonAssociation.Handle), BCM_SETSHIELD, IntPtr.Zero, new IntPtr(1));
-				SendMessage(new HandleRef(buttonUnAssociation, buttonUnAssociation.Handle), BCM_SETSHIELD, IntPtr.Zero, new IntPtr(1));
+      //-----------------------------------
+      // on the center of the screen.
+      this.Left = Screen.GetBounds(this).Width / 2 - this.Width / 2;
+      this.Top = Screen.GetBounds(this).Height / 2 - this.Height / 2;
 
-			}
+      //-----------------------------------
+      // Shield icon
+      // 盾アイコン
+      //-----------------------------------
 
-			//-----------------------------------
-			//コマンドライン引数を連想配列へ
-			string[] cmds = Environment.GetCommandLineArgs();
-			foreach (string cmd in cmds)
-			{
-				string[] SplitData = cmd.Split(new Char[] {'='});
-				if (SplitData.Length > 1 )
-				{
-					CommandData.Add(SplitData[0], SplitData[1]);
-				}
-			}
+      //Windows Vista later?
+      if (Environment.OSVersion.Platform != PlatformID.Win32NT || Environment.OSVersion.Version.Major < 6)
+      {
+      }
+      else
+      {
+        //FlatStyle=System
+        buttonAssociation.FlatStyle = FlatStyle.System;
+        buttonUnAssociation.FlatStyle = FlatStyle.System;
+        //Shield icon
+        SendMessage(new HandleRef(buttonAssociation, buttonAssociation.Handle), BCM_SETSHIELD, IntPtr.Zero, new IntPtr(1));
+        SendMessage(new HandleRef(buttonUnAssociation, buttonUnAssociation.Handle), BCM_SETSHIELD, IntPtr.Zero, new IntPtr(1));
+
+      }
+
+      //-----------------------------------
+      //コマンドライン引数を連想配列へ
+      string[] cmds = Environment.GetCommandLineArgs();
+      foreach (string cmd in cmds)
+      {
+        string[] SplitData = cmd.Split(new Char[] { '=' });
+        if (SplitData.Length > 1)
+        {
+          CommandData.Add(SplitData[0], SplitData[1]);
+        }
+      }
 
       // Association, or UnAssociation ?
       if (CommandData.ContainsKey("-t") == true)
@@ -124,173 +124,173 @@ namespace AtcSetup
 
       }
 
-		}
+    }
 
-		private void Form1_Shown(object sender, EventArgs e)
-		{
-			// このツールは通常単体では起動せず、アタッシェケース本体から呼び出されます。
-			// 単体で操作するには関連付けに関する知識が必要です。それでも単体起動しますか？
-			//
-			// This tool usually does not run by itself, but is called from the AttachéCase itself.
-			// You require some knowledge of Associations files to operate on this own. 
-			// Can you still run it by itself?
-			//
-			DialogResult result = MessageBox.Show(Resources.MsgTextWhenApplicationLaunched,
-				Resources.DialogAlert, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation,
-				MessageBoxDefaultButton.Button2);
-			if (result == DialogResult.No)
-			{
-				Application.Exit();
-			}
-		}
+    private void Form1_Shown(object sender, EventArgs e)
+    {
+      // このツールは通常単体では起動せず、アタッシェケース本体から呼び出されます。
+      // 単体で操作するには関連付けに関する知識が必要です。それでも単体起動しますか？
+      //
+      // This tool usually does not run by itself, but is called from the AttachéCase itself.
+      // You require some knowledge of Associations files to operate on this own. 
+      // Can you still run it by itself?
+      //
+      DialogResult result = MessageBox.Show(Resources.MsgTextWhenApplicationLaunched,
+        Resources.DialogAlert, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation,
+        MessageBoxDefaultButton.Button2);
+      if (result == DialogResult.No)
+      {
+        Application.Exit();
+      }
+    }
 
-		//======================================================================
-		/// <summary>
-		/// Settings of Associating file to AttacheCase ( Executable file )
-		/// </summary>
-		/// <returns>[Boolean] true: Succeeded, false: failed</returns>
-		//======================================================================
-		private bool AssociateAtcFileToAttacheCase()
-		{
-			this.Text = Resources.LabelAssociation;
-			progressBar1.Style = ProgressBarStyle.Marquee;
-			// "It is setting to associate the '.atc' file to the AttacheCase application..."
-			labelInfo.Text = Resources.Associating;
+    //======================================================================
+    /// <summary>
+    /// Settings of Associating file to AttacheCase ( Executable file )
+    /// </summary>
+    /// <returns>[Boolean] true: Succeeded, false: failed</returns>
+    //======================================================================
+    private bool AssociateAtcFileToAttacheCase()
+    {
+      this.Text = Resources.LabelAssociation;
+      progressBar1.Style = ProgressBarStyle.Marquee;
+      // "It is setting to associate the '.atc' file to the AttacheCase application..."
+      labelInfo.Text = Resources.Associating;
 
-			//-----------------------------------
-			string AttacheCaseFilePath = "";
-			if (CommandData.ContainsKey("-p") == true)
-			{
-				AttacheCaseFilePath = CommandData["-p"];
-			}
-			else
-			{
-				AttacheCaseFilePath = getAttacheCaseExeFilePath();
-			}
+      //-----------------------------------
+      string AttacheCaseFilePath = "";
+      if (CommandData.ContainsKey("-p") == true)
+      {
+        AttacheCaseFilePath = CommandData["-p"];
+      }
+      else
+      {
+        AttacheCaseFilePath = getAttacheCaseExeFilePath();
+      }
 
-			// Because File.Exists is Case-Sensitive.
-			if (AttacheCaseFilePath == "")
-			{
-				// 注意
-				// Alert
-				//
-				// "AttacheCase.exe" is not found!
-				// アタッシェケース本体が見つかりません！
-				DialogResult ret = MessageBox.Show(Resources.DialogMessageAttacheCaseNotFound + Environment.NewLine + AttacheCaseFilePath.ToLower(),
-				Resources.DialogMessageAttacheCaseNotFound, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+      // Because File.Exists is Case-Sensitive.
+      if (AttacheCaseFilePath == "")
+      {
+        // 注意
+        // Alert
+        //
+        // "AttacheCase.exe" is not found!
+        // アタッシェケース本体が見つかりません！
+        DialogResult ret = MessageBox.Show(Resources.DialogMessageAttacheCaseNotFound + Environment.NewLine + AttacheCaseFilePath.ToLower(),
+        Resources.DialogMessageAttacheCaseNotFound, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-				progressBar1.Style = ProgressBarStyle.Continuous;
-				labelInfo.Text = "-";
-				progressBar1.Value = 100;
-				return(false);
+        progressBar1.Style = ProgressBarStyle.Continuous;
+        labelInfo.Text = "-";
+        progressBar1.Value = 100;
+        return (false);
 
-			}
-			
-			//-----------------------------------
-			int IconIndex = 1;
-			string MyIconFilePath = "";
+      }
 
-			if (CommandData.ContainsKey("-icn"))
-			{
-				if (int.TryParse(CommandData["-icn"], out IconIndex) == false)
-				{
-					MyIconFilePath = CommandData["-icn"];
-					if (File.Exists(MyIconFilePath) == false)
-					{
-						MyIconFilePath = "";
-						IconIndex = 1;
-					}
-				}
-			}
-			else
-			{
-				IconIndex = 1;
-			}
+      //-----------------------------------
+      int IconIndex = 1;
+      string MyIconFilePath = "";
 
-			//-----------------------------------
-			// HKEY_CLASSES_ROOT\.atc
-			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atc"))
-			{
-				regkey.SetValue("", "AttacheCase.DataFile");
-			}
-			//-----------------------------------
-			// HKEY_CLASSES_ROOT\AttacheCase.DataFile
-			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\DefaultIcon"))
-			{
-				if (MyIconFilePath == "")
-				{
-					regkey.SetValue("", "\"" + AttacheCaseFilePath + "\"," + IconIndex);
-				}
-				else
-				{
-					regkey.SetValue("", "\"" + MyIconFilePath + "\"");	// My Icon
-				}
-			}
-			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\decode"))
-			{
-				regkey.SetValue("", "アタッシェケースファイルを復号する");
-			}
-			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\decode\command"))
-			{
-				regkey.SetValue("", "\"" + AttacheCaseFilePath + "\",\"%1\"");
-			}
-			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\open\command"))
-			{
-				regkey.SetValue("", "\"" + AttacheCaseFilePath + "\",\"%1\"");
-			}
+      if (CommandData.ContainsKey("-icn"))
+      {
+        if (int.TryParse(CommandData["-icn"], out IconIndex) == false)
+        {
+          MyIconFilePath = CommandData["-icn"];
+          if (File.Exists(MyIconFilePath) == false)
+          {
+            MyIconFilePath = "";
+            IconIndex = 1;
+          }
+        }
+      }
+      else
+      {
+        IconIndex = 1;
+      }
 
-			//-----------------------------------
-			// HKEY_CLASSES_ROOT\.atcpvt
-			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atcpvt"))
-			{
-				regkey.SetValue("", "AttacheCase.PrivateKeyFile");
-			}
-			//-----------------------------------
-			// HKEY_CLASSES_ROOT\AttacheCase.KeyFile
-			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.PrivateKeyFile\DefaultIcon"))
-			{
-				regkey.SetValue("", "\"" + AttacheCaseFilePath + "\"," + 5);
-			}
+      //-----------------------------------
+      // HKEY_CLASSES_ROOT\.atc
+      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atc"))
+      {
+        regkey.SetValue("", "AttacheCase.DataFile");
+      }
+      //-----------------------------------
+      // HKEY_CLASSES_ROOT\AttacheCase.DataFile
+      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\DefaultIcon"))
+      {
+        if (MyIconFilePath == "")
+        {
+          regkey.SetValue("", "\"" + AttacheCaseFilePath + "\"," + IconIndex);
+        }
+        else
+        {
+          regkey.SetValue("", "\"" + MyIconFilePath + "\"");  // My Icon
+        }
+      }
+      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\decode"))
+      {
+        regkey.SetValue("", "アタッシェケースファイルを復号する");
+      }
+      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\decode\command"))
+      {
+        regkey.SetValue("", "\"" + AttacheCaseFilePath + "\",\"%1\"");
+      }
+      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\open\command"))
+      {
+        regkey.SetValue("", "\"" + AttacheCaseFilePath + "\",\"%1\"");
+      }
 
-			//-----------------------------------
-			// HKEY_CLASSES_ROOT\.atcpub
-			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atcpub"))
-			{
-				regkey.SetValue("", "AttacheCase.PublicKeyFile");
-			}
-			//-----------------------------------
-			// HKEY_CLASSES_ROOT\AttacheCase.LockFile
-			using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.PublicKeyFile\DefaultIcon"))
-			{
-				regkey.SetValue("", "\"" + AttacheCaseFilePath + "\"," + 6);
-			}
+      //-----------------------------------
+      // HKEY_CLASSES_ROOT\.atcpvt
+      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atcpvt"))
+      {
+        regkey.SetValue("", "AttacheCase.PrivateKeyFile");
+      }
+      //-----------------------------------
+      // HKEY_CLASSES_ROOT\AttacheCase.KeyFile
+      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.PrivateKeyFile\DefaultIcon"))
+      {
+        regkey.SetValue("", "\"" + AttacheCaseFilePath + "\"," + 5);
+      }
 
-			progressBar1.Style = ProgressBarStyle.Continuous;
-			progressBar1.Value = 100;
-			labelInfo.Text = Resources.AssociationComplete;
+      //-----------------------------------
+      // HKEY_CLASSES_ROOT\.atcpub
+      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atcpub"))
+      {
+        regkey.SetValue("", "AttacheCase.PublicKeyFile");
+      }
+      //-----------------------------------
+      // HKEY_CLASSES_ROOT\AttacheCase.LockFile
+      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.PublicKeyFile\DefaultIcon"))
+      {
+        regkey.SetValue("", "\"" + AttacheCaseFilePath + "\"," + 6);
+      }
+
+      progressBar1.Style = ProgressBarStyle.Continuous;
+      progressBar1.Value = 100;
+      labelInfo.Text = Resources.AssociationComplete;
 
       // Refresh desktop window icons.
       SHChangeNotify(0x8000000, 0x1000, IntPtr.Zero, IntPtr.Zero);
 
       return (true);
-			
-		}
 
-		//======================================================================
-		/// <summary>
-		/// UnAssociating file from AttacheCase
-		/// </summary>
-		/// <returns></returns>
-		//======================================================================
-		private bool UnAssociateAtcFileToAttacheCase()
-		{
-			progressBar1.Style = ProgressBarStyle.Marquee;
-			// "It is setting to Unassociate the '.atc' file in the AttacheCase application..."
-			labelInfo.Text = Resources.UnAssociating;
+    }
+
+    //======================================================================
+    /// <summary>
+    /// UnAssociating file from AttacheCase
+    /// </summary>
+    /// <returns></returns>
+    //======================================================================
+    private bool UnAssociateAtcFileToAttacheCase()
+    {
+      progressBar1.Style = ProgressBarStyle.Marquee;
+      // "It is setting to Unassociate the '.atc' file in the AttacheCase application..."
+      labelInfo.Text = Resources.UnAssociating;
 
       RegistryKey regAtc = Registry.ClassesRoot.OpenSubKey(".atc");
       RegistryKey regAttacheCaseDataFile = Registry.ClassesRoot.OpenSubKey("AttacheCase.DataFile");
-                                
+
       // Delete registry keys
       if (regAtc != null)
       {
@@ -301,76 +301,76 @@ namespace AtcSetup
         Registry.ClassesRoot.DeleteSubKeyTree("AttacheCase.DataFile");
       }
 
-			// RSA key
-			if (regAtc != null)
-			{
-				Registry.ClassesRoot.DeleteSubKeyTree(".atcpvt");
-			}
-			if (regAttacheCaseDataFile != null)
-			{
-				Registry.ClassesRoot.DeleteSubKeyTree("AttacheCase.PrivateKeyFile");
-			}
-			if (regAtc != null)
-			{
-				Registry.ClassesRoot.DeleteSubKeyTree(".atcpub");
-			}
-			if (regAttacheCaseDataFile != null)
-			{
-				Registry.ClassesRoot.DeleteSubKeyTree("AttacheCase.PublicKeyFile");
-			}
+      // RSA key
+      if (regAtc != null)
+      {
+        Registry.ClassesRoot.DeleteSubKeyTree(".atcpvt");
+      }
+      if (regAttacheCaseDataFile != null)
+      {
+        Registry.ClassesRoot.DeleteSubKeyTree("AttacheCase.PrivateKeyFile");
+      }
+      if (regAtc != null)
+      {
+        Registry.ClassesRoot.DeleteSubKeyTree(".atcpub");
+      }
+      if (regAttacheCaseDataFile != null)
+      {
+        Registry.ClassesRoot.DeleteSubKeyTree("AttacheCase.PublicKeyFile");
+      }
 
-			// In addition, delete all AttacheCase settings from the Windows registry.
-			if ( checkBoxDeleteAllSettingsFromRegistry.Checked == true)
+      // In addition, delete all AttacheCase settings from the Windows registry.
+      if (checkBoxDeleteAllSettingsFromRegistry.Checked == true)
       {
         if (Registry.CurrentUser.OpenSubKey(@"Software\Hibara\AttacheCase4", false) != null)
         {
           Registry.CurrentUser.DeleteSubKeyTree(@"Software\Hibara\AttacheCase4");
         }
       }
-      
+
       progressBar1.Style = ProgressBarStyle.Continuous;
-			progressBar1.Value = 100;
-			labelInfo.Text = Resources.UnAssociationComplete;
+      progressBar1.Value = 100;
+      labelInfo.Text = Resources.UnAssociationComplete;
 
       // Refresh desktop window icons.
       SHChangeNotify(0x8000000, 0x1000, IntPtr.Zero, IntPtr.Zero);
 
       return (true);
-			
-		}
 
-		/// <summary>
-		/// アタッシェケース4の方のレジストリデータから本体のフルパスを取得する
-		/// Get full path of executable file from the registry of different application AttacheCase#3.
-		/// </summary>
-		/// <returns></returns>
-		private string getAttacheCaseExeFilePath()
-		{
-			string AppFilePath = string.Empty;
-			using (RegistryKey regkey = Registry.CurrentUser.OpenSubKey(@"Software\Hibara\AttacheCase4\AppInfo"))
-			{
-				if (regkey.GetValue("AppPath") != null)
-				{
-					AppFilePath = (string)regkey.GetValue("AppPath");
-				}
-			}
-			return (AppFilePath);
-		}
+    }
 
-		private void buttonAssociation_Click(object sender, EventArgs e)
-		{
-			AssociateAtcFileToAttacheCase();
-		}
+    /// <summary>
+    /// アタッシェケース4の方のレジストリデータから本体のフルパスを取得する
+    /// Get full path of executable file from the registry of different application AttacheCase#3.
+    /// </summary>
+    /// <returns></returns>
+    private string getAttacheCaseExeFilePath()
+    {
+      string AppFilePath = string.Empty;
+      using (RegistryKey regkey = Registry.CurrentUser.OpenSubKey(@"Software\Hibara\AttacheCase4\AppInfo"))
+      {
+        if (regkey.GetValue("AppPath") != null)
+        {
+          AppFilePath = (string)regkey.GetValue("AppPath");
+        }
+      }
+      return (AppFilePath);
+    }
 
-		private void buttonUnAssociation_Click(object sender, EventArgs e)
-		{
-			UnAssociateAtcFileToAttacheCase();
-		}
+    private void buttonAssociation_Click(object sender, EventArgs e)
+    {
+      AssociateAtcFileToAttacheCase();
+    }
 
-		private void buttonExit_Click(object sender, EventArgs e)
-		{
-			Application.Exit();
-		}
+    private void buttonUnAssociation_Click(object sender, EventArgs e)
+    {
+      UnAssociateAtcFileToAttacheCase();
+    }
+
+    private void buttonExit_Click(object sender, EventArgs e)
+    {
+      Application.Exit();
+    }
 
   }
 

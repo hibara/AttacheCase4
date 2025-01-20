@@ -1,6 +1,6 @@
 //---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2024  Mitsuhiro Hibara
+// Copyright (C) 2016-2025  Mitsuhiro Hibara
 //
 // * Required .NET Framework 4.6 or later
 // 
@@ -17,29 +17,34 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //---------------------------------------------------------------------- 
+using AttacheCase.Properties;
 using System;
-using System.Text;
-using System.IO;
-using System.Security.Cryptography;
-using System.IO.Compression;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Reflection;
-using System.Xml;
-using System.Xml.Linq;
-using System.Collections.Concurrent;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Reflection;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Forms;
+using System.Windows.Shapes;
+using System.Xml.Linq;
+using MessageBox = System.Windows.MessageBox;
+using Path = System.IO.Path;
 #if __MACOS__
 using AppKit;
 #endif
 
 namespace AttacheCase
 {
-  public partial class FileEncrypt4
+  internal partial class FileEncrypt4
   {
     // Status code
     private const int ENCRYPT_SUCCEEDED = 1; // Encrypt is succeeded.
@@ -73,10 +78,10 @@ namespace AttacheCase
     private const int IO_EXCEPTION = -117;
 
     private byte[] buffer;
-    private const int BUFFER_SIZE = 4096;
+    private const int BUFFER_SIZE = 8192;
 
     // Header data variables
-    private static bool fBrocken = false;
+    private static bool isBrocken = false;
     private const string STRING_TOKEN_NORMAL = "_AttacheCaseData";
     private const string STRING_TOKEN_BROKEN = "_Atc_Broken_Data";
     private const string STRING_TOKEN_RSA = "_AttacheCase_Rsa";
@@ -173,6 +178,11 @@ namespace AttacheCase
     public string ErrorMessage { get; private set; } = "";
 
     private volatile bool _isCancelled;
+
+    private ConcurrentBag<FileSystemEntry> resultsConcurrentBag;
+    private volatile int _processedFileCount;
+    private readonly Stopwatch swProgress = new Stopwatch();
+
     public void CancelEncryption()
     {
       _isCancelled = true;
@@ -202,6 +212,9 @@ namespace AttacheCase
       string[] FilePaths, string OutFilePath, string Password, byte[] PasswordBinary,
       string NewArchiveName, CompressionLevel compressionLevel)
     {
+      // Stopwatch for measuring time and adjusting the progress bar display
+      var swProgress = new Stopwatch();
+      swProgress.Restart();
 
 #if (DEBUG)
       var lg = new Logger();
@@ -209,13 +222,18 @@ namespace AttacheCase
       lg.Info(OutFilePath);
       lg.Info("Encryption start.");
       lg.StopWatchStart();
+      var swEncrypt = new Stopwatch();
+      swEncrypt.Restart();
 #endif
 
       AtcFilePath = OutFilePath;
 
       var worker = sender as BackgroundWorker;
-      var cancelCheck = () => worker is { CancellationPending: true };
-
+      if (ShouldCancel(worker))
+      {
+        e.Cancel = true;
+        return false;
+      }
       // The timestamp of original file
       var dtCreate = File.GetCreationTime(FilePaths[0]);
       var dtUpdate = File.GetLastWriteTime(FilePaths[0]);
@@ -229,13 +247,6 @@ namespace AttacheCase
       };
 
       worker?.ReportProgress(0, MessageList);
-
-      // Stopwatch for measuring time and adjusting the progress bar display
-      var swEncrypt = new Stopwatch();
-      var swProgress = new Stopwatch();
-      swEncrypt.Start();
-      swProgress.Start();
-
       FileList = [];
 
       // RSA Encryption password
@@ -278,213 +289,250 @@ namespace AttacheCase
 
       try
       {
-        using (var outfs = new FileStream(AtcFilePath, FileMode.Create, FileAccess.Write))
+        var outfs = new FileStream(AtcFilePath, FileMode.Create, FileAccess.Write);
+        // 自己実行形式ファイル（Self-executable file）
+        if (fExecutable == true)
         {
-          // 自己実行形式ファイル（Self-executable file）
-          if (fExecutable == true)
+          // public partial class FileEncrypt4
+          // Read from ExeOut4.cs
+          if (ExeToolVersionString == "4.0")
           {
-            // public partial class FileEncrypt4
-            // Read from ExeOut4.cs
-            if (ExeToolVersionString == "4.0")
-            {
-              ExeOutFileSize[0] = rawData[0].Length;
-              outfs.Write(rawData[0], 0, ExeOutFileSize[0]);
-            }
-            else // 4.6.2
-            {
-              ExeOutFileSize[1] = rawData[1].Length;
-              outfs.Write(rawData[1], 0, ExeOutFileSize[1]);
-            }
+            ExeOutFileSize[0] = rawData[0].Length;
+            outfs.Write(rawData[0], 0, ExeOutFileSize[0]);
           }
-
-          _StartPos = outfs.Seek(0, SeekOrigin.End);
-
-          // Application version
-          var ver = AppInfo.Version;
-          var vernum = short.Parse(ver.ToString().Replace(".", ""));
-          var byteArray = BitConverter.GetBytes(vernum);
-          outfs.Write(byteArray, 0, 2);
-          // Input password limit
-          byteArray = BitConverter.GetBytes(MissTypeLimits);
-          outfs.Write(byteArray, 0, 1);
-          // Exceed the password input limit, destroy the file?
-          byteArray = BitConverter.GetBytes(fBrocken);
-          outfs.Write(byteArray, 0, 1);
-          // Token that this is the AttacheCase file
-          if (fRsaEncryption == true)
+          else // 4.6.2
           {
-            byteArray = Encoding.ASCII.GetBytes(STRING_TOKEN_RSA);
+            ExeOutFileSize[1] = rawData[1].Length;
+            outfs.Write(rawData[1], 0, ExeOutFileSize[1]);
           }
-          else
-          {
-            byteArray = Encoding.ASCII.GetBytes(STRING_TOKEN_NORMAL);
-          }
+        }
 
-          outfs.Write(byteArray, 0, 16);
-          // File sub version
-          byteArray = BitConverter.GetBytes(DATA_FILE_VERSION);
-          outfs.Write(byteArray, 0, 4);
-          // The size of encrypted Atc header size ( reserved ) 
-          byteArray = BitConverter.GetBytes((int)0);
-          outfs.Write(byteArray, 0, 4);
+        _StartPos = outfs.Seek(0, SeekOrigin.End);
 
-          // GUID
-          Guid guid;
-          if (string.IsNullOrEmpty(RsaPublicKeyXmlString) == false)
-          {
-            // Read GUID binary from RSA public key string
-            var xmlElement = XElement.Parse(RsaPublicKeyXmlString);
-            GuidString = xmlElement.Element("id")!.Value;
-            guid = Guid.Parse(GuidString);
-          }
-          else
-          {
-            // New GUID
-            guid = Guid.NewGuid();
-            GuidString = guid.ToString();
-          }
+        // Application version
+        var ver = AppInfo.Version;
+        var vernum = short.Parse(ver.ToString().Replace(".", ""));
+        var byteArray = BitConverter.GetBytes(vernum);
+        outfs.Write(byteArray, 0, 2);
+        // Input password limit
+        byteArray = BitConverter.GetBytes(MissTypeLimits);
+        outfs.Write(byteArray, 0, 1);
+        // Exceed the password input limit, destroy the file?
+        byteArray = BitConverter.GetBytes(isBrocken);
+        outfs.Write(byteArray, 0, 1);
+        // Token that this is the AttacheCase file
+        byteArray = Encoding.ASCII.GetBytes(fRsaEncryption == true ? STRING_TOKEN_RSA : STRING_TOKEN_NORMAL);
 
-          outfs.Write(guid.ToByteArray(), 0, 16);
+        outfs.Write(byteArray, 0, 16);
+        // File sub version
+        byteArray = BitConverter.GetBytes(DATA_FILE_VERSION);
+        outfs.Write(byteArray, 0, 4);
+        // The size of encrypted Atc header size ( reserved ) 
+        byteArray = BitConverter.GetBytes((int)0);
+        outfs.Write(byteArray, 0, 4);
 
-          // Salt
-          outfs.Write(salt, 0, 8);
+        // GUID
+        Guid guid;
+        if (string.IsNullOrEmpty(RsaPublicKeyXmlString) == false)
+        {
+          // Read GUID binary from RSA public key string
+          var xmlElement = XElement.Parse(RsaPublicKeyXmlString);
+          GuidString = xmlElement.Element("id")!.Value;
+          guid = Guid.Parse(GuidString);
+        }
+        else
+        {
+          // New GUID
+          guid = Guid.NewGuid();
+          GuidString = guid.ToString();
+        }
 
-          // RSA encryption password
-          if (fRsaEncryption == true)
-          {
-            // パスワードを暗号化して書き込む
-            //RSACryptoServiceProviderオブジェクトの作成
-            var rsa = new RSACryptoServiceProvider(2048);
-            rsa.FromXmlString(_RsaPublicKeyXmlString); //公開鍵を指定
-            //byte[] outbuffer = new byte[214];  // 剰余サイズ(256bytes) -2 -2 * hLen(SHA-1) = 214 Max 
-            //string debugString = BitConverter.ToString(byteRsaPassword);
-            //Console.WriteLine(debugString);
-            var encryptedData = rsa.Encrypt(byteRsaPassword, RSAEncryptionPadding.OaepSHA1); //OAEPパディング=trueでRSA復号
-            outfs.Write(encryptedData, 0, encryptedData.Length); // 256 byte
-          }
+        outfs.Write(guid.ToByteArray(), 0, 16);
 
-          //-----------------------------------
-          // 暗号化ヘッダー
-          // Cipher text header
-          //-----------------------------------
-          var ms = new MemoryStream();
-          try
-          {
-            // Token to refer to when decryption is successful
-            byteArray = Encoding.ASCII.GetBytes(ATC_ENCRYPTED_TOKEN);
-            ms.Write(byteArray, 0, 4);
+        // Salt
+        outfs.Write(salt, 0, 8);
 
-            var DebugList = new List<string>();
-            var OneLine = "";
+        // RSA encryption password
+        if (fRsaEncryption == true)
+        {
+          // パスワードを暗号化して書き込む
+          //RSACryptoServiceProviderオブジェクトの作成
+          var rsa = new RSACryptoServiceProvider(2048);
+          rsa.FromXmlString(_RsaPublicKeyXmlString); //公開鍵を指定
+          //byte[] outbuffer = new byte[214];  // 剰余サイズ(256bytes) -2 -2 * hLen(SHA-1) = 214 Max 
+          //string debugString = BitConverter.ToString(byteRsaPassword);
+          //Console.WriteLine(debugString);
+          var encryptedData = rsa.Encrypt(byteRsaPassword, RSAEncryptionPadding.OaepSHA1); //OAEPパディング=trueでRSA復号
+          outfs.Write(encryptedData, 0, encryptedData.Length); // 256 byte
+        }
 
-            //----------------------------------------------------------------------
-            // Put together files in one ( Save as the name ).
-            // 複数ファイルを一つにまとめる（ファイルに名前をつけて保存）
-            if (NewArchiveName != "")
-            {
-#if __MACOS__
-              NewArchiveName = NewArchiveName + "/";
-#else
-              if (NewArchiveName.EndsWith("\\") == false)
-              {
-                NewArchiveName = NewArchiveName + "\\";
-              }
-#endif
-              // File name length
-              var FileLen = Encoding.UTF8.GetByteCount(NewArchiveName);
-              byteArray = BitConverter.GetBytes((short)FileLen);
-              ms.Write(byteArray, 0, 2);
+        //-----------------------------------
+        // 暗号化ヘッダー
+        // Cipher text header
+        //-----------------------------------
+        var ms = new MemoryStream();
 
-              // File name
-              byteArray = Encoding.UTF8.GetBytes(NewArchiveName);
-              ms.Write(byteArray, 0, FileLen);
+        // Token to refer to when decryption is successful
+        byteArray = Encoding.ASCII.GetBytes(ATC_ENCRYPTED_TOKEN);
+        ms.Write(byteArray, 0, 4);
 
-              // File size (Directory)
-              const int fileSize = 0;
-              byteArray = BitConverter.GetBytes((long)0);
-              ms.Write(byteArray, 0, 8);
-
-              // File attribute (Directory)
-              const int fileAttr = 16;
-              byteArray = BitConverter.GetBytes((int)16);
-              ms.Write(byteArray, 0, 4);
-
-              var LastWriteDateString = DateTime.UtcNow.ToString("yyyyMMdd");
-              var LastWriteTimeString = DateTime.UtcNow.ToString("HHmmss");
-              // Last write date
-              byteArray = BitConverter.GetBytes(int.Parse(LastWriteDateString));
-              ms.Write(byteArray, 0, 4);
-              // Last write time
-              byteArray = BitConverter.GetBytes(int.Parse(LastWriteTimeString));
-              ms.Write(byteArray, 0, 4);
-
-              var CreationDateString = DateTime.UtcNow.ToString("yyyyMMdd");
-              var CreationTimeString = DateTime.UtcNow.ToString("HHmmss");
-              // Creation date
-              byteArray = BitConverter.GetBytes(int.Parse(CreationDateString));
-              ms.Write(byteArray, 0, 4);
-              // Creation time
-              byteArray = BitConverter.GetBytes(int.Parse(CreationTimeString));
-              ms.Write(byteArray, 0, 4);
 #if DEBUG
-              OneLine += $@"{FileLen}\t";
-              OneLine += $@"{NewArchiveName}\t";
-              OneLine += $@"{fileSize}\t";
-              OneLine += $@"{fileAttr}\t";
-              OneLine += $@"{LastWriteDateString}\t";
-              OneLine += $@"{LastWriteTimeString}\t";
-              OneLine += $@"{CreationDateString}\t";
-              OneLine += $@"{CreationTimeString}";
-              DebugList.Add(OneLine);
-              OneLine = "";
-              dirCount++;
+        var DebugList = new List<string>();
+        var OneLine = "";
 #endif
+        //----------------------------------------------------------------------
+        // Put together files in one ( Save as the name ).
+        // 複数ファイルを一つにまとめる（ファイルに名前をつけて保存）
+        if (NewArchiveName != "")
+        {
+#if __MACOS__
+            NewArchiveName = NewArchiveName + "/";
+#else
+          if (NewArchiveName.EndsWith("\\") == false)
+          {
+            NewArchiveName = NewArchiveName + "\\";
+          }
+#endif
+          // File name length
+          var FileLen = Encoding.UTF8.GetByteCount(NewArchiveName);
+          byteArray = BitConverter.GetBytes((short)FileLen);
+          ms.Write(byteArray, 0, 2);
+
+          // File name
+          byteArray = Encoding.UTF8.GetBytes(NewArchiveName);
+          ms.Write(byteArray, 0, FileLen);
+
+          // File size (Directory)
+          const int fileSize = 0;
+          byteArray = BitConverter.GetBytes((long)0);
+          ms.Write(byteArray, 0, 8);
+
+          // File attribute (Directory)
+          const int fileAttr = 16;
+          byteArray = BitConverter.GetBytes((int)16);
+          ms.Write(byteArray, 0, 4);
+
+          var LastWriteDateString = DateTime.UtcNow.ToString("yyyyMMdd");
+          var LastWriteTimeString = DateTime.UtcNow.ToString("HHmmss");
+          // Last write date
+          byteArray = BitConverter.GetBytes(int.Parse(LastWriteDateString));
+          ms.Write(byteArray, 0, 4);
+          // Last write time
+          byteArray = BitConverter.GetBytes(int.Parse(LastWriteTimeString));
+          ms.Write(byteArray, 0, 4);
+
+          var CreationDateString = DateTime.UtcNow.ToString("yyyyMMdd");
+          var CreationTimeString = DateTime.UtcNow.ToString("HHmmss");
+          // Creation date
+          byteArray = BitConverter.GetBytes(int.Parse(CreationDateString));
+          ms.Write(byteArray, 0, 4);
+          // Creation time
+          byteArray = BitConverter.GetBytes(int.Parse(CreationTimeString));
+          ms.Write(byteArray, 0, 4);
+#if DEBUG
+          OneLine += $@"{FileLen}\t";
+          OneLine += $@"{NewArchiveName}\t";
+          OneLine += $@"{fileSize}\t";
+          OneLine += $@"{fileAttr}\t";
+          OneLine += $@"{LastWriteDateString}\t";
+          OneLine += $@"{LastWriteTimeString}\t";
+          OneLine += $@"{CreationDateString}\t";
+          OneLine += $@"{CreationTimeString}";
+          DebugList.Add(OneLine);
+          OneLine = "";
+          dirCount++;
+#endif
+        }
+
+        //----------------------------------------------------------------------
+        // When encrypt multiple files
+        // 複数のファイルを暗号化する場合
+        foreach (var FilePath in FilePaths)
+        {
+          var ParentPath = Path.GetDirectoryName(FilePath) ?? FilePath;
+#if __MACOS__
+              if (ParentPath.EndsWith("/") == false)
+              {
+                ParentPath = ParentPath + "/";
+              }
+#else
+          if (ParentPath.EndsWith("\\") == false)
+          {
+            ParentPath = ParentPath + "\\";
+          }
+#endif
+          if ((worker.CancellationPending == true))
+          {
+            e.Cancel = true;
+            return (false);
+          }
+
+          //-----------------------------------
+          // 暗号化リストを生成（ファイル）
+          // Create file to encrypt list ( File )
+          //-----------------------------------
+          if (File.Exists(FilePath))
+          {
+            var entry = GetFileInfo(ParentPath, FilePath, () => ShouldCancel(worker));
+
+            if (_isCancelled || worker.CancellationPending)
+            {
+              // キャンセル待ち
+              e.Cancel = true;
+              return (false);
             }
 
-            //----------------------------------------------------------------------
-            // When encrypt multiple files
-            // 複数のファイルを暗号化する場合
-            foreach (var FilePath in FilePaths)
-            {
-              var ParentPath = Path.GetDirectoryName(FilePath);
-#if __MACOS__
-                if (ParentPath.EndsWith("/") == false)
-                {
-                  ParentPath = ParentPath + "/";
-                }
-#else
-              if (ParentPath == null)
-              {
-                ParentPath = FilePath;
-              }
-
-              if (ParentPath.EndsWith("\\") == false)
-              {
-                ParentPath = ParentPath + "\\";
-              }
+            TotalFileSize += FileInfoStreamWriter(ref ms, entry, NewArchiveName);
+            FileList.Add(entry.FullPath);
+#if DEBUG
+            OneLine += $"{entry.FullPath}\t";
+            OneLine += $"{entry.Size}\t";
+            OneLine += $"{entry.Attributes}\t";
+            OneLine += $"{entry.LastWriteDate}\t";
+            OneLine += $"{entry.LastWriteTime}\t";
+            OneLine += $"{entry.CreationDate}\t";
+            OneLine += $"{entry.CreationTime}";
+            DebugList.Add(OneLine);
+            OneLine = "";
+            fileCount++;
 #endif
-              if ((worker.CancellationPending == true))
+          }
+          //-----------------------------------
+          // 暗号化リストを生成（ディレクトリ）
+          // Create file to encrypt list ( Directory )
+          //-----------------------------------
+          else
+          {
+            var entryList = GetFileList(ParentPath, FilePath, () => ShouldCancel(worker), worker);
+            foreach (var entry in entryList)
+            {
+              if (_isCancelled || worker.CancellationPending)
               {
                 e.Cancel = true;
-                return (false);
+                return false;
               }
 
-              //-----------------------------------
-              // 暗号化リストを生成（ファイル）
-              // Create file to encrypt list ( File )
-              //-----------------------------------
-              if (File.Exists(FilePath))
+              if (entry.IsDirectory)
               {
-                var entry = GetFileInfo(ParentPath, FilePath, cancelCheck);
-
-                if (_isCancelled || worker.CancellationPending)
-                {
-                  // キャンセル待ち
-                  e.Cancel = true;
-                  return (false);
-                }
-
                 TotalFileSize += FileInfoStreamWriter(ref ms, entry, NewArchiveName);
+                FileList.Add(entry.FullPath);
+#if DEBUG
+                OneLine += $"{entry.FullPath}\t";
+                OneLine += $"{entry.Size}\t";
+                OneLine += $"{entry.Attributes}\t";
+                OneLine += $"{entry.LastWriteDate}\t";
+                OneLine += $"{entry.LastWriteTime}\t";
+                OneLine += $"{entry.CreationDate}\t";
+                OneLine += $"{entry.CreationTime}";
+                DebugList.Add(OneLine);
+                OneLine = "";
+                dirCount++;
+#endif
+              }
+              else
+              {
+                TotalFileSize += FileInfoStreamWriter(ref ms, entry, NewArchiveName);
+                // files only ( Add Files list for encryption )
                 FileList.Add(entry.FullPath);
 #if DEBUG
                 OneLine += $"{entry.FullPath}\t";
@@ -499,235 +547,200 @@ namespace AttacheCase
                 fileCount++;
 #endif
               }
-              //-----------------------------------
-              // 暗号化リストを生成（ディレクトリ）
-              // Create file to encrypt list ( Directory )
-              //-----------------------------------
-              else
-              {
-                // Directory
-                foreach (var entry in GetFileList(ParentPath, FilePath, cancelCheck))
-                {
-                  if (_isCancelled || worker.CancellationPending)
-                  {
-                    e.Cancel = true;
-                    return false;
-                  }
 
-                  if (entry.IsDirectory)
-                  {
-                    TotalFileSize += FileInfoStreamWriter(ref ms, entry, NewArchiveName);
-                    FileList.Add(entry.FullPath);
+            } // end foreach (ArrayList Item in GetFilesList(ParentPath, FilePath));
+
+          } // if (File.Exists(FilePath) == true);
+
+        } // end foreach (string FilePath in FilePaths);
 #if DEBUG
-                    OneLine += $"{entry.FullPath}\t";
-                    OneLine += $"{entry.Size}\t";
-                    OneLine += $"{entry.Attributes}\t";
-                    OneLine += $"{entry.LastWriteDate}\t";
-                    OneLine += $"{entry.LastWriteTime}\t";
-                    OneLine += $"{entry.CreationDate}\t";
-                    OneLine += $"{entry.CreationTime}";
-                    DebugList.Add(OneLine);
-                    OneLine = "";
-                    fileCount++;
+        var DesktopDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+        using var sw = new StreamWriter(Path.Combine(DesktopDir, "_encrypt_header.txt"), false, Encoding.UTF8);
+        foreach (var line in DebugList)
+        {
+          sw.WriteLine(line);
+        }
 #endif
-                  }
-                  else
-                  {
-                    TotalFileSize += FileInfoStreamWriter(ref ms, entry, NewArchiveName);
-                    // files only ( Add Files list for encryption )
-                    FileList.Add(entry.FullPath);
-#if DEBUG
-                    OneLine += $"{entry.FullPath}\t";
-                    OneLine += $"{entry.Size}\t";
-                    OneLine += $"{entry.Attributes}\t";
-                    OneLine += $"{entry.LastWriteDate}\t";
-                    OneLine += $"{entry.LastWriteTime}\t";
-                    OneLine += $"{entry.CreationDate}\t";
-                    OneLine += $"{entry.CreationTime}";
-                    DebugList.Add(OneLine);
-                    OneLine = "";
-                    dirCount++;
-#endif
-                  }
+        //----------------------------------------------------------------------
+        // Check the disk space
+        //----------------------------------------------------------------------
+        var RootDriveLetter = Path.GetPathRoot(AtcFilePath).Substring(0, 1);
 
-                } // end foreach (ArrayList Item in GetFilesList(ParentPath, FilePath));
+        if (RootDriveLetter == "\\")
+        {
+          // Network
+        }
+        else
+        {
+          var drive = new DriveInfo(RootDriveLetter);
 
-              } // if (File.Exists(FilePath) == true);
+          var driveType = drive.DriveType;
+          switch (driveType)
+          {
+            case DriveType.CDRom:
+            case DriveType.NoRootDirectory:
+            case DriveType.Unknown:
+              break;
+            case DriveType.Fixed: // Local Drive
+            case DriveType.Network: // Mapped Drive
+            case DriveType.Ram: // Ram Drive
+            case DriveType.Removable: // Usually a USB Drive
 
-            } // end foreach (string FilePath in FilePaths);
-#if DEBUG
-            var DesktopDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-            using var sw = new StreamWriter(Path.Combine(DesktopDir, "_encrypt_header.txt"), false, Encoding.UTF8);
-            foreach (var line in DebugList)
-            {
-              sw.WriteLine(line);
-            }
-#endif
-
-            //----------------------------------------------------------------------
-            // Check the disk space
-            //----------------------------------------------------------------------
-            var RootDriveLetter = Path.GetPathRoot(AtcFilePath).Substring(0, 1);
-
-            if (RootDriveLetter == "\\")
-            {
-              // Network
-            }
-            else
-            {
-              var drive = new DriveInfo(RootDriveLetter);
-
-              var driveType = drive.DriveType;
-              switch (driveType)
+              // The drive is not available, or not enough free space.
+              if (drive.IsReady == false || drive.AvailableFreeSpace < TotalFileSize)
               {
-                case DriveType.CDRom:
-                case DriveType.NoRootDirectory:
-                case DriveType.Unknown:
-                  break;
-                case DriveType.Fixed: // Local Drive
-                case DriveType.Network: // Mapped Drive
-                case DriveType.Ram: // Ram Drive
-                case DriveType.Removable: // Usually a USB Drive
-
-                  // The drive is not available, or not enough free space.
-                  if (drive.IsReady == false || drive.AvailableFreeSpace < TotalFileSize)
-                  {
-                    // not available free space
-                    ReturnCode = NO_DISK_SPACE;
-                    DriveName = drive.ToString();
-                    //_TotalFileSize = _TotalFileSize;
-                    AvailableFreeSpace = drive.AvailableFreeSpace;
-                    return (false);
-                  }
-
-                  break;
-                default:
-                  throw new ArgumentOutOfRangeException();
+                // not available free space
+                ReturnCode = NO_DISK_SPACE;
+                DriveName = drive.ToString();
+                //_TotalFileSize = _TotalFileSize;
+                AvailableFreeSpace = drive.AvailableFreeSpace;
+                return (false);
               }
-            }
 
-            //----------------------------------------------------------------------
-            // The Header of MemoryStream is encrypted
-            // ヘッダーの暗号化
-            //----------------------------------------------------------------------
-            // Back to current position of 'encrypted file size'
-            if (fExecutable == true)
-            {
-              if (ExeToolVersionString == "4.0")
-              {
-                outfs.Seek(ExeOutFileSize[0] + 24, SeekOrigin.Begin); // self executable file
-              }
-              else
-              {
-                outfs.Seek(ExeOutFileSize[1] + 24, SeekOrigin.Begin); // self executable file
-              }
-            }
-            else
-            {
-              outfs.Seek(24, SeekOrigin.Begin);
-            }
+              break;
+            default:
+              throw new ArgumentOutOfRangeException();
+          }
+        }
 
-            using var aesManaged = new AesManaged();
-            aesManaged.BlockSize = 128; // BlockSize = 8bytes
-            aesManaged.KeySize = 256; // KeySize = 16bytes
-            aesManaged.Mode = CipherMode.CBC; // CBC mode
-            aesManaged.Padding = PaddingMode.PKCS7; // Padding mode is "PKCS7".
-            aesManaged.Key = key;
-            aesManaged.IV = iv;
+        // バッファの初期化
+        buffer = new byte[BUFFER_SIZE];
+        using (var aesManaged = new AesManaged())
+        {
+          aesManaged.BlockSize = 128;
+          aesManaged.KeySize = 256;
+          aesManaged.Mode = CipherMode.CBC;
+          aesManaged.Padding = PaddingMode.PKCS7;
+          aesManaged.Key = key;
+          aesManaged.IV = iv;
 
-            ms.Position = 0;
-            //Encryption interface.
-            var encryptor = aesManaged.CreateEncryptor(aesManaged.Key, aesManaged.IV);
-            using CryptoStream cse = new CryptoStream(outfs, encryptor, CryptoStreamMode.Write);
+          ms.Position = 0;
+          //Encryption interface.
+          var encryptor = aesManaged.CreateEncryptor(aesManaged.Key, aesManaged.IV);
+          using (var cse = new CryptoStream(outfs, encryptor, CryptoStreamMode.Write))
+          {
             //----------------------------------------------------------------------
             // ヘッダーの暗号化
             //----------------------------------------------------------------------
-            int atcHeaderSize = 0;
-            _AtcHeaderSize = 0; // exclude IV of header
-            buffer = new byte[BUFFER_SIZE];
+            int atcHeaderSize;
+            _AtcHeaderSize = 0;
             while ((atcHeaderSize = ms.Read(buffer, 0, BUFFER_SIZE)) > 0)
             {
               cse.Write(buffer, 0, atcHeaderSize);
               _AtcHeaderSize += atcHeaderSize;
             }
+          }
+        }
 
-            //----------------------------------------------------------------------
-            // 本体データの暗号化
-            //----------------------------------------------------------------------
-            byteArray = BitConverter.GetBytes(_AtcHeaderSize);
-            outfs.Write(byteArray, 0, 4);
+        //-----------------------------------
+        // ヘッダーサイズの書き込み（平文）
+        //-----------------------------------
 
-            // Out file stream position move to end
-            outfs.Seek(0, SeekOrigin.End);
+        outfs.Close();  // 既存のストリームを閉じる
+        outfs = new FileStream(AtcFilePath, FileMode.Open, FileAccess.Write);  // 再オープン
 
-            using var aes = new AesManaged();
-            aes.BlockSize = 128; // BlockSize = 8bytes
-            aes.KeySize = 256; // KeySize = 16bytes
-            aes.Mode = CipherMode.CBC; // CBC mode
-            aes.Padding = PaddingMode.PKCS7; // Padding mode
+        // 実行ファイルならば書き込み位置の調整
+        if (fExecutable == true)
+        {
+          if (ExeToolVersionString == "4.0")
+          {
+            outfs.Seek(ExeOutFileSize[0] + 24, SeekOrigin.Begin); // self executable file
+          }
+          else
+          {
+            outfs.Seek(ExeOutFileSize[1] + 24, SeekOrigin.Begin); // self executable file
+          }
+        }
+        else
+        {
+          outfs.Seek(24, SeekOrigin.Begin);
+        }
 
-            aes.Key = key;
-            aes.IV = iv;
+        // ヘッダーサイズ（int）を平文で書き込む
+        byteArray = BitConverter.GetBytes(_AtcHeaderSize);
+        outfs.Write(byteArray, 0, 4);
 
-            // Encryption interface.
-            encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
-            using var ces = new CryptoStream(outfs, encryptor, CryptoStreamMode.Write);
-            using var ds = new DeflateStream(cse, compressionLevel);
-            foreach (var path in FileList)
+        // Out file stream position move to end
+        outfs.Seek(0, SeekOrigin.End);
+
+        //----------------------------------------------------------------------
+        // 本体データの暗号化
+        //----------------------------------------------------------------------
+        float percent = 0;
+        // Encryption interface.
+        using (var aesManaged = new AesManaged())
+        {
+          aesManaged.BlockSize = 128;
+          aesManaged.KeySize = 256;
+          aesManaged.Mode = CipherMode.CBC;
+          aesManaged.Padding = PaddingMode.PKCS7;
+          aesManaged.Key = key;
+          aesManaged.IV = iv;
+          var encryptor = aesManaged.CreateEncryptor(aesManaged.Key, aesManaged.IV);
+
+          using (var cse = new CryptoStream(outfs, encryptor, CryptoStreamMode.Write))
+          {
+            using (var ds = new DeflateStream(cse, compressionLevel))
             {
-              // Only file is encrypted
-              buffer = new byte[BUFFER_SIZE];
-              using var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
-              var len = 0;
-              while ((len = fs.Read(buffer, 0, BUFFER_SIZE)) > 0)
+              foreach (var path in FileList)  // Where句を除去
               {
-                ds.Write(buffer, 0, len);
-                _TotalSize += len;
-
-                string MessageText;
-                if (TotalNumberOfFiles > 1)
+                if (File.Exists(path) && !Directory.Exists(path))  // ファイルの場合のみ暗号化
                 {
-                  MessageText = path + $" ( {NumberOfFiles} / {TotalNumberOfFiles} files )";
-                }
-                else
-                {
-                  MessageText = path;
-                }
+                  buffer = new byte[BUFFER_SIZE];
 
-                MessageList = new ArrayList
-                {
-                  ENCRYPTING,
-                  MessageText
-                };
+                  using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                  {
+                    var len = 0;
+                    while ((len = fs.Read(buffer, 0, BUFFER_SIZE)) > 0)
+                    {
+                      ds.Write(buffer, 0, len);
+                      _TotalSize += len;
+                      UpdateProgress(len);
 
-                // Adjusted the progress bar update interval to 100ms
-                if (swProgress.ElapsedMilliseconds > 100)
-                {
-                  var percent = ((float)_TotalSize / TotalFileSize);
-                  worker.ReportProgress((int)(percent * 10000), MessageList);
-                  swProgress.Restart();
-                }
+                      string MessageText;
+                      if (TotalNumberOfFiles > 1)
+                      {
+                        MessageText = path + $" ( {NumberOfFiles} / {TotalNumberOfFiles} files )";
+                      }
+                      else
+                      {
+                        MessageText = path;
+                      }
 
-                if (worker.CancellationPending == true)
-                {
-                  e.Cancel = true;
-                  return (false);
-                }
-              }
-            } // end foreach (string path in _FileList);
-          }
-          catch (OperationCanceledException)
-          {
-            e.Cancel = true;
-            return (false);
-          }
-          catch (Exception ex)
-          {
-            Debug.WriteLine(ex.Message);
-            return (false);
-          }
+                      MessageList = new ArrayList
+                      {
+                        ENCRYPTING,
+                        MessageText
+                      };
 
-        } // end using (FileStream outfs = new FileStream(_AtcFilePath, FileMode.Create, FileAccess.Write));
+                      // Adjusted the progress bar update interval to 100ms
+                      if (swProgress.ElapsedMilliseconds > 100)
+                      {
+                        percent = ((float)_processedSize / TotalFileSize);
+                        worker.ReportProgress((int)(percent * 10000), MessageList);
+                        swProgress.Restart();
+
+                        // worker.CancellationPending のチェックを ShouldCancel に置き換え
+                        if (ShouldCancel(worker))
+                        {
+                          e.Cancel = true;
+                          return false;
+                        }
+                      }
+
+                    } // end while ((len = fs.Read(buffer, 0, BUFFER_SIZE)) > 0)
+
+                  } // end using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+
+                } // end if (File.Exists(path) && !Directory.Exists(path))
+
+              } // end foreach (string path in _FileList);
+
+            } // end using (var ds = new DeflateStream(cse, compressionLevel))
+
+          } // end using (var cse = new CryptoStream(outfs, encryptor, CryptoStreamMode.Write))
+
+        }
 
         // Set the timestamp of encryption file to original files or directories
         if (fKeepTimeStamp == true)
@@ -747,91 +760,218 @@ namespace AttacheCase
         return (true);
 
       }
-      catch (UnauthorizedAccessException)
+      catch (OperationCanceledException)
       {
-        //オペレーティング システムが I/O エラーまたは特定の種類のセキュリティエラーのためにアクセスを拒否する場合、スローされる例外
-        //The exception that is thrown when the operating system denies access
-        //because of an I/O error or a specific type of security error.
-        ReturnCode = OS_DENIES_ACCESS;
-        ErrorFilePath = AtcFilePath;
-        return (false);
-      }
-      catch (DirectoryNotFoundException ex)
-      {
-        //ファイルまたはディレクトリの一部が見つからない場合にスローされる例外
-        //The exception that is thrown when part of a file or directory cannot be found
-        ReturnCode = DIRECTORY_NOT_FOUND;
-        ErrorMessage = ex.Message;
-        return (false);
-      }
-      catch (DriveNotFoundException ex)
-      {
-        //使用できないドライブまたは共有にアクセスしようとするとスローされる例外
-        //The exception that is thrown when trying to access a drive or share that is not available
-        ReturnCode = DRIVE_NOT_FOUND;
-        ErrorMessage = ex.Message;
-        return (false);
-      }
-      catch (FileLoadException ex)
-      {
-        //マネージド アセンブリが見つかったが、読み込むことができない場合にスローされる例外
-        //The exception that is thrown when a managed assembly is found but cannot be loaded
-        ReturnCode = FILE_NOT_LOADED;
-        ErrorFilePath = ex.FileName;
-        return (false);
-      }
-      catch (FileNotFoundException ex)
-      {
-        //ディスク上に存在しないファイルにアクセスしようとして失敗したときにスローされる例外
-        //The exception that is thrown when an attempt to access a file that does not exist on disk fails
-        ReturnCode = FILE_NOT_FOUND;
-        ErrorFilePath = ex.FileName;
-        return (false);
-      }
-      catch (PathTooLongException)
-      {
-        //パス名または完全修飾ファイル名がシステム定義の最大長を超えている場合にスローされる例外
-        //The exception that is thrown when a path or fully qualified file name is longer than the system-defined maximum length
-        ReturnCode = PATH_TOO_LONG;
-        return (false);
-      }
-      catch (CryptographicException ex)
-      {
-        //xmlString パラメーターの形式が正しくありません。
-        //The format of the xmlString parameter is not valid.
-        ReturnCode = CRYPTOGRAPHIC_EXCEPTION;
-        ErrorMessage = ex.Message;
-        return (false);
-      }
-      catch (IOException ex)
-      {
-        //I/Oエラーが発生したときにスローされる例外。現在の例外を説明するメッセージを取得します。
-        //The exception that is thrown when an I/O error occurs. Gets a message that describes the current exception.
-        ReturnCode = IO_EXCEPTION;
-        ErrorMessage = ex.Message;
-        return (false);
+        e.Cancel = true;
+        return false;
       }
       catch (Exception ex)
       {
-        ReturnCode = ERROR_UNEXPECTED;
-        ErrorMessage = ex.Message;
-        return (false);
+        // 例外エラーをまとめて処理する
+        HandleEncryptionException(ex);
+        return false;
       }
       finally
       {
 #if (DEBUG)
         lg.StopWatchStop();
         lg.Info("encryption finished!");
-#endif
+
         swEncrypt.Stop();
         swProgress.Stop();
+
         // 計測時間
         var ts = swEncrypt.Elapsed;
         EncryptionTimeString = $"{ts.Hours}h {ts.Minutes}m {ts.Seconds}s {ts.Milliseconds}ms";
+        //MessageBox.Show(EncryptionTimeString, "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+#endif
+
       }
 
     }
 
+    private void HandleEncryptionException(Exception ex)
+    {
+      switch (ex)
+      {
+        case UnauthorizedAccessException _:
+          // オペレーティング システムが I/O エラーまたは特定の種類のセキュリティエラーのためにアクセスを拒否する場合、スローされる例外
+          // The exception that is thrown when the operating system denies access
+          // because of an I/O error or a specific type of security error.
+          ReturnCode = OS_DENIES_ACCESS;
+          ErrorFilePath = AtcFilePath;
+          break;
+        case DirectoryNotFoundException _:
+          // ファイルまたはディレクトリの一部が見つからない場合にスローされる例外
+          // The exception that is thrown when part of a file or directory cannot be found
+          ReturnCode = DIRECTORY_NOT_FOUND;
+          ErrorMessage = ex.Message;
+          break;
+        case DriveNotFoundException _:
+          // 使用できないドライブまたは共有にアクセスしようとするとスローされる例外
+          // The exception that is thrown when trying to access a drive or share that is not available
+          ReturnCode = DRIVE_NOT_FOUND;
+          ErrorMessage = ex.Message;
+          break;
+        case FileLoadException fileLoadEx:
+          // マネージド アセンブリが見つかったが、読み込むことができない場合にスローされる例外
+          // The exception that is thrown when a managed assembly is found but cannot be loaded
+          ReturnCode = FILE_NOT_LOADED;
+          ErrorMessage = fileLoadEx.FileName;
+          break;
+        case FileNotFoundException fileNotFoundEx:
+          // ディスク上に存在しないファイルにアクセスしようとして失敗したときにスローされる例外
+          // The exception that is thrown when an attempt to access a file that does not exist on disk fails
+          ReturnCode = FILE_NOT_FOUND;
+          ErrorMessage = fileNotFoundEx.FileName;
+          break;
+        case PathTooLongException _:
+          // パス名または完全修飾ファイル名がシステム定義の最大長を超えている場合にスローされる例外
+          // The exception that is thrown when a path or fully qualified file name is longer than the system-defined maximum length
+          ReturnCode = PATH_TOO_LONG;
+          break;
+        case CryptographicException _:
+          // 暗号操作中にエラーが発生すると、スローされる例外
+          // Exception thrown if an error occurs during a cryptographic operation
+          //
+          // ※主に、RSA暗号化中にXML書式のファイルの誤りでエラーが発生するようだ
+          ReturnCode = CRYPTOGRAPHIC_EXCEPTION;
+          ErrorMessage = ex.Message;
+          break;
+        case IOException _:
+          // I/Oエラーが発生したときにスローされる例外。現在の例外を説明するメッセージを取得します。
+          // The exception that is thrown when an I/O error occurs. Gets a message that describes the current exception.
+          ReturnCode = IO_EXCEPTION;
+          ErrorMessage = ex.Message;
+          break;
+        default:
+          ReturnCode = ERROR_UNEXPECTED;
+          ErrorMessage = ex.Message;
+          break;
+      }
+    }
+
+    /// <summary>
+    /// 暗号化処理がキャンセルされるべきかどうかを判断する
+    /// </summary>
+    /// <param name="worker">バックグラウンドワーカーのインスタンス</param>
+    /// <returns>キャンセルされるべき場合は <c>true</c>、それ以外の場合は <c>false</c></returns>
+    private bool ShouldCancel(BackgroundWorker worker)
+    {
+      return _isCancelled || (worker?.CancellationPending ?? false);
+    }
+
+    private long _processedSize;
+    /// <summary>
+    /// 処理されたデータのサイズを更新し、進行状況を追跡する
+    /// </summary>
+    /// <param name="size">処理されたデータのサイズ</param>
+    public void UpdateProgress(long size)
+    {
+      Interlocked.Add(ref _processedSize, size);
+    }
+
+    /// <summary>
+    /// 指定されたディレクトリとそのサブディレクトリ内のすべてのファイルを取得します。
+    /// </summary>
+    /// <param name="parentPath">親ディレクトリのパス。</param>
+    /// <param name="rootFolderPath">ルートフォルダのパス。</param>
+    /// <param name="cancelCheck">キャンセルが必要かどうかを確認するためのデリゲート。</param>
+    /// <param name="worker">バックグラウンドワーカーのインスタンス。</param>
+    /// <returns>ファイルシステムエントリの列挙。</returns>
+    /// <exception cref="OperationCanceledException">操作がキャンセルされた場合にスローされます。</exception>
+    public IEnumerable<FileSystemEntry> GetFileList(string parentPath, string rootFolderPath, Func<bool> cancelCheck, BackgroundWorker worker)
+    {
+      resultsConcurrentBag = new ConcurrentBag<FileSystemEntry>();
+      _processedFileCount = 0;
+      swProgress.Restart();
+
+      try
+      {
+        var pending = new Queue<string>();  // ConcurrentQueueではなく通常のQueueを使用
+        pending.Enqueue(rootFolderPath);
+
+        while (pending.Count > 0)
+        {
+          if (cancelCheck()) throw new OperationCanceledException();
+
+          var currentPath = pending.Dequeue();
+
+          // ディレクトリの情報を追加
+          var dirInfo = GetDirectoryInfo(parentPath, currentPath);
+          if (!string.IsNullOrEmpty(dirInfo.FullPath))
+          {
+            resultsConcurrentBag.Add(dirInfo);
+            ReportProgress(currentPath, worker);
+          }
+
+          try
+          {
+            // サブディレクトリの処理
+            foreach (var dir in Directory.GetDirectories(currentPath))
+            {
+              if (cancelCheck()) throw new OperationCanceledException();
+              pending.Enqueue(dir);
+            }
+
+            // ファイルの処理
+            foreach (var file in Directory.GetFiles(currentPath))
+            {
+              if (cancelCheck()) throw new OperationCanceledException();
+
+              var fileInfo = GetFileInfo(parentPath, file, cancelCheck);
+              if (!string.IsNullOrEmpty(fileInfo.FullPath))
+              {
+                resultsConcurrentBag.Add(fileInfo);
+                ReportProgress(file, worker);
+              }
+            }
+          }
+          catch (UnauthorizedAccessException ex)
+          {
+            Debug.WriteLine($"Access denied to {currentPath}: {ex.Message}");
+          }
+          catch (DirectoryNotFoundException ex)
+          {
+            Debug.WriteLine($"Directory not found {currentPath}: {ex.Message}");
+          }
+        }
+
+        // 結果を確実に返す
+        var sortedResults = resultsConcurrentBag
+            .Where(entry => !string.IsNullOrEmpty(entry.FullPath))
+            .OrderBy(e => e.RelativePath)
+            .ToList();  // 結果を確実にリストとして保持
+
+        return sortedResults;
+      }
+      finally
+      {
+        swProgress.Restart();
+      }
+    }
+
+    /// <summary>
+    /// 現在の進行状況を報告する
+    /// </summary>
+    /// <param name="currentPath">現在処理中のパス</param>
+    /// <param name="worker">バックグラウンドワーカーのインスタンス</param>
+    private void ReportProgress(string currentPath, BackgroundWorker worker)
+    {
+      Interlocked.Increment(ref _processedFileCount);
+
+      if (swProgress.ElapsedMilliseconds > 100)
+      {
+        worker?.ReportProgress(-1, new ArrayList
+        {
+          READY_FOR_ENCRYPT,
+          $"{currentPath} ({_processedFileCount})"
+        });
+        swProgress.Restart();
+      }
+    }
+
+    /*
     /// <summary>
     /// 
     /// </summary>
@@ -842,6 +982,15 @@ namespace AttacheCase
     /// <exception cref="OperationCanceledException"></exception>
     public IEnumerable<FileSystemEntry> GetFileList(string parentPath, string rootFolderPath, Func<bool> cancelCheck)
     {
+      if (string.IsNullOrEmpty(parentPath) || string.IsNullOrEmpty(rootFolderPath))
+      {
+        throw new ArgumentException("Parent path and root folder path must not be null or empty");
+      }
+
+      // パスの正規化
+      parentPath = Path.GetFullPath(parentPath);
+      rootFolderPath = Path.GetFullPath(rootFolderPath);
+
       var pending = new ConcurrentQueue<string>();
       var results = new ConcurrentBag<FileSystemEntry>();
       pending.Enqueue(rootFolderPath);
@@ -852,17 +1001,41 @@ namespace AttacheCase
 
         if (pending.TryDequeue(out var currentPath))
         {
-          results.Add(GetDirectoryInfo(parentPath, currentPath));
-
-          foreach (var entry in ProcessCurrentDirectory(parentPath, currentPath, cancelCheck))
+          try
           {
-            results.Add(entry);
+            var dirInfo = new DirectoryInfo(currentPath);
+            if (!dirInfo.Exists)
+            {
+              continue;
+            }
+
+            var dirEntry = GetDirectoryInfo(parentPath, currentPath);
+            results.Add(dirEntry);
+
+            foreach (var dir in dirInfo.GetDirectories())
+            {
+              pending.Enqueue(dir.FullName);
+            }
+
+            foreach (var file in dirInfo.GetFiles())
+            {
+              if (cancelCheck()) throw new OperationCanceledException();
+
+              var fileEntry = GetFileInfo(parentPath, file.FullName, cancelCheck);
+              results.Add(fileEntry);
+            }
+          }
+          catch (Exception ex)
+          {
+            continue;
           }
         }
       }
 
-      return results.OrderBy(e => e.RelativePath);
+      var resultList = results.Where(entry => !string.IsNullOrEmpty(entry.FullPath)).OrderBy(e => e.RelativePath).ToList();
+      return resultList;
     }
+    */
 
     /// <summary>
     /// 暗号化ファイルに格納する各ファイル情報をMemoryStreamに書き込む
@@ -873,6 +1046,21 @@ namespace AttacheCase
     /// <returns></returns>
     private static long FileInfoStreamWriter(ref MemoryStream ms, FileSystemEntry entry, string newArchiveName)
     {
+      if (ms == null)
+      {
+        throw new ArgumentNullException(nameof(ms));
+      }
+
+      if (string.IsNullOrEmpty(entry.RelativePath))
+      {
+        Debug.WriteLine($"Warning: Entry has no relative path. FullPath: {entry.FullPath}");
+        return 0;
+      }
+
+      newArchiveName ??= string.Empty;  // newArchiveNameがnullの場合は空文字を使用
+
+      Debug.WriteLine($"Writing entry: RelativePath={entry.RelativePath}, Size={entry.Size}, IsDirectory={entry.IsDirectory}");
+
       var fileLen = Encoding.UTF8.GetByteCount(newArchiveName + entry.RelativePath);
       var byteArray = BitConverter.GetBytes((short)fileLen);
       ms.Write(byteArray, 0, 2);
@@ -914,84 +1102,59 @@ namespace AttacheCase
       return entry.Size;
     }
 
-    public struct FileSystemEntry
+    public class FileSystemEntry  // structからclassに変更
     {
-      public bool IsDirectory;
-      public string FullPath;
-      public string RelativePath;
-      public long Size;
-      public FileAttributes Attributes;
-      public int LastWriteDate;
-      public int LastWriteTime;
-      public int CreationDate;
-      public int CreationTime;
-      public byte[] Md5Hash;
-    }
-
-    private IEnumerable<FileSystemEntry> ProcessCurrentDirectory(string parentPath, string currentPath, Func<bool> cancelCheck)
-    {
-      if (cancelCheck()) throw new OperationCanceledException();
-
-      var entries = new ConcurrentBag<FileSystemEntry>();
-      try
-      {
-        var files = Directory.EnumerateFiles(currentPath).ToList();
-        if (files.Any())
-        {
-          Parallel.ForEach(files, new ParallelOptions
-          {
-            MaxDegreeOfParallelism = Environment.ProcessorCount,
-            CancellationToken = new CancellationToken(cancelCheck())
-          }, file =>
-          {
-            if (cancelCheck()) throw new OperationCanceledException();
-            var entry = GetFileInfo(parentPath, file, cancelCheck);
-            entries.Add(entry);
-          });
-        }
-
-        foreach (var dir in Directory.EnumerateDirectories(currentPath))
-        {
-          if (cancelCheck()) throw new OperationCanceledException();
-          entries.Add(GetDirectoryInfo(parentPath, dir));
-        }
-      }
-      catch (UnauthorizedAccessException) { /* スキップ */ }
-      catch (DirectoryNotFoundException) { /* スキップ */ }
-
-      return entries.OrderBy(e => e.RelativePath);
+      public bool IsDirectory { get; set; }
+      public string FullPath { get; set; }
+      public string RelativePath { get; set; }
+      public long Size { get; set; }
+      public FileAttributes Attributes { get; set; }
+      public int LastWriteDate { get; set; }
+      public int LastWriteTime { get; set; }
+      public int CreationDate { get; set; }
+      public int CreationTime { get; set; }
+      public byte[] Md5Hash { get; set; }
     }
 
     private static FileSystemEntry GetDirectoryInfo(string parentPath, string dirPath)
     {
+      try
+      {
 #if __MACOS__
       if (ParentPath.EndsWith('/') == false)
       {
         ParentPath = ParentPath + "/";
       }
 #endif
-      var di = new DirectoryInfo(dirPath);
-      var relativePath = CreateRelativePath(parentPath, dirPath);
+        var di = new DirectoryInfo(dirPath);
+        var relativePath = CreateRelativePath(parentPath, dirPath);
 
-      // ディレクトリの場合のみ末尾にデリミタを追加
-      if (relativePath.EndsWith("\\") == false)
+        // ディレクトリの場合のみ末尾にデリミタを追加
+        if (relativePath.EndsWith("\\") == false)
+        {
+          relativePath += "\\";
+        }
+
+        return new FileSystemEntry
+        {
+          IsDirectory = true, // File flag
+          FullPath = dirPath, // Absolute file path
+          RelativePath = relativePath, // (string)Remove parent directory path.
+          Size = 0, // (Int64)File size
+          Attributes = di.Attributes, // (int)File attribute
+          LastWriteDate = GetDateInt(di.LastWriteTimeUtc), // Last write Date (UTC)
+          LastWriteTime = GetTimeInt(di.LastWriteTimeUtc), // Last write Time (UTC)
+          CreationDate = GetDateInt(di.CreationTimeUtc), // Creation Date (UTC)
+          CreationTime = GetTimeInt(di.CreationTimeUtc), // Creation Time (UTC)
+          Md5Hash = [] // Check Sum (MD5)
+        };
+
+      }
+      catch (Exception ex) when (ex is not OperationCanceledException)
       {
-        relativePath += "\\";
+        throw new FileProcessingException($"Error processing file: {dirPath}", dirPath, ex);
       }
 
-      return new FileSystemEntry
-      {
-        IsDirectory = true,                              // File flag
-        FullPath = dirPath,                              // Absolute file path
-        RelativePath = relativePath,                     // (string)Remove parent directory path.
-        Size = 0,                                        // (Int64)File size
-        Attributes = di.Attributes,                      // (int)File attribute
-        LastWriteDate = GetDateInt(di.LastWriteTimeUtc), // Last write Date (UTC)
-        LastWriteTime = GetTimeInt(di.LastWriteTimeUtc), // Last write Time (UTC)
-        CreationDate = GetDateInt(di.CreationTimeUtc),   // Creation Date (UTC)
-        CreationTime = GetTimeInt(di.CreationTimeUtc),   // Creation Time (UTC)
-        Md5Hash = []     // Check Sum (MD5)
-      };
     }
 
     private static FileSystemEntry GetFileInfo(string parentPath, string filePath, Func<bool> cancelCheck)
@@ -1025,26 +1188,38 @@ namespace AttacheCase
       }
     }
 
-    public class FileProcessingException : Exception
+    public class FileProcessingException(string message, string filePath, Exception inner) : Exception(message, inner)
     {
-      public string FilePath { get; }
-      public FileProcessingException(string message, string filePath, Exception inner)
-        : base(message, inner)
-      {
-        FilePath = filePath;
-      }
+      public string FilePath { get; } = filePath;
     }
-
 
     private static string CreateRelativePath(string parentPath, string fullPath)
     {
-      var relativeLength = fullPath.Length - parentPath.Length;
-      if (relativeLength <= 0) return "";
+      if (string.IsNullOrEmpty(parentPath) || string.IsNullOrEmpty(fullPath))
+      {
+        return string.Empty;
+      }
 
-      var relativePath = fullPath.Substring(parentPath.Length, relativeLength);
+      // パスの正規化
+      parentPath = Path.GetFullPath(parentPath);
+      fullPath = Path.GetFullPath(fullPath);
+
+      if (!fullPath.StartsWith(parentPath, StringComparison.OrdinalIgnoreCase))
+      {
+        return string.Empty;
+      }
+
+      var relativeLength = fullPath.Length - parentPath.Length;
+      if (relativeLength <= 0)
+      {
+        return string.Empty;
+      }
+
+      var relativePath = fullPath.Substring(parentPath.Length, relativeLength)
+        .TrimStart(Path.DirectorySeparatorChar);
 
       // ディレクトリの場合のみ末尾にデリミタを追加
-      if (!relativePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
+      if (Directory.Exists(fullPath) && !relativePath.EndsWith(Path.DirectorySeparatorChar.ToString()))
       {
         relativePath += Path.DirectorySeparatorChar;
       }
@@ -1052,11 +1227,21 @@ namespace AttacheCase
       return relativePath;
     }
 
+    /// <summary>
+    /// DateTime型の日付をint形式にして返す（たとえば、2025/01/06 → 20250106）
+    /// </summary>
+    /// <param name="dt">DateTime型の日付</param>
+    /// <returns></returns>
     private static int GetDateInt(DateTime dt)
     {
       return (dt.Year * 10000) + (dt.Month * 100) + dt.Day;
     }
 
+    /// <summary>
+    /// DateTime型の時間をint形式にして返す（たとえば、12:38:12 → 123812）
+    /// </summary>
+    /// <param name="dt">DateTime型の時間</param>
+    /// <returns></returns>
     private static int GetTimeInt(DateTime dt)
     {
       return (dt.Hour * 10000) + (dt.Minute * 100) + dt.Second;
@@ -1099,8 +1284,10 @@ namespace AttacheCase
     {
       private static readonly Assembly _assembly = Assembly.GetCallingAssembly();
 
+      // アセンブリ情報からはバージョン番号だけ取得
       public static Version Version => _assembly.GetName().Version;
 
+      /*
       public static string Title
       {
         get
@@ -1111,19 +1298,16 @@ namespace AttacheCase
             : Path.GetFileNameWithoutExtension(_assembly.CodeBase);
         }
       }
-
       public static string ProductName => GetAttribute<AssemblyProductAttribute>()?.Product ?? "";
-
       public static string Description => GetAttribute<AssemblyDescriptionAttribute>()?.Description ?? "";
-
       public static string CopyrightHolder => GetAttribute<AssemblyCopyrightAttribute>()?.Copyright ?? "";
-
       public static string CompanyName => GetAttribute<AssemblyCompanyAttribute>()?.Company ?? "";
 
       private static T GetAttribute<T>() where T : Attribute
       {
         return _assembly.GetCustomAttributes(typeof(T), false).FirstOrDefault() as T;
       }
+      */
     }
 
   }// end class FileEncrypt()

@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2024  Mitsuhiro Hibara
+// Copyright (C) 2016-2025  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,25 +15,25 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //---------------------------------------------------------------------- 
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
 using AttacheCase.Properties;
 using Microsoft.VisualBasic.FileIO;
+using System;
+using System.Collections;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Runtime.InteropServices;
+using System.Windows.Forms;
 using System.Xml.Linq;
-using System.Text;
-using System.Globalization;
-using System.Collections.Concurrent;
-using Path = System.IO.Path;
+using Zxcvbn;
 
 namespace AttacheCase
 {
@@ -74,7 +74,7 @@ namespace AttacheCase
     private static extern bool BringWindowToTop(IntPtr hWnd);
     [DllImport("user32.dll")]
     private static extern bool ShowWindow(IntPtr hWnd, uint nCmdShow);
-    
+
     /// <summary>
     /// タブレットモードか否か
     /// </summary>
@@ -90,67 +90,66 @@ namespace AttacheCase
     // Status Code
     private const int ENCRYPT_SUCCEEDED = 1; // Encrypt is succeeded
     private const int DECRYPT_SUCCEEDED = 2; // Decrypt is succeeded
-    private const int DELETE_SUCCEEDED  = 3; // Delete is succeeded
+    private const int DELETE_SUCCEEDED = 3; // Delete is succeeded
     private const int READY_FOR_ENCRYPT = 4; // Getting ready for encryption
     private const int READY_FOR_DECRYPT = 5; // Getting ready for decryption
-    private const int ENCRYPTING        = 6; // Encrypting
-    private const int DECRYPTING        = 7; // Decrypting
-    private const int DELETING          = 8; // Deleting
+    private const int ENCRYPTING = 6; // Encrypting
+    private const int DECRYPTING = 7; // Decrypting
+    private const int DELETING = 8; // Deleting
 
     // Error Code
-    private const int USER_CANCELED            = -1;
-    private const int ERROR_UNEXPECTED         = -100;
-    private const int NOT_ATC_DATA             = -101;
-    private const int ATC_BROKEN_DATA          = -102;
-    private const int NO_DISK_SPACE            = -103;
-    private const int FILE_INDEX_NOT_FOUND     = -104;
+    private const int USER_CANCELED = -1;
+    private const int ERROR_UNEXPECTED = -100;
+    private const int NOT_ATC_DATA = -101;
+    private const int ATC_BROKEN_DATA = -102;
+    private const int NO_DISK_SPACE = -103;
+    private const int FILE_INDEX_NOT_FOUND = -104;
     private const int PASSWORD_TOKEN_NOT_FOUND = -105;
-    private const int NOT_CORRECT_HASH_VALUE   = -106;
-    private const int INVALID_FILE_PATH        = -107;
-    private const int OS_DENIES_ACCESS         = -108;
-    private const int DATA_NOT_FOUND           = -109;
-    private const int DIRECTORY_NOT_FOUND      = -110;
-    private const int DRIVE_NOT_FOUND          = -111;
-    private const int FILE_NOT_LOADED          = -112;
-    private const int FILE_NOT_FOUND           = -113;
-    private const int PATH_TOO_LONG            = -114;
-    private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
-    private const int RSA_KEY_GUID_NOT_MATCH   = -116;
-    private const int IO_EXCEPTION             = -117;
+    private const int NOT_CORRECT_HASH_VALUE = -106;
+    private const int INVALID_FILE_PATH = -107;
+    private const int OS_DENIES_ACCESS = -108;
+    private const int DATA_NOT_FOUND = -109;
+    private const int DIRECTORY_NOT_FOUND = -110;
+    private const int DRIVE_NOT_FOUND = -111;
+    private const int FILE_NOT_LOADED = -112;
+    private const int FILE_NOT_FOUND = -113;
+    private const int PATH_TOO_LONG = -114;
+    private const int CRYPTOGRAPHIC_EXCEPTION = -115;
+    private const int RSA_KEY_GUID_NOT_MATCH = -116;
+    private const int IO_EXCEPTION = -117;
 
     // File Type
-    private const int FILE_TYPE_ERROR           = -1;
-    private const int FILE_TYPE_NONE            =  0;
-    private const int FILE_TYPE_ATC             =  1;
-    private const int FILE_TYPE_ATC_EXE         =  2;
-    private const int FILE_TYPE_PASSWORD_ZIP    =  3;
-    private const int FILE_TYPE_RSA_DATA        =  4;
-    private const int FILE_TYPE_RSA_PRIVATE_KEY =  5;
-    private const int FILE_TYPE_RSA_PUBLIC_KEY  =  6;
+    private const int FILE_TYPE_ERROR = -1;
+    private const int FILE_TYPE_NONE = 0;
+    private const int FILE_TYPE_ATC = 1;
+    private const int FILE_TYPE_ATC_EXE = 2;
+    private const int FILE_TYPE_PASSWORD_ZIP = 3;
+    private const int FILE_TYPE_RSA_DATA = 4;
+    private const int FILE_TYPE_RSA_PRIVATE_KEY = 5;
+    private const int FILE_TYPE_RSA_PUBLIC_KEY = 6;
 
     // Process Type
-    private const int PROCESS_TYPE_ERROR          = -1;
-    private const int PROCESS_TYPE_NONE           =  0;
-    private const int PROCESS_TYPE_ATC            =  1;
-    private const int PROCESS_TYPE_ATC_EXE        =  2;
-    private const int PROCESS_TYPE_PASSWORD_ZIP   =  3;
-    private const int PROCESS_TYPE_DECRYPTION     =  4;
-    private const int PROCESS_TYPE_RSA_ENCRYPTION =  5;
-    private const int PROCESS_TYPE_RSA_DECRYPTION =  6;
+    private const int PROCESS_TYPE_ERROR = -1;
+    private const int PROCESS_TYPE_NONE = 0;
+    private const int PROCESS_TYPE_ATC = 1;
+    private const int PROCESS_TYPE_ATC_EXE = 2;
+    private const int PROCESS_TYPE_PASSWORD_ZIP = 3;
+    private const int PROCESS_TYPE_DECRYPTION = 4;
+    private const int PROCESS_TYPE_RSA_ENCRYPTION = 5;
+    private const int PROCESS_TYPE_RSA_DECRYPTION = 6;
 
     // Overwrite Option
     //private const int USER_CANCELED = -1;
-    private const int OVERWRITE      = 1;
-    private const int OVERWRITE_ALL  = 2;
-    private const int KEEP_NEWER     = 3;
+    private const int OVERWRITE = 1;
+    private const int OVERWRITE_ALL = 2;
+    private const int KEEP_NEWER = 3;
     private const int KEEP_NEWER_ALL = 4;
     // Skip Option
-    private const int SKIP           = 5;
-    private const int SKIP_ALL       = 6;
+    private const int SKIP = 5;
+    private const int SKIP_ALL = 6;
     // MD5 hash mismatch
     private const int CONTINUE = 7;
-    
-    
+
     // EXEファイルのサイズ（4GiB - 1B）制限
     private const Int64 Limit4GibSize = 4294967295;
 
@@ -185,15 +184,17 @@ namespace AttacheCase
     private string XmlPublicKeyString;
     private string XmlPrivateKeyString;
     private Dictionary<string, string> XmlHashStringList;
-    bool fWaitingForKeyFile = false;
+    private bool fWaitingForKeyFile = false;
 
     private CancellationTokenSource cts;
 
     private int FileIndex = 0;
-    List<string> OutputFileList = new List<string>();
+    private List<string> OutputFileList = new List<string>();
 
     // Developer Console window
-    Form5 frm5 = null;
+    private Form5 frm5 = null;
+
+    private TaskbarProgress _taskbarProgress;
 
     /// <summary>
     /// Constructor
@@ -227,6 +228,10 @@ namespace AttacheCase
         this.BackColor = SystemColors.Control;
       }
 
+      // タスクバーでのプログレスバー表示
+      // Display of progress bar on taskbar
+      _taskbarProgress = new TaskbarProgress(this.Handle);
+
     }
 
     //======================================================================
@@ -253,7 +258,6 @@ namespace AttacheCase
       panelRsaKey.Visible = false;
       panelProgressState.Visible = false;
       panelStartPage.Visible = true;
-      this.AllowDrop = true;
 
       this.Text = Resources.AttacheCase;
 
@@ -278,7 +282,7 @@ namespace AttacheCase
         // ウィンドウの状態を通常に設定
         this.WindowState = (FormWindowState)AppSettings.Instance.FormStyle;
       }
-      
+
       this.Width = AppSettings.Instance.FormWidth;
       this.Height = AppSettings.Instance.FormHeight;
 
@@ -290,7 +294,7 @@ namespace AttacheCase
       }
       else
       {
-      	// Ajust invalid window form position
+        // Ajust invalid window form position
         this.Left = AppSettings.Instance.FormLeft;
       }
 
@@ -300,7 +304,7 @@ namespace AttacheCase
       }
       else
       {
-      	// Ajust invalid window form position
+        // Ajust invalid window form position
         this.Top = AppSettings.Instance.FormTop;
       }
 
@@ -330,7 +334,7 @@ namespace AttacheCase
     {
       // ドラッグ＆ドロップの説明文をパネル内で中央表示
       // Center the drag & drop description in the panel.
-      labelDragAndDrop.Left = (panelStartPage.Width - panel1.Width) / 2 - labelDragAndDrop.Width / 2 + panel1.Width - 16; ;
+      labelDragAndDrop.Left = (panelStartPage.Width - panel1.Width) / 2 - labelDragAndDrop.Width / 2 + panel1.Width - 24; ;
       labelDragAndDrop.Top = panelStartPage.Height / 2 - labelDragAndDrop.Height / 2;
     }
 
@@ -386,7 +390,8 @@ namespace AttacheCase
     {
       string FormThemeColor = this.BackColor == SystemColors.Control ? "light" : "dark";
       string CurrentThemeColor = AppSettings.Instance.CurrentThemeColorName;
-      if (FormThemeColor != CurrentThemeColor){
+      if (FormThemeColor != CurrentThemeColor)
+      {
         if (CurrentThemeColor == "dark")
         {
           ChangeTheme(this.Controls, true);
@@ -410,8 +415,7 @@ namespace AttacheCase
     /// <param name="e"></param>
     private void Form1_DragEnter(object sender, DragEventArgs e)
     {
-      if (panelStartPage.Visible == true || 
-        (panelProgressState.Visible == true && progressBar.Value == progressBar.Maximum))
+      if (panelStartPage.Visible == true || (panelProgressState.Visible == true && progressBar.Value == progressBar.Maximum))
       {
       }
       else if (panelEncrypt.Visible == true && AppSettings.Instance.fAllowPassFile == true)
@@ -422,9 +426,9 @@ namespace AttacheCase
       }
       else if (panelRsa.Visible == true || panelRsaKey.Visible == true)
       {
-
       }
-      else {
+      else
+      {
         e.Effect = DragDropEffects.None;
         return;
       }
@@ -445,7 +449,7 @@ namespace AttacheCase
     }
 
     /// <summary>
-    /// Form1 DragLeace event
+    /// Form1 DragLease event
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -473,7 +477,7 @@ namespace AttacheCase
         return;
       }
 
-      if ( fWaitingForKeyFile == false)
+      if (fWaitingForKeyFile == false)
       {
         AppSettings.Instance.FileList = new List<string>();
       }
@@ -498,13 +502,15 @@ namespace AttacheCase
     {
       if (AppSettings.Instance.fCompleteDelFile < 1 || AppSettings.Instance.fCompleteDelFile > 3)
       {
-        return(true);
+        return (true);
       }
 
       pictureBoxProgress.Image = pictureBoxDeleteOn.Image;
-      labelProgressMessageText.Text = "-";
+      labelProgressMessageText.Text = @"-";
       progressBar.Value = 0;
-      labelProgressPercentText.Text = "- %";
+      labelProgressPercentText.Text = @"- %";
+      _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+      _taskbarProgress.UpdateProgress(0);
       this.Update();
 
       // How to delete a way?
@@ -517,15 +523,15 @@ namespace AttacheCase
         labelCryptionType.Text = Resources.labelProcessNameDelete;  // Deleting...
 
         cts = new CancellationTokenSource();
-        ParallelOptions po = new ParallelOptions();
+        var po = new ParallelOptions();
         po.CancellationToken = cts.Token;
 
         try
         {
           labelProgress.Text = Resources.labelNormalDelete;
 
-          SynchronizationContext ctx = SynchronizationContext.Current;
-          int count = 0;
+          var ctx = SynchronizationContext.Current;
+          var count = 0;
 
           Parallel.ForEach(FileList, po, (FilePath, state) =>
           {
@@ -535,7 +541,7 @@ namespace AttacheCase
             }
             else
             {
-              // File or direcrory does not exists.
+              // File or directory does not exist.
               if (Directory.Exists(FilePath) == true)
               {
                 FileSystem.DeleteDirectory(
@@ -552,6 +558,8 @@ namespace AttacheCase
             ctx.Post(d =>
             {
               progressBar.Value = (int)((float)count / FileList.Count) * 10000;
+              _taskbarProgress.UpdateProgress(progressBar.Value);
+
             }, null);
 
             po.CancellationToken.ThrowIfCancellationRequested();
@@ -563,11 +571,11 @@ namespace AttacheCase
 
           // shell32.dll 読み込みに関する脆弱性対策（直接 system32などのディレクトリーを指定する）
           // Vulnerability countermeasure for shell32.dll loading (specify "system32" etc directory directly)
-          string dllPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
+          var dllPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "shell32.dll");
 
-          using (UnManagedDll shell32Dll = new UnManagedDll(dllPath))
+          using (var shell32Dll = new UnManagedDll(dllPath))
           {
-            SHChangeNotifyDelegate SHChangeNotify = shell32Dll.GetProcDelegate<SHChangeNotifyDelegate>("SHChangeNotify");
+            var SHChangeNotify = shell32Dll.GetProcDelegate<SHChangeNotifyDelegate>("SHChangeNotify");
             SHChangeNotify(0x08000000, 0x0000, (IntPtr)null, (IntPtr)null);
           }
 
@@ -576,12 +584,14 @@ namespace AttacheCase
           // The specified files or folders has been deleted.
           labelProgressMessageText.Text = Resources.labelNormalDeleteCompleted;
           progressBar.Value = progressBar.Maximum;
-          labelProgressPercentText.Text = "100%";
+          _taskbarProgress.UpdateProgress(100);
+          _taskbarProgress.Flash();
+          labelProgressPercentText.Text = @"100%";
           buttonCancel.Text = Resources.ButtonTextOK;
           Application.DoEvents();
 
         }
-        catch(Exception e)
+        catch (Exception e)
         {
           // ユーザーキャンセル
           // User cancel
@@ -595,7 +605,8 @@ namespace AttacheCase
           // Deleting files or folders has been canceled.
           labelProgressMessageText.Text = Resources.labelNormalDeleteCanceled;
           progressBar.Value = 0;
-          labelProgressPercentText.Text = "- %";
+          _taskbarProgress.UpdateProgress(0);
+          labelProgressPercentText.Text = @"- %";
           return (false);
         }
         finally
@@ -616,13 +627,15 @@ namespace AttacheCase
         labelProgress.Text = Resources.labelMoveToTrash;
 
         cts = new CancellationTokenSource();
-        ParallelOptions po = new ParallelOptions();
-        po.CancellationToken = cts.Token;
+        var po = new ParallelOptions
+        {
+          CancellationToken = cts.Token
+        };
 
         try
         {
-          SynchronizationContext ctx = SynchronizationContext.Current;
-          int count = 0;
+          var ctx = SynchronizationContext.Current;
+          var count = 0;
 
           Parallel.ForEach(FileList, po, (FilePath, state) =>
           {
@@ -641,6 +654,8 @@ namespace AttacheCase
             ctx.Post(d =>
             {
               progressBar.Value = (int)((float)count / FileList.Count) * 10000;
+              _taskbarProgress.UpdateProgress(progressBar.Value);
+
             }, null);
 
             po.CancellationToken.ThrowIfCancellationRequested();
@@ -652,12 +667,14 @@ namespace AttacheCase
           // Move files or folders to the trash was completed.
           labelProgressMessageText.Text = Resources.labelMoveToTrashCompleted;
           progressBar.Value = progressBar.Maximum;
+          _taskbarProgress.UpdateProgress(100);
+          _taskbarProgress.Flash();
           buttonCancel.Text = Resources.ButtonTextOK;
-          labelProgressPercentText.Text = "100%";
+          labelProgressPercentText.Text = @"100%";
           Application.DoEvents();
 
         }
-        catch(Exception e)
+        catch (Exception e)
         {
           // ユーザーキャンセル
           // User cancel
@@ -671,7 +688,8 @@ namespace AttacheCase
           // Deleting files or folders has been canceled.
           labelProgressMessageText.Text = Resources.labelNormalDeleteCanceled;
           progressBar.Value = 0;
-          labelProgressPercentText.Text = "- %";
+          _taskbarProgress.UpdateProgress(0);
+          labelProgressPercentText.Text = @"- %";
           return (false);
         }
         finally
@@ -721,6 +739,12 @@ namespace AttacheCase
     private readonly ManualResetEvent _busy = new System.Threading.ManualResetEvent(false);
     private void CustomDialogMessageShow(int fileType, string filePath, IReadOnlyList<string> md5FileHash = null)
     {
+      if (this.InvokeRequired)
+      {
+        this.Invoke(new Action(() => CustomDialogMessageShow(fileType, filePath, md5FileHash)));
+        return;
+      }
+
       switch (fileType)
       {
         // 上書きの確認ダイアログ表示とユーザー応答内容の受け渡し
@@ -740,7 +764,7 @@ namespace AttacheCase
           {
             TempOverWriteOption = decryption4.TempOverWriteOption;
           }
-      
+
           if (AppSettings.Instance.fDecryptConfirmOverwrite == false)
           {
             TempOverWriteOption = OVERWRITE_ALL;
@@ -761,7 +785,7 @@ namespace AttacheCase
             _busy.Set();
           }
 
-          // Show dialog for confirming to orverwrite
+          // Show dialog for confirming to overwrite
           Form4 frm4;
           if (fileType == 0)
           {
@@ -777,9 +801,9 @@ namespace AttacheCase
 
           frm4.Location = new Point(
             this.Location.X + this.Width / 2 - frm4.Width / 2,
-            this.Location.Y + this.Height / 2 - frm4.Height/ 2
-          ); 
-          
+            this.Location.Y + this.Height / 2 - frm4.Height / 2
+          );
+
           // Deactivateイベントハンドラの登録
           // Register Deactivate event handler
           frm4.Deactivate += (s, e) =>
@@ -788,11 +812,11 @@ namespace AttacheCase
             // Forcing a window to the front
             ForceForegroundWindow(((Form)s).Handle);
           };
-          
-          frm4.ShowDialog();
-          
+
+          frm4.ShowDialog(this);
+
           TempOverWriteOption = frm4.OverWriteOption;
-      
+
           if (decryption2 != null)
           {
             decryption2.TempOverWriteOption = TempOverWriteOption;
@@ -808,22 +832,22 @@ namespace AttacheCase
 
           frm4.Dispose();
 
-          if (TempOverWriteOption == USER_CANCELED || TempOverWriteOption == SKIP_ALL)
+          if (TempOverWriteOption is USER_CANCELED or SKIP_ALL)
           {
-            if (bkg != null && bkg.IsBusy)
+            if (bkg is { IsBusy: true })
             {
               bkg.CancelAsync();
             }
 
             cts?.Cancel();
           }
-          
+
           break;
-          
+
         // MD5ハッシュが異なる時のダイアログメッセージ。詳細表示し続行するかを問い合わせる
         // Dialog message when MD5 hash is different. Show details and ask if you want to continue
         case 2:
-          
+
           if (!bkg.IsBusy)
           {
             bkg.RunWorkerAsync();
@@ -837,8 +861,7 @@ namespace AttacheCase
                    Resources.MessageBoxFileVerifyFailed + Environment.NewLine + filePath,
                    Resources.DialogTitleAlert,
                    SystemIcons.Exclamation,
-                   new[]
-                   {
+                   [
                      // 続行する(&P)
                      // &Proceed
                      new ButtonSpec(Resources.MessageBoxButtonProceed, DialogResult.OK), // ニーモニックは、Proceedの`P`
@@ -848,50 +871,50 @@ namespace AttacheCase
                      // キャンセル(&C)
                      // &Cancel
                      new ButtonSpec(Resources.MessageBoxButtonCancel, DialogResult.Cancel)
-                   },
+                   ],
                    "",  // No checkboxes in this project
-                   // 詳細情報：
-                   //
-                   // ファイルが正しく復号されるか、暗号化前にその元ファイルの一意の値（MD5ハッシュ）を書き込んでおき、復号時にそれを確認します。
-                   //
-                   // - 暗号化ファイルのハッシュ値: {0}     // [暗号化ファイルのMD5ハッシュ]
-                   // - 復号後のファイルのハッシュ値: {1}   // [復号後のファイルのMD5ハッシュ]
-                   //
-                   // もし、これらのハッシュ値が一致しない場合、ファイルは元の状態から変更されているか、破損している可能性があります。この情報をもとに、復号を続行するかどうかをご判断ください。
-                   //
-                   // More Info:
-                   // To ensure that the file is decrypted correctly, the unique value (MD5 hash) of the original file is written to the file before encryption and is checked during decryption.
-                   //
-                   // - Encrypted file hash value: {0}           // [MD5 hash of encrypted file]
-                   // - File hash value after decryption: {1}    // [MD5 hash of the decrypted file].
-                   //
-                   // If these hash values do not match, the file may have been modified from its original state or corrupted. Please use this information to determine if you wish to proceed with decryption.
-                   //
+                        // 詳細情報：
+                        //
+                        // ファイルが正しく復号されるか、暗号化前にその元ファイルの一意の値（MD5ハッシュ）を書き込んでおき、復号時にそれを確認します。
+                        //
+                        // - 暗号化ファイルのハッシュ値: {0}     // [暗号化ファイルのMD5ハッシュ]
+                        // - 復号後のファイルのハッシュ値: {1}   // [復号後のファイルのMD5ハッシュ]
+                        //
+                        // もし、これらのハッシュ値が一致しない場合、ファイルは元の状態から変更されているか、破損している可能性があります。この情報をもとに、復号を続行するかどうかをご判断ください。
+                        //
+                        // More Info:
+                        // To ensure that the file is decrypted correctly, the unique value (MD5 hash) of the original file is written to the file before encryption and is checked during decryption.
+                        //
+                        // - Encrypted file hash value: {0}           // [MD5 hash of encrypted file]
+                        // - File hash value after decryption: {1}    // [MD5 hash of the decrypted file].
+                        //
+                        // If these hash values do not match, the file may have been modified from its original state or corrupted. Please use this information to determine if you wish to proceed with decryption.
+                        //
                    string.Format(Resources.MessageBoxDetailedInformation, md5FileHash?[0], md5FileHash?[1])
                    )
                  )
           {
 
             dialog.TopMost = true;
-            
+
             // メインフォームの中央に表示
             // Display dialog in center of main form
             dialog.StartPosition = FormStartPosition.Manual;
             dialog.Location = new Point(
               this.Location.X + this.Width / 2 - dialog.Width / 2,
-              this.Location.Y + this.Height / 2 - dialog.Height/ 2
+              this.Location.Y + this.Height / 2 - dialog.Height / 2
             );
-            
+
             // Deactivateイベントハンドラの登録
             // Register Deactivate event handler
-            dialog.Deactivate += (s, e) => 
+            dialog.Deactivate += (s, e) =>
             {
               // ウィンドウを強制的に前面に出す
               // Forcing a window to the front
               ForceForegroundWindow(((Form)s).Handle);
             };
-            
-            if (dialog.ShowDialog() == DialogResult.OK)
+
+            if (dialog.ShowDialog(this) == DialogResult.OK)
             {
               decryption4.TempMd5HashMismatchContinueOption = CONTINUE;
             }
@@ -900,21 +923,21 @@ namespace AttacheCase
               // 基本的に「続行」以外は、「キャンセル」を返して処理を中止させる方向へ持って行く
               // Basically, anything other than "Continue" will return "Cancel" and bring the process to a halt
               decryption4.TempMd5HashMismatchContinueOption = USER_CANCELED;
-              
+
               if (bkg != null && bkg.IsBusy)
               {
                 bkg.CancelAsync();
               }
 
               cts?.Cancel();
-              
+
             }
-            
+
           }
-          
+
           break;
-      }      
-      
+      }
+
       _busy.Reset();
 
     }
@@ -932,26 +955,22 @@ namespace AttacheCase
         _busy.Set();
       }
 
-      // Show dialog for confirming to orverwrite
-      Form4 frm4;
-      frm4 = new Form4("InvalidChar", Resources.labelInvalidChar + Environment.NewLine + FilePath);
-      frm4.ShowDialog();
+      // Show dialog for confirming to overwrite
+      var frm4 = new Form4("InvalidChar", Resources.labelInvalidChar + Environment.NewLine + FilePath);
+      frm4.ShowDialog(this);
 
-      int TempInvalidCharOption = frm4.InvalidCharOption;
+      var TempInvalidCharOption = frm4.InvalidCharOption;
 
       frm4.Dispose();
 
       if (TempInvalidCharOption == USER_CANCELED)
       {
-        if (bkg != null && bkg.IsBusy == true)
+        if (bkg is { IsBusy: true })
         {
           bkg.CancelAsync();
         }
 
-        if (cts != null)
-        {
-          cts.Cancel();
-        }
+        cts?.Cancel();
       }
 
       _busy.Reset();
@@ -969,21 +988,20 @@ namespace AttacheCase
     /// <returns></returns>
     public static IEnumerable<string> GetFileList(string fileSearchPattern, string rootFolderPath)
     {
-      Queue<string> pending = new Queue<string>();
+      var pending = new Queue<string>();
       pending.Enqueue(rootFolderPath);
-      string[] tmp;
       while (pending.Count > 0)
       {
         rootFolderPath = pending.Dequeue();
-        tmp = Directory.GetFiles(rootFolderPath, fileSearchPattern);
-        for (int i = 0; i < tmp.Length; i++)
+        var tmp = Directory.GetFiles(rootFolderPath, fileSearchPattern);
+        foreach (var t in tmp)
         {
-          yield return tmp[i];
+          yield return t;
         }
         tmp = Directory.GetDirectories(rootFolderPath);
-        for (int i = 0; i < tmp.Length; i++)
+        foreach (var t in tmp)
         {
-          pending.Enqueue(tmp[i]);
+          pending.Enqueue(t);
         }
       }
     }
@@ -994,19 +1012,19 @@ namespace AttacheCase
     /// </summary>
     /// <param name="FilePath"></param>
     /// <returns></returns>
-    private byte[] GetPasswordFileHash2(string FilePath)
+    private static byte[] GetPasswordFileHash2(string FilePath)
     {
-      byte[] buffer = new byte[255];
-      byte[] result = new byte[32];
+      var buffer = new byte[255];
+      var result = new byte[32];
       //byte[] header = new byte[12];
 
-      using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
+      using (var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
       {
         //SHA1CryptoServiceProviderオブジェクト
-        using (SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider())
+        using (var sha1 = new SHA1CryptoServiceProvider())
         {
-          byte[] array_bytes = sha1.ComputeHash(fs);
-          for (int i = 0; i < 20; i++)
+          var array_bytes = sha1.ComputeHash(fs);
+          for (var i = 0; i < 20; i++)
           {
             result[i] = array_bytes[i];
           }
@@ -1019,7 +1037,7 @@ namespace AttacheCase
           // Fill the rest data with trying to get the last 255 bytes.
         }
 
-        for (int i = 0; i < 12; i++)
+        for (var i = 0; i < 12; i++)
         {
           result[20 + i] = buffer[i];
         }
@@ -1034,21 +1052,19 @@ namespace AttacheCase
     /// Get a check sum (SHA-256) to calculate
     private static byte[] GetPasswordFileSha256(string FilePath)
     {
-      using (BufferedStream bs = new BufferedStream(File.OpenRead(FilePath), 16 * 1024 * 1024))
+      using var bs = new BufferedStream(File.OpenRead(FilePath), 16 * 1024 * 1024);
+      var sha = new SHA256Managed();
+      var result = new byte[32];
+      var hash = sha.ComputeHash(bs);
+      for (var i = 0; i < 32; i++)
       {
-        SHA256Managed sha = new SHA256Managed();
-        byte[] result = new byte[32];
-        byte[] hash = sha.ComputeHash(bs);
-        for (int i = 0; i < 32; i++)
-        {
-          result[i] = hash[i];
-        }
-        return (result);
+        result[i] = hash[i];
       }
+      return (result);
     }
 
     //======================================================================
-    // Backgroundworker
+    // BackgroundWorker
     //======================================================================
     #region
 
@@ -1059,14 +1075,20 @@ namespace AttacheCase
       if (e.ProgressPercentage > 0)
       {
         progressBar.Style = ProgressBarStyle.Continuous;
-        labelProgressPercentText.Text = ((float)e.ProgressPercentage / 100).ToString("F2") + "%";
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+        labelProgressPercentText.Text = $@"{((float)e.ProgressPercentage / 100):F} %";
         progressBar.Value = e.ProgressPercentage;
+        _taskbarProgress.UpdateProgress(e.ProgressPercentage);
       }
       else
       {
-        progressBar.Style = ProgressBarStyle.Marquee;
-        progressBar.MarqueeAnimationSpeed = 50;
-        progressBar.Value = 0;
+        if (progressBar.Style != ProgressBarStyle.Marquee)
+        {
+          progressBar.Style = ProgressBarStyle.Marquee;
+          _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Indeterminate);
+          progressBar.MarqueeAnimationSpeed = 50;
+          progressBar.Value = 0;
+        }
       }
 
       /*
@@ -1105,19 +1127,6 @@ namespace AttacheCase
       notifyIcon1.Text = labelProgressPercentText.Text;
       labelProgressMessageText.Text = (string)MessageList[1];
 
-      /*
-      if (Microsoft.WindowsAPICodePack.Taskbar.TaskbarManager.IsPlatformSupported)
-      {
-        // Task bar progress
-        Microsoft.WindowsAPICodePack.Taskbar.TaskbarManager taskbarInstance;
-        // Task bar progress
-        taskbarInstance = Microsoft.WindowsAPICodePack.Taskbar.TaskbarManager.Instance;
-        taskbarInstance.SetProgressState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.Normal);
-        taskbarInstance.SetProgressValue(e.ProgressPercentage, 10000);
-        //taskbarInstance.SetProgressState(Microsoft.WindowsAPICodePack.Taskbar.TaskbarProgressBarState.NoProgress);
-      }
-      */
-
       this.Update();
 
     }
@@ -1130,8 +1139,10 @@ namespace AttacheCase
       {
         // Canceled
         labelProgressPercentText.Text = @"- %";
-        progressBar.Value = 0;
         progressBar.Style = ProgressBarStyle.Continuous;
+        progressBar.Value = 0;
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+        _taskbarProgress.UpdateProgress(0);
         labelCryptionType.Text = "";
         notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
         AppSettings.Instance.FileList = null;
@@ -1195,13 +1206,16 @@ namespace AttacheCase
             labelProgressPercentText.Text = @"100%";
             progressBar.Style = ProgressBarStyle.Continuous;
             progressBar.Value = progressBar.Maximum;
+            _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+            _taskbarProgress.UpdateProgress(100);
+            _taskbarProgress.Flash();
             labelCryptionType.Text = "";
             labelProgressMessageText.Text = Resources.labelCaptionCompleted;  // "Completed"
             notifyIcon1.Text = @"100% " + Resources.labelCaptionCompleted;
 
             FileIndex++;
 
-            if ( AppSettings.Instance.fDeveloperConsole == true)
+            if (AppSettings.Instance.fDeveloperConsole == true)
             {
               toolStripStatusLabelEncryptionTime.Visible = true;
               toolStripStatusLabelEncryptionTime.Text = @"Encryption Time : " + encryption4.EncryptionTimeString;
@@ -1301,7 +1315,7 @@ namespace AttacheCase
             MessageBox.Show(this,
               Resources.DialogMessageDirectoryNotFound + Environment.NewLine + encryption4.ErrorMessage,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1319,7 +1333,7 @@ namespace AttacheCase
             MessageBox.Show(this,
               Resources.DialogMessageDriveNotFound + Environment.NewLine + encryption4.ErrorMessage,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1337,7 +1351,7 @@ namespace AttacheCase
             MessageBox.Show(this,
               Resources.DialogMessageFileNotLoaded + Environment.NewLine + encryption4.ErrorFilePath,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1370,7 +1384,7 @@ namespace AttacheCase
             //
             MessageBox.Show(this, Resources.DialogMessagePathTooLong,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1385,7 +1399,7 @@ namespace AttacheCase
             //
             MessageBox.Show(this, Resources.DialogMessageCryptographicException,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1397,7 +1411,7 @@ namespace AttacheCase
             // [A message describing the exception that is thrown when an I/O error occurs.]
             MessageBox.Show(this, encryption4.ErrorMessage,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1409,16 +1423,18 @@ namespace AttacheCase
             // An unexpected error has occurred. The process is aborted.
             MessageBox.Show(this, Resources.DialogMessageUnexpectedError,
             Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
         }// end switch();
 
-        labelProgressPercentText.Text = "- %";
+        labelProgressPercentText.Text = @"- %";
         progressBar.Style = ProgressBarStyle.Continuous;
         progressBar.Value = 0;
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+        _taskbarProgress.UpdateProgress(0);
         labelCryptionType.Text = Resources.labelCaptionError;
-        notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+        notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
         AppSettings.Instance.FileList = null;
         this.Update();
       }
@@ -1432,13 +1448,16 @@ namespace AttacheCase
 
       if (e.Cancelled)
       {
-        if(TempOverWriteOption == SKIP_ALL)
+        if (TempOverWriteOption == SKIP_ALL)
         {
-          labelProgressPercentText.Text = "100 %";
-          progressBar.Value = progressBar.Maximum;
+          labelProgressPercentText.Text = @"100 %";
           progressBar.Style = ProgressBarStyle.Continuous;
+          progressBar.Value = progressBar.Maximum;
+          _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+          _taskbarProgress.UpdateProgress(100);
+          _taskbarProgress.Flash();
           labelCryptionType.Text = "";
-          notifyIcon1.Text = "- % " + Resources.labelCaptionAllSkipped;
+          notifyIcon1.Text = @"- % " + Resources.labelCaptionAllSkipped;
           AppSettings.Instance.FileList = null;
           // スキップされました。
           // skipped.
@@ -1448,11 +1467,13 @@ namespace AttacheCase
         else
         {
           // Canceled
-          labelProgressPercentText.Text = "- %";
-          progressBar.Value = 0;
+          labelProgressPercentText.Text = @"- %";
           progressBar.Style = ProgressBarStyle.Continuous;
+          progressBar.Value = 0;
+          _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+          _taskbarProgress.UpdateProgress(0);
           labelCryptionType.Text = "";
-          notifyIcon1.Text = "- % " + Resources.labelCaptionCanceled;
+          notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
           AppSettings.Instance.FileList = null;
           // 復号処理はキャンセルされました。
           // Decryption was canceled.
@@ -1465,11 +1486,13 @@ namespace AttacheCase
       else if (e.Error != null)
       {
         //e.Error.Message;
-        labelProgressPercentText.Text = "- %";
+        labelProgressPercentText.Text = @"- %";
         labelProgressMessageText.Text = e.Error.Message;
         progressBar.Value = 0;
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+        _taskbarProgress.UpdateProgress(0);
         labelProgressMessageText.Text = Resources.labelCaptionError;     // "Error occurred"
-        notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+        notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
         this.Update();
         return;
       }
@@ -1525,12 +1548,15 @@ namespace AttacheCase
         {
           //-----------------------------------
           case DECRYPT_SUCCEEDED:
-            labelProgressPercentText.Text = "100%";
+            labelProgressPercentText.Text = @"100%";
             progressBar.Style = ProgressBarStyle.Continuous;
             progressBar.Value = progressBar.Maximum;
+            _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+            _taskbarProgress.UpdateProgress(100);
+            _taskbarProgress.Flash();
             labelCryptionType.Text = "";
             labelProgressMessageText.Text = Resources.labelCaptionCompleted;  // "Completed"
-            notifyIcon1.Text = "100% " + Resources.labelCaptionCompleted;
+            notifyIcon1.Text = @"100% " + Resources.labelCaptionCompleted;
 
             if (decryption2 != null)
             {
@@ -1554,7 +1580,7 @@ namespace AttacheCase
 
             //-----------------------------------
             // DecryptionEndProcess
-            if ( FileIndex < AppSettings.Instance.FileList.Count)
+            if (FileIndex < AppSettings.Instance.FileList.Count)
             {
               FileIndex++;
               DecryptionProcess();
@@ -1575,11 +1601,13 @@ namespace AttacheCase
           //-----------------------------------
           case USER_CANCELED:
             // Canceled
-            labelProgressPercentText.Text = "- %";
+            labelProgressPercentText.Text = @"- %";
             progressBar.Style = ProgressBarStyle.Continuous;
             progressBar.Value = 0;
+            _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+            _taskbarProgress.UpdateProgress(0);
             labelCryptionType.Text = "";
-            notifyIcon1.Text = "- % " + Resources.labelCaptionCanceled;
+            notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
             AppSettings.Instance.FileList = null;
 
             // 復号処理はキャンセルされました。
@@ -1628,11 +1656,11 @@ namespace AttacheCase
             {
               ErrorFilePath = decryption2.ErrorFilePath;
             }
-            
-            MessageBox.Show(this, 
+
+            MessageBox.Show(this,
               Resources.DialogMessageNotAtcFile + Environment.NewLine + ErrorFilePath,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1655,10 +1683,10 @@ namespace AttacheCase
               ErrorFilePath = decryption2.ErrorFilePath;
             }
 
-            MessageBox.Show(this, 
+            MessageBox.Show(this,
               Resources.DialogMessageAtcFileBroken + Environment.NewLine + ErrorFilePath,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1683,11 +1711,11 @@ namespace AttacheCase
             {
               ErrorFilePath = decryption2.DriveName;
             }
-            
-            MessageBox.Show(this, 
+
+            MessageBox.Show(this,
               Resources.DialogMessageNoDiskSpace + Environment.NewLine + ErrorFilePath,
               Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1699,7 +1727,7 @@ namespace AttacheCase
             // Internal file index is invalid in encrypted file.
             MessageBox.Show(this, Resources.DialogMessageFileIndexInvalid,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1724,10 +1752,10 @@ namespace AttacheCase
               ErrorFilePath = decryption2.ErrorFilePath;
             }
 
-            MessageBox.Show(this, 
+            MessageBox.Show(this,
               Resources.DialogMessageNotSameHash + Environment.NewLine + ErrorFilePath,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1750,10 +1778,10 @@ namespace AttacheCase
               ErrorFilePath = decryption2.ErrorFilePath;
             }
 
-            MessageBox.Show(this, 
+            MessageBox.Show(this,
               Resources.DialogMessageInvalidFilePath + Environment.NewLine + ErrorFilePath,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1767,7 +1795,7 @@ namespace AttacheCase
             // Decryption failed.
             MessageBox.Show(this, Resources.DialogMessageDataNotFound,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1789,12 +1817,6 @@ namespace AttacheCase
               panelEncrypt.Visible = false;
               panelEncryptConfirm.Visible = false;
               panelDecrypt.Visible = true;
-              panelRsa.Visible = false;
-              panelRsaKey.Visible = false;
-              panelProgressState.Visible = false;
-              textBoxDecryptPassword.Focus();
-              textBoxDecryptPassword.SelectAll();
-              return;
             }
             else
             {
@@ -1816,13 +1838,14 @@ namespace AttacheCase
               panelEncrypt.Visible = false;
               panelEncryptConfirm.Visible = false;
               panelDecrypt.Visible = false;
-              panelRsa.Visible = false;
-              panelRsaKey.Visible = false;
-              panelProgressState.Visible = false;
-              textBoxDecryptPassword.Focus();
-              textBoxDecryptPassword.SelectAll();
-              return;
             }
+
+            panelRsa.Visible = false;
+            panelRsaKey.Visible = false;
+            panelProgressState.Visible = false;
+            textBoxDecryptPassword.Focus();
+            textBoxDecryptPassword.SelectAll();
+            return;
 
           //-----------------------------------
           case CRYPTOGRAPHIC_EXCEPTION:
@@ -1836,7 +1859,7 @@ namespace AttacheCase
             //
             MessageBox.Show(this, Resources.DialogMessageCryptographicException,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1851,7 +1874,7 @@ namespace AttacheCase
             //
             MessageBox.Show(this, Resources.DialogMessageRsaKeyGuidNotMatch,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
           //-----------------------------------
@@ -1863,16 +1886,18 @@ namespace AttacheCase
             // An unexpected error has occurred. And stops processing.
             MessageBox.Show(this, Resources.DialogMessageUnexpectedError,
             Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             break;
 
         }// end switch();
 
-        labelProgressPercentText.Text = "- %";
+        labelProgressPercentText.Text = @"- %";
         progressBar.Style = ProgressBarStyle.Continuous;
         progressBar.Value = 0;
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+        _taskbarProgress.UpdateProgress(0);
         labelCryptionType.Text = Resources.labelCaptionError;
-        notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+        notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
         AppSettings.Instance.FileList = null;
         this.Update();
 
@@ -1893,8 +1918,10 @@ namespace AttacheCase
       {
         // Canceled
         labelProgressPercentText.Text = @"- %";
-        progressBar.Value = 0;
         progressBar.Style = ProgressBarStyle.Continuous;
+        progressBar.Value = 0;
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+        _taskbarProgress.UpdateProgress(0);
         labelCryptionType.Text = "";
         notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
         AppSettings.Instance.FileList = null;
@@ -1910,6 +1937,8 @@ namespace AttacheCase
         labelProgressPercentText.Text = @"- %";
         labelProgressMessageText.Text = e.Error.Message;
         progressBar.Value = 0;
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+        _taskbarProgress.UpdateProgress(0);
         labelProgressMessageText.Text = Resources.labelCaptionError;     // "Error occurred"
         notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
         this.Update();
@@ -1919,7 +1948,7 @@ namespace AttacheCase
         switch ((int)e.Result)
         {
           case DELETE_SUCCEEDED:
-          
+
             // The operation completed normally. 
             labelCryptionType.Text = "";
             // ファイル、またはフォルダーの完全削除は正常に完了しました。
@@ -1927,6 +1956,8 @@ namespace AttacheCase
             labelProgressMessageText.Text = Resources.labelCompleteDeletingCompleted;
             labelProgressPercentText.Text = @"100%";
             progressBar.Value = progressBar.Maximum;  // 100%
+            _taskbarProgress.UpdateProgress(100);
+            _taskbarProgress.Flash();
             this.Update();
             return;
 
@@ -1940,7 +1971,7 @@ namespace AttacheCase
             MessageBox.Show(this, Resources.DialogMessageUnexpectedError,
             Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             this.Update();
-            
+
             break;
 
           //-----------------------------------
@@ -1952,7 +1983,7 @@ namespace AttacheCase
             // Alert
             // No free space on the following disk. The process is aborted.
             // [The drive path]
-            MessageBox.Show(this, 
+            MessageBox.Show(this,
               Resources.DialogMessageNoDiskSpace + Environment.NewLine + decryption2.DriveName,
               Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             this.Update();
@@ -1963,6 +1994,8 @@ namespace AttacheCase
 
         labelProgressPercentText.Text = @"- %";
         progressBar.Value = 0;
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+        _taskbarProgress.UpdateProgress(0);
         labelCryptionType.Text = "";
         notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
         AppSettings.Instance.FileList = null;
@@ -2001,9 +2034,9 @@ namespace AttacheCase
         openFileDialog1.Filter = Resources.OpenDialogFilterAllFiles;
         openFileDialog1.InitialDirectory = AppSettings.Instance.InitDirPath;
         openFileDialog1.Multiselect = true;
-        if (openFileDialog1.ShowDialog() == DialogResult.OK)
+        if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
         {
-          foreach (string filename in openFileDialog1.FileNames)
+          foreach (var filename in openFileDialog1.FileNames)
           {
             AppSettings.Instance.FileList.Add(filename);
           }
@@ -2039,11 +2072,12 @@ namespace AttacheCase
         AppSettings.Instance.FileList = new List<string>();
         folderBrowserDialog1.Description = Resources.DialogTitleEncryptSelectFolder;
         folderBrowserDialog1.SelectedPath = AppSettings.Instance.InitDirPath;
-        if (folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+        if (folderBrowserDialog1.ShowDialog(this) == DialogResult.OK)
         {
           AppSettings.Instance.FileList.Add(folderBrowserDialog1.SelectedPath);
         }
-        else{
+        else
+        {
           return;
         }
 
@@ -2052,7 +2086,7 @@ namespace AttacheCase
         {
           textBoxPassword.Text = textBoxRePassword.Text = AppSettings.Instance.MyEncryptPasswordString;
         }
-          
+
         // Encrypt by memorized password without confirming
         if (AppSettings.Instance.fMemPasswordExe == true)
         {
@@ -2080,15 +2114,15 @@ namespace AttacheCase
         openFileDialog1.Filter = Resources.SaveDialogFilterAtcFiles;
         openFileDialog1.InitialDirectory = AppSettings.Instance.InitDirPath;
         openFileDialog1.Multiselect = true;
-        if (openFileDialog1.ShowDialog() == DialogResult.OK)
+        if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
         {
-          foreach (string filname in openFileDialog1.FileNames) 
+          foreach (var filename in openFileDialog1.FileNames)
           {
             if (AppSettings.Instance.FileList == null)
             {
               AppSettings.Instance.FileList = new List<string>();
             }
-            AppSettings.Instance.FileList.Add(filname);
+            AppSettings.Instance.FileList.Add(filename);
           }
 
           // Check memorized password
@@ -2096,7 +2130,7 @@ namespace AttacheCase
           {
             textBoxDecryptPassword.Text = AppSettings.Instance.MyDecryptPasswordString;
           }
-            
+
           // Encrypt by memorized password without confirming
           if (AppSettings.Instance.fMemPasswordExe)
           {
@@ -2168,8 +2202,8 @@ namespace AttacheCase
         }
 
         // Show Option form
-        Form3 frm3 = new Form3();
-        frm3.ShowDialog();
+        var frm3 = new Form3();
+        frm3.ShowDialog(this);
         frm3.Dispose();
 
         pictureBoxAtc.Image = pictureBoxAtcOff.Image;
@@ -2199,7 +2233,7 @@ namespace AttacheCase
         {
           //AppSettings.Instance.EncryptionFileType = 0;
         }
-        
+
       }
     }
 
@@ -2212,12 +2246,12 @@ namespace AttacheCase
     private void ToolStripMenuItemAbout_Click(object sender, EventArgs e)
     {
       // Show AttacheCase's information
-      Form2 frm2 = new Form2();
-      frm2.ShowDialog();
+      var frm2 = new Form2();
+      frm2.ShowDialog(this);
       frm2.Dispose();
     }
 
-#endregion
+    #endregion
 
     //======================================================================
     // 各ウィンドウページが表示されたときに発生するイベント
@@ -2226,7 +2260,7 @@ namespace AttacheCase
 
     private void StartProcess()
     {
-      int ProcessType = 0;
+      var ProcessType = 0;
       TempOverWriteOption = -1;
 
 
@@ -2264,7 +2298,7 @@ namespace AttacheCase
           panelProgressState.Visible = false;
 
         }
-        else if(AppSettings.Instance.ProcTypeWithoutAsk == 2) // Decryption
+        else if (AppSettings.Instance.ProcTypeWithoutAsk == 2) // Decryption
         {
           panelStartPage.Visible = false;
           panelEncrypt.Visible = false;
@@ -2279,11 +2313,11 @@ namespace AttacheCase
       }
       // 内容にかかわらず暗号化か復号かを問い合わせる
       // Ask to encrypt or decrypt regardless of contents.
-      else if (AppSettings.Instance.FileList.Count() > 0 && AppSettings.Instance.fAskEncDecode == true)
+      else if (AppSettings.Instance.FileList.Any() && AppSettings.Instance.fAskEncDecode == true)
       {
-        Form4 frm4 = new Form4("AskEncryptOrDecrypt", "");
-        frm4.ShowDialog();
-        int ProcessNum = frm4.AskEncryptOrDecrypt;  // 1: Encryption, 2: Decryption, -1: Cancel
+        var frm4 = new Form4("AskEncryptOrDecrypt", "");
+        frm4.ShowDialog(this);
+        var ProcessNum = frm4.AskEncryptOrDecrypt;  // 1: Encryption, 2: Decryption, -1: Cancel
         frm4.Dispose();
 
         //-----------------------------------
@@ -2387,11 +2421,11 @@ namespace AttacheCase
           }
         }
 
-        if (AppSettings.Instance.FileList.Count() > 0)
+        if (AppSettings.Instance.FileList.Any())
         {
           //----------------------------------------------------------------------
           // Encryption
-          if (ProcessType == PROCESS_TYPE_NONE )
+          if (ProcessType == PROCESS_TYPE_NONE)
           {
             // RSA Encryption
             if (panelRsa.Visible == true)
@@ -2407,20 +2441,20 @@ namespace AttacheCase
                 panelProgressState.Visible = true;
 
                 // Error
-                labelProgressPercentText.Text = "- %";
+                labelProgressPercentText.Text = @"- %";
                 progressBar.Value = 0;
+                _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+                _taskbarProgress.UpdateProgress(0);
                 pictureBoxProgress.Image = pictureBoxPublicAndPrivateKey.Image;
                 labelProgress.Text = Resources.labelRsa;
                 labelCryptionType.Text = Resources.labelCaptionError;
                 // 公開鍵または秘密鍵は読み込まれませんでした。
                 // The public or private key was not loaded.
                 labelProgressMessageText.Text = Resources.labelKeyFileNotLoaded;
-                notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+                notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
                 AppSettings.Instance.FileList = null;
                 fWaitingForKeyFile = false;
                 buttonCancel.Text = Resources.ButtonTextOK;
-
-                return;
               }
               else
               {
@@ -2430,9 +2464,9 @@ namespace AttacheCase
                 // ファイルまたはフォルダーが読み込まれました。暗号化するための公開鍵をここへドラッグ＆ドロップしてください。
                 // The file or folder has been loaded.Drag and drop the public key to be encrypted here.
                 labelRsaMessage.Text = Resources.labelRsaFilesloaded;
-                return;
               }
 
+              return;
             }
             panelStartPage.Visible = false;
             panelEncrypt.Visible = true;         // Encrypt
@@ -2445,7 +2479,7 @@ namespace AttacheCase
             this.Activate();              // MainForm is Activated
             textBoxPassword.Focus();      // Text box is focused
           }
-          else if (ProcessType == PROCESS_TYPE_ATC || ProcessType == PROCESS_TYPE_ATC_EXE) 
+          else if (ProcessType == PROCESS_TYPE_ATC || ProcessType == PROCESS_TYPE_ATC_EXE)
           {
             // RSA Encryption
             if (panelRsa.Visible == true)
@@ -2461,20 +2495,20 @@ namespace AttacheCase
                 panelProgressState.Visible = true;
 
                 // Error
-                labelProgressPercentText.Text = "- %";
+                labelProgressPercentText.Text = @"- %";
                 progressBar.Value = 0;
+                _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+                _taskbarProgress.UpdateProgress(0);
                 pictureBoxProgress.Image = pictureBoxPublicAndPrivateKey.Image;
                 labelProgress.Text = Resources.labelRsa;
                 labelCryptionType.Text = Resources.labelCaptionError;
                 // 公開鍵または秘密鍵は読み込まれませんでした。
                 // The public or private key was not loaded.
                 labelProgressMessageText.Text = Resources.labelKeyFileNotLoaded;
-                notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+                notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
                 AppSettings.Instance.FileList = null;
                 fWaitingForKeyFile = false;
                 buttonCancel.Text = Resources.ButtonTextOK;
-
-                return;
               }
               else
               {
@@ -2484,9 +2518,9 @@ namespace AttacheCase
                 // ファイルまたはフォルダーが読み込まれました。暗号化するための公開鍵をここへドラッグ＆ドロップしてください。
                 // The file or folder has been loaded.Drag and drop the public key to be encrypted here.
                 labelRsaMessage.Text = Resources.labelRsaFilesloaded;
-                return;
               }
 
+              return;
             }
 
             if (AppSettings.Instance.FileList.Count > 0)
@@ -2545,7 +2579,7 @@ namespace AttacheCase
           // RSA
           else if (ProcessType == PROCESS_TYPE_RSA_ENCRYPTION || ProcessType == PROCESS_TYPE_RSA_DECRYPTION)
           {
-            for (var i = AppSettings.Instance.FileList.Count - 1; i >=0; i--)
+            for (var i = AppSettings.Instance.FileList.Count - 1; i >= 0; i--)
             {
               //----------------------------------------------------------------------
               //   4: RSA Encryption data, 
@@ -2565,7 +2599,7 @@ namespace AttacheCase
                 panelProgressState.Visible = false;
                 panelStartPage.Visible = false;
 
-                using (StreamReader sr = new StreamReader(AppSettings.Instance.FileList[i], Encoding.UTF8))
+                using (var sr = new StreamReader(AppSettings.Instance.FileList[i], Encoding.UTF8))
                 {
                   XmlPublicKeyString = sr.ReadToEnd();  // Public key data ( XML data )
                 }
@@ -2594,7 +2628,7 @@ namespace AttacheCase
                 panelProgressState.Visible = false;
                 panelStartPage.Visible = false;
 
-                using (StreamReader sr = new StreamReader(AppSettings.Instance.FileList[i], Encoding.UTF8))
+                using (var sr = new StreamReader(AppSettings.Instance.FileList[i], Encoding.UTF8))
                 {
                   XmlPrivateKeyString = sr.ReadToEnd();  // Private key data ( XML data )
                 }
@@ -2645,7 +2679,6 @@ namespace AttacheCase
                 // RSA暗号化を実行する
                 FileIndex = 0;
                 EncryptionProcess();
-                return;
               }
               // すでに秘密鍵が読み込まれている
               else if (string.IsNullOrEmpty(XmlPrivateKeyString) == false)
@@ -2653,7 +2686,6 @@ namespace AttacheCase
                 // RSA復号を実行する
                 FileIndex = 0;
                 DecryptionProcess();
-                return;
               }
               else
               {
@@ -2668,30 +2700,30 @@ namespace AttacheCase
                   panelProgressState.Visible = true;
 
                   // Error
-                  labelProgressPercentText.Text = "- %";
+                  labelProgressPercentText.Text = @"- %";
                   progressBar.Value = 0;
+                  _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+                  _taskbarProgress.UpdateProgress(0);
                   pictureBoxProgress.Image = pictureBoxPublicAndPrivateKey.Image;
                   labelProgress.Text = Resources.labelRsa;
                   labelCryptionType.Text = Resources.labelCaptionError;
                   // 公開鍵または秘密鍵は読み込まれませんでした。
                   // The public or private key was not loaded.
                   labelProgressMessageText.Text = Resources.labelKeyFileNotLoaded;
-                  notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+                  notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
                   AppSettings.Instance.FileList = null;
                   fWaitingForKeyFile = false;
                   buttonCancel.Text = Resources.ButtonTextOK;
-
-                  return;
                 }
                 else
                 {
                   // ただファイルリストを保持しておく
                   // Just keep the file list.
                   fWaitingForKeyFile = true;
-                  return;
                 }
               }
 
+              return;
             }
 
           }
@@ -2778,7 +2810,7 @@ namespace AttacheCase
       //-----------------------------------
       // 記憶パスワード（パスワードファイルより優先される）
       // Memorized password is priority than the saved password file
-      else if (AppSettings.Instance.fMyEncryptPasswordKeep == true || 
+      else if (AppSettings.Instance.fMyEncryptPasswordKeep == true ||
                 AppSettings.Instance.fMyDecryptPasswordKeep == true)
       {
 
@@ -2857,7 +2889,7 @@ namespace AttacheCase
 
             buttonDecryptStart.Focus();
 
-            if ( AppSettings.Instance.fPasswordFileExe == true)
+            if (AppSettings.Instance.fPasswordFileExe == true)
             {
               buttonDecryptStart.PerformClick();
             }
@@ -2932,7 +2964,7 @@ namespace AttacheCase
                 this,
                 Resources.DialogMessagePasswordFileNotFound + Environment.NewLine + AppSettings.Instance.PassFilePath,
               Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-              
+
             }
           }
         }
@@ -2952,7 +2984,6 @@ namespace AttacheCase
       {
         AppSettings.Instance.FileList = null; // Clear file list
         AppSettings.Instance.EncryptionFileType = FILE_TYPE_NONE;
-        this.AllowDrop = true;
 
         //toolStripButtonEncryptSelectFiles.Enabled = true;
         //toolStripButtonEncryptSelectFolder.Enabled = true;
@@ -2963,20 +2994,16 @@ namespace AttacheCase
         this.CancelButton = buttonExit;
 
         // File type for encryption. 
-        int FileType = 0;
         if (AppSettings.Instance.EncryptionSameFileTypeAlways > 0)
         {
-          FileType = AppSettings.Instance.EncryptionSameFileTypeAlways;
         }
-        else if(AppSettings.Instance.EncryptionSameFileTypeBefore > 0)
+        else if (AppSettings.Instance.EncryptionSameFileTypeBefore > 0)
         {
-          FileType = AppSettings.Instance.EncryptionSameFileTypeBefore;
         }
         else
         {
-          FileType = AppSettings.Instance.EncryptionFileType;
         }
-     
+
         pictureBoxAtc.Image = pictureBoxAtcOff.Image;
         pictureBoxExe.Image = pictureBoxExeOff.Image;
         pictureBoxRsa.Image = pictureBoxRsaOff.Image;
@@ -3032,7 +3059,7 @@ namespace AttacheCase
         // パスワード：
         // Password:
         labelPassword.Text = Resources.labelPassword;
-        
+
         // 確認のためもう一度パスワードを入力してください：
         // Input password again to confirm:
         labelInputPasswordAgain.Text = Resources.labelInputPasswordAgainToConfirm;
@@ -3056,7 +3083,7 @@ namespace AttacheCase
 
         // Clear password input limit count
         LimitOfInputPassword = -1;
-        
+
       }
     }
 
@@ -3079,12 +3106,15 @@ namespace AttacheCase
         if (AppSettings.Instance.fNotMaskPassword == true)
         {
           checkBoxNotMaskEncryptedPassword.Checked = true;
+          textBoxPassword.PasswordChar = '\0';
         }
         else
         {
-          checkBoxNotMaskDecryptedPassword.Checked = false;
+          checkBoxNotMaskEncryptedPassword.Checked = false;
+          // 標準的なマスク文字列を設定
+          textBoxPassword.UseSystemPasswordChar = true;
         }
-          
+
         // Encryption will be the same file type always.
         // 常に同じ暗号化ファイルの種類にする
         if (AppSettings.Instance.EncryptionFileType == 0 && AppSettings.Instance.EncryptionSameFileTypeAlways > 0)
@@ -3152,7 +3182,7 @@ namespace AttacheCase
           checkBoxReDeleteOriginalFileAfterEncryption.Checked = false;
         }
 
-        //Show the check box in main form window
+        //Show the checkbox in main form window
         if (AppSettings.Instance.fEncryptShowDelChkBox == true)
         {
           checkBoxDeleteOriginalFileAfterEncryption.Visible = true;
@@ -3168,12 +3198,10 @@ namespace AttacheCase
         // パスワードの代わりに「パスワードファイル」のドラッグ＆ドロップを許可する
         if (AppSettings.Instance.fAllowPassFile == true)
         {
-          this.AllowDrop = true;
           textBoxPassword.AllowDrop = true;
         }
         else
         {
-          this.AllowDrop = false;
           textBoxPassword.AllowDrop = false;
         }
 
@@ -3190,7 +3218,7 @@ namespace AttacheCase
         {
           labelPasswordStrength.Visible = false;
           pictureBoxPassStrengthMeter.Visible = false;
-          textBoxPassword.Width = 
+          textBoxPassword.Width =
             pictureBoxPassStrengthMeter.Left - textBoxPassword.Left + pictureBoxPassStrengthMeter.Width;
         }
 
@@ -3227,7 +3255,7 @@ namespace AttacheCase
       {
         pictureBoxEncryptionConfirm.Image = pictureBoxEncryption.Image;
         labelEncryptionConfirm.Text = labelEncryption.Text;
-        
+
         if (textBoxPassword.Text == textBoxRePassword.Text)
         {
           pictureBoxCheckPasswordValidation.Image = pictureBoxValidIcon.Image;
@@ -3255,7 +3283,7 @@ namespace AttacheCase
       if (AppSettings.Instance.MyEncryptPasswordBinary != null)
       {
         textBoxPassword.Enabled = false;
-        textBoxRePassword.Enabled = false;           
+        textBoxRePassword.Enabled = false;
         textBoxPassword.BackColor = SystemColors.ButtonFace;
         textBoxRePassword.BackColor = SystemColors.ButtonFace;
         // すでにパスワードファイルが入力済みです：
@@ -3296,11 +3324,11 @@ namespace AttacheCase
     }
 
     /// <summary>
-    /// panelDecrtpt
+    /// panelDecrypt
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void panelDecrtpt_VisibleChanged(object sender, EventArgs e)
+    private void panelDecrypt_VisibleChanged(object sender, EventArgs e)
     {
       if (panelDecrypt.Visible == true && fFormLoading == false)
       {
@@ -3347,14 +3375,14 @@ namespace AttacheCase
             // Unexpected decrypted files. It stopped the process.
             MessageBox.Show(this, Resources.DialogMessageUnexpectedDecryptedFiles,
               Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-            
+
             return;
         }
 
         // Not mask password character
-        AppSettings.Instance.fNotMaskPassword = checkBoxNotMaskDecryptedPassword.Checked ? true : false;
+        AppSettings.Instance.fNotMaskPassword = checkBoxNotMaskDecryptedPassword.Checked;
 
-        // Show the check box in main form window
+        // Show the checkbox in main form window
         checkBoxDeleteAtcFileAfterDecryption.Visible = AppSettings.Instance.fDecryptShowDelChkBox == true;
 
         // Delete &encrypted file after decryption
@@ -3377,7 +3405,9 @@ namespace AttacheCase
 
     private void panelProgressState_VisibleChanged(object sender, EventArgs e)
     {
-      if (panelProgressState.Visible == true && fFormLoading == false)
+      if (fFormLoading) return;
+
+      if (panelProgressState.Visible == true)
       {
         //toolStripButtonEncryptSelectFiles.Enabled = false;
         //toolStripButtonEncryptSelectFolder.Enabled = false;
@@ -3387,11 +3417,19 @@ namespace AttacheCase
         this.CancelButton = buttonCancel;
 
         //labelCryptionType.Text = "";
-        labelProgressMessageText.Text = "-";
-        labelProgressPercentText.Text = "- %";
+        labelProgressMessageText.Text = @"-";
+        labelProgressPercentText.Text = @"- %";
+
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+        _taskbarProgress.UpdateProgress(0);
+
         buttonCancel.Text = Resources.ButtonTextCancel;  // Cancel button
 
         this.CancelButton = buttonCancel;
+      }
+      else
+      {
+        _taskbarProgress.Reset();
 
       }
     }
@@ -3407,7 +3445,7 @@ namespace AttacheCase
     /// </summary>
     private void pictureBoxEncryption_Click(object sender, EventArgs e)
     {
-      Point p = pictureBoxEncryption.PointToScreen(pictureBoxEncryption.ClientRectangle.Location);
+      var p = pictureBoxEncryption.PointToScreen(pictureBoxEncryption.ClientRectangle.Location);
       this.contextMenuStrip2.Show(p);
     }
 
@@ -3609,6 +3647,8 @@ namespace AttacheCase
               toolTipZxcvbnWarning.ToolTipTitle = "";
             }
             break;
+          case Warning.Default:
+          case Warning.Top100Passwords:
           default:
             toolTipZxcvbnWarning.ToolTipTitle = "";
             break;
@@ -3624,11 +3664,11 @@ namespace AttacheCase
         }
 
         toolTipZxcvbnSuggestions.ToolTipTitle = Resources.zxcvbnToolTipTitleSuggestions;
-        String SuggestionsList = "";
-        for (int i = 0; i < result.suggestions.Count; i++)
+        var SuggestionsList = "";
+        foreach (var t in result.suggestions)
         {
-          String SuggestionText = "";
-          switch (result.suggestions[i])
+          var SuggestionText = "";
+          switch (t)
           {
             case Zxcvbn.Suggestion.AddAnotherWordOrTwo:
               SuggestionText = Resources.zxcvbnSuggestionAddAnotherWordOrTwo;
@@ -3707,9 +3747,9 @@ namespace AttacheCase
 
     private void textBoxPassword_DragDrop(object sender, DragEventArgs e)
     {
-      string[] FilePaths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+      var FilePaths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
-      if ( File.Exists(FilePaths[0]) == true)
+      if (File.Exists(FilePaths[0]) == true)
       {
         AppSettings.Instance.TempEncryptionPassFilePath = FilePaths[0];
         AppSettings.Instance.MyEncryptPasswordBinary = GetPasswordFileSha256(AppSettings.Instance.TempEncryptionPassFilePath);
@@ -3734,7 +3774,7 @@ namespace AttacheCase
         MessageBox.Show(this, Resources.DialogMessageNotDirectoryInPasswordFile,
           Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
       }
-      
+
     }
 
     private void textBoxPassword_DragLeave(object sender, EventArgs e)
@@ -3754,7 +3794,7 @@ namespace AttacheCase
     private void buttonEncryptionPasswordOk_Click(object sender, EventArgs e)
     {
       //-----------------------------------
-      // Display enryption confirm window
+      // Display encryption confirm window
       //-----------------------------------
       panelStartPage.Visible = false;
       panelEncrypt.Visible = false;
@@ -3769,7 +3809,7 @@ namespace AttacheCase
     private void buttonEncryptionConfirmCancel_Click(object sender, EventArgs e)
     {
       //-----------------------------------
-      // Back and display enryption confirm window
+      // Back and display encryption confirm window
       //-----------------------------------
       panelStartPage.Visible = false;
       panelEncrypt.Visible = true;
@@ -3822,8 +3862,8 @@ namespace AttacheCase
     }
 
     /// <summary>
-    /// "&Delete original files or directories after encryption" checkbox click event
-    /// 「暗号化完了後に元ファイルを削除する(&D)」クリックイベント
+    /// Delete original files or directories after encryption" checkbox click event
+    ///「暗号化完了後に元ファイルを削除する(&D)」クリックイベント
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -3872,14 +3912,14 @@ namespace AttacheCase
     private void buttonEncryptStart_Click(object sender, EventArgs e)
     {
       //Not mask password character
-      AppSettings.Instance.fNotMaskPassword = checkBoxNotMaskEncryptedPassword.Checked ? true : false;
+      AppSettings.Instance.fNotMaskPassword = checkBoxNotMaskEncryptedPassword.Checked;
 
       //-----------------------------------
       // Password in TextBox
       //-----------------------------------
       if (textBoxPassword.Text != textBoxRePassword.Text)
       {
-        // Invalid mkark
+        // Invalid mark
         // pictureBoxCheckPasswordValidation.Image = pictureBoxInValidIcon.Image;
         // labelPasswordValidation.Text = Resources.labelCaptionPasswordInvalid;
         // 注意
@@ -3888,7 +3928,7 @@ namespace AttacheCase
         // Alert
         // Two Passwords do not match, it is invalid.
         // Input them again.
-        DialogResult ret = MessageBox.Show(this, Resources.DialogMessagePasswordsNotMatch,
+        var ret = MessageBox.Show(this, Resources.DialogMessagePasswordsNotMatch,
         Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
         if (ret == DialogResult.OK)
@@ -3903,13 +3943,13 @@ namespace AttacheCase
       // 個別に暗号化する場合は、入力されたパスを展開する処理を入れる。
       if (AppSettings.Instance.fFilesOneByOne == true)
       {
-        List<string> TempFileList = new List<string>();
-        foreach (string TheFileList in AppSettings.Instance.FileList)
+        var TempFileList = new List<string>();
+        foreach (var TheFileList in AppSettings.Instance.FileList)
         {
           if (Directory.Exists(TheFileList) == true)
           {
-            IEnumerable<string> FileLists = GetFileList("*", TheFileList);
-            foreach (string f in FileLists)
+            var FileLists = GetFileList("*", TheFileList);
+            foreach (var f in FileLists)
             {
               TempFileList.Add(f);
             }
@@ -3952,22 +3992,25 @@ namespace AttacheCase
 
       if (FileIndex > AppSettings.Instance.FileList.Count - 1)
       {
-        labelProgressPercentText.Text = "100%";
+        labelProgressPercentText.Text = @"100%";
         progressBar.Style = ProgressBarStyle.Continuous;
         progressBar.Value = progressBar.Maximum;
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+        _taskbarProgress.UpdateProgress(100);
+        _taskbarProgress.Flash();
         labelCryptionType.Text = "";
         labelProgressMessageText.Text = Resources.labelCaptionCompleted;  // "Completed"
-        notifyIcon1.Text = "100% " + Resources.labelCaptionCompleted;
+        notifyIcon1.Text = @"100% " + Resources.labelCaptionCompleted;
 
         buttonCancel.Text = Resources.ButtonTextOK;
         return;
       }
-      
+
       //-----------------------------------
-      // Directory to oputput encrypted files
+      // Directory to output encrypted files
       //-----------------------------------
       //string OutDirPath = Path.GetDirectoryName(AppSettings.Instance.FileList[0]);  // default
-      string OutDirPath = "";
+      var OutDirPath = "";
       if (AppSettings.Instance.fSaveToSameFldr == true)
       {
         OutDirPath = AppSettings.Instance.SaveToSameFldrPath;
@@ -3991,10 +4034,12 @@ namespace AttacheCase
         MessageBox.Show(this, Resources.DialogMessageDirectoryNotFount + Environment.NewLine + OutDirPath,
         Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-        labelProgressPercentText.Text = "- %";
+        labelProgressPercentText.Text = @"- %";
         progressBar.Value = 0;
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+        _taskbarProgress.UpdateProgress(0);
         labelCryptionType.Text = Resources.labelCaptionAborted;
-        notifyIcon1.Text = "- % " + Resources.labelCaptionAborted;
+        notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
         AppSettings.Instance.FileList = null;
         this.Update();
         return;
@@ -4003,7 +4048,7 @@ namespace AttacheCase
       //-----------------------------------
       // Encrypted files camouflage with extension
       //-----------------------------------
-      string Extension = "";
+      var Extension = "";
       if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC || AppSettings.Instance.EncryptionFileType == FILE_TYPE_NONE)
       {
         Extension = AppSettings.Instance.fAddCamoExt == true ? AppSettings.Instance.CamoExt : ".atc";
@@ -4029,7 +4074,7 @@ namespace AttacheCase
       // * This password files is priority than memorized encryption password and inputting normal password string.
       byte[] EncryptionPasswordBinary = null;
 
-      if (AppSettings.Instance.fAllowPassFile == true && 
+      if (AppSettings.Instance.fAllowPassFile == true &&
           (AppSettings.Instance.EncryptionFileType == FILE_TYPE_NONE ||
            AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC || // ATC(EXE) only
            AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC_EXE))
@@ -4055,10 +4100,12 @@ namespace AttacheCase
                 Resources.DialogMessageEncryptionPasswordFileNotFound + Environment.NewLine + AppSettings.Instance.PassFilePath,
                 Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
-            labelProgressPercentText.Text = "- %";
+            labelProgressPercentText.Text = @"- %";
             progressBar.Value = 0;
+            _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+            _taskbarProgress.UpdateProgress(0);
             labelCryptionType.Text = Resources.labelCaptionError;
-            notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+            notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
             AppSettings.Instance.FileList = null;
             this.Update();
             return;
@@ -4135,7 +4182,7 @@ namespace AttacheCase
         }
       }
 
-      string AtcFilePath = "";
+      var AtcFilePath = "";
 
       //----------------------------------------------------------------------
       // Create one encrypted file from files
@@ -4191,7 +4238,7 @@ namespace AttacheCase
             saveFileDialog1.Filter = Resources.SaveDialogFilterAtcFiles;
           }
 
-          if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+          if (saveFileDialog1.ShowDialog(this) == DialogResult.OK)
           {
             AtcFilePath = saveFileDialog1.FileName;
             AppSettings.Instance.InitDirPath = Path.GetDirectoryName(saveFileDialog1.FileName);
@@ -4210,15 +4257,15 @@ namespace AttacheCase
 
         }
 
-        int NumberOfFiles = 0;
-
         if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_NONE ||
             AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC ||
             AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC_EXE)
         {
-          encryption4 = new FileEncrypt4();
-          encryption4.NumberOfFiles = NumberOfFiles + 1;
-          encryption4.TotalNumberOfFiles = NumberOfFiles;
+          encryption4 = new FileEncrypt4
+          {
+            NumberOfFiles = 1,
+            TotalNumberOfFiles = encryption4.NumberOfFiles
+          };
         }
 
         //-----------------------------------
@@ -4277,7 +4324,7 @@ namespace AttacheCase
           {
             // Show dialog for confirming to overwrite
 
-            if (TempOverWriteOption == SKIP_ALL) 
+            if (TempOverWriteOption == SKIP_ALL)
             {
               FileIndex = AppSettings.Instance.FileList.Count;
               EncryptionProcess();
@@ -4294,10 +4341,10 @@ namespace AttacheCase
               //
               // Question
               // The following file already exists. Do you overwrite the files to save?
-              using (Form4 frm4 = new Form4("ConfirmToOverwriteAtc",
+              using (var frm4 = new Form4("ConfirmToOverwriteAtc",
                 Resources.labelConfirmToOverwriteFile + Environment.NewLine + AtcFilePath))
               {
-                frm4.ShowDialog();
+                frm4.ShowDialog(this);
 
                 if (frm4.OverWriteOption == USER_CANCELED)
                 {
@@ -4310,10 +4357,11 @@ namespace AttacheCase
                   panelProgressState.Visible = true;
 
                   // Canceled
-                  labelProgressPercentText.Text = "- %";
+                  labelProgressPercentText.Text = @"- %";
                   progressBar.Value = 0;
+                  _taskbarProgress.UpdateProgress(0);
                   labelCryptionType.Text = "";
-                  notifyIcon1.Text = "- % " + Resources.labelCaptionCanceled;
+                  notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
                   AppSettings.Instance.FileList = null;
 
                   buttonCancel.Text = Resources.ButtonTextOK;
@@ -4329,10 +4377,11 @@ namespace AttacheCase
                   // 暗号化の処理はキャンセルされました。
                   // Encryption was canceled.
                   labelProgressMessageText.Text = Resources.labelEncryptionCanceled;
-                  labelProgressPercentText.Text = "- %";
+                  labelProgressPercentText.Text = @"- %";
                   progressBar.Value = 0;
+                  _taskbarProgress.UpdateProgress(0);
                   labelCryptionType.Text = Resources.labelCaptionCanceled;
-                  notifyIcon1.Text = "- % " + Resources.labelCaptionCanceled;
+                  notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
                   AppSettings.Instance.FileList = null;
                   this.Update();
                   return;
@@ -4392,7 +4441,7 @@ namespace AttacheCase
               // The self-executable file you create may exceed 4 GiB.The file may not work as an executable.Would you like to continue?
               // (*It can be decrypted as an encrypted file even if it is not launched as an executable file.)
               // 
-              DialogResult ret = MessageBox.Show(this, Resources.DialogMessageCreateSelfExecutableEileLargerThan4GiB,
+              var ret = MessageBox.Show(this, Resources.DialogMessageCreateSelfExecutableEileLargerThan4GiB,
                 Resources.DialogTitleQuestion, MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2);
 
               if (ret == DialogResult.Yes)
@@ -4404,12 +4453,13 @@ namespace AttacheCase
                 // The encryption process was aborted because the self-executable file could exceed 4GiB.
                 // 自己実行形式ファイルが 4GiB を超える可能性があるため、暗号化処理を中止しました。
                 labelProgressMessageText.Text = Resources.labelEncryptionAbortedToExceed4GiB;
-                labelProgressPercentText.Text = "- %";
+                labelProgressPercentText.Text = @"- %";
                 progressBar.Value = 0;
+                _taskbarProgress.UpdateProgress(0);
                 // Aborted
                 // 中止
                 labelCryptionType.Text = Resources.labelCaptionAborted;
-                notifyIcon1.Text = "- % " + Resources.labelCaptionAborted;
+                notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
                 AppSettings.Instance.FileList = null;
                 this.Update();
                 return;
@@ -4427,12 +4477,13 @@ namespace AttacheCase
                 // The encryption process was aborted because the self-executable file could exceed 4GiB.
                 // 自己実行形式ファイルが 4GiB を超える可能性があるため、暗号化処理を中止しました。
                 labelProgressMessageText.Text = Resources.labelEncryptionAbortedToExceed4GiB;
-                labelProgressPercentText.Text = "- %";
+                labelProgressPercentText.Text = @"- %";
                 progressBar.Value = 0;
+                _taskbarProgress.UpdateProgress(0);
                 // Aborted
                 // 中止
                 labelCryptionType.Text = Resources.labelCaptionAborted;
-                notifyIcon1.Text = "- % " + Resources.labelCaptionAborted;
+                notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
                 AppSettings.Instance.FileList = null;
                 this.Update();
                 return;
@@ -4485,12 +4536,12 @@ namespace AttacheCase
             break;
         }
 
-       //-----------------------------------
-       // Encryption start
-       //-----------------------------------
+        //-----------------------------------
+        // Encryption start
+        //-----------------------------------
 
-       // BackgroundWorker event handler
-       bkg = new BackgroundWorker();
+        // BackgroundWorker event handler
+        bkg = new BackgroundWorker();
 
         if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_NONE ||
             AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC ||
@@ -4532,18 +4583,20 @@ namespace AttacheCase
         // If the folder has been processed, all the files in the subfolders are encrypted one by one. 
         // However, if encrypted files or ZIP files were existed already in it, they are ignored.
 
-        int TotalNumberOfFiles = AppSettings.Instance.FileList.Count();
+        var TotalNumberOfFiles = AppSettings.Instance.FileList.Count();
 
         // A first file of ArrayList
-        string FilePath = AppSettings.Instance.FileList[FileIndex];
+        var FilePath = AppSettings.Instance.FileList[FileIndex];
 
         if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_NONE ||
             AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC ||
             AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC_EXE)
         {
-          encryption4 = new FileEncrypt4();
-          encryption4.NumberOfFiles = FileIndex + 1;
-          encryption4.TotalNumberOfFiles = TotalNumberOfFiles;
+          encryption4 = new FileEncrypt4
+          {
+            NumberOfFiles = FileIndex + 1,
+            TotalNumberOfFiles = TotalNumberOfFiles
+          };
         }
 
         //-----------------------------------
@@ -4573,7 +4626,7 @@ namespace AttacheCase
 
         //-----------------------------------
         //Create encrypted file including extension
-        string FileName = Path.GetFileName(FilePath);
+        var FileName = Path.GetFileName(FilePath);
         if (AppSettings.Instance.fExtInAtcFileName == true)
         {
           FileName = Path.GetFileName(FilePath) + Extension;
@@ -4600,7 +4653,7 @@ namespace AttacheCase
         {
           if (File.Exists(AtcFilePath) == true)
           {
-            // Show dialog for confirming to orverwrite
+            // Show dialog for confirming to overwrite
 
             if (TempOverWriteOption == SKIP_ALL)
             {
@@ -4619,10 +4672,10 @@ namespace AttacheCase
               //
               // Question
               // The following file already exists. Do you overwrite the files to save?
-              using (Form4 frm4 = new Form4("ConfirmToOverwriteAtc",
+              using (var frm4 = new Form4("ConfirmToOverwriteAtc",
                 Resources.labelConfirmToOverwriteFile + Environment.NewLine + AtcFilePath))
               {
-                frm4.ShowDialog();
+                frm4.ShowDialog(this);
 
                 if (frm4.OverWriteOption == USER_CANCELED)
                 {
@@ -4635,10 +4688,11 @@ namespace AttacheCase
                   panelProgressState.Visible = true;
 
                   // Canceled
-                  labelProgressPercentText.Text = "- %";
+                  labelProgressPercentText.Text = @"- %";
                   progressBar.Value = 0;
+                  _taskbarProgress.UpdateProgress(0);
                   labelCryptionType.Text = "";
-                  notifyIcon1.Text = "- % " + Resources.labelCaptionCanceled;
+                  notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
                   AppSettings.Instance.FileList = null;
 
                   buttonCancel.Text = Resources.ButtonTextOK;
@@ -4726,12 +4780,13 @@ namespace AttacheCase
                 // The encryption process was aborted because the self-executable file could exceed 4GiB.
                 // 自己実行形式ファイルが 4GiB を超える可能性があるため、暗号化処理を中止しました。
                 labelProgressMessageText.Text = Resources.labelEncryptionAbortedToExceed4GiB;
-                labelProgressPercentText.Text = "- %";
+                labelProgressPercentText.Text = @"- %";
                 progressBar.Value = 0;
+                _taskbarProgress.UpdateProgress(0);
                 // Aborted
                 // 中止
                 labelCryptionType.Text = Resources.labelCaptionAborted;
-                notifyIcon1.Text = "- % " + Resources.labelCaptionAborted;
+                notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
                 AppSettings.Instance.FileList = null;
                 this.Update();
                 return;
@@ -4749,12 +4804,13 @@ namespace AttacheCase
                 // The encryption process was aborted because the self-executable file could exceed 4GiB.
                 // 自己実行形式ファイルが 4GiB を超える可能性があるため、暗号化処理を中止しました。
                 labelProgressMessageText.Text = Resources.labelEncryptionAbortedToExceed4GiB;
-                labelProgressPercentText.Text = "- %";
+                labelProgressPercentText.Text = @"- %";
                 progressBar.Value = 0;
+                _taskbarProgress.UpdateProgress(0);
                 // Aborted
                 // 中止
                 labelCryptionType.Text = Resources.labelCaptionAborted;
-                notifyIcon1.Text = "- % " + Resources.labelCaptionAborted;
+                notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
                 AppSettings.Instance.FileList = null;
                 this.Update();
                 return;
@@ -4816,7 +4872,7 @@ namespace AttacheCase
           {
             encryption4.Encrypt(
               s, d,
-              new string[] { AppSettings.Instance.FileList[FileIndex] },
+              [AppSettings.Instance.FileList[FileIndex]],
               AtcFilePath,
               EncryptionPassword, EncryptionPasswordBinary,
               "",
@@ -4830,7 +4886,7 @@ namespace AttacheCase
         bkg.WorkerSupportsCancellation = true;
 
         bkg.RunWorkerAsync();
-        
+
 
       }// end else if (AppSettings.Instance.fFilesOneByOne == true);
 
@@ -4850,16 +4906,18 @@ namespace AttacheCase
         // When a number of files and folders is processed, and each file is generated to encrypt files. 
         // In the case of folders ( including subfolders ) are packed in a folder unit.
 
-        int TotalNumberOfFiles = AppSettings.Instance.FileList.Count();
-        string FileListPath = AppSettings.Instance.FileList[FileIndex];
+        var TotalNumberOfFiles = AppSettings.Instance.FileList.Count();
+        var FileListPath = AppSettings.Instance.FileList[FileIndex];
 
         if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_NONE ||
             AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC ||
             AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC_EXE)
         {
-          encryption4 = new FileEncrypt4();
-          encryption4.NumberOfFiles = FileIndex + 1;
-          encryption4.TotalNumberOfFiles = TotalNumberOfFiles;
+          encryption4 = new FileEncrypt4
+          {
+            NumberOfFiles = FileIndex + 1,
+            TotalNumberOfFiles = TotalNumberOfFiles
+          };
         }
 
         //-----------------------------------
@@ -4886,7 +4944,7 @@ namespace AttacheCase
         {
           OutDirPath = Path.GetDirectoryName(FileListPath);
         }
-  
+
         if (FileListPath.EndsWith(":\\") == true) // For the root directory, such as C:\, etc.
         {
           // Extract the first drive letter only
@@ -4944,10 +5002,10 @@ namespace AttacheCase
               //
               // Question
               // The following file already exists. Do you overwrite the files to save?
-              using (Form4 frm4 = new Form4("ConfirmToOverwriteAtc",
+              using (var frm4 = new Form4("ConfirmToOverwriteAtc",
                 Resources.labelConfirmToOverwriteFile + Environment.NewLine + AtcFilePath))
               {
-                frm4.ShowDialog();
+                frm4.ShowDialog(this);
 
                 if (frm4.OverWriteOption == USER_CANCELED)
                 {
@@ -4960,10 +5018,11 @@ namespace AttacheCase
                   panelProgressState.Visible = true;
 
                   // Canceled
-                  labelProgressPercentText.Text = "- %";
+                  labelProgressPercentText.Text = @"- %";
                   progressBar.Value = 0;
+                  _taskbarProgress.UpdateProgress(0);
                   labelCryptionType.Text = "";
-                  notifyIcon1.Text = "- % " + Resources.labelCaptionCanceled;
+                  notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
                   AppSettings.Instance.FileList = null;
 
                   buttonCancel.Text = Resources.ButtonTextOK;
@@ -4994,7 +5053,7 @@ namespace AttacheCase
               }
 
             }
-              
+
           }
 
         }
@@ -5022,7 +5081,7 @@ namespace AttacheCase
             ExeOutSize = FileEncrypt4.ExeOutFileSize[1];
           }
 
-          List<string> list = new List<string>();
+          var list = new List<string>();
           list.Add(FileListPath);
 
           // 合計サイズを求める
@@ -5039,7 +5098,7 @@ namespace AttacheCase
               // The self-executable file you create may exceed 4 GiB.The file may not work as an executable.Would you like to continue?
               // (*It can be decrypted as an encrypted file even if it is not launched as an executable file.)
               // 
-              DialogResult ret = MessageBox.Show(this, Resources.DialogMessageCreateSelfExecutableEileLargerThan4GiB,
+              var ret = MessageBox.Show(this, Resources.DialogMessageCreateSelfExecutableEileLargerThan4GiB,
                 Resources.DialogTitleQuestion, MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2);
 
               if (ret == DialogResult.Yes)
@@ -5051,12 +5110,13 @@ namespace AttacheCase
                 // The encryption process was aborted because the self-executable file could exceed 4GiB.
                 // 自己実行形式ファイルが 4GiB を超える可能性があるため、暗号化処理を中止しました。
                 labelProgressMessageText.Text = Resources.labelEncryptionAbortedToExceed4GiB;
-                labelProgressPercentText.Text = "- %";
+                labelProgressPercentText.Text = @"- %";
                 progressBar.Value = 0;
+                _taskbarProgress.UpdateProgress(0);
                 // Aborted
                 // 中止
                 labelCryptionType.Text = Resources.labelCaptionAborted;
-                notifyIcon1.Text = "- % " + Resources.labelCaptionAborted;
+                notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
                 AppSettings.Instance.FileList = null;
                 this.Update();
                 return;
@@ -5074,12 +5134,13 @@ namespace AttacheCase
                 // The encryption process was aborted because the self-executable file could exceed 4GiB.
                 // 自己実行形式ファイルが 4GiB を超える可能性があるため、暗号化処理を中止しました。
                 labelProgressMessageText.Text = Resources.labelEncryptionAbortedToExceed4GiB;
-                labelProgressPercentText.Text = "- %";
+                labelProgressPercentText.Text = @"- %";
                 progressBar.Value = 0;
+                _taskbarProgress.UpdateProgress(0);
                 // Aborted
                 // 中止
                 labelCryptionType.Text = Resources.labelCaptionAborted;
-                notifyIcon1.Text = "- % " + Resources.labelCaptionAborted;
+                notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
                 AppSettings.Instance.FileList = null;
                 this.Update();
                 return;
@@ -5146,7 +5207,7 @@ namespace AttacheCase
           bkg.DoWork += (s, d) =>
           encryption4.Encrypt(
             s, d,
-            new string[] { AppSettings.Instance.FileList[FileIndex] },
+            [AppSettings.Instance.FileList[FileIndex]],
             AtcFilePath,
             EncryptionPassword, EncryptionPasswordBinary,
             "",
@@ -5171,10 +5232,10 @@ namespace AttacheCase
     /// </summary>
     /// <param name="paths"></param>
     /// <returns></returns>
-    static Int64 GetTotalSize(List<string> paths)
+    private static Int64 GetTotalSize(List<string> paths)
     {
       Int64 totalSize = 0;
-      object lockObject = new object();
+      var lockObject = new object();
       var allFiles = new ConcurrentBag<string>();
 
       Parallel.ForEach(paths, path =>
@@ -5184,7 +5245,7 @@ namespace AttacheCase
 
       Parallel.ForEach(allFiles, filePath =>
       {
-        FileInfo fi = new FileInfo(filePath);
+        var fi = new FileInfo(filePath);
         Int64 size = fi.Length;
 
         lock (lockObject)
@@ -5196,7 +5257,7 @@ namespace AttacheCase
       return totalSize;
     }
 
-    static void GetFilesRecursively(string path, ConcurrentBag<string> allFiles)
+    private static void GetFilesRecursively(string path, ConcurrentBag<string> allFiles)
     {
       if (File.Exists(path))
       {
@@ -5209,7 +5270,7 @@ namespace AttacheCase
           allFiles.Add(file);
         }
 
-        string[] subDirs = Directory.GetDirectories(path);
+        var subDirs = Directory.GetDirectories(path);
         Parallel.ForEach(subDirs, subDir =>
         {
           GetFilesRecursively(subDir, allFiles);
@@ -5245,7 +5306,7 @@ namespace AttacheCase
 
     private void pictureBoxEncryptBackButton_MouseEnter(object sender, EventArgs e)
     {
-      pictureBoxEncryptBackButton.Image = pictureBoxBackButtonOn.Image; 
+      pictureBoxEncryptBackButton.Image = pictureBoxBackButtonOn.Image;
     }
 
     private void pictureBoxEncryptBackButton_MouseLeave(object sender, EventArgs e)
@@ -5280,7 +5341,7 @@ namespace AttacheCase
 
     /// <summary>
     /// 「復号後に暗号化ファイルを削除する(&D)」クリックイベント
-    /// 'Delete &encrypted file after decryption' checkbox click event.
+    /// 'Delete encrypted file after decryption' checkbox click event.
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
@@ -5298,7 +5359,7 @@ namespace AttacheCase
 
     private void textBoxDecryptPassword_DragDrop(object sender, DragEventArgs e)
     {
-      string[] FilePaths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+      var FilePaths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
       if (File.Exists(FilePaths[0]) == true)
       {
@@ -5315,7 +5376,7 @@ namespace AttacheCase
         //
         // Alert
         // Not use the folder to the password file.
-        DialogResult ret = MessageBox.Show(this, Resources.DialogMessageNotDirectoryInPasswordFile,
+        var ret = MessageBox.Show(this, Resources.DialogMessageNotDirectoryInPasswordFile,
         Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
       }
@@ -5350,7 +5411,7 @@ namespace AttacheCase
         labelDecryptionPassword.Text = Resources.labelPasswordFileIsEnteredAlready;
         return;
       }
-      
+
       textBoxDecryptPassword.Enabled = true;
       textBoxDecryptPassword.BackColor = SystemColors.Window;
 
@@ -5413,12 +5474,15 @@ namespace AttacheCase
 
       if (FileIndex > AppSettings.Instance.FileList.Count - 1)
       {
-        labelProgressPercentText.Text = "100%";
+        labelProgressPercentText.Text = @"100%";
         progressBar.Style = ProgressBarStyle.Continuous;
         progressBar.Value = progressBar.Maximum;
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+        _taskbarProgress.UpdateProgress(100);
+        _taskbarProgress.Flash();
         labelCryptionType.Text = "";
         labelProgressMessageText.Text = Resources.labelCaptionCompleted;  // "Completed"
-        notifyIcon1.Text = "100% " + Resources.labelCaptionCompleted;
+        notifyIcon1.Text = @"100% " + Resources.labelCaptionCompleted;
         buttonCancel.Text = Resources.ButtonTextOK;
 
         DecryptionEndProcess();
@@ -5427,9 +5491,9 @@ namespace AttacheCase
       }
 
       //-----------------------------------
-      // Directory to oputput decrypted files
+      // Directory to output decrypted files
       //-----------------------------------
-      string OutDirPath = "";
+      var OutDirPath = "";
       if (AppSettings.Instance.fDecodeToSameFldr == true)
       {
         OutDirPath = AppSettings.Instance.DecodeToSameFldrPath;
@@ -5443,8 +5507,8 @@ namespace AttacheCase
       //-----------------------------------
       // Decryption password
       //-----------------------------------
-      string DecryptionPassword = textBoxDecryptPassword.Text;
-      
+      var DecryptionPassword = textBoxDecryptPassword.Text;
+
       //-----------------------------------
       // Always minimize when running
       //-----------------------------------
@@ -5472,7 +5536,7 @@ namespace AttacheCase
       {
         notifyIcon1.Visible = false;
       }
-        
+
       //-----------------------------------
       // Preparing for decrypting
       // 
@@ -5481,6 +5545,7 @@ namespace AttacheCase
 
       progressBar.Style = ProgressBarStyle.Marquee;
       progressBar.MarqueeAnimationSpeed = 50;
+      _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Indeterminate);
       // 復号するための準備をしています...
       // Getting ready for decryption...
       labelProgressMessageText.Text = Resources.labelGettingReadyForDecryption;
@@ -5496,7 +5561,7 @@ namespace AttacheCase
         decryption3 = new FileDecrypt3(AtcFilePath);
       }
 
-      if (decryption4.TokenStr == "_AttacheCaseData" || decryption4.TokenStr == "_AttacheCase_Rsa")
+      if (decryption4.TokenStr is "_AttacheCaseData" or "_AttacheCase_Rsa")
       {
         // Encryption data ( O.K. )
       }
@@ -5510,12 +5575,14 @@ namespace AttacheCase
         MessageBox.Show(this, Resources.DialogMessageAtcFileBroken + Environment.NewLine + AtcFilePath,
         Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-        labelProgressPercentText.Text = "- %";
+        labelProgressPercentText.Text = @"- %";
         labelProgressMessageText.Text = Resources.labelCaptionAborted;
-        progressBar.Value = 0;
         progressBar.Style = ProgressBarStyle.Continuous;
+        progressBar.Value = 0;
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+        _taskbarProgress.UpdateProgress(0);
         buttonCancel.Text = Resources.ButtonTextOK;
-        notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+        notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
         return;
 
       }
@@ -5529,12 +5596,14 @@ namespace AttacheCase
         MessageBox.Show(this, Resources.DialogMessageNotAtcFile + Environment.NewLine + AtcFilePath,
         Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-        labelProgressPercentText.Text = "- %";
+        labelProgressPercentText.Text = @"- %";
         labelProgressMessageText.Text = Resources.labelCaptionAborted;
-        progressBar.Value = 0;
         progressBar.Style = ProgressBarStyle.Continuous;
+        progressBar.Value = 0;
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+        _taskbarProgress.UpdateProgress(0);
         buttonCancel.Text = Resources.ButtonTextOK;
-        notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+        notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
         return;
 
       }
@@ -5572,17 +5641,19 @@ namespace AttacheCase
               //
               // Error
               // The specified password file is not found in decryption. The process is aborted.
-              DialogResult ret = MessageBox.Show(
+              var ret = MessageBox.Show(
                 this,
                 Resources.DialogMessageDecryptionPasswordFileNotFound + Environment.NewLine + AppSettings.Instance.PassFilePathDecrypt,
                 Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-              labelProgressPercentText.Text = "- %";
+              labelProgressPercentText.Text = @"- %";
               labelProgressMessageText.Text = Resources.labelCaptionAborted;
-              progressBar.Value = 0;
               progressBar.Style = ProgressBarStyle.Continuous;
+              progressBar.Value = 0;
+              _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+              _taskbarProgress.UpdateProgress(0);
               buttonCancel.Text = Resources.ButtonTextOK;
-              notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+              notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
               return;
             }
           }
@@ -5594,13 +5665,13 @@ namespace AttacheCase
           if (decryption4.DataFileVersion < 130)
           {
             DecryptionPasswordBinary = GetPasswordFileHash2(AppSettings.Instance.TempDecryptionPassFilePath);
-            DecryptionPassword = "";
           }
           else
           {
             DecryptionPasswordBinary = GetPasswordFileSha256(AppSettings.Instance.TempDecryptionPassFilePath);
-            DecryptionPassword = "";
           }
+
+          DecryptionPassword = "";
         }
 
         // コマンドラインからのパスワードがさらに優先される
@@ -5763,12 +5834,14 @@ namespace AttacheCase
         MessageBox.Show(this, Resources.DialogMessageHigherVersion + Environment.NewLine + AtcFilePath,
         Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-        labelProgressPercentText.Text = "- %";
+        labelProgressPercentText.Text = @"- %";
         labelProgressMessageText.Text = Resources.labelCaptionAborted;
-        progressBar.Value = 0;
         progressBar.Style = ProgressBarStyle.Continuous;
+        progressBar.Value = 0;
+        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+        _taskbarProgress.UpdateProgress(0);
         buttonCancel.Text = Resources.ButtonTextOK;
-        notifyIcon1.Text = "- % " + Resources.labelCaptionError;
+        notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
 
         return;
 
@@ -5781,10 +5854,9 @@ namespace AttacheCase
     /// </summary>
     private void DecryptionEndProcess()
     {
-      bool fOpen = false;
-
       if (AppSettings.Instance.fOpenFile == true)
       {
+        var fOpen = false;
         if (OutputFileList.Count() > AppSettings.Instance.ShowDialogWhenMultipleFilesNum)
         {
           // 問い合わせ
@@ -5793,15 +5865,15 @@ namespace AttacheCase
           //
           // Question
           // There decrypted file is * or more.
-          // But, open all of the files associated with application?
-          DialogResult ret = 
-            MessageBox.Show(this, 
-              string.Format(Resources.DialogMessageOpenMultipleFiles, 
+          // But, open all the files associated with application?
+          var ret =
+            MessageBox.Show(this,
+              string.Format(Resources.DialogMessageOpenMultipleFiles,
               AppSettings.Instance.ShowDialogWhenMultipleFilesNum),
           Resources.DialogTitleQuestion, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
           fOpen = ret == DialogResult.Yes;
-          
+
         }
         else
         {
@@ -5810,7 +5882,7 @@ namespace AttacheCase
 
         if (fOpen == true)
         {
-          foreach (string path in OutputFileList)
+          foreach (var path in OutputFileList)
           {
             if (Path.GetExtension(path).ToLower() == ".exe" || Path.GetExtension(path).ToLower() == ".bat" || Path.GetExtension(path).ToLower() == ".cmd")
             {
@@ -5824,20 +5896,20 @@ namespace AttacheCase
                 // Do you run the following file?
                 DialogResult ret = MessageBox.Show(this, Resources.DialogMessageExecutableFile + Environment.NewLine + path,
                 Resources.DialogTitleQuestion, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
-                
+
                 if (ret == DialogResult.No)
                 {
                   continue;
                 }
                 else
                 { // Executable
-                  System.Diagnostics.Process p = System.Diagnostics.Process.Start(path);
+                  var p = System.Diagnostics.Process.Start(path);
                 }
               }
             }
             else if (File.Exists(path) == true)
             {
-              System.Diagnostics.Process p = System.Diagnostics.Process.Start(path);
+              var p = System.Diagnostics.Process.Start(path);
             }
             else if (Directory.Exists(path) == true)
             {
@@ -5850,13 +5922,13 @@ namespace AttacheCase
         }// end if (fOpen == true);
 
       }
-       
+
       // Set the timestamp of files or directories to decryption time.
       if (AppSettings.Instance.fSameTimeStamp == true)
       {
-        OutputFileList.ForEach(delegate (String FilePath)
+        OutputFileList.ForEach(delegate (string FilePath)
         {
-          DateTime dtNow = DateTime.Now;
+          var dtNow = DateTime.Now;
           File.SetCreationTime(FilePath, dtNow);
           File.SetLastWriteTime(FilePath, dtNow);
           File.SetLastAccessTime(FilePath, dtNow);
@@ -5872,8 +5944,8 @@ namespace AttacheCase
           // 復号の元になった暗号化ファイルを削除しますか？
           //
           // Question
-          // Are you sure to delete the encypted file(s) that are the source of the decryption?
-          DialogResult ret = MessageBox.Show(this, Resources.DialogMessageDeleteEncryptedFiles,
+          // Are you sure to delete the encrypted file(s) that are the source of the decryption?
+          var ret = MessageBox.Show(this, Resources.DialogMessageDeleteEncryptedFiles,
             Resources.DialogTitleQuestion, MessageBoxButtons.YesNo, MessageBoxIcon.Question);
 
           if (ret == DialogResult.Yes)
@@ -6053,7 +6125,7 @@ namespace AttacheCase
       }
       this.Activate();
     }
-      
+
     //======================================================================
     /// <summary>
     /// ファイルを破壊して、当該内部トークンを「破壊」ステータスに書き換える
@@ -6066,13 +6138,13 @@ namespace AttacheCase
     {
       try
       {
-        using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite))
+        using (var fs = new FileStream(FilePath, FileMode.Open, FileAccess.ReadWrite))
         {
-          byte[] byteArray = new byte[16];
+          var byteArray = new byte[16];
           fs.Seek(4, SeekOrigin.Begin);
           if (fs.Read(byteArray, 0, 16) == 16)
           {
-            string TokenStr = System.Text.Encoding.ASCII.GetString(byteArray);
+            var TokenStr = System.Text.Encoding.ASCII.GetString(byteArray);
             if (TokenStr == "_AttacheCaseData")
             {
               // Rewriting Token
@@ -6093,9 +6165,9 @@ namespace AttacheCase
               //
               // Alert
               // Because it exceeded the limit number of inputting password, the encrypted file has been broken.
-              DialogResult ret = MessageBox.Show(this, Resources.DialogMessageBroken,
+              var ret = MessageBox.Show(this, Resources.DialogMessageBroken,
                 Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-              
+
             }
             else if (TokenStr == "_Atc_Broken_Data")
             {
@@ -6106,7 +6178,7 @@ namespace AttacheCase
               //
               // Alert
               // The encrypted file has already been destroyed.
-              DialogResult ret = MessageBox.Show(this, Resources.DialogMessageBrokenAlready,
+              var ret = MessageBox.Show(this, Resources.DialogMessageBrokenAlready,
                 Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
               return (true);
@@ -6119,8 +6191,8 @@ namespace AttacheCase
               // 破壊トークンを見つけられませんでした。暗号化ファイルではない可能性があります。
               //
               // Alert
-              // The broken token could not found. The file may not be an encrypted file.
-              DialogResult ret = MessageBox.Show(this, Resources.DialogMessageBrokenDestroyNotFount,
+              // The broken token could not find. The file may not be an encrypted file.
+              var ret = MessageBox.Show(this, Resources.DialogMessageBrokenDestroyNotFount,
                 Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
               return (false);
@@ -6136,7 +6208,7 @@ namespace AttacheCase
         return (true);
 
       }
-      catch(Exception e)
+      catch (Exception e)
       {
 #if(DEBUG)
         System.Windows.Forms.MessageBox.Show(new Form { TopMost = true }, e.Message);
@@ -6166,16 +6238,15 @@ namespace AttacheCase
         // 位置がマイナス値の場合（デフォルト値も含む）は、画面中央に表示する
         frm5.Left = Screen.GetBounds(this).Width / 2 - AppSettings.Instance.DeveloperConsoleWidth / 2;
         frm5.Top = Screen.GetBounds(this).Height / 2 - AppSettings.Instance.DeveloperConsoleHeight / 2;
-        frm5.Width = AppSettings.Instance.DeveloperConsoleWidth;
-        frm5.Height = AppSettings.Instance.DeveloperConsoleHeight;
       }
       else
       {
         frm5.Left = AppSettings.Instance.DeveloperConsolePosX;
         frm5.Top = AppSettings.Instance.DeveloperConsolePosY;
-        frm5.Width = AppSettings.Instance.DeveloperConsoleWidth;
-        frm5.Height = AppSettings.Instance.DeveloperConsoleHeight;
       }
+
+      frm5.Width = AppSettings.Instance.DeveloperConsoleWidth;
+      frm5.Height = AppSettings.Instance.DeveloperConsoleHeight;
 
       if (decryption3 != null)
       {
@@ -6232,7 +6303,7 @@ namespace AttacheCase
         panelStartPage.BackColor = Color.Black;
       }
     }
-   
+
     private void Form1_MouseDown(object sender, MouseEventArgs e)
     {
       if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
@@ -6396,7 +6467,7 @@ namespace AttacheCase
       pictureBoxRsa.Image = pictureBoxRsaOff.Image;
       pictureBoxDec.Image = pictureBoxDecChk.Image;
 
-      if (openFileDialog1.ShowDialog() == DialogResult.OK)
+      if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
       {
         foreach (string filname in openFileDialog1.FileNames)
         {
@@ -6475,11 +6546,11 @@ namespace AttacheCase
     // Change theme color ( "dark" or "light" )
     // テーマカラーの変更（ダークテーマ、ライトテーマ）
     // ref. https://stackoverflow.com/questions/61145347/c-how-to-make-a-dark-mode-theme-in-windows-forms-separate-form-as-select-the
-    delegate int DwmSetWindowAttributeDelegate(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+    private delegate int DwmSetWindowAttributeDelegate(IntPtr hwnd, int attr, ref int attrValue, int attrSize);
     private const int DWMWA_USE_IMMERSIVE_DARK_MODE_BEFORE_20H1 = 19;
     private const int DWMWA_USE_IMMERSIVE_DARK_MODE = 20;
 
-    delegate int MessageBoxADelegate(IntPtr hWnd, string lpText, string lpCaption, uint uType);
+    private delegate int MessageBoxADelegate(IntPtr hWnd, string lpText, string lpCaption, uint uType);
 
     private void ChangeTheme(Control.ControlCollection container, bool fDark)
     {
@@ -6500,7 +6571,7 @@ namespace AttacheCase
           {
             attribute = DWMWA_USE_IMMERSIVE_DARK_MODE;
           }
-          int useImmersiveDarkMode = (fDark == true ? 1 : 0);
+          var useImmersiveDarkMode = (fDark == true ? 1 : 0);
           DwmSetWindowAttribute(this.Handle, (int)attribute, ref useImmersiveDarkMode, sizeof(int));
         }
 
@@ -6512,7 +6583,7 @@ namespace AttacheCase
       // 各コントロールのダークモード表示
       foreach (Control component in container)
       {
-        if (component is Panel)
+        if (component is System.Windows.Forms.Panel)
         {
           ChangeTheme(component.Controls, fDark);
           component.BackColor = (fDark == true ? Color.Black : SystemColors.Control);
@@ -6581,115 +6652,37 @@ namespace AttacheCase
     // ref. https://stackoverflow.com/questions/36767478/color-change-for-menuitem
     private class MyDarkColorTable : ProfessionalColorTable
     {
-      public override Color ToolStripDropDownBackground
-      {
-        get { return Color.FromArgb(255, 30, 30, 30); }
-      }
-      public override Color ImageMarginGradientBegin
-      {
-        get { return Color.FromArgb(255, 30, 30, 30); }
-      }
-      public override Color ImageMarginGradientMiddle
-      {
-        get { return Color.FromArgb(255, 30, 30, 30); }
-      }
-      public override Color ImageMarginGradientEnd
-      {
-        get { return Color.FromArgb(255, 30, 30, 30); }
-      }
-      public override Color MenuBorder
-      {
-        get { return Color.Black; }
-      }
-      public override Color MenuItemBorder
-      {
-        get { return Color.Black; }
-      }
-      public override Color MenuItemSelected
-      {
-        get { return Color.FromArgb(255, 60, 60, 60); }
-      }
-      public override Color MenuStripGradientBegin
-      {
-        get { return Color.FromArgb(255, 60, 60, 60); }
-      }
-      public override Color MenuStripGradientEnd
-      {
-        get { return Color.FromArgb(255, 60, 60, 60); }
-      }
-      public override Color MenuItemSelectedGradientBegin
-      {
-        get { return Color.FromArgb(255, 60, 60, 60); }
-      }
-      public override Color MenuItemSelectedGradientEnd
-      {
-        get { return Color.FromArgb(255, 60, 60, 60); }
-      }
-      public override Color MenuItemPressedGradientBegin
-      {
-        get { return Color.FromArgb(255, 60, 60, 60); }
-      }
-      public override Color MenuItemPressedGradientEnd
-      {
-        get { return Color.FromArgb(255, 60, 60, 60); }
-      }
+      public override Color ToolStripDropDownBackground => Color.FromArgb(255, 30, 30, 30);
+      public override Color ImageMarginGradientBegin => Color.FromArgb(255, 30, 30, 30);
+      public override Color ImageMarginGradientMiddle => Color.FromArgb(255, 30, 30, 30);
+      public override Color ImageMarginGradientEnd => Color.FromArgb(255, 30, 30, 30);
+      public override Color MenuBorder => Color.Black;
+      public override Color MenuItemBorder => Color.Black;
+      public override Color MenuItemSelected => Color.FromArgb(255, 60, 60, 60);
+      public override Color MenuStripGradientBegin => Color.FromArgb(255, 60, 60, 60);
+      public override Color MenuStripGradientEnd => Color.FromArgb(255, 60, 60, 60);
+      public override Color MenuItemSelectedGradientBegin => Color.FromArgb(255, 60, 60, 60);
+      public override Color MenuItemSelectedGradientEnd => Color.FromArgb(255, 60, 60, 60);
+      public override Color MenuItemPressedGradientBegin => Color.FromArgb(255, 60, 60, 60);
+      public override Color MenuItemPressedGradientEnd => Color.FromArgb(255, 60, 60, 60);
     }
     //----------------------------------------------------------------------
     // ToolStripの「ライト」テーマカラーテーブル
     private class MyLightColorTable : ProfessionalColorTable
     {
-      public override Color ToolStripDropDownBackground
-      {
-        get { return Color.FromArgb(255, 253, 253, 253); }
-      }
-      public override Color ImageMarginGradientBegin
-      {
-        get { return Color.FromArgb(255, 248, 248, 248); }
-      }
-      public override Color ImageMarginGradientMiddle
-      {
-        get { return Color.FromArgb(255, 248, 248, 248); }
-      }
-      public override Color ImageMarginGradientEnd
-      {
-        get { return Color.FromArgb(255, 248, 248, 248); }
-      }
-      public override Color MenuBorder
-      {
-        get { return Color.FromArgb(255, 128, 128, 128); }
-      }
-      public override Color MenuItemBorder
-      {
-        get { return Color.FromArgb(255, 189, 189, 189); }
-      }
-      public override Color MenuItemSelected
-      {
-        get { return Color.FromArgb(255, 181, 215, 243); }
-      }
-      public override Color MenuStripGradientBegin
-      {
-        get { return SystemColors.Control; }
-      }
-      public override Color MenuStripGradientEnd
-      {
-        get { return SystemColors.Control; }
-      }
-      public override Color MenuItemSelectedGradientBegin
-      {
-        get { return Color.FromArgb(255, 181, 215, 243); }
-      }
-      public override Color MenuItemSelectedGradientEnd
-      {
-        get { return Color.FromArgb(255, 181, 215, 243); }
-      }
-      public override Color MenuItemPressedGradientBegin
-      {
-        get { return Color.FromArgb(255, 181, 215, 243); }
-      }
-      public override Color MenuItemPressedGradientEnd
-      {
-        get { return Color.FromArgb(255, 181, 215, 243); }
-      }
+      public override Color ToolStripDropDownBackground => Color.FromArgb(255, 253, 253, 253);
+      public override Color ImageMarginGradientBegin => Color.FromArgb(255, 248, 248, 248);
+      public override Color ImageMarginGradientMiddle => Color.FromArgb(255, 248, 248, 248);
+      public override Color ImageMarginGradientEnd => Color.FromArgb(255, 248, 248, 248);
+      public override Color MenuBorder => Color.FromArgb(255, 128, 128, 128);
+      public override Color MenuItemBorder => Color.FromArgb(255, 189, 189, 189);
+      public override Color MenuItemSelected => Color.FromArgb(255, 181, 215, 243);
+      public override Color MenuStripGradientBegin => SystemColors.Control;
+      public override Color MenuStripGradientEnd => SystemColors.Control;
+      public override Color MenuItemSelectedGradientBegin => Color.FromArgb(255, 181, 215, 243);
+      public override Color MenuItemSelectedGradientEnd => Color.FromArgb(255, 181, 215, 243);
+      public override Color MenuItemPressedGradientBegin => Color.FromArgb(255, 181, 215, 243);
+      public override Color MenuItemPressedGradientEnd => Color.FromArgb(255, 181, 215, 243);
     }
     //----------------------------------------------------------------------
     // ref. https://tzeditor.blogspot.com/2019/10/c_30.html
@@ -6747,7 +6740,7 @@ namespace AttacheCase
       {
         base.OnRenderToolStripBorder(e);
 
-        ToolStrip toolStrip = e.ToolStrip;
+        var toolStrip = e.ToolStrip;
         if (toolStrip is StatusStrip)
         {
           e.Graphics.DrawLine(new Pen(Color.FromArgb(45, 45, 48)), 0, 0, e.ToolStrip.Width, 0);
@@ -6759,7 +6752,7 @@ namespace AttacheCase
     {
       if (File.Exists(AppSettings.Instance.SaveToIniDirPath) == false)
       {
-        // Default foloder is Desktop
+        // Default folder is Desktop
         saveFileDialog2.InitialDirectory =
           Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
       }
@@ -6771,7 +6764,7 @@ namespace AttacheCase
       // Save a lock file (public key) and key file (private key)
       // ロックファイル（公開鍵）とキーファイル（秘密鍵）の保存
       saveFileDialog2.Title = Resources.DialogTitleSavePublicAndPrivateKey;
-      if (saveFileDialog2.ShowDialog() == DialogResult.OK)
+      if (saveFileDialog2.ShowDialog(this) == DialogResult.OK)
       {
         CreateKeyPair(saveFileDialog2.FileName, "");
         DirectoryInfo diParent = Directory.GetParent(saveFileDialog2.FileName);
@@ -6793,9 +6786,9 @@ namespace AttacheCase
         guidString = guid.ToString();
       }
 
-      DirectoryInfo diParent = Directory.GetParent(filePath);
-      string DirPath = diParent.FullName;
-      string FileName = Path.GetFileNameWithoutExtension(filePath);
+      var diParent = Directory.GetParent(filePath);
+      var DirPath = diParent.FullName;
+      var FileName = Path.GetFileNameWithoutExtension(filePath);
 
       // 公開鍵・秘密鍵のファイルパス
       var publicKeyFilePath = Path.Combine(DirPath, FileName + ".atcpub");
@@ -6828,13 +6821,13 @@ namespace AttacheCase
       //xml.AddFirst(xmlTo);
 
       // 種別
-      XElement xmlType = new XElement("type", "public");
+      var xmlType = new XElement("type", "public");
       xml.AddFirst(xmlType);
       // GUID
-      XElement xmlGuid = new XElement("id", guidString);
+      var xmlGuid = new XElement("id", guidString);
       xml.AddFirst(xmlGuid);
       // Token
-      XElement xmlToken = new XElement("token", "AttacheCase");
+      var xmlToken = new XElement("token", "AttacheCase");
       xml.AddFirst(xmlToken);
       // 公開鍵として保存する
       xml.Save(publicKeyFilePath);
@@ -6961,36 +6954,36 @@ namespace AttacheCase
 
     private void getXmlFileHash(string FilePath)
     {
- 
+
       XmlHashStringList = new Dictionary<string, string>();
 
       // GUID
-      XElement xmlElement = XElement.Load(FilePath);
-      XmlHashStringList.Add("GUID", xmlElement.Element("id").Value);
+      var xmlElement = XElement.Load(FilePath);
+      XmlHashStringList.Add("GUID", xmlElement.Element("id")?.Value);
 
-      using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+      using (var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
       {
         // MD5
         var md5 = new MD5CryptoServiceProvider();
-        byte[] bs = md5.ComputeHash(fs);
+        var bs = md5.ComputeHash(fs);
         md5.Clear();
         XmlHashStringList.Add("MD5", BitConverter.ToString(bs).ToLower().Replace("-", ""));
       }
 
-      using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+      using (var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
       {
         // SHA-1
         var sha1 = new SHA1CryptoServiceProvider();
-        byte[] bs = sha1.ComputeHash(fs);
+        var bs = sha1.ComputeHash(fs);
         sha1.Clear();
         XmlHashStringList.Add("SHA-1", BitConverter.ToString(bs).ToLower().Replace("-", ""));
       }
 
-      using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+      using (var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
       {
         // SHA-256
         var sha256 = new SHA256CryptoServiceProvider();
-        byte[] bs = sha256.ComputeHash(fs);
+        var bs = sha256.ComputeHash(fs);
         sha256.Clear();
         XmlHashStringList.Add("SHA-256", BitConverter.ToString(bs).ToLower().Replace("-", ""));
       }
@@ -7003,7 +6996,7 @@ namespace AttacheCase
       // MD5
       // SHA-1
       // SHA-256
-      string selectedItem = comboBoxHashList.SelectedItem.ToString();
+      var selectedItem = comboBoxHashList.SelectedItem.ToString();
       textBoxHashString.Text = XmlHashStringList[selectedItem];
     }
 
@@ -7011,7 +7004,7 @@ namespace AttacheCase
     /// Forces a window to be brought to the foreground.
     /// </summary>
     /// <param name="hWnd">The handle to the window</param>
-    private void ForceForegroundWindow(IntPtr hWnd)
+    private static void ForceForegroundWindow(IntPtr hWnd)
     {
       uint foreThread = GetWindowThreadProcessId(GetForegroundWindow(), IntPtr.Zero);
       uint appThread = GetCurrentThreadId();
@@ -7030,9 +7023,7 @@ namespace AttacheCase
         ShowWindow(hWnd, SW_SHOW);
       }
     }
-    
-    
-    
+
   }// end public partial class Form1 : Form;
 
 }// end namespace AttacheCase;

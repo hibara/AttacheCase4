@@ -1,6 +1,6 @@
 ﻿//---------------------------------------------------------------------- 
 // "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
-// Copyright (C) 2016-2024  Mitsuhiro Hibara
+// Copyright (C) 2016-2025  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -25,55 +25,55 @@ namespace Exeout
 {
 
   static class Program
-	{
-		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-		static extern bool SetDllDirectory(string lpPathName);
-		[DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
-		static extern bool SetDefaultDllDirectories(uint directoryFlags);
-		// LOAD_LIBRARY_SEARCH_APPLICATION_DIR : 0x00000200
-		// LOAD_LIBRARY_SEARCH_DEFAULT_DIRS    : 0x00001000
-		// LOAD_LIBRARY_SEARCH_SYSTEM32        : 0x00000800
-		// LOAD_LIBRARY_SEARCH_USER_DIRS       : 0x00000400
-		private const uint DllSearchFlags = 0x00000800;
+  {
+    [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    static extern bool SetDllDirectory(string lpPathName);
+    [DllImport("kernel32", CharSet = CharSet.Auto, SetLastError = true)]
+    static extern bool SetDefaultDllDirectories(uint directoryFlags);
+    // LOAD_LIBRARY_SEARCH_APPLICATION_DIR : 0x00000200
+    // LOAD_LIBRARY_SEARCH_DEFAULT_DIRS    : 0x00001000
+    // LOAD_LIBRARY_SEARCH_SYSTEM32        : 0x00000800
+    // LOAD_LIBRARY_SEARCH_USER_DIRS       : 0x00000400
+    private const uint DllSearchFlags = 0x00000800;
 
-		/// <summary>
-		/// アプリケーションのメイン エントリ ポイントです。
-		/// </summary>
-		[STAThread]
-		static void Main()
-		{
-			OperatingSystem os = Environment.OSVersion;
-			if (os.Version.Major <= 6 && os.Version.Minor <= 1)
-			{
-				// Countermeasure that "Font '?' cannot be found" error for Win7 only
-				// ref. https://chowdera.com/2022/03/202203241328277504.html
-				var font = System.Drawing.SystemFonts.DefaultFont; // Load first 
-			}
+    /// <summary>
+    /// アプリケーションのメイン エントリ ポイントです。
+    /// </summary>
+    [STAThread]
+    static void Main()
+    {
+      var os = Environment.OSVersion;
+      if (os.Version.Major <= 6 && os.Version.Minor <= 1)
+      {
+        // Countermeasure that "Font '?' cannot be found" error for Win7 only
+        // ref. https://chowdera.com/2022/03/202203241328277504.html
+        var font = System.Drawing.SystemFonts.DefaultFont; // Load first 
+      }
 
-			// DLLプリロード攻撃対策
-			// Prevent DLL preloading attacks
-			try
-			{
-				SetDllDirectory("");
-				SetDefaultDllDirectories(DllSearchFlags);
-			}
-			catch
-			{
-				// Pre-Windows 7, KB2533623 
-				SetDllDirectory("");
-			}
+      // DLLプリロード攻撃対策
+      // Prevent DLL preloading attacks
+      try
+      {
+        SetDllDirectory("");
+        SetDefaultDllDirectories(DllSearchFlags);
+      }
+      catch
+      {
+        // Pre-Windows 7, KB2533623 
+        SetDllDirectory("");
+      }
 
-			CultureInfo ci = Thread.CurrentThread.CurrentUICulture;
-			//Console.WriteLine(ci.Name);  // ja-JP
-			if (ci.Name == "ja-JP")
-			{
-				Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP", true);
-			}
+      CultureInfo ci = Thread.CurrentThread.CurrentUICulture;
+      //Console.WriteLine(ci.Name);  // ja-JP
+      if (ci.Name == "ja-JP")
+      {
+        Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP", true);
+      }
 
       Application.EnableVisualStyles();
-			Application.SetCompatibleTextRenderingDefault(false);
+      Application.SetCompatibleTextRenderingDefault(false);
       Application.Run(new Form1());
 
-		}
-	}
+    }
+  }
 }

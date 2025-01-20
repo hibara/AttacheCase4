@@ -10,7 +10,7 @@ using System.Resources;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HiBARA Software")]
 [assembly: AssemblyProduct("アタッシェケース4")]
-[assembly: AssemblyCopyright("© 2016-2024 M.Hibara, All rights reserved.")]
+[assembly: AssemblyCopyright("© 2016-2025 M.Hibara, All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
