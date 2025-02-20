@@ -1,5 +1,5 @@
 ﻿//---------------------------------------------------------------------- 
-// "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
+// "アタッシェケース4 ( AttacheCase4 )" -- File encryption software.
 // Copyright (C) 2016-2025  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -16,6 +16,7 @@
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //---------------------------------------------------------------------- 
 using System;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using AttacheCase.Properties;
@@ -24,7 +25,9 @@ using System.Drawing;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using System.Linq;
 using System.Security;
+using System.Windows.Documents;
 
 namespace AttacheCase
 {
@@ -40,13 +43,13 @@ namespace AttacheCase
       //internal static extern uint WritePrivateProfileString(string section, string key, string val, string filePath);
     }
 
-    private string OneLineHelpURL = "https://hibara.org/software/attachecase/help/";
-    private string CommandLineReferenceURL = "https://hibara.org/software/attachecase/help/settings/#command-line-option";
+    private readonly string OneLineHelpURL = "https://hibara.org/software/attachecase/help/";
+    private readonly string CommandLineReferenceURL = "https://hibara.org/software/attachecase/help/settings/#command-line-option";
 
     private const int BCM_FIRST = 0x1600;
     private const int BCM_SETSHIELD = BCM_FIRST + 0x000C;
 
-    private Panel[] panelObjects = new Panel[17];
+    private readonly Panel[] panelObjects = new Panel[18];
 
     private bool fAssociationSettings = false;
     private bool fLoading = false;
@@ -69,6 +72,9 @@ namespace AttacheCase
     private const int PROCESS_TYPE_PASSWORD_ZIP = 3;
     private const int PROCESS_TYPE_DECRYPTION = 4;
 
+    private bool isValidationExtensionFailed = false;
+
+
     /// <summary>
     /// Form3 Constructor
     /// </summary>
@@ -87,14 +93,15 @@ namespace AttacheCase
       panelObjects[8] = this.panelCompressOption;
       panelObjects[9] = this.panelSystemOption;
       panelObjects[10] = this.panelSettingImportExportOption;
-      panelObjects[11] = this.panelPasswordFileOption;
-      panelObjects[12] = this.panelCamouflageExtOption;
-      panelObjects[13] = this.panelPasswordInputLimitOption;
-      panelObjects[14] = this.panelSalvageDataOption;
-      panelObjects[15] = this.panelLicenseOption;
-      panelObjects[16] = this.panelDevelopmentOption;
+      panelObjects[11] = this.panelAdvancedOption;
+      panelObjects[12] = this.panelPasswordFileOption;
+      panelObjects[13] = this.panelCamouflageExtOption;
+      panelObjects[14] = this.panelPasswordInputLimitOption;
+      panelObjects[15] = this.panelSalvageDataOption;
+      panelObjects[16] = this.panelLicenseOption;
+      panelObjects[17] = this.panelDevelopmentOption;
 
-      foreach (Panel obj in panelObjects)
+      foreach (var obj in panelObjects)
       {
         obj.Parent = splitContainer1.Panel2;
         obj.Visible = false;
@@ -805,6 +812,21 @@ namespace AttacheCase
       #endregion
 
       //-----------------------------------
+      // Advanced
+      //-----------------------------------
+      #region 
+
+      checkBoxPropagateMotwExecutableFiles.Checked = AppSettings.Instance.isCheckMotwExecutableFiles;
+      checkBoxPropagateMotwOfficeFiles.Checked = AppSettings.Instance.isCheckMotwOfficeFiles;
+      checkBoxPropagateMotwUserDefinedTypes.Checked = AppSettings.Instance.isCheckMotwUserDefinedTypes;
+
+      textBoxUserDefinedTypes.Text = string.Join(" ", AppSettings.Instance.MotwUserDefinedTypesExtensions);
+
+      checkBoxPropagateMotwAllFiles.Checked = AppSettings.Instance.isCheckMotwAllFiles;
+
+      #endregion
+
+      //-----------------------------------
       // Import / Export
       #region
 
@@ -850,6 +872,23 @@ namespace AttacheCase
       // Advanced
       //-----------------------------------
       #region
+
+      //-----------------------------------
+      // Advanced
+
+      checkBoxPropagateMotwExecutableFiles.Checked = AppSettings.Instance.isCheckMotwExecutableFiles;
+      checkBoxPropagateMotwOfficeFiles.Checked = AppSettings.Instance.isCheckMotwOfficeFiles;
+      checkBoxPropagateMotwUserDefinedTypes.Checked = AppSettings.Instance.isCheckMotwUserDefinedTypes;
+      checkBoxPropagateMotwAllFiles.Checked = AppSettings.Instance.isCheckMotwAllFiles;
+      if (checkBoxPropagateMotwAllFiles.Checked)
+      {
+        checkBoxPropagateMotwExecutableFiles.Checked = true;
+        checkBoxPropagateMotwOfficeFiles.Checked = true;
+        checkBoxPropagateMotwUserDefinedTypes.Checked = true;
+        checkBoxPropagateMotwExecutableFiles.Enabled = false;
+        checkBoxPropagateMotwOfficeFiles.Enabled = false;
+      }
+
       //-----------------------------------
       // Password file
       checkBoxAllowPassFile.Checked = AppSettings.Instance.fAllowPassFile;
@@ -1135,6 +1174,9 @@ namespace AttacheCase
           panelSettingImportExportOption.Focus();
           break;
         case "nodeAdvanced":
+        //panelAdvancedOption.Visible = true;
+        //panelAdvancedOption.Focus();
+        //break;
         case "nodePasswordFile":
           panelPasswordFileOption.Visible = true;
           panelPasswordFileOption.Focus();
@@ -1198,6 +1240,9 @@ namespace AttacheCase
     /// <param name="e"></param>
     private void buttonApply_Click(object sender, EventArgs e)
     {
+      // 拡張子の検証失敗していたら抜ける
+      if (isValidationExtensionFailed) return;
+
       if (AppSettings.Instance.CommandLineArgsNum > 0 && fTemporarySettings == true)
       {
         // Since it is using temporary settings from command line options, it cannot reflect the main settings.
@@ -1439,6 +1484,16 @@ namespace AttacheCase
       AppSettings.Instance.fShowConfirmationDialogToReadIniFile = checkBoxShowDialogToConfirmToReadIniFileAlways.Checked;
 
       //-----------------------------------
+      // Advanced
+      AppSettings.Instance.isCheckMotwExecutableFiles = checkBoxPropagateMotwExecutableFiles.Checked;
+      AppSettings.Instance.isCheckMotwOfficeFiles = checkBoxPropagateMotwOfficeFiles.Checked;
+      AppSettings.Instance.isCheckMotwUserDefinedTypes = checkBoxPropagateMotwUserDefinedTypes.Checked;
+
+      AppSettings.Instance.MotwUserDefinedTypesExtensions = textBoxUserDefinedTypes.Text.Split(' ');
+
+      AppSettings.Instance.isCheckMotwAllFiles = checkBoxPropagateMotwAllFiles.Checked;
+
+      //-----------------------------------
       // Password file
       AppSettings.Instance.fAllowPassFile = checkBoxAllowPassFile.Checked;
       AppSettings.Instance.fCheckPassFile = checkBoxCheckPassFile.Checked;
@@ -1448,6 +1503,7 @@ namespace AttacheCase
       AppSettings.Instance.PassFilePathDecrypt = textBoxPassFilePathDecrypt.Text;
       AppSettings.Instance.fNoErrMsgOnPassFile = checkBoxNoErrMsgOnPassFile.Checked;
       AppSettings.Instance.fPasswordFileExe = checkBoxDoByPasswordFile.Checked;
+      AppSettings.Instance.PasswordFilePriority = checkBoxPasswordFilePriority.Checked;
 
       //-----------------------------------
       // Salvage data
@@ -2476,6 +2532,109 @@ namespace AttacheCase
     #endregion
 
     //======================================================================
+    // Advanced
+    //======================================================================
+    #region 
+
+    private void checkBoxPropagateMotwExecutableFiles_CheckedChanged(object sender, EventArgs e)
+    {
+      if (checkBoxPropagateMotwExecutableFiles.Checked)
+      {
+        labelExecutableFilesList.ForeColor = SystemColors.ControlText;
+      }
+      else
+      {
+        labelExecutableFilesList.ForeColor = SystemColors.GrayText;
+      }
+
+      if (fLoading) return;
+      buttonApply.Enabled = true;
+
+    }
+
+    private void checkBoxPropagateMotwOfficeFiles_CheckedChanged(object sender, EventArgs e)
+    {
+      if (checkBoxPropagateMotwOfficeFiles.Checked)
+      {
+        labelOfficeFilesList.ForeColor = SystemColors.ControlText;
+      }
+      else
+      {
+        labelOfficeFilesList.ForeColor = SystemColors.GrayText;
+      }
+
+      if (fLoading) return;
+      buttonApply.Enabled = true;
+
+    }
+
+    private void checkBoxPropagateMotwUserDefinedTypes_CheckedChanged(object sender, EventArgs e)
+    {
+      if (checkBoxPropagateMotwUserDefinedTypes.Checked)
+      {
+        textBoxUserDefinedTypes.Enabled = true;
+      }
+      else
+      {
+        textBoxUserDefinedTypes.Enabled = false;
+      }
+
+      if (fLoading) return;
+      buttonApply.Enabled = true;
+
+    }
+
+    private void checkBoxPropagateMotwAllFiles_CheckedChanged(object sender, EventArgs e)
+    {
+      if (checkBoxPropagateMotwAllFiles.Checked)
+      {
+        checkBoxPropagateMotwExecutableFiles.Enabled = false;
+        checkBoxPropagateMotwOfficeFiles.Enabled = false;
+        checkBoxPropagateMotwUserDefinedTypes.Enabled = false;
+
+        textBoxUserDefinedTypes.Enabled = false;
+      }
+      else
+      {
+        checkBoxPropagateMotwExecutableFiles.Enabled = true;
+        checkBoxPropagateMotwOfficeFiles.Enabled = true;
+        checkBoxPropagateMotwUserDefinedTypes.Enabled = true;
+
+        textBoxUserDefinedTypes.Enabled = true;
+
+      }
+
+      if (fLoading) return;
+      buttonApply.Enabled = true;
+
+    }
+
+    private void textBoxUserDefinedTypes_Leave(object sender, EventArgs e)
+    {
+      if (string.IsNullOrEmpty(textBoxUserDefinedTypes.Text))
+      { // 空白ならチェックを外す
+        checkBoxPropagateMotwUserDefinedTypes.Checked = false;
+        isValidationExtensionFailed = false;
+        return;
+      }
+
+      // 書き込まれたユーザー指定の拡張子書式をチェック
+      if (AppSettings.IsValidExtensionFormat(textBoxUserDefinedTypes.Text))
+      {
+        isValidationExtensionFailed = false;
+      }
+      else
+      {
+        isValidationExtensionFailed = true;
+        textBoxUserDefinedTypes.Focus();
+        textBoxUserDefinedTypes.SelectAll();
+
+      }
+    }
+
+    #endregion
+
+    //======================================================================
     // PasswordFile
     //======================================================================
     #region
@@ -2777,7 +2936,5 @@ namespace AttacheCase
     }
 
   }
-
-
 
 }

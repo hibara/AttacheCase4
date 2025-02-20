@@ -766,4 +766,20 @@
   <data name="labelCreatingFileList" xml:space="preserve">
     <value>ファイル一覧作成中</value>
   </data>
+  <data name="DialogMessageMemorizedPasswordChange" xml:space="preserve">
+    <value>記憶パスワードが適用されています。変更を加えますか？
+復号できなくなる恐れがあります。</value>
+  </data>
+  <data name="DialogMessagePasswordFromPasswordFileChange" xml:space="preserve">
+    <value>パスワードファイルによるパスワードが適用されています。変更を加えますか？
+復号できなくなる恐れがあります。</value>
+  </data>
+  <data name="DialogMessageExtensionInvalid" xml:space="preserve">
+    <value>拡張子が正しく入力されていないか、不正な値です。
+拡張子はピリオドを含むカンマ区切りで入力してください。</value>
+  </data>
+  <data name="DialogMessageDirReparsePoint" xml:space="preserve">
+    <value>ジャンクション、またはシンボリックリンクは暗号化できません。
+処理を中止します。</value>
+  </data>
 </root>

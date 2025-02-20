@@ -1,5 +1,5 @@
 ﻿//---------------------------------------------------------------------- 
-// "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
+// "アタッシェケース4 ( AttacheCase4 )" -- File encryption software.
 // Copyright (C) 2016-2025  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -28,6 +28,10 @@ namespace AtcSetup
 {
   public partial class Form1 : Form
   {
+
+    private const uint SHCNE_ASSOCCHANGED = 0x08000000;
+    private const uint SHCNF_IDLIST = 0x0000;
+
     // Shield icon
     [DllImport("user32.dll")]
     private static extern IntPtr SendMessage(HandleRef hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
@@ -35,8 +39,8 @@ namespace AtcSetup
     private const int BCM_SETSHIELD = BCM_FIRST + 0x000C;
 
     // Refresh desktop window.
-    [DllImport("Shell32.dll")]
-    private static extern int SHChangeNotify(int eventId, int flags, IntPtr item1, IntPtr item2);
+    [DllImport("shell32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    private static extern void SHChangeNotify(uint wEventId, uint uFlags, IntPtr dwItem1, IntPtr dwItem2);
 
     public Dictionary<string, string> CommandData = new Dictionary<string, string>();
 
@@ -48,10 +52,10 @@ namespace AtcSetup
     private void Form1_Load(object sender, EventArgs e)
     {
       //-----------------------------------
-      // Get the version of this aooication from assembly infos.
-      Assembly asm = Assembly.GetExecutingAssembly();
-      Version ver = asm.GetName().Version;
-      toolStripStatusLabel1.Text = "ver. " + ver;
+      // Get the version of this abdication from assembly infos.
+      var asm = Assembly.GetExecutingAssembly();
+      var ver = asm.GetName().Version;
+      toolStripStatusLabel1.Text = @"ver. " + ver;
 
       //-----------------------------------
       // on the center of the screen.
@@ -80,10 +84,10 @@ namespace AtcSetup
 
       //-----------------------------------
       //コマンドライン引数を連想配列へ
-      string[] cmds = Environment.GetCommandLineArgs();
-      foreach (string cmd in cmds)
+      var cmds = Environment.GetCommandLineArgs();
+      foreach (var cmd in cmds)
       {
-        string[] SplitData = cmd.Split(new Char[] { '=' });
+        var SplitData = cmd.Split(new Char[] { '=' });
         if (SplitData.Length > 1)
         {
           CommandData.Add(SplitData[0], SplitData[1]);
@@ -135,7 +139,7 @@ namespace AtcSetup
       // You require some knowledge of Associations files to operate on this own. 
       // Can you still run it by itself?
       //
-      DialogResult result = MessageBox.Show(Resources.MsgTextWhenApplicationLaunched,
+      var result = MessageBox.Show(Resources.MsgTextWhenApplicationLaunched,
         Resources.DialogAlert, MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation,
         MessageBoxDefaultButton.Button2);
       if (result == DialogResult.No)
@@ -158,17 +162,17 @@ namespace AtcSetup
       labelInfo.Text = Resources.Associating;
 
       //-----------------------------------
-      string AttacheCaseFilePath = "";
-      if (CommandData.ContainsKey("-p") == true)
+      var AttacheCaseFilePath = "";
+      if (CommandData.TryGetValue("-p", out var value))
       {
-        AttacheCaseFilePath = CommandData["-p"];
+        AttacheCaseFilePath = value;
       }
       else
       {
         AttacheCaseFilePath = getAttacheCaseExeFilePath();
       }
 
-      // Because File.Exists is Case-Sensitive.
+      // Because File.Exist is Case-Sensitive.
       if (AttacheCaseFilePath == "")
       {
         // 注意
@@ -176,7 +180,7 @@ namespace AtcSetup
         //
         // "AttacheCase.exe" is not found!
         // アタッシェケース本体が見つかりません！
-        DialogResult ret = MessageBox.Show(Resources.DialogMessageAttacheCaseNotFound + Environment.NewLine + AttacheCaseFilePath.ToLower(),
+        var ret = MessageBox.Show(Resources.DialogMessageAttacheCaseNotFound + Environment.NewLine + AttacheCaseFilePath.ToLower(),
         Resources.DialogMessageAttacheCaseNotFound, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
         progressBar1.Style = ProgressBarStyle.Continuous;
@@ -187,8 +191,8 @@ namespace AtcSetup
       }
 
       //-----------------------------------
-      int IconIndex = 1;
-      string MyIconFilePath = "";
+      var IconIndex = 1;
+      var MyIconFilePath = "";
 
       if (CommandData.ContainsKey("-icn"))
       {
@@ -209,68 +213,68 @@ namespace AtcSetup
 
       //-----------------------------------
       // HKEY_CLASSES_ROOT\.atc
-      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atc"))
+      using (var regkey = Registry.ClassesRoot.CreateSubKey(@".atc"))
       {
-        regkey.SetValue("", "AttacheCase.DataFile");
+        regkey?.SetValue("", "AttacheCase.DataFile");
       }
       //-----------------------------------
       // HKEY_CLASSES_ROOT\AttacheCase.DataFile
-      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\DefaultIcon"))
+      using (var regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\DefaultIcon"))
       {
         if (MyIconFilePath == "")
         {
-          regkey.SetValue("", "\"" + AttacheCaseFilePath + "\"," + IconIndex);
+          regkey?.SetValue("", "\"" + AttacheCaseFilePath + "\"," + IconIndex);
         }
         else
         {
-          regkey.SetValue("", "\"" + MyIconFilePath + "\"");  // My Icon
+          regkey?.SetValue("", "\"" + MyIconFilePath + "\"");  // My Icon
         }
       }
-      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\decode"))
+      using (var regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\decode"))
       {
-        regkey.SetValue("", "アタッシェケースファイルを復号する");
+        regkey?.SetValue("", "アタッシェケースファイルを復号する");
       }
-      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\decode\command"))
+      using (var regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\decode\command"))
       {
-        regkey.SetValue("", "\"" + AttacheCaseFilePath + "\",\"%1\"");
+        regkey?.SetValue("", "\"" + AttacheCaseFilePath + "\",\"%1\"");
       }
-      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\open\command"))
+      using (var regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.DataFile\Shell\open\command"))
       {
-        regkey.SetValue("", "\"" + AttacheCaseFilePath + "\",\"%1\"");
+        regkey?.SetValue("", "\"" + AttacheCaseFilePath + "\",\"%1\"");
       }
 
       //-----------------------------------
       // HKEY_CLASSES_ROOT\.atcpvt
-      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atcpvt"))
+      using (var regkey = Registry.ClassesRoot.CreateSubKey(@".atcpvt"))
       {
-        regkey.SetValue("", "AttacheCase.PrivateKeyFile");
+        regkey?.SetValue("", "AttacheCase.PrivateKeyFile");
       }
       //-----------------------------------
       // HKEY_CLASSES_ROOT\AttacheCase.KeyFile
-      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.PrivateKeyFile\DefaultIcon"))
+      using (var regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.PrivateKeyFile\DefaultIcon"))
       {
-        regkey.SetValue("", "\"" + AttacheCaseFilePath + "\"," + 5);
+        regkey?.SetValue("", "\"" + AttacheCaseFilePath + "\"," + 5);
       }
 
       //-----------------------------------
       // HKEY_CLASSES_ROOT\.atcpub
-      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@".atcpub"))
+      using (var regkey = Registry.ClassesRoot.CreateSubKey(@".atcpub"))
       {
-        regkey.SetValue("", "AttacheCase.PublicKeyFile");
+        regkey?.SetValue("", "AttacheCase.PublicKeyFile");
       }
       //-----------------------------------
       // HKEY_CLASSES_ROOT\AttacheCase.LockFile
-      using (RegistryKey regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.PublicKeyFile\DefaultIcon"))
+      using (var regkey = Registry.ClassesRoot.CreateSubKey(@"AttacheCase.PublicKeyFile\DefaultIcon"))
       {
-        regkey.SetValue("", "\"" + AttacheCaseFilePath + "\"," + 6);
+        regkey?.SetValue("", "\"" + AttacheCaseFilePath + "\"," + 6);
       }
 
       progressBar1.Style = ProgressBarStyle.Continuous;
       progressBar1.Value = 100;
       labelInfo.Text = Resources.AssociationComplete;
 
-      // Refresh desktop window icons.
-      SHChangeNotify(0x8000000, 0x1000, IntPtr.Zero, IntPtr.Zero);
+      // Refresh desktop window icons
+      SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, IntPtr.Zero, IntPtr.Zero);
 
       return (true);
 
@@ -285,11 +289,11 @@ namespace AtcSetup
     private bool UnAssociateAtcFileToAttacheCase()
     {
       progressBar1.Style = ProgressBarStyle.Marquee;
-      // "It is setting to Unassociate the '.atc' file in the AttacheCase application..."
+      // "It is setting to Unassociated the '.atc' file in the AttacheCase application..."
       labelInfo.Text = Resources.UnAssociating;
 
-      RegistryKey regAtc = Registry.ClassesRoot.OpenSubKey(".atc");
-      RegistryKey regAttacheCaseDataFile = Registry.ClassesRoot.OpenSubKey("AttacheCase.DataFile");
+      var regAtc = Registry.ClassesRoot.OpenSubKey(".atc");
+      var regAttacheCaseDataFile = Registry.ClassesRoot.OpenSubKey("AttacheCase.DataFile");
 
       // Delete registry keys
       if (regAtc != null)
@@ -346,10 +350,10 @@ namespace AtcSetup
     /// <returns></returns>
     private string getAttacheCaseExeFilePath()
     {
-      string AppFilePath = string.Empty;
-      using (RegistryKey regkey = Registry.CurrentUser.OpenSubKey(@"Software\Hibara\AttacheCase4\AppInfo"))
+      var AppFilePath = string.Empty;
+      using (var regkey = Registry.CurrentUser.OpenSubKey(@"Software\Hibara\AttacheCase4\AppInfo"))
       {
-        if (regkey.GetValue("AppPath") != null)
+        if (regkey?.GetValue("AppPath") != null)
         {
           AppFilePath = (string)regkey.GetValue("AppPath");
         }

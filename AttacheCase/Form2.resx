@@ -809,7 +809,7 @@
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="labelAppName.Text" xml:space="preserve">
-    <value>AttachéCase4</value>
+    <value>AttacheCase4</value>
   </data>
   <data name="panel1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Bottom</value>
@@ -821,7 +821,7 @@
     <value>AutoSize</value>
   </data>
   <data name="labelFreeLicence.Text" xml:space="preserve">
-    <value>Now, AttachéCase4 is being used under a free trial.</value>
+    <value>Now, AttacheCase4 is being used under a free trial.</value>
   </data>
   <data name="pictureBoxApplicationIcon.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>

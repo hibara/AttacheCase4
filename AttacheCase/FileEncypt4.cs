@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------- 
-// "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
+// "アタッシェケース4 ( AttacheCase4 )" -- File encryption software.
 // Copyright (C) 2016-2025  Mitsuhiro Hibara
 //
 // * Required .NET Framework 4.6 or later
@@ -17,7 +17,6 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //---------------------------------------------------------------------- 
-using AttacheCase.Properties;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -28,10 +27,10 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
-using System.Xml;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading;
 using System.Xml.Linq;
-using MessageBox = System.Windows.MessageBox;
 using Path = System.IO.Path;
 #if __MACOS__
 using AppKit;
@@ -184,7 +183,7 @@ namespace AttacheCase
     }
 
 #if DEBUG
-    private Stopwatch swDebugEncrypt = new Stopwatch();
+    private readonly Stopwatch swDebugEncrypt = new Stopwatch();
 #endif
 
 
@@ -288,7 +287,7 @@ namespace AttacheCase
 
       try
       {
-        var outfs = new FileStream(AtcFilePath, FileMode.Create, FileAccess.Write);
+        var outfs = new FileStream(AtcFilePath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite);
         // 自己実行形式ファイル（Self-executable file）
         if (fExecutable == true)
         {
@@ -636,7 +635,7 @@ namespace AttacheCase
         //-----------------------------------
 
         outfs.Close();  // 既存のストリームを閉じる
-        outfs = new FileStream(AtcFilePath, FileMode.Open, FileAccess.Write);  // 再オープン
+        outfs = new FileStream(AtcFilePath, FileMode.Open, FileAccess.Write, FileShare.ReadWrite);  // 再オープン
 
         // 実行ファイルならば書き込み位置の調整
         if (fExecutable == true)
@@ -665,7 +664,6 @@ namespace AttacheCase
         //----------------------------------------------------------------------
         // 本体データの暗号化
         //----------------------------------------------------------------------
-        float percent = 0;
         // Encryption interface.
         using (var aesManaged = new AesManaged())
         {
@@ -687,7 +685,7 @@ namespace AttacheCase
                 {
                   buffer = new byte[BUFFER_SIZE];
 
-                  using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                  using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                   {
                     var len = 0;
                     while ((len = fs.Read(buffer, 0, BUFFER_SIZE)) > 0)
@@ -715,7 +713,7 @@ namespace AttacheCase
                       // Adjusted the progress bar update interval to 100ms
                       if (swProgress.ElapsedMilliseconds > 100)
                       {
-                        percent = ((float)_processedSize / TotalFileSize);
+                        var percent = ((float)_processedSize / TotalFileSize);
                         worker.ReportProgress((int)(percent * 10000), MessageList);
                         swProgress.Restart();
 
@@ -757,10 +755,10 @@ namespace AttacheCase
 #if DEBUG
         swDebugEncrypt.Stop();
         var ts = swEncrypt.Elapsed;
-        _EncryptionTimeString = AtcFilePath + Environment.NewLine +
+        var _EncryptionTimeString = AtcFilePath + Environment.NewLine +
           Convert.ToString(ts.Hours) + "h" + Convert.ToString(ts.Minutes) + "m" +
           Convert.ToString(ts.Seconds) + "s" + Convert.ToString(ts.Milliseconds) + "ms";
-        MessageBox.Show(_EncryptionTimeString, "Info", MessageBoxButton.OK, MessageBoxImage.Information);
+        //MessageBox.Show(_EncryptionTimeString, "Info", MessageBoxButton.OK, MessageBoxImage.Information);
 #endif
         //Encryption succeed.
         ReturnCode = ENCRYPT_SUCCEEDED;
@@ -906,6 +904,10 @@ namespace AttacheCase
 
           // ディレクトリの情報を追加
           var dirInfo = GetDirectoryInfo(parentPath, currentPath);
+
+          // 再解析ポイント (ジャンクションおよびシンボリックリンク) の場合はスキップする
+          if ((dirInfo.Attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint) continue;
+
           if (!string.IsNullOrEmpty(dirInfo.FullPath))
           {
             resultsConcurrentBag.Add(dirInfo);
@@ -1134,6 +1136,9 @@ namespace AttacheCase
       }
 #endif
         var di = new DirectoryInfo(dirPath);
+
+
+
         var relativePath = CreateRelativePath(parentPath, dirPath);
 
         // ディレクトリの場合のみ末尾にデリミタを追加
@@ -1267,7 +1272,7 @@ namespace AttacheCase
     /// </returns>
     private static byte[] GetMd5Hash(string filePath, Func<bool> cancelCheck)
     {
-      using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+      using var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
       using var md5 = new MD5CryptoServiceProvider();
       var buffer = new byte[8192];
       int bytesRead;

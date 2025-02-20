@@ -142,7 +142,7 @@
     <value>No free space on the following disk. The process is aborted.</value>
   </data>
   <data name="AttacheCase" xml:space="preserve">
-    <value>AttachéCase4</value>
+    <value>AttacheCase4</value>
   </data>
   <data name="labelGettingReadyForDecryption" xml:space="preserve">
     <value>Getting ready for decryption...</value>
@@ -456,7 +456,7 @@ Input them again.</value>
 Move to a place (eg Desktop) where you can read and write files and try again.</value>
   </data>
   <data name="AppName" xml:space="preserve">
-    <value>AttachéCase4</value>
+    <value>AttacheCase4</value>
   </data>
   <data name="DialogMessageDataNotFound" xml:space="preserve">
     <value>Encrypted data not found. The file is broken.
@@ -765,5 +765,21 @@ If these hash values do not match, the file may have been modified from its orig
   </data>
   <data name="labelCreatingFileList" xml:space="preserve">
     <value>Creating file list</value>
+  </data>
+  <data name="DialogMessageMemorizedPasswordChange" xml:space="preserve">
+    <value>A memorized password is currently applied. Proceed with changes?
+Decryption may become impossible.</value>
+  </data>
+  <data name="DialogMessagePasswordFromPasswordFileChange" xml:space="preserve">
+    <value>A password from the password file is currently applied. Proceed with changes?
+Decryption may become impossible.</value>
+  </data>
+  <data name="DialogMessageExtensionInvalid" xml:space="preserve">
+    <value>The extension was not entered correctly or is an invalid value.
+Extensions must be entered as comma-separated values containing a period.</value>
+  </data>
+  <data name="DialogMessageDirReparsePoint" xml:space="preserve">
+    <value>Junction or symbolic link cannot be encrypted.
+The process is aborted.</value>
   </data>
 </root>

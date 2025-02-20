@@ -11,50 +11,40 @@ namespace AttacheCase
     [System.Flags]
     private enum LogLevel
     {
-        TRACE,
-        INFO,
-        DEBUG,
-        WARNING,
-        ERROR,
-        FATAL
+      TRACE,
+      INFO,
+      DEBUG,
+      WARNING,
+      ERROR,
+      FATAL
     }
 
     private const string FILE_EXT = ".log";
     private const string datetimeFormat = "yyyy-MM-dd HH:mm:ss.fff";
     private System.Diagnostics.Stopwatch StopWatch = new System.Diagnostics.Stopwatch();
-    
-    private string _LogFilePath = "";
-     public string LogFilePath
-    {
-      get { return this._LogFilePath; }
-    }
-    private System.Text.Encoding _TextEncoding;
-    public System.Text.Encoding TextEncoding
-    {
-      get { return this._TextEncoding; }
-    }
+
+    private readonly string _LogFilePath;
+
+    private readonly System.Text.Encoding _TextEncoding;
+    public System.Text.Encoding TextEncoding => this._TextEncoding;
 
     // Constructor
     public Logger(string FilePath = "", Encoding enc = null, bool fClear = true)
     {
-      if ( enc == null){
-        _TextEncoding = System.Text.Encoding.UTF8;
-      }
-      else{
-        _TextEncoding = enc;
-      }
+      _TextEncoding = enc ?? System.Text.Encoding.UTF8;
+
       // Log file path
-      if (File.Exists(FilePath) == true){
+      if (File.Exists(FilePath) == true)
+      {
         _LogFilePath = FilePath;
       }
-      else{
+      else
+      {
         try
         {
           // Create the file, or overwrite if the file exists.
-          using (FileStream fs = File.Create(FilePath))
-          {
-            _LogFilePath = FilePath;
-          }
+          using var fs = File.Create(FilePath);
+          _LogFilePath = FilePath;
         }
         catch
         {
@@ -62,11 +52,10 @@ namespace AttacheCase
         }
       }
 
-      if ( fClear == true) {
-        using (FileStream fs = File.Create(_LogFilePath))
-        {
-          fs.SetLength(0);
-        }
+      if (fClear == true)
+      {
+        using FileStream fs = File.Create(_LogFilePath);
+        fs.SetLength(0);
       }
 
     }
@@ -155,12 +144,10 @@ namespace AttacheCase
     {
       try
       {
-        using (System.IO.StreamWriter sw = new System.IO.StreamWriter(_LogFilePath, fAppend, _TextEncoding))
+        using System.IO.StreamWriter sw = new System.IO.StreamWriter(_LogFilePath, fAppend, _TextEncoding);
+        if (!string.IsNullOrEmpty(text))
         {
-          if (!string.IsNullOrEmpty(text))
-          {
-            sw.WriteLine(text);
-          }
+          sw.WriteLine(text);
         }
       }
       catch
@@ -169,17 +156,19 @@ namespace AttacheCase
       }
     }
 
-    public void StopWatchStart(){
+    public void StopWatchStart()
+    {
       StopWatch.Reset();
       Info("StopWatch Start...");
       StopWatch.Start();
     }
 
-    public void StopWatchStop(){
+    public void StopWatchStop()
+    {
       StopWatch.Stop();
       Info("StopWatch Stop.");
       // Measurement time
-      TimeSpan ts = StopWatch.Elapsed;
+      var ts = StopWatch.Elapsed;
       Info("Time: " + ts.ToString());
     }
 

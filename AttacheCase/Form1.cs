@@ -1,5 +1,5 @@
 ﻿//---------------------------------------------------------------------- 
-// "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
+// "アタッシェケース4 ( AttacheCase4 )" -- File encryption software.
 // Copyright (C) 2016-2025  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -155,9 +155,6 @@ namespace AttacheCase
 
     private int TempOverWriteOption = -1;
 
-    // 初回起動（ロード中か）
-    private bool fFormLoading = true;
-
     // The position of mouse down in main form.
     // マウスボタンがダウンされた位置
     private Point MouseDownPoint;
@@ -169,6 +166,10 @@ namespace AttacheCase
     // AppSettings.Instance.FileList
 
     private int LimitOfInputPassword = -1;
+
+    // パスワードファイル
+    private string _previousPassword = "";
+    private bool _IsInitializedTextBox = false;
 
     public static BackgroundWorker bkg;
     public static BackgroundWorker bkgDelete;
@@ -201,6 +202,10 @@ namespace AttacheCase
     /// </summary>
     public Form1()
     {
+      // タスクバーでのプログレスバー表示
+      // Display of progress bar on taskbar
+      _taskbarProgress = new TaskbarProgress(this.Handle);
+
       InitializeComponent();
 
       tabControl1.Visible = false;
@@ -228,10 +233,12 @@ namespace AttacheCase
         this.BackColor = SystemColors.Control;
       }
 
-      // タスクバーでのプログレスバー表示
-      // Display of progress bar on taskbar
-      _taskbarProgress = new TaskbarProgress(this.Handle);
+    }
 
+    public sealed override Color BackColor
+    {
+      get => base.BackColor;
+      set => base.BackColor = value;
     }
 
     //======================================================================
@@ -294,7 +301,7 @@ namespace AttacheCase
       }
       else
       {
-        // Ajust invalid window form position
+        // Adjust invalid window form position
         this.Left = AppSettings.Instance.FormLeft;
       }
 
@@ -304,7 +311,7 @@ namespace AttacheCase
       }
       else
       {
-        // Ajust invalid window form position
+        // Adjust invalid window form position
         this.Top = AppSettings.Instance.FormTop;
       }
 
@@ -319,9 +326,6 @@ namespace AttacheCase
     /// <param name="e"></param>
     private void Form1_Shown(object sender, EventArgs e)
     {
-      // Formのローディング終了
-      fFormLoading = false;
-
       //this.WindowState = FormWindowState.Normal;
     }
 
@@ -349,8 +353,8 @@ namespace AttacheCase
       AppSettings.Instance.ApplicationPath = Application.ExecutablePath;
 
       // Application version
-      System.Reflection.Assembly asm = System.Reflection.Assembly.GetExecutingAssembly();
-      System.Version ver = asm.GetName().Version;
+      var asm = System.Reflection.Assembly.GetExecutingAssembly();
+      var ver = asm.GetName().Version;
       AppSettings.Instance.AppVersion = int.Parse(ver.ToString().Replace(".", ""));
 
       // Save main form position and size
@@ -366,7 +370,7 @@ namespace AttacheCase
       }
       else
       {
-        string[] cmds = Environment.GetCommandLineArgs();
+        var cmds = Environment.GetCommandLineArgs();
         if (cmds.Count() <= 1)
         {
           // Save settings to registry
@@ -388,8 +392,8 @@ namespace AttacheCase
 
     private void Form1_Activated(object sender, EventArgs e)
     {
-      string FormThemeColor = this.BackColor == SystemColors.Control ? "light" : "dark";
-      string CurrentThemeColor = AppSettings.Instance.CurrentThemeColorName;
+      var FormThemeColor = this.BackColor == SystemColors.Control ? "light" : "dark";
+      var CurrentThemeColor = AppSettings.Instance.CurrentThemeColorName;
       if (FormThemeColor != CurrentThemeColor)
       {
         if (CurrentThemeColor == "dark")
@@ -402,7 +406,7 @@ namespace AttacheCase
         }
         // Make the title bar (caption bar) lose focus once in order to update it.
         // タイトルバー（キャプションバー）の更新を行うため一旦フォーカスを失わせる。
-        Form2 frm2 = new Form2();
+        var frm2 = new Form2();
         frm2.Show();
         frm2.Dispose();
       }
@@ -481,9 +485,24 @@ namespace AttacheCase
       {
         AppSettings.Instance.FileList = new List<string>();
       }
-      string[] ArrayFiles = (string[])e.Data.GetData(DataFormats.FileDrop, false);
-      foreach (string FilePath in ArrayFiles)
+
+      var ArrayFiles = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+      foreach (var FilePath in ArrayFiles)
       {
+        if (Directory.Exists(FilePath))
+        {
+          var di = new DirectoryInfo(FilePath);
+          if ((di.Attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
+          {
+            // ジャンクション、またはシンボリックリンクは暗号化できません。
+            // 処理を中止します。
+            // Junction or symbolic link cannot be encrypted.
+            // The process is aborted.
+            MessageBox.Show(Resources.DialogMessageDirReparsePoint, Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+          }
+        }
+
         AppSettings.Instance.FileList.Add(FilePath);
       }
 
@@ -1145,7 +1164,7 @@ namespace AttacheCase
         _taskbarProgress.UpdateProgress(0);
         labelCryptionType.Text = "";
         notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
-        AppSettings.Instance.FileList = null;
+        AppSettings.Instance.FileList?.Clear();
 
         // Atc file is deleted
         if (File.Exists(encryption4.AtcFilePath) == true)
@@ -1175,7 +1194,7 @@ namespace AttacheCase
         private const int DECRYPT_SUCCEEDED   = 2; // Decrypt is succeeded.
         private const int DELETE_SUCCEEDED    = 3; // Delete is succeeded.
         private const int HEADER_DATA_READING = 4; // Header data is reading.
-        private const int ENCRYPTING          = 5; // Ecrypting.
+        private const int ENCRYPTING          = 5; // Encrypting.
         private const int DECRYPTING          = 6; // Decrypting.
         private const int DELETING            = 7; // Deleting.
 
@@ -1263,6 +1282,8 @@ namespace AttacheCase
 
             }
 
+            AppSettings.Instance.FileList?.Clear();
+
             if (AppSettings.Instance.fEndToExit == true)
             {
               Application.Exit();
@@ -1282,7 +1303,6 @@ namespace AttacheCase
             // 
             MessageBox.Show(this, Resources.DialogMessageOsDeniesAccess,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
             break;
 
           //-----------------------------------
@@ -1298,7 +1318,6 @@ namespace AttacheCase
             MessageBox.Show(this,
               Resources.DialogMessageNoDiskSpace + Environment.NewLine + encryption4.DriveName,
               Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
             break;
 
           //-----------------------------------
@@ -1315,7 +1334,6 @@ namespace AttacheCase
             MessageBox.Show(this,
               Resources.DialogMessageDirectoryNotFound + Environment.NewLine + encryption4.ErrorMessage,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
             break;
 
           //-----------------------------------
@@ -1333,7 +1351,6 @@ namespace AttacheCase
             MessageBox.Show(this,
               Resources.DialogMessageDriveNotFound + Environment.NewLine + encryption4.ErrorMessage,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
             break;
 
           //-----------------------------------
@@ -1351,7 +1368,6 @@ namespace AttacheCase
             MessageBox.Show(this,
               Resources.DialogMessageFileNotLoaded + Environment.NewLine + encryption4.ErrorFilePath,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
             break;
 
           //-----------------------------------
@@ -1369,7 +1385,6 @@ namespace AttacheCase
             MessageBox.Show(this,
               Resources.DialogMessageFileNotFound + Environment.NewLine + encryption4.ErrorFilePath,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
             break;
 
           //-----------------------------------
@@ -1384,7 +1399,6 @@ namespace AttacheCase
             //
             MessageBox.Show(this, Resources.DialogMessagePathTooLong,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
             break;
 
           //-----------------------------------
@@ -1399,7 +1413,6 @@ namespace AttacheCase
             //
             MessageBox.Show(this, Resources.DialogMessageCryptographicException,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
             break;
 
           //-----------------------------------
@@ -1411,7 +1424,6 @@ namespace AttacheCase
             // [A message describing the exception that is thrown when an I/O error occurs.]
             MessageBox.Show(this, encryption4.ErrorMessage,
               Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
             break;
 
           //-----------------------------------
@@ -1423,7 +1435,6 @@ namespace AttacheCase
             // An unexpected error has occurred. The process is aborted.
             MessageBox.Show(this, Resources.DialogMessageUnexpectedError,
             Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
             break;
 
         }// end switch();
@@ -1435,7 +1446,7 @@ namespace AttacheCase
         _taskbarProgress.UpdateProgress(0);
         labelCryptionType.Text = Resources.labelCaptionError;
         notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
-        AppSettings.Instance.FileList = null;
+        AppSettings.Instance.FileList?.Clear();
         this.Update();
       }
 
@@ -1458,7 +1469,7 @@ namespace AttacheCase
           _taskbarProgress.Flash();
           labelCryptionType.Text = "";
           notifyIcon1.Text = @"- % " + Resources.labelCaptionAllSkipped;
-          AppSettings.Instance.FileList = null;
+          AppSettings.Instance.FileList?.Clear();
           // スキップされました。
           // skipped.
           labelProgressMessageText.Text = Resources.labelCaptionAllSkipped;
@@ -1474,7 +1485,7 @@ namespace AttacheCase
           _taskbarProgress.UpdateProgress(0);
           labelCryptionType.Text = "";
           notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
-          AppSettings.Instance.FileList = null;
+          AppSettings.Instance.FileList?.Clear();
           // 復号処理はキャンセルされました。
           // Decryption was canceled.
           labelProgressMessageText.Text = Resources.labelDecyptionCanceled;
@@ -1493,6 +1504,7 @@ namespace AttacheCase
         _taskbarProgress.UpdateProgress(0);
         labelProgressMessageText.Text = Resources.labelCaptionError;     // "Error occurred"
         notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
+        AppSettings.Instance.FileList?.Clear();
         this.Update();
         return;
       }
@@ -1543,7 +1555,7 @@ namespace AttacheCase
           ReturnCode = decryption4.ReturnCode;
         }
 
-        string ErrorFilePath = "";
+        var ErrorFilePath = "";
         switch (ReturnCode)
         {
           //-----------------------------------
@@ -1594,6 +1606,7 @@ namespace AttacheCase
             }
 
             DecryptionEndProcess();
+            AppSettings.Instance.FileList?.Clear();
 
             this.Update();
             return;
@@ -1608,7 +1621,7 @@ namespace AttacheCase
             _taskbarProgress.UpdateProgress(0);
             labelCryptionType.Text = "";
             notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
-            AppSettings.Instance.FileList = null;
+            AppSettings.Instance.FileList?.Clear();
 
             // 復号処理はキャンセルされました。
             // Decryption was canceled.
@@ -1827,7 +1840,7 @@ namespace AttacheCase
               {
                 // ファイル破壊を行うか
                 // Whether breaking the files
-                foreach (string FilePath in AppSettings.Instance.FileList)
+                foreach (var FilePath in AppSettings.Instance.FileList)
                 {
                   BreakTheFile(FilePath);
                 }
@@ -1845,7 +1858,7 @@ namespace AttacheCase
             panelProgressState.Visible = false;
             textBoxDecryptPassword.Focus();
             textBoxDecryptPassword.SelectAll();
-            return;
+            break;
 
           //-----------------------------------
           case CRYPTOGRAPHIC_EXCEPTION:
@@ -1898,7 +1911,7 @@ namespace AttacheCase
         _taskbarProgress.UpdateProgress(0);
         labelCryptionType.Text = Resources.labelCaptionError;
         notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
-        AppSettings.Instance.FileList = null;
+        AppSettings.Instance.FileList?.Clear();
         this.Update();
 
         decryption2 = null;
@@ -1924,7 +1937,7 @@ namespace AttacheCase
         _taskbarProgress.UpdateProgress(0);
         labelCryptionType.Text = "";
         notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
-        AppSettings.Instance.FileList = null;
+        AppSettings.Instance.FileList.Clear();
 
         // ファイル、またはフォルダーの完全削除がキャンセルされました。
         // Complete deleting files or folder has been canceled.
@@ -1998,7 +2011,7 @@ namespace AttacheCase
         _taskbarProgress.UpdateProgress(0);
         labelCryptionType.Text = "";
         notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
-        AppSettings.Instance.FileList = null;
+        AppSettings.Instance.FileList.Clear();
 
       }
 
@@ -2043,7 +2056,9 @@ namespace AttacheCase
           // Check memorized password
           if (AppSettings.Instance.fMyEncryptPasswordKeep == true)
           {
+            _IsInitializedTextBox = true;
             textBoxPassword.Text = textBoxRePassword.Text = AppSettings.Instance.MyEncryptPasswordString;
+            _IsInitializedTextBox = false;
           }
 
           // Encrypt by memorized password without confirming
@@ -2074,6 +2089,17 @@ namespace AttacheCase
         folderBrowserDialog1.SelectedPath = AppSettings.Instance.InitDirPath;
         if (folderBrowserDialog1.ShowDialog(this) == DialogResult.OK)
         {
+          var dirPath = folderBrowserDialog1.SelectedPath;
+          var di = new DirectoryInfo(dirPath);
+          if ((di.Attributes & FileAttributes.ReparsePoint) == FileAttributes.ReparsePoint)
+          {
+            // ジャンクション、またはシンボリックリンクは暗号化できません。
+            // 処理を中止します。
+            // Junction or symbolic link cannot be encrypted.
+            // The process is aborted.
+            MessageBox.Show(Resources.DialogMessageDirReparsePoint, Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            return;
+          }
           AppSettings.Instance.FileList.Add(folderBrowserDialog1.SelectedPath);
         }
         else
@@ -2084,7 +2110,9 @@ namespace AttacheCase
         // Check memorized password
         if (AppSettings.Instance.fMyEncryptPasswordKeep == true)
         {
+          _IsInitializedTextBox = true;
           textBoxPassword.Text = textBoxRePassword.Text = AppSettings.Instance.MyEncryptPasswordString;
+          _IsInitializedTextBox = false;
         }
 
         // Encrypt by memorized password without confirming
@@ -2109,7 +2137,7 @@ namespace AttacheCase
     {
       if (panelStartPage.Visible == true)
       {
-        AppSettings.Instance.FileList = null;
+        AppSettings.Instance.FileList.Clear();
         openFileDialog1.Title = Resources.DialogTitleEncryptSelectFiles;
         openFileDialog1.Filter = Resources.SaveDialogFilterAtcFiles;
         openFileDialog1.InitialDirectory = AppSettings.Instance.InitDirPath;
@@ -2128,7 +2156,10 @@ namespace AttacheCase
           // Check memorized password
           if (AppSettings.Instance.fMyDecryptPasswordKeep == true)
           {
-            textBoxDecryptPassword.Text = AppSettings.Instance.MyDecryptPasswordString;
+            _IsInitializedTextBox = true;
+            _previousPassword = AppSettings.Instance.MyDecryptPasswordString;
+            textBoxDecryptPassword.Text = _previousPassword;
+            _IsInitializedTextBox = false;
           }
 
           // Encrypt by memorized password without confirming
@@ -2262,7 +2293,6 @@ namespace AttacheCase
     {
       var ProcessType = 0;
       TempOverWriteOption = -1;
-
 
       labelPassword.Text = Resources.labelPassword;
       labelInputPasswordAgain.Text = Resources.labelInputPasswordAgainToConfirm;
@@ -2767,9 +2797,11 @@ namespace AttacheCase
       {
         if (panelEncrypt.Visible == true)
         {
+          _IsInitializedTextBox = true;
           // Password
           textBoxPassword.Text = AppSettings.Instance.EncryptPasswordStringFromCommandLine;
           textBoxRePassword.Text = AppSettings.Instance.EncryptPasswordStringFromCommandLine;
+          _IsInitializedTextBox = false;
 
           // コマンドラインオプションからのパスワード：
           // The password of command line option:
@@ -2790,8 +2822,11 @@ namespace AttacheCase
         }
         else if (panelDecrypt.Visible == true)
         {
+          _IsInitializedTextBox = true;
           // Password
           textBoxDecryptPassword.Text = AppSettings.Instance.DecryptPasswordStringFromCommandLine;
+          _previousPassword = textBoxDecryptPassword.Text;
+          _IsInitializedTextBox = false;
 
           // コマンドラインオプションからのパスワード：
           // The password of command line option:
@@ -2816,9 +2851,12 @@ namespace AttacheCase
 
         if (panelEncrypt.Visible == true)
         {
+          _IsInitializedTextBox = true;
           // Password
           textBoxPassword.Text = AppSettings.Instance.MyEncryptPasswordString;
           textBoxRePassword.Text = AppSettings.Instance.MyEncryptPasswordString;
+          _previousPassword = textBoxRePassword.Text;
+          _IsInitializedTextBox = false;
 
           // 記憶パスワード：
           // The memorized password:
@@ -2839,8 +2877,11 @@ namespace AttacheCase
         }
         else if (panelDecrypt.Visible == true)
         {
+          _IsInitializedTextBox = true;
           // Password
           textBoxDecryptPassword.Text = AppSettings.Instance.MyDecryptPasswordString;
+          _previousPassword = textBoxDecryptPassword.Text;
+          _IsInitializedTextBox = false;
 
           // 記憶パスワード：
           // The memorized password:
@@ -2869,10 +2910,13 @@ namespace AttacheCase
           if (File.Exists(AppSettings.Instance.PassFilePath) == true)
           {
             AppSettings.Instance.MyDecryptPasswordBinary = GetPasswordFileSha256(AppSettings.Instance.PassFilePathDecrypt);
+            _IsInitializedTextBox = true;
             textBoxDecryptPassword.Text = AppSettings.BytesToHexString(AppSettings.Instance.MyDecryptPasswordBinary);
+            _previousPassword = textBoxDecryptPassword.Text;
+            _IsInitializedTextBox = false;
 
-            textBoxDecryptPassword.Enabled = false;
-            textBoxDecryptPassword.BackColor = SystemColors.ButtonFace;
+            //textBoxDecryptPassword.Enabled = false;
+            //textBoxDecryptPassword.BackColor = SystemColors.ButtonFace;
 
             // パスワードファイル：
             // The Password file:
@@ -2906,8 +2950,7 @@ namespace AttacheCase
               // Alert
               // Password is not found that specified in setting panel.
               // [FilePath]
-              DialogResult ret = MessageBox.Show(
-                this,
+              var ret = MessageBox.Show(this,
                 Resources.DialogMessagePasswordFileNotFound + Environment.NewLine + AppSettings.Instance.PassFilePathDecrypt,
               Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
             }
@@ -2922,16 +2965,18 @@ namespace AttacheCase
             AppSettings.Instance.MyDecryptPasswordBinary = GetPasswordFileSha256(AppSettings.Instance.PassFilePath);
             textBoxPassword.Text = AppSettings.BytesToHexString(AppSettings.Instance.MyDecryptPasswordBinary);
             textBoxRePassword.Text = textBoxPassword.Text;
+            _previousPassword = textBoxRePassword.Text;
 
             // パスワードファイル：
             // The Password file:
             labelPassword.Text = Resources.labelPasswordFile;
-            labelInputPasswordAgain.Text = Resources.labelPasswordFile;
 
-            textBoxPassword.Enabled = false;
-            textBoxPassword.BackColor = SystemColors.ButtonFace;
-            textBoxRePassword.Enabled = false;
-            textBoxRePassword.BackColor = SystemColors.ButtonFace;
+            labelInputPasswordAgain.Text = labelPassword.Text;
+
+            //textBoxPassword.Enabled = false;
+            //textBoxPassword.BackColor = SystemColors.ButtonFace;
+            //textBoxRePassword.Enabled = false;
+            //textBoxRePassword.BackColor = SystemColors.ButtonFace;
 
             panelStartPage.Visible = false;
             panelEncrypt.Visible = false;
@@ -2960,7 +3005,7 @@ namespace AttacheCase
               // Alert
               // Password is not found that specified in setting panel.
               // [FilePath]
-              DialogResult ret = MessageBox.Show(
+              var ret = MessageBox.Show(
                 this,
                 Resources.DialogMessagePasswordFileNotFound + Environment.NewLine + AppSettings.Instance.PassFilePath,
               Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -2980,71 +3025,70 @@ namespace AttacheCase
     /// <param name="e"></param>
     private void panelStartPage_VisibleChanged(object sender, EventArgs e)
     {
-      if (panelStartPage.Visible == true && fFormLoading == false)
+      if (!panelStartPage.Visible) return;
+      AppSettings.Instance.FileList = null; // Clear file list
+      AppSettings.Instance.EncryptionFileType = FILE_TYPE_NONE;
+
+      //toolStripButtonEncryptSelectFiles.Enabled = true;
+      //toolStripButtonEncryptSelectFolder.Enabled = true;
+      //toolStripButtonDecryptSelectAtcFiles.Enabled = true;
+      //toolStripButtonOption.Enabled = true;
+
+      this.AcceptButton = null;
+      this.CancelButton = buttonExit;
+
+      // File type for encryption. 
+      if (AppSettings.Instance.EncryptionSameFileTypeAlways > 0)
       {
-        AppSettings.Instance.FileList = null; // Clear file list
-        AppSettings.Instance.EncryptionFileType = FILE_TYPE_NONE;
+      }
+      else if (AppSettings.Instance.EncryptionSameFileTypeBefore > 0)
+      {
+      }
+      else
+      {
+      }
 
-        //toolStripButtonEncryptSelectFiles.Enabled = true;
-        //toolStripButtonEncryptSelectFolder.Enabled = true;
-        //toolStripButtonDecryptSelectAtcFiles.Enabled = true;
-        //toolStripButtonOption.Enabled = true;
+      pictureBoxAtc.Image = pictureBoxAtcOff.Image;
+      pictureBoxExe.Image = pictureBoxExeOff.Image;
+      pictureBoxRsa.Image = pictureBoxRsaOff.Image;
+      pictureBoxDec.Image = pictureBoxDecOff.Image;
 
-        this.AcceptButton = null;
-        this.CancelButton = buttonExit;
+      // Encryption will be the same file type always.
+      if (AppSettings.Instance.EncryptionSameFileTypeAlways == 0)
+      {
+        // No selection
+      }
+      else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 1)
+      {
+        pictureBoxAtc.Image = pictureBoxAtcOn.Image;
+      }
+      else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 2)
+      {
+        pictureBoxExe.Image = pictureBoxExeOn.Image;
+      }
+      else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 3)
+      {
+        pictureBoxRsa.Image = pictureBoxRsaOn.Image;
+      }
+      else if (AppSettings.Instance.EncryptionSameFileTypeBefore == 0)
+      {
+        // No selection
+      }
+      else if (AppSettings.Instance.EncryptionSameFileTypeBefore == 1)
+      {
+        pictureBoxAtc.Image = pictureBoxAtcOn.Image;
+      }
+      else if (AppSettings.Instance.EncryptionSameFileTypeBefore == 2)
+      {
+        pictureBoxExe.Image = pictureBoxExeOn.Image;
+      }
+      else if (AppSettings.Instance.EncryptionSameFileTypeBefore == 3)
+      {
+        pictureBoxRsa.Image = pictureBoxRsaOn.Image;
+      }
 
-        // File type for encryption. 
-        if (AppSettings.Instance.EncryptionSameFileTypeAlways > 0)
-        {
-        }
-        else if (AppSettings.Instance.EncryptionSameFileTypeBefore > 0)
-        {
-        }
-        else
-        {
-        }
-
-        pictureBoxAtc.Image = pictureBoxAtcOff.Image;
-        pictureBoxExe.Image = pictureBoxExeOff.Image;
-        pictureBoxRsa.Image = pictureBoxRsaOff.Image;
-        pictureBoxDec.Image = pictureBoxDecOff.Image;
-
-        // Encryption will be the same file type always.
-        if (AppSettings.Instance.EncryptionSameFileTypeAlways == 0)
-        {
-          // No selection
-        }
-        else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 1)
-        {
-          pictureBoxAtc.Image = pictureBoxAtcOn.Image;
-        }
-        else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 2)
-        {
-          pictureBoxExe.Image = pictureBoxExeOn.Image;
-        }
-        else if (AppSettings.Instance.EncryptionSameFileTypeAlways == 3)
-        {
-          pictureBoxRsa.Image = pictureBoxRsaOn.Image;
-        }
-        else if (AppSettings.Instance.EncryptionSameFileTypeBefore == 0)
-        {
-          // No selection
-        }
-        else if (AppSettings.Instance.EncryptionSameFileTypeBefore == 1)
-        {
-          pictureBoxAtc.Image = pictureBoxAtcOn.Image;
-        }
-        else if (AppSettings.Instance.EncryptionSameFileTypeBefore == 2)
-        {
-          pictureBoxExe.Image = pictureBoxExeOn.Image;
-        }
-        else if (AppSettings.Instance.EncryptionSameFileTypeBefore == 3)
-        {
-          pictureBoxRsa.Image = pictureBoxRsaOn.Image;
-        }
-
-        // タスクバーのリセット
-        /*
+      // タスクバーのリセット
+      /*
         if (Microsoft.WindowsAPICodePack.Taskbar.TaskbarManager.IsPlatformSupported)
         {
           // Task bar progress
@@ -3054,37 +3098,35 @@ namespace AttacheCase
         }
         */
 
-        // label
+      // label
 
-        // パスワード：
-        // Password:
-        labelPassword.Text = Resources.labelPassword;
+      // パスワード：
+      // Password:
+      labelPassword.Text = Resources.labelPassword;
 
-        // 確認のためもう一度パスワードを入力してください：
-        // Input password again to confirm:
-        labelInputPasswordAgain.Text = Resources.labelInputPasswordAgainToConfirm;
+      // 確認のためもう一度パスワードを入力してください：
+      // Input password again to confirm:
+      labelInputPasswordAgain.Text = Resources.labelInputPasswordAgainToConfirm;
 
-        // TextBoxes
-        textBoxPassword.Text = "";
-        textBoxPassword.Enabled = true;
-        textBoxPassword.BackColor = Color.White;
+      // TextBoxes
+      textBoxPassword.Text = "";
+      textBoxPassword.Enabled = true;
+      textBoxPassword.BackColor = Color.White;
 
-        textBoxRePassword.Text = "";
-        textBoxRePassword.Enabled = true;
-        textBoxRePassword.BackColor = Color.White;
+      textBoxRePassword.Text = "";
+      textBoxRePassword.Enabled = true;
+      textBoxRePassword.BackColor = Color.White;
 
-        textBoxDecryptPassword.Text = "";
-        textBoxDecryptPassword.Enabled = true;
-        textBoxDecryptPassword.BackColor = Color.White;
+      textBoxDecryptPassword.Text = "";
+      textBoxDecryptPassword.Enabled = true;
+      textBoxDecryptPassword.BackColor = Color.White;
 
-        // Password files
-        AppSettings.Instance.TempEncryptionPassFilePath = "";
-        AppSettings.Instance.TempDecryptionPassFilePath = "";
+      // Password files
+      AppSettings.Instance.TempEncryptionPassFilePath = "";
+      AppSettings.Instance.TempDecryptionPassFilePath = "";
 
-        // Clear password input limit count
-        LimitOfInputPassword = -1;
-
-      }
+      // Clear password input limit count
+      LimitOfInputPassword = -1;
     }
 
     /// <summary>
@@ -3094,154 +3136,153 @@ namespace AttacheCase
     /// <param name="e"></param>
     private void panelEncrypt_VisibleChanged(object sender, EventArgs e)
     {
-      if (panelEncrypt.Visible == true && fFormLoading == false)
+      if (!panelEncrypt.Visible) return;
+      //toolStripButtonEncryptSelectFiles.Enabled = false;
+      //toolStripButtonEncryptSelectFolder.Enabled = false;
+      //toolStripButtonDecryptSelectAtcFiles.Enabled = false;
+      //toolStripButtonOption.Enabled = false;
+
+      // Not mask password character
+      // 「*」で隠さずパスワードを確認しながら入力する
+      if (AppSettings.Instance.fNotMaskPassword == true)
       {
-        //toolStripButtonEncryptSelectFiles.Enabled = false;
-        //toolStripButtonEncryptSelectFolder.Enabled = false;
-        //toolStripButtonDecryptSelectAtcFiles.Enabled = false;
-        //toolStripButtonOption.Enabled = false;
+        checkBoxNotMaskEncryptedPassword.Checked = true;
+        textBoxPassword.PasswordChar = '\0';
+      }
+      else
+      {
+        checkBoxNotMaskEncryptedPassword.Checked = false;
+        // 標準的なマスク文字列を設定
+        textBoxPassword.UseSystemPasswordChar = true;
+      }
 
-        // Not mask password character
-        // 「*」で隠さずパスワードを確認しながら入力する
-        if (AppSettings.Instance.fNotMaskPassword == true)
-        {
-          checkBoxNotMaskEncryptedPassword.Checked = true;
-          textBoxPassword.PasswordChar = '\0';
-        }
-        else
-        {
-          checkBoxNotMaskEncryptedPassword.Checked = false;
-          // 標準的なマスク文字列を設定
-          textBoxPassword.UseSystemPasswordChar = true;
-        }
+      // Encryption will be the same file type always.
+      // 常に同じ暗号化ファイルの種類にする
+      if (AppSettings.Instance.EncryptionFileType == 0 && AppSettings.Instance.EncryptionSameFileTypeAlways > 0)
+      {
+        AppSettings.Instance.EncryptionFileType = AppSettings.Instance.EncryptionSameFileTypeAlways;
+      }
+      // Save same encryption type that was used to before.
+      // 前に使った暗号化ファイルの種類にする
+      else if (AppSettings.Instance.EncryptionFileType == 0 && AppSettings.Instance.EncryptionSameFileTypeBefore > 0)
+      {
+        AppSettings.Instance.EncryptionFileType = AppSettings.Instance.EncryptionFileType;
+      }
 
-        // Encryption will be the same file type always.
-        // 常に同じ暗号化ファイルの種類にする
-        if (AppSettings.Instance.EncryptionFileType == 0 && AppSettings.Instance.EncryptionSameFileTypeAlways > 0)
-        {
-          AppSettings.Instance.EncryptionFileType = AppSettings.Instance.EncryptionSameFileTypeAlways;
-        }
-        // Save same encryption type that was used to before.
-        // 前に使った暗号化ファイルの種類にする
-        else if (AppSettings.Instance.EncryptionFileType == 0 && AppSettings.Instance.EncryptionSameFileTypeBefore > 0)
-        {
-          AppSettings.Instance.EncryptionFileType = AppSettings.Instance.EncryptionFileType;
-        }
+      // Select file type
+      // labelPasswordValidation.Text = "";
+      if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC)
+      {
+        pictureBoxEncryption.Image = pictureBoxAtcOn.Image;
+        labelEncryption.Text = labelAtc.Text;
+      }
+      else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC_EXE)
+      {
+        pictureBoxEncryption.Image = pictureBoxExeOn.Image;
+        labelEncryption.Text = labelExe.Text;
+      }
+      //else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
+      //{
+      //  pictureBoxEncryption.Image = pictureBoxRsaOn.Image;
+      //  labelEncryption.Text = labelZip.Text;
+      //  //pictureBoxEncryption.Image = pictureBoxZipOn.Image;
+      //  //labelEncryption.Text = labelZip.Text;
+      //}
+      else
+      {
+        pictureBoxEncryption.Image = pictureBoxAtcOn.Image;
+        labelEncryption.Text = labelAtc.Text;
+      }
 
-        // Select file type
-        // labelPasswordValidation.Text = "";
-        if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC)
+      //In the case of ZIP files, it must be more than one character of the password.
+      if (pictureBoxEncryption.Image == pictureBoxRsaOn.Image)
+      {
+        if (textBoxPassword.Text == "")
         {
-          pictureBoxEncryption.Image = pictureBoxAtcOn.Image;
-          labelEncryption.Text = labelAtc.Text;
-        }
-        else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC_EXE)
-        {
-          pictureBoxEncryption.Image = pictureBoxExeOn.Image;
-          labelEncryption.Text = labelExe.Text;
-        }
-        //else if (AppSettings.Instance.EncryptionFileType == FILE_TYPE_PASSWORD_ZIP)
-        //{
-        //  pictureBoxEncryption.Image = pictureBoxRsaOn.Image;
-        //  labelEncryption.Text = labelZip.Text;
-        //  //pictureBoxEncryption.Image = pictureBoxZipOn.Image;
-        //  //labelEncryption.Text = labelZip.Text;
-        //}
-        else
-        {
-          pictureBoxEncryption.Image = pictureBoxAtcOn.Image;
-          labelEncryption.Text = labelAtc.Text;
-        }
-
-        //In the case of ZIP files, it must be more than one character of the password.
-        if (pictureBoxEncryption.Image == pictureBoxRsaOn.Image)
-        {
-          if (textBoxPassword.Text == "")
-          {
-            buttonEncryptionPasswordOk.Enabled = false;
-          }
-          else
-          {
-            buttonEncryptionPasswordOk.Enabled = true;
-          }
+          buttonEncryptionPasswordOk.Enabled = false;
         }
         else
         {
           buttonEncryptionPasswordOk.Enabled = true;
         }
-
-        // Delete original files or directories after encryption
-        if (AppSettings.Instance.fDelOrgFile == true)
-        {
-          checkBoxDeleteOriginalFileAfterEncryption.Checked = true;
-          checkBoxReDeleteOriginalFileAfterEncryption.Checked = true;
-        }
-        else
-        {
-          checkBoxDeleteOriginalFileAfterEncryption.Checked = false;
-          checkBoxReDeleteOriginalFileAfterEncryption.Checked = false;
-        }
-
-        //Show the checkbox in main form window
-        if (AppSettings.Instance.fEncryptShowDelChkBox == true)
-        {
-          checkBoxDeleteOriginalFileAfterEncryption.Visible = true;
-          checkBoxReDeleteOriginalFileAfterEncryption.Visible = true;
-        }
-        else
-        {
-          checkBoxDeleteOriginalFileAfterEncryption.Visible = false;
-          checkBoxReDeleteOriginalFileAfterEncryption.Visible = false;
-        }
-
-        // Allow Drag and Drop 'password file' instead of password
-        // パスワードの代わりに「パスワードファイル」のドラッグ＆ドロップを許可する
-        if (AppSettings.Instance.fAllowPassFile == true)
-        {
-          textBoxPassword.AllowDrop = true;
-        }
-        else
-        {
-          textBoxPassword.AllowDrop = false;
-        }
-
-        // Enable the password strength meter
-        // パスワード強度メーターを表示する
-        if (AppSettings.Instance.fPasswordStrengthMeter == true)
-        {
-          labelPasswordStrength.Visible = true;
-          pictureBoxPassStrengthMeter.Visible = true;
-          textBoxPassword.Width = pictureBoxPassStrengthMeter.Left - textBoxPassword.Left - 8;
-          textBoxPassword_TextChanged(sender, e);
-        }
-        else
-        {
-          labelPasswordStrength.Visible = false;
-          pictureBoxPassStrengthMeter.Visible = false;
-          textBoxPassword.Width =
-            pictureBoxPassStrengthMeter.Left - textBoxPassword.Left + pictureBoxPassStrengthMeter.Width;
-        }
-
-        // Turn on IMEs in all text box for password entry
-        // パスワード入力用のすべてのテキストボックスでIMEをオンにする
-        if (AppSettings.Instance.fTurnOnIMEsTextBoxForPasswordEntry == true)
-        {
-          textBoxPassword.ImeMode = ImeMode.On;
-          textBoxRePassword.ImeMode = ImeMode.On;
-        }
-        else
-        {
-          textBoxPassword.ImeMode = ImeMode.NoControl;
-          textBoxRePassword.ImeMode = ImeMode.NoControl;
-        }
-
-        textBoxPassword_TextChanged(sender, e);
-
-        this.AcceptButton = buttonEncryptionPasswordOk;
-        this.CancelButton = buttonEncryptCancel;
-        textBoxPassword.Focus();
-
       }
+      else
+      {
+        buttonEncryptionPasswordOk.Enabled = true;
+      }
+
+      // Delete original files or directories after encryption
+      if (AppSettings.Instance.fDelOrgFile == true)
+      {
+        checkBoxDeleteOriginalFileAfterEncryption.Checked = true;
+        checkBoxReDeleteOriginalFileAfterEncryption.Checked = true;
+      }
+      else
+      {
+        checkBoxDeleteOriginalFileAfterEncryption.Checked = false;
+        checkBoxReDeleteOriginalFileAfterEncryption.Checked = false;
+      }
+
+      //Show the checkbox in main form window
+      if (AppSettings.Instance.fEncryptShowDelChkBox == true)
+      {
+        checkBoxDeleteOriginalFileAfterEncryption.Visible = true;
+        checkBoxReDeleteOriginalFileAfterEncryption.Visible = true;
+      }
+      else
+      {
+        checkBoxDeleteOriginalFileAfterEncryption.Visible = false;
+        checkBoxReDeleteOriginalFileAfterEncryption.Visible = false;
+      }
+
+      // Allow Drag and Drop 'password file' instead of password
+      // パスワードの代わりに「パスワードファイル」のドラッグ＆ドロップを許可する
+      if (AppSettings.Instance.fAllowPassFile)
+      {
+        textBoxPassword.AllowDrop = true;
+      }
+      else
+      {
+        textBoxPassword.AllowDrop = false;
+      }
+
+      // Enable the password strength meter
+      // パスワード強度メーターを表示する
+      if (AppSettings.Instance.fPasswordStrengthMeter == true)
+      {
+        labelPasswordStrength.Visible = true;
+        pictureBoxPassStrengthMeter.Visible = true;
+        textBoxPassword.Width = pictureBoxPassStrengthMeter.Left - textBoxPassword.Left - 8;
+        textBoxPassword_TextChanged(sender, e);
+      }
+      else
+      {
+        labelPasswordStrength.Visible = false;
+        pictureBoxPassStrengthMeter.Visible = false;
+        textBoxPassword.Width =
+          pictureBoxPassStrengthMeter.Left - textBoxPassword.Left + pictureBoxPassStrengthMeter.Width;
+      }
+
+      // Turn on IMEs in all text box for password entry
+      // パスワード入力用のすべてのテキストボックスでIMEをオンにする
+      if (AppSettings.Instance.fTurnOnIMEsTextBoxForPasswordEntry == true)
+      {
+        textBoxPassword.ImeMode = ImeMode.On;
+        textBoxRePassword.ImeMode = ImeMode.On;
+      }
+      else
+      {
+        textBoxPassword.ImeMode = ImeMode.NoControl;
+        textBoxRePassword.ImeMode = ImeMode.NoControl;
+      }
+
+      textBoxPassword_TextChanged(sender, e);
+
+      this.AcceptButton = buttonEncryptionPasswordOk;
+      this.CancelButton = buttonEncryptCancel;
+      textBoxPassword.Focus();
+
+      this.Update();
     }
 
     /// <summary>
@@ -3251,27 +3292,26 @@ namespace AttacheCase
     /// <param name="e"></param>
     private void panelEncryptConfirm_VisibleChanged(object sender, EventArgs e)
     {
-      if (panelEncryptConfirm.Visible == true && fFormLoading == false)
+      if (!panelEncryptConfirm.Visible) return;
+      if (_IsInitializedTextBox) return;
+
+      pictureBoxEncryptionConfirm.Image = pictureBoxEncryption.Image;
+      labelEncryptionConfirm.Text = labelEncryption.Text;
+
+      if (textBoxPassword.Text == textBoxRePassword.Text)
       {
-        pictureBoxEncryptionConfirm.Image = pictureBoxEncryption.Image;
-        labelEncryptionConfirm.Text = labelEncryption.Text;
-
-        if (textBoxPassword.Text == textBoxRePassword.Text)
-        {
-          pictureBoxCheckPasswordValidation.Image = pictureBoxValidIcon.Image;
-          textBoxRePassword.BackColor = Color.Honeydew;
-        }
-        else
-        {
-          pictureBoxCheckPasswordValidation.Image = null;
-          textBoxRePassword.BackColor = Color.PapayaWhip;
-        }
-
-        this.AcceptButton = buttonEncryptStart;
-        this.CancelButton = buttonEncryptionConfirmCancel;
-        textBoxRePassword.Focus();
-
+        pictureBoxCheckPasswordValidation.Image = pictureBoxValidIcon.Image;
+        textBoxRePassword.BackColor = Color.Honeydew;
       }
+      else
+      {
+        pictureBoxCheckPasswordValidation.Image = null;
+        textBoxRePassword.BackColor = Color.PapayaWhip;
+      }
+
+      this.AcceptButton = buttonEncryptStart;
+      this.CancelButton = buttonEncryptionConfirmCancel;
+      textBoxRePassword.Focus();
     }
 
     /// <summary>
@@ -3280,22 +3320,70 @@ namespace AttacheCase
     /// </summary>
     private void textBoxRePassword_TextChanged(object sender, EventArgs e)
     {
-      if (AppSettings.Instance.MyEncryptPasswordBinary != null)
+      if (panelEncryptConfirm.Visible == false) return;
+      if (_IsInitializedTextBox) return;
+
+
+      if (AppSettings.Instance.fMyEncryptPasswordKeep == true)
       {
-        textBoxPassword.Enabled = false;
-        textBoxRePassword.Enabled = false;
-        textBoxPassword.BackColor = SystemColors.ButtonFace;
-        textBoxRePassword.BackColor = SystemColors.ButtonFace;
+        // The memorized password:
+        // 記憶パスワード：
+        labelInputPasswordAgain.Text = Resources.labelPasswordMemorized;
+
+        if (_previousPassword != textBoxRePassword.Text)
+        {
+          // 記憶パスワードが入力されている
+          if (AppSettings.Instance.fMyEncryptPasswordKeep && string.IsNullOrEmpty(AppSettings.Instance.MyEncryptPasswordString) == false)
+          {
+            // A memorized password is currently applied. Proceed with changes?
+            // Decryption may become impossible.
+            // 記憶パスワードが適用されています。変更を加えますか？
+            // 復号できなくなる恐れがあります。
+            var ret = MessageBox.Show(Resources.DialogMessageMemorizedPasswordChange, Resources.DialogTitleAlert,
+              MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+
+            if (ret == DialogResult.No)
+            {
+              textBoxRePassword.Text = _previousPassword; // 入力をキャンセル（元の文字列に戻す）
+              _IsInitializedTextBox = false;
+              return;
+            }
+
+            _IsInitializedTextBox = true;  // もう警告はしない
+
+          }
+        }
+
+      }
+      else if (AppSettings.Instance.fCheckPassFile && File.Exists(AppSettings.Instance.PassFilePath))
+      {
+        var fileName = Path.GetFileName(AppSettings.Instance.PassFilePath);
         // すでにパスワードファイルが入力済みです：
         // Password file is entered already:
-        labelInputPasswordAgain.Text = Resources.labelPasswordFileIsEnteredAlready;
+        labelInputPasswordAgain.Text = $@"{Resources.labelPasswordFile} {fileName}";
+
+        if (_previousPassword != textBoxRePassword.Text)
+        {
+          // A password from the password file is currently applied. Proceed with changes?
+          // Decryption may become impossible.
+          // パスワードファイルによるパスワードが適用されています。変更を加えますか？
+          // 復号できなくなる恐れがあります。
+          var ret = MessageBox.Show(Resources.DialogMessagePasswordFromPasswordFileChange, Resources.DialogTitleAlert,
+            MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+          if (ret == DialogResult.No)
+          {
+            textBoxRePassword.Text = _previousPassword; // 入力をキャンセル （元の文字列に戻す）
+            _IsInitializedTextBox = false;
+            return;
+          }
+
+          _IsInitializedTextBox = true;  // もう警告はしない
+
+        }
+
       }
       else
       {
-        textBoxPassword.Enabled = true;
-        textBoxRePassword.Enabled = true;
-        textBoxPassword.BackColor = SystemColors.Window;
-        textBoxRePassword.BackColor = SystemColors.Window;
         // 確認のためもう一度パスワードを入力してください：
         // Input password again to confirm:
         labelInputPasswordAgain.Text = Resources.labelInputPasswordAgainToConfirm;
@@ -3310,7 +3398,11 @@ namespace AttacheCase
           pictureBoxCheckPasswordValidation.Image = pictureBoxInValidIcon.Image;
           textBoxRePassword.BackColor = Color.PapayaWhip;
         }
+
+        _IsInitializedTextBox = true;
+
       }
+
     }
 
     private void textBoxRePassword_KeyDown(object sender, KeyEventArgs e)
@@ -3330,84 +3422,103 @@ namespace AttacheCase
     /// <param name="e"></param>
     private void panelDecrypt_VisibleChanged(object sender, EventArgs e)
     {
-      if (panelDecrypt.Visible == true && fFormLoading == false)
+      if (!panelDecrypt.Visible) return;
+      //toolStripButtonEncryptSelectFiles.Enabled = false;
+      //toolStripButtonEncryptSelectFolder.Enabled = false;
+      //toolStripButtonDecryptSelectAtcFiles.Enabled = false;
+      //toolStripButtonOption.Enabled = false;
+
+      this.AcceptButton = buttonDecryptStart;
+      this.CancelButton = buttonDecryptCancel;
+
+      switch (AppSettings.Instance.DetectFileType())
       {
-        //toolStripButtonEncryptSelectFiles.Enabled = false;
-        //toolStripButtonEncryptSelectFolder.Enabled = false;
-        //toolStripButtonDecryptSelectAtcFiles.Enabled = false;
-        //toolStripButtonOption.Enabled = false;
+        case PROCESS_TYPE_DECRYPTION:
+          break;
 
-        this.AcceptButton = buttonDecryptStart;
-        this.CancelButton = buttonDecryptCancel;
+        case PROCESS_TYPE_PASSWORD_ZIP:
+          // 注意
+          // 現状、パスワード付きZIPファイルの復号には対応していません。
+          //
+          // Alert
+          // Now does not correspond to the decryption of password-protected ZIP file.
+          MessageBox.Show(this, Resources.DialogMessageNotZipDecrypted,
+            Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-        switch (AppSettings.Instance.DetectFileType())
-        {
-          case PROCESS_TYPE_DECRYPTION:
-            break;
+          //スタートウィンドウ表示
+          panelStartPage.Visible = true;
+          panelEncrypt.Visible = false;
+          panelEncryptConfirm.Visible = false;
+          panelDecrypt.Visible = false;
+          panelRsa.Visible = false;
+          panelRsaKey.Visible = false;
+          panelProgressState.Visible = false;
 
-          case PROCESS_TYPE_PASSWORD_ZIP:
-            // 注意
-            // 現状、パスワード付きZIPファイルの復号には対応していません。
-            //
-            // Alert
-            // Now does not correspond to the decryption of password-protected ZIP file.
-            MessageBox.Show(this, Resources.DialogMessageNotZipDecrypted,
-              Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+          panelStartPage_VisibleChanged(sender, e);
 
-            //スタートウィンドウ表示
-            panelStartPage.Visible = true;
-            panelEncrypt.Visible = false;
-            panelEncryptConfirm.Visible = false;
-            panelDecrypt.Visible = false;
-            panelRsa.Visible = false;
-            panelRsaKey.Visible = false;
-            panelProgressState.Visible = false;
+          return;
 
-            panelStartPage_VisibleChanged(sender, e);
+        default:  // Unexpected
+          // 注意
+          // 想定外のファイルです。復号することができません。
+          //
+          // Alert
+          // Unexpected decrypted files. It stopped the process.
+          MessageBox.Show(this, Resources.DialogMessageUnexpectedDecryptedFiles,
+            Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-            return;
-
-          default:  // Unexpected
-            // 注意
-            // 想定外のファイルです。復号することができません。
-            //
-            // Alert
-            // Unexpected decrypted files. It stopped the process.
-            MessageBox.Show(this, Resources.DialogMessageUnexpectedDecryptedFiles,
-              Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            return;
-        }
-
-        // Not mask password character
-        AppSettings.Instance.fNotMaskPassword = checkBoxNotMaskDecryptedPassword.Checked;
-
-        // Show the checkbox in main form window
-        checkBoxDeleteAtcFileAfterDecryption.Visible = AppSettings.Instance.fDecryptShowDelChkBox == true;
-
-        // Delete &encrypted file after decryption
-        checkBoxDeleteAtcFileAfterDecryption.Checked = AppSettings.Instance.fDelEncFile == true;
-
-        textBoxDecryptPassword.Focus();
-
-        //Allow Drag and Drop file instead of password
-        textBoxDecryptPassword.AllowDrop = AppSettings.Instance.fAllowPassFile == true;
-
-        // Turn on IMEs in all text box for password entry
-        textBoxDecryptPassword.ImeMode = AppSettings.Instance.fTurnOnIMEsTextBoxForPasswordEntry == true ? ImeMode.On : ImeMode.NoControl;
-
-        this.AcceptButton = buttonDecryptStart;
-        this.CancelButton = buttonDecryptCancel;
-        textBoxRePassword.Focus();
-
+          return;
       }
+
+      // Not mask password character
+      AppSettings.Instance.fNotMaskPassword = checkBoxNotMaskDecryptedPassword.Checked;
+
+      // Show the checkbox in main form window
+      checkBoxDeleteAtcFileAfterDecryption.Visible = AppSettings.Instance.fDecryptShowDelChkBox == true;
+
+      // Delete &encrypted file after decryption
+      checkBoxDeleteAtcFileAfterDecryption.Checked = AppSettings.Instance.fDelEncFile == true;
+
+      textBoxDecryptPassword.Focus();
+
+      //Allow Drag and Drop file instead of password
+      textBoxDecryptPassword.AllowDrop = AppSettings.Instance.fAllowPassFile == true;
+
+      // Turn on IMEs in all text box for password entry
+      textBoxDecryptPassword.ImeMode = AppSettings.Instance.fTurnOnIMEsTextBoxForPasswordEntry == true ? ImeMode.On : ImeMode.NoControl;
+
+      // 'Password' label
+      if (AppSettings.Instance.fMyDecryptPasswordKeep)
+      {
+        // The input goes to processing without confirmation, so in effect, it is not displayed.
+        // 入力確認なく処理に行くので実質は、表示されない。
+
+        // The memorized password:
+        // 記憶パスワード：
+        labelDecryptionPassword.Text = Resources.labelPasswordMemorized;
+      }
+      else if (AppSettings.Instance.fCheckPassFileDecrypt && File.Exists(AppSettings.Instance.PassFilePathDecrypt))
+      {
+        // The password file:
+        // パスワードファイル：
+        var fileName = Path.GetFileName(AppSettings.Instance.PassFilePathDecrypt);
+        labelDecryptionPassword.Text = $@"{Resources.labelPasswordFile} {fileName}";
+      }
+      else
+      {
+        // Password:
+        // パスワード：
+        labelDecryptionPassword.Text = Resources.labelPassword;
+      }
+
+      this.AcceptButton = buttonDecryptStart;
+      this.CancelButton = buttonDecryptCancel;
+      textBoxRePassword.Focus();
     }
 
     private void panelProgressState_VisibleChanged(object sender, EventArgs e)
     {
-      if (fFormLoading) return;
-
-      if (panelProgressState.Visible == true)
+      if (panelProgressState.Visible)
       {
         //toolStripButtonEncryptSelectFiles.Enabled = false;
         //toolStripButtonEncryptSelectFolder.Enabled = false;
@@ -3430,7 +3541,6 @@ namespace AttacheCase
       else
       {
         _taskbarProgress.Reset();
-
       }
     }
     #endregion
@@ -3493,242 +3603,6 @@ namespace AttacheCase
 
     private void textBoxPassword_TextChanged(object sender, EventArgs e)
     {
-      if (AppSettings.Instance.MyEncryptPasswordBinary != null)
-      {
-        textBoxPassword.Enabled = false;
-        textBoxRePassword.Enabled = false;
-        textBoxPassword.BackColor = SystemColors.ButtonFace;
-        textBoxRePassword.BackColor = SystemColors.ButtonFace;
-        return;
-      }
-
-      // In the case of ZIP files, it must be more than one character of the password.
-      if (pictureBoxEncryption.Image == pictureBoxRsaOn.Image)
-      {
-        if (textBoxPassword.Text == "")
-        {
-          buttonEncryptionPasswordOk.Enabled = false;
-        }
-        else
-        {
-          buttonEncryptionPasswordOk.Enabled = true;
-        }
-      }
-      else
-      {
-        buttonEncryptionPasswordOk.Enabled = true;
-      }
-
-      // Processing while a memorized password is input.
-      if (AppSettings.Instance.fMyEncryptPasswordKeep == true)
-      {
-        if (textBoxPassword.Text != AppSettings.Instance.MyEncryptPasswordString)
-        {
-          // "記憶パスワードを破棄して新しいパスワードを入力する："
-          // "Discard memorized password and input new password:"
-          labelPassword.Text = Resources.labelPasswordInputNewPassword;
-        }
-        else
-        {
-          // "記憶パスワード："
-          // "The memorized password:"
-          labelPassword.Text = Resources.labelPasswordMemorized;
-        }
-      }
-
-      textBoxPassword.Enabled = true;
-      textBoxRePassword.Enabled = true;
-
-      if (textBoxPassword.Text == textBoxRePassword.Text)
-      {
-        pictureBoxCheckPasswordValidation.Image = pictureBoxValidIcon.Image;
-        textBoxRePassword.BackColor = Color.Honeydew;
-      }
-      else
-      {
-        textBoxRePassword.BackColor = Color.PapayaWhip;
-      }
-
-      // Password Strength meter ( zxcvbn )
-      if (pictureBoxPassStrengthMeter.Visible == true)
-      {
-        var result = Zxcvbn.Zxcvbn.MatchPassword(textBoxPassword.Text);
-
-        switch (result.Score)
-        {
-          case 0:
-            if (textBoxPassword.Text == "")
-            {
-              pictureBoxPassStrengthMeter.Image = pictureBoxPasswordStrengthEmpty.Image;
-              labelPasswordStrength.Text = Resources.zxcvbnLabelEmpty;
-            }
-            else
-            {
-              pictureBoxPassStrengthMeter.Image = pictureBoxPasswordStrengthEmpty.Image;
-              labelPasswordStrength.Text = Resources.zxcvbnLabel00;
-            }
-            break;
-
-          case 1:
-            pictureBoxPassStrengthMeter.Image = pictureBoxPasswordStrength01.Image;
-            labelPasswordStrength.Text = Resources.zxcvbnLabel01;
-            break;
-
-          case 2:
-            pictureBoxPassStrengthMeter.Image = pictureBoxPasswordStrength02.Image;
-            labelPasswordStrength.Text = Resources.zxcvbnLabel02;
-            break;
-
-          case 3:
-            pictureBoxPassStrengthMeter.Image = pictureBoxPasswordStrength03.Image;
-            labelPasswordStrength.Text = Resources.zxcvbnLabel03;
-            break;
-
-          case 4:
-            pictureBoxPassStrengthMeter.Image = pictureBoxPasswordStrength04.Image;
-            labelPasswordStrength.Text = Resources.zxcvbnLabel04;
-            break;
-
-          default:
-            pictureBoxPassStrengthMeter.Image = pictureBoxPasswordStrengthEmpty.Image;
-            labelPasswordStrength.Text = Resources.zxcvbnLabel00;
-            break;
-        }
-
-        toolTipZxcvbnWarning.ToolTipTitle = Resources.zxcvbnToolTipTitleWarning;
-        switch (result.warning)
-        {
-          case Zxcvbn.Warning.StraightRow:
-            toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningStraightRow);
-            break;
-          case Zxcvbn.Warning.ShortKeyboardPatterns:
-            toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningShortKeyboardPatterns);
-            break;
-          case Zxcvbn.Warning.RepeatsLikeAaaEasy:
-            toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningRepeatsLikeAaaEasy);
-            break;
-          case Zxcvbn.Warning.RepeatsLikeAbcSlighterHarder:
-            toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningRepeatsLikeAbcSlighterHarder);
-            break;
-          case Zxcvbn.Warning.SequenceAbcEasy:
-            toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningSequenceAbcEasy);
-            break;
-          case Zxcvbn.Warning.RecentYearsEasy:
-            toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningRecentYearsEasy);
-            break;
-          case Zxcvbn.Warning.DatesEasy:
-            toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningDatesEasy);
-            break;
-          case Zxcvbn.Warning.Top10Passwords:
-            toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningTop10Passwords);
-            break;
-          case Zxcvbn.Warning.CommonPasswords:
-            toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningCommonPasswords);
-            break;
-          case Zxcvbn.Warning.SimilarCommonPasswords:
-            toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningSimilarCommonPasswords);
-            break;
-          case Zxcvbn.Warning.WordEasy:
-            toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningWordEasy);
-            break;
-          case Zxcvbn.Warning.NameSurnamesEasy:
-            toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningNameSurnamesEasy);
-            break;
-          case Zxcvbn.Warning.CommonNameSurnamesEasy:
-            toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningCommonNameSurnamesEasy);
-            break;
-          case Zxcvbn.Warning.Empty:
-            if (textBoxPassword.Text == "")
-            {
-              toolTipZxcvbnWarning.SetToolTip(labelPasswordStrength, Resources.zxcvbnWarningEmpty);
-            }
-            else
-            {
-              toolTipZxcvbnWarning.ToolTipTitle = "";
-            }
-            break;
-          case Warning.Default:
-          case Warning.Top100Passwords:
-          default:
-            toolTipZxcvbnWarning.ToolTipTitle = "";
-            break;
-        }
-
-        if (toolTipZxcvbnWarning.ToolTipTitle == "")
-        {
-          toolTipZxcvbnWarning.Active = false;
-        }
-        else
-        {
-          toolTipZxcvbnWarning.Active = true;
-        }
-
-        toolTipZxcvbnSuggestions.ToolTipTitle = Resources.zxcvbnToolTipTitleSuggestions;
-        var SuggestionsList = "";
-        foreach (var t in result.suggestions)
-        {
-          var SuggestionText = "";
-          switch (t)
-          {
-            case Zxcvbn.Suggestion.AddAnotherWordOrTwo:
-              SuggestionText = Resources.zxcvbnSuggestionAddAnotherWordOrTwo;
-              break;
-            case Zxcvbn.Suggestion.UseLongerKeyboardPattern:
-              SuggestionText = Resources.zxcvbnSuggestionUseLongerKeyboardPattern;
-              break;
-            case Zxcvbn.Suggestion.AvoidRepeatedWordsAndChars:
-              SuggestionText = Resources.zxcvbnSuggestionAvoidRepeatedWordsAndChars;
-              break;
-            case Zxcvbn.Suggestion.AvoidSequences:
-              SuggestionText = Resources.zxcvbnSuggestionAvoidSequences;
-              break;
-            case Zxcvbn.Suggestion.AvoidYearsAssociatedYou:
-              SuggestionText = Resources.zxcvbnSuggestionAvoidYearsAssociatedYou;
-              break;
-            case Zxcvbn.Suggestion.AvoidDatesYearsAssociatedYou:
-              SuggestionText = Resources.zxcvbnSuggestionAvoidDatesYearsAssociatedYou;
-              break;
-            case Zxcvbn.Suggestion.CapsDontHelp:
-              SuggestionText = Resources.zxcvbnSuggestionCapsDontHelp;
-              break;
-            case Zxcvbn.Suggestion.AllCapsEasy:
-              SuggestionText = Resources.zxcvbnSuggestionAllCapsEasy;
-              break;
-            case Zxcvbn.Suggestion.ReversedWordEasy:
-              SuggestionText = Resources.zxcvbnSuggestionReversedWordEasy;
-              break;
-            case Zxcvbn.Suggestion.PredictableSubstitutionsEasy:
-              SuggestionText = Resources.zxcvbnSuggestionPredictableSubstitutionsEasy;
-              break;
-            case Zxcvbn.Suggestion.Empty:
-              if (textBoxPassword.Text == "")
-              {
-                SuggestionText = Resources.zxcvbnSuggestionEmpty;
-              }
-              break;
-            case Zxcvbn.Suggestion.Default:
-              SuggestionText = Resources.zxcvbnSuggestionDefault;
-              break;
-            default:
-              break;
-          }
-          if (SuggestionText != "")
-          {
-            SuggestionsList = SuggestionsList + "- " + SuggestionText + "\r\n";
-          }
-        }
-
-        if (SuggestionsList == "")
-        {
-          toolTipZxcvbnSuggestions.SetToolTip(pictureBoxPassStrengthMeter, "");
-          toolTipZxcvbnSuggestions.Active = false;
-        }
-        else
-        {
-          toolTipZxcvbnSuggestions.SetToolTip(pictureBoxPassStrengthMeter, SuggestionsList);
-          toolTipZxcvbnSuggestions.Active = true;
-        }
-      }
 
     }
 
@@ -3755,6 +3629,12 @@ namespace AttacheCase
         AppSettings.Instance.MyEncryptPasswordBinary = GetPasswordFileSha256(AppSettings.Instance.TempEncryptionPassFilePath);
         textBoxPassword.Text = AppSettings.BytesToHexString(AppSettings.Instance.MyEncryptPasswordBinary);
         textBoxRePassword.Text = textBoxPassword.Text;
+        _previousPassword = textBoxPassword.Text;
+
+        var fileName = Path.GetFileName(FilePaths[0]);
+        // Password File: 
+        // パスワードファイル: 
+        labelPassword.Text = $@"{Resources.labelPasswordFile} {fileName}";
 
         panelStartPage.Visible = false;
         panelEncrypt.Visible = false;
@@ -4001,7 +3881,7 @@ namespace AttacheCase
         labelCryptionType.Text = "";
         labelProgressMessageText.Text = Resources.labelCaptionCompleted;  // "Completed"
         notifyIcon1.Text = @"100% " + Resources.labelCaptionCompleted;
-
+        AppSettings.Instance.FileList?.Clear();
         buttonCancel.Text = Resources.ButtonTextOK;
         return;
       }
@@ -4040,7 +3920,7 @@ namespace AttacheCase
         _taskbarProgress.UpdateProgress(0);
         labelCryptionType.Text = Resources.labelCaptionAborted;
         notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
-        AppSettings.Instance.FileList = null;
+        AppSettings.Instance.FileList?.Clear();
         this.Update();
         return;
       }
@@ -4065,7 +3945,7 @@ namespace AttacheCase
       //-----------------------------------
       // Encryption password
       //-----------------------------------
-      string EncryptionPassword = textBoxRePassword.Text;
+      var EncryptionPassword = textBoxRePassword.Text;
 
       //-----------------------------------
       // Password file
@@ -4106,7 +3986,7 @@ namespace AttacheCase
             _taskbarProgress.UpdateProgress(0);
             labelCryptionType.Text = Resources.labelCaptionError;
             notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
-            AppSettings.Instance.FileList = null;
+            AppSettings.Instance.FileList?.Clear();
             this.Update();
             return;
           }
@@ -4295,7 +4175,7 @@ namespace AttacheCase
 
         //-----------------------------------
         //Create encrypted file including extension
-        string FileName = Path.GetFileName(AtcFilePath);
+        string FileName;
         if (AppSettings.Instance.fExtInAtcFileName == true)
         {
           FileName = Path.GetFileName(AtcFilePath) + Extension;
@@ -4362,7 +4242,7 @@ namespace AttacheCase
                   _taskbarProgress.UpdateProgress(0);
                   labelCryptionType.Text = "";
                   notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
-                  AppSettings.Instance.FileList = null;
+                  AppSettings.Instance.FileList?.Clear();
 
                   buttonCancel.Text = Resources.ButtonTextOK;
 
@@ -4382,7 +4262,7 @@ namespace AttacheCase
                   _taskbarProgress.UpdateProgress(0);
                   labelCryptionType.Text = Resources.labelCaptionCanceled;
                   notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
-                  AppSettings.Instance.FileList = null;
+                  AppSettings.Instance.FileList?.Clear();
                   this.Update();
                   return;
                 }
@@ -4460,7 +4340,7 @@ namespace AttacheCase
                 // 中止
                 labelCryptionType.Text = Resources.labelCaptionAborted;
                 notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
-                AppSettings.Instance.FileList = null;
+                AppSettings.Instance.FileList?.Clear();
                 this.Update();
                 return;
               }
@@ -4484,7 +4364,7 @@ namespace AttacheCase
                 // 中止
                 labelCryptionType.Text = Resources.labelCaptionAborted;
                 notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
-                AppSettings.Instance.FileList = null;
+                AppSettings.Instance.FileList?.Clear();
                 this.Update();
                 return;
               }
@@ -4626,7 +4506,7 @@ namespace AttacheCase
 
         //-----------------------------------
         //Create encrypted file including extension
-        var FileName = Path.GetFileName(FilePath);
+        string FileName;
         if (AppSettings.Instance.fExtInAtcFileName == true)
         {
           FileName = Path.GetFileName(FilePath) + Extension;
@@ -4708,6 +4588,7 @@ namespace AttacheCase
                   // 暗号化の処理はキャンセルされました。
                   // Encryption was canceled.
                   labelProgressMessageText.Text = Resources.labelEncryptionCanceled;
+                  AppSettings.Instance.FileList?.Clear();
                   return;
                 }
                 else
@@ -4751,11 +4632,8 @@ namespace AttacheCase
             ExeOutSize = FileEncrypt4.ExeOutFileSize[1];
           }
 
-          List<string> list = new List<string>();
-          list.Add(FilePath);
-
           // 合計サイズを求める
-          Int64 TotalSize = GetTotalSize(list) + ExeOutSize;
+          Int64 TotalSize = GetTotalSize(AppSettings.Instance.FileList) + ExeOutSize;
 
           // EXEファイルのサイズ（4GiB - 1B）制限を超える場合
           if (TotalSize > Limit4GibSize)
@@ -4768,7 +4646,7 @@ namespace AttacheCase
               // The self-executable file you create may exceed 4 GiB.The file may not work as an executable.Would you like to continue?
               // (*It can be decrypted as an encrypted file even if it is not launched as an executable file.)
               // 
-              DialogResult ret = MessageBox.Show(this, Resources.DialogMessageCreateSelfExecutableEileLargerThan4GiB,
+              var ret = MessageBox.Show(this, Resources.DialogMessageCreateSelfExecutableEileLargerThan4GiB,
                 Resources.DialogTitleQuestion, MessageBoxButtons.YesNo, MessageBoxIcon.Information, MessageBoxDefaultButton.Button2);
 
               if (ret == DialogResult.Yes)
@@ -4787,7 +4665,7 @@ namespace AttacheCase
                 // 中止
                 labelCryptionType.Text = Resources.labelCaptionAborted;
                 notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
-                AppSettings.Instance.FileList = null;
+                AppSettings.Instance.FileList?.Clear();
                 this.Update();
                 return;
               }
@@ -4811,7 +4689,7 @@ namespace AttacheCase
                 // 中止
                 labelCryptionType.Text = Resources.labelCaptionAborted;
                 notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
-                AppSettings.Instance.FileList = null;
+                AppSettings.Instance.FileList?.Clear();
                 this.Update();
                 return;
               }
@@ -5023,7 +4901,7 @@ namespace AttacheCase
                   _taskbarProgress.UpdateProgress(0);
                   labelCryptionType.Text = "";
                   notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
-                  AppSettings.Instance.FileList = null;
+                  AppSettings.Instance.FileList?.Clear();
 
                   buttonCancel.Text = Resources.ButtonTextOK;
 
@@ -5081,11 +4959,8 @@ namespace AttacheCase
             ExeOutSize = FileEncrypt4.ExeOutFileSize[1];
           }
 
-          var list = new List<string>();
-          list.Add(FileListPath);
-
           // 合計サイズを求める
-          Int64 TotalSize = GetTotalSize(list) + ExeOutSize;
+          Int64 TotalSize = GetTotalSize(AppSettings.Instance.FileList) + ExeOutSize;
 
           // EXEファイルのサイズ（4GiB - 1B）制限を超える場合
           if (TotalSize > Limit4GibSize)
@@ -5117,7 +4992,7 @@ namespace AttacheCase
                 // 中止
                 labelCryptionType.Text = Resources.labelCaptionAborted;
                 notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
-                AppSettings.Instance.FileList = null;
+                AppSettings.Instance.FileList?.Clear();
                 this.Update();
                 return;
               }
@@ -5141,7 +5016,7 @@ namespace AttacheCase
                 // 中止
                 labelCryptionType.Text = Resources.labelCaptionAborted;
                 notifyIcon1.Text = @"- % " + Resources.labelCaptionAborted;
-                AppSettings.Instance.FileList = null;
+                AppSettings.Instance.FileList?.Clear();
                 this.Update();
                 return;
               }
@@ -5223,7 +5098,7 @@ namespace AttacheCase
 
       }
 
-    }// end EncryptionProcess();
+    } // end EncryptionProcess();
 
     /// <summary>
     /// ファイルリストにあるフォルダーやファイルの合計サイズを取得する
@@ -5349,14 +5224,6 @@ namespace AttacheCase
     {
     }
 
-    private void textBoxDecryptPassword_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
-    {
-      if (e.KeyCode == Keys.Enter)
-      {
-        buttonDecryptStart.PerformClick();
-      }
-    }
-
     private void textBoxDecryptPassword_DragDrop(object sender, DragEventArgs e)
     {
       var FilePaths = (string[])e.Data.GetData(DataFormats.FileDrop, false);
@@ -5366,8 +5233,21 @@ namespace AttacheCase
         AppSettings.Instance.TempDecryptionPassFilePath = FilePaths[0];
         AppSettings.Instance.MyDecryptPasswordBinary = GetPasswordFileSha256(AppSettings.Instance.TempDecryptionPassFilePath);
         textBoxDecryptPassword.Text = AppSettings.BytesToHexString(AppSettings.Instance.MyDecryptPasswordBinary);
-        textBoxDecryptPassword.BackColor = SystemColors.ButtonFace;
-        textBoxDecryptPassword.Enabled = false;
+
+        if (AppSettings.Instance.fCheckPassFileDecrypt)
+        {
+          // The password file:
+          // パスワードファイル：
+          var fileName = Path.GetFileName(FilePaths[0]);
+          labelDecryptionPassword.Text = $@"{Resources.labelPasswordFile} {fileName}";
+        }
+        else
+        {
+          // Password:
+          // パスワード：
+          labelDecryptionPassword.Text = Resources.labelPassword;
+        }
+
       }
       else
       {
@@ -5402,32 +5282,67 @@ namespace AttacheCase
 
     private void textBoxDecryptPassword_TextChanged(object sender, EventArgs e)
     {
-      if (AppSettings.Instance.MyEncryptPasswordBinary != null)
+      if (panelDecrypt.Visible == false) return;
+      if (_IsInitializedTextBox) return;
+
+      if (_previousPassword != textBoxDecryptPassword.Text)
       {
-        textBoxDecryptPassword.Enabled = false;
-        textBoxDecryptPassword.BackColor = SystemColors.ButtonFace;
-        // すでにパスワードファイルが入力済みです：
-        // Password file is entered already:
-        labelDecryptionPassword.Text = Resources.labelPasswordFileIsEnteredAlready;
-        return;
-      }
-
-      textBoxDecryptPassword.Enabled = true;
-      textBoxDecryptPassword.BackColor = SystemColors.Window;
-
-      // パスワード：
-      // Password:
-      labelDecryptionPassword.Text = Resources.labelPassword;
-
-      if (AppSettings.Instance.fMyDecryptPasswordKeep == true)
-      {
-        if (textBoxDecryptPassword.Text != AppSettings.Instance.MyDecryptPasswordString)
+        // 記憶パスワードが入力されている
+        if (AppSettings.Instance.fMyDecryptPasswordKeep &&
+            string.IsNullOrEmpty(AppSettings.Instance.MyDecryptPasswordString) == false)
         {
-          // "記憶パスワードを破棄して新しいパスワードを入力する："
-          // "Discard memorized password and input new password:"
-          labelDecryptionPassword.Text = Resources.labelPasswordInputNewPassword;
+          // A memorized password is currently applied. Proceed with changes?
+          // 記憶パスワードが適用されています。変更を加えますか？
+          // 復号できなくなる恐れがあります。
+          var ret = MessageBox.Show(Resources.DialogMessageMemorizedPasswordChange, Resources.DialogTitleAlert,
+            MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+
+          if (ret == DialogResult.No)
+          {
+            textBoxDecryptPassword.Text = _previousPassword; // 入力をキャンセル（元の文字列に戻す）
+            _IsInitializedTextBox = false;
+            return;
+          }
         }
+
+        // パスワードファイルが設定されている
+        if (AppSettings.Instance.fCheckPassFileDecrypt && File.Exists(AppSettings.Instance.PassFilePathDecrypt))
+        {
+          // A password from the password file is currently applied. Proceed with changes?
+          // Decryption may become impossible.
+          // パスワードファイルによるパスワードが適用されています。変更を加えますか？
+          // 復号できなくなる恐れがあります。
+          var ret = MessageBox.Show(Resources.DialogMessagePasswordFromPasswordFileChange, Resources.DialogTitleAlert,
+            MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+          if (ret == DialogResult.No)
+          {
+            textBoxDecryptPassword.Text = _previousPassword; // 入力をキャンセル （元の文字列に戻す）
+            _IsInitializedTextBox = false;
+            return;
+          }
+        }
+
+        _previousPassword = textBoxDecryptPassword.Text;
+        _IsInitializedTextBox = true;  // もう警告はしない
+
       }
+
+    }
+
+    private void textBoxDecryptPassword_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+    {
+      if (e.KeyCode == Keys.Enter)
+      {
+        buttonDecryptStart.PerformClick();
+      }
+    }
+
+    private void textBoxDecryptPassword_KeyDown(object sender, KeyEventArgs e)
+    {
+    }
+
+    private void textBoxDecryptPassword_KeyPress(object sender, KeyPressEventArgs e)
+    {
 
     }
 
@@ -5541,7 +5456,7 @@ namespace AttacheCase
       // Preparing for decrypting
       // 
       //-----------------------------------
-      string AtcFilePath = AppSettings.Instance.FileList[FileIndex];
+      var AtcFilePath = AppSettings.Instance.FileList[FileIndex];
 
       progressBar.Style = ProgressBarStyle.Marquee;
       progressBar.MarqueeAnimationSpeed = 50;
@@ -5583,6 +5498,7 @@ namespace AttacheCase
         _taskbarProgress.UpdateProgress(0);
         buttonCancel.Text = Resources.ButtonTextOK;
         notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
+        AppSettings.Instance.FileList?.Clear();
         return;
 
       }
@@ -5604,6 +5520,7 @@ namespace AttacheCase
         _taskbarProgress.UpdateProgress(0);
         buttonCancel.Text = Resources.ButtonTextOK;
         notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
+        AppSettings.Instance.FileList?.Clear();
         return;
 
       }
@@ -5654,6 +5571,7 @@ namespace AttacheCase
               _taskbarProgress.UpdateProgress(0);
               buttonCancel.Text = Resources.ButtonTextOK;
               notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
+              AppSettings.Instance.FileList?.Clear();
               return;
             }
           }
@@ -5842,7 +5760,7 @@ namespace AttacheCase
         _taskbarProgress.UpdateProgress(0);
         buttonCancel.Text = Resources.ButtonTextOK;
         notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
-
+        AppSettings.Instance.FileList?.Clear();
         return;
 
       }
@@ -5894,7 +5812,7 @@ namespace AttacheCase
                 // Question
                 // It contains the executable files in the decrypted file.
                 // Do you run the following file?
-                DialogResult ret = MessageBox.Show(this, Resources.DialogMessageExecutableFile + Environment.NewLine + path,
+                var ret = MessageBox.Show(this, Resources.DialogMessageExecutableFile + Environment.NewLine + path,
                 Resources.DialogTitleQuestion, MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2);
 
                 if (ret == DialogResult.No)
@@ -5968,7 +5886,7 @@ namespace AttacheCase
     }
 
     //----------------------------------------------------------------------
-    // Cancel button click event.                
+    // Cancel button click event.
     private void buttonDecryptCancel_Click(object sender, EventArgs e)
     {
       // Cancel, If decryption is not being processed 
@@ -5979,7 +5897,11 @@ namespace AttacheCase
       panelRsaKey.Visible = false;
       panelProgressState.Visible = false;
       panelStartPage.Visible = true;
+
+      _IsInitializedTextBox = true;
       textBoxDecryptPassword.Text = "";
+      _IsInitializedTextBox = false;
+
       AppSettings.Instance.TempDecryptionPassFilePath = "";
       // ファイルリストをクリアする
       AppSettings.Instance.FileList = new List<string>();
@@ -6469,19 +6391,22 @@ namespace AttacheCase
 
       if (openFileDialog1.ShowDialog(this) == DialogResult.OK)
       {
-        foreach (string filname in openFileDialog1.FileNames)
+        foreach (var filename in openFileDialog1.FileNames)
         {
           if (AppSettings.Instance.FileList == null)
           {
             AppSettings.Instance.FileList = new List<string>();
           }
-          AppSettings.Instance.FileList.Add(filname);
+          AppSettings.Instance.FileList.Add(filename);
         }
 
         // Check memorized password
         if (AppSettings.Instance.fMyDecryptPasswordKeep == true)
         {
-          textBoxDecryptPassword.Text = AppSettings.Instance.MyDecryptPasswordString;
+          _IsInitializedTextBox = true;
+          _previousPassword = AppSettings.Instance.MyDecryptPasswordString;
+          textBoxDecryptPassword.Text = _previousPassword;
+          _IsInitializedTextBox = false;
         }
 
         // Encrypt by memorized password without confirming
@@ -6896,21 +6821,18 @@ namespace AttacheCase
 
     private void panelRsa_VisibleChanged(object sender, EventArgs e)
     {
-      if (panelRsa.Visible == true && fFormLoading == false)
+      if (!panelRsa.Visible) return;
+      if (AppSettings.Instance.FileList == null || AppSettings.Instance.FileList.Count == 0)
       {
-        if (AppSettings.Instance.FileList == null || AppSettings.Instance.FileList.Count == 0)
-        {
-          buttonGenerateKey.Visible = true;
-        }
-        else
-        {
-          buttonGenerateKey.Visible = false;
-        }
-
-        this.AcceptButton = buttonGenerateKey;
-        this.CancelButton = buttonRsaCancel;
-
+        buttonGenerateKey.Visible = true;
       }
+      else
+      {
+        buttonGenerateKey.Visible = false;
+      }
+
+      this.AcceptButton = buttonGenerateKey;
+      this.CancelButton = buttonRsaCancel;
     }
 
     private void buttonRsaKeyCancel_Click(object sender, EventArgs e)

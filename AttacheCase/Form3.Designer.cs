@@ -180,8 +180,21 @@
       this.groupBox9 = new System.Windows.Forms.GroupBox();
       this.buttonImportCurrentConf = new System.Windows.Forms.Button();
       this.buttonExportCurrentConf = new System.Windows.Forms.Button();
+      this.tabPageAdvanced = new System.Windows.Forms.TabPage();
+      this.panelAdvancedOption = new System.Windows.Forms.Panel();
+      this.groupBox4 = new System.Windows.Forms.GroupBox();
+      this.label8 = new System.Windows.Forms.Label();
+      this.label17 = new System.Windows.Forms.Label();
+      this.checkBoxPropagateMotwAllFiles = new System.Windows.Forms.CheckBox();
+      this.textBoxUserDefinedTypes = new System.Windows.Forms.TextBox();
+      this.checkBoxPropagateMotwUserDefinedTypes = new System.Windows.Forms.CheckBox();
+      this.labelOfficeFilesList = new System.Windows.Forms.Label();
+      this.checkBoxPropagateMotwOfficeFiles = new System.Windows.Forms.CheckBox();
+      this.labelExecutableFilesList = new System.Windows.Forms.Label();
+      this.checkBoxPropagateMotwExecutableFiles = new System.Windows.Forms.CheckBox();
       this.tabPagePasswordFileOption = new System.Windows.Forms.TabPage();
       this.panelPasswordFileOption = new System.Windows.Forms.Panel();
+      this.checkBoxPasswordFilePriority = new System.Windows.Forms.CheckBox();
       this.checkBoxDoByPasswordFile = new System.Windows.Forms.CheckBox();
       this.buttonOpenFileDialogForDecryption = new System.Windows.Forms.Button();
       this.buttonOpenFileDialogForEncryption = new System.Windows.Forms.Button();
@@ -304,6 +317,9 @@
       this.panelSettingImportExportOption.SuspendLayout();
       this.groupBoxIniFileOption.SuspendLayout();
       this.groupBox9.SuspendLayout();
+      this.tabPageAdvanced.SuspendLayout();
+      this.panelAdvancedOption.SuspendLayout();
+      this.groupBox4.SuspendLayout();
       this.tabPagePasswordFileOption.SuspendLayout();
       this.panelPasswordFileOption.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
@@ -345,7 +361,15 @@
       resources.ApplyResources(this.treeView1, "treeView1");
       this.treeView1.FullRowSelect = true;
       this.treeView1.Name = "treeView1";
-      this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] { ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes"))), ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes1"))), ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes2"))), ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes3"))), ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes4"))), ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes5"))), ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes6"))), ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes7"))) });
+      this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
+            ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes"))),
+            ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes1"))),
+            ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes2"))),
+            ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes3"))),
+            ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes4"))),
+            ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes5"))),
+            ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes6"))),
+            ((System.Windows.Forms.TreeNode)(resources.GetObject("treeView1.Nodes7")))});
       this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
       // 
       // tabControl1
@@ -361,6 +385,7 @@
       this.tabControl1.Controls.Add(this.tabPageCompressOption);
       this.tabControl1.Controls.Add(this.tabPageSystem);
       this.tabControl1.Controls.Add(this.tabPageSettingsImportExport);
+      this.tabControl1.Controls.Add(this.tabPageAdvanced);
       this.tabControl1.Controls.Add(this.tabPagePasswordFileOption);
       this.tabControl1.Controls.Add(this.tabPageCamouflageExtOption);
       this.tabControl1.Controls.Add(this.tabPagePasswordInputLimitOption);
@@ -407,7 +432,10 @@
       // 
       resources.ApplyResources(this.comboBoxThemeColor, "comboBoxThemeColor");
       this.comboBoxThemeColor.FormattingEnabled = true;
-      this.comboBoxThemeColor.Items.AddRange(new object[] { resources.GetString("comboBoxThemeColor.Items"), resources.GetString("comboBoxThemeColor.Items1"), resources.GetString("comboBoxThemeColor.Items2") });
+      this.comboBoxThemeColor.Items.AddRange(new object[] {
+            resources.GetString("comboBoxThemeColor.Items"),
+            resources.GetString("comboBoxThemeColor.Items1"),
+            resources.GetString("comboBoxThemeColor.Items2")});
       this.comboBoxThemeColor.Name = "comboBoxThemeColor";
       this.comboBoxThemeColor.SelectedValueChanged += new System.EventHandler(this.options_ComponentChanged);
       // 
@@ -425,7 +453,11 @@
       // 
       resources.ApplyResources(this.numericUpDownLaunchFiles, "numericUpDownLaunchFiles");
       this.numericUpDownLaunchFiles.Name = "numericUpDownLaunchFiles";
-      this.numericUpDownLaunchFiles.Value = new decimal(new int[] { 5, 0, 0, 0 });
+      this.numericUpDownLaunchFiles.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
       this.numericUpDownLaunchFiles.ValueChanged += new System.EventHandler(this.options_ComponentChanged);
       // 
       // checkBoxShowDialogWhenMultipleFiles
@@ -1005,7 +1037,10 @@
       this.comboBoxZipEncryptAlgo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       resources.ApplyResources(this.comboBoxZipEncryptAlgo, "comboBoxZipEncryptAlgo");
       this.comboBoxZipEncryptAlgo.FormattingEnabled = true;
-      this.comboBoxZipEncryptAlgo.Items.AddRange(new object[] { resources.GetString("comboBoxZipEncryptAlgo.Items"), resources.GetString("comboBoxZipEncryptAlgo.Items1"), resources.GetString("comboBoxZipEncryptAlgo.Items2") });
+      this.comboBoxZipEncryptAlgo.Items.AddRange(new object[] {
+            resources.GetString("comboBoxZipEncryptAlgo.Items"),
+            resources.GetString("comboBoxZipEncryptAlgo.Items1"),
+            resources.GetString("comboBoxZipEncryptAlgo.Items2")});
       this.comboBoxZipEncryptAlgo.Name = "comboBoxZipEncryptAlgo";
       this.comboBoxZipEncryptAlgo.SelectedIndexChanged += new System.EventHandler(this.comboBoxZipEncryptAlgo_SelectedIndexChanged);
       // 
@@ -1468,7 +1503,9 @@
       this.comboBoxAlwaysReadIniFile.BackColor = System.Drawing.SystemColors.Window;
       this.comboBoxAlwaysReadIniFile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.comboBoxAlwaysReadIniFile.FormattingEnabled = true;
-      this.comboBoxAlwaysReadIniFile.Items.AddRange(new object[] { resources.GetString("comboBoxAlwaysReadIniFile.Items"), resources.GetString("comboBoxAlwaysReadIniFile.Items1") });
+      this.comboBoxAlwaysReadIniFile.Items.AddRange(new object[] {
+            resources.GetString("comboBoxAlwaysReadIniFile.Items"),
+            resources.GetString("comboBoxAlwaysReadIniFile.Items1")});
       resources.ApplyResources(this.comboBoxAlwaysReadIniFile, "comboBoxAlwaysReadIniFile");
       this.comboBoxAlwaysReadIniFile.Name = "comboBoxAlwaysReadIniFile";
       this.comboBoxAlwaysReadIniFile.SelectedIndexChanged += new System.EventHandler(this.options_ComponentChanged);
@@ -1526,6 +1563,91 @@
       this.buttonExportCurrentConf.UseVisualStyleBackColor = true;
       this.buttonExportCurrentConf.Click += new System.EventHandler(this.buttonExportCurrentConf_Click);
       // 
+      // tabPageAdvanced
+      // 
+      this.tabPageAdvanced.Controls.Add(this.panelAdvancedOption);
+      resources.ApplyResources(this.tabPageAdvanced, "tabPageAdvanced");
+      this.tabPageAdvanced.Name = "tabPageAdvanced";
+      this.tabPageAdvanced.UseVisualStyleBackColor = true;
+      // 
+      // panelAdvancedOption
+      // 
+      this.panelAdvancedOption.Controls.Add(this.groupBox4);
+      resources.ApplyResources(this.panelAdvancedOption, "panelAdvancedOption");
+      this.panelAdvancedOption.Name = "panelAdvancedOption";
+      // 
+      // groupBox4
+      // 
+      resources.ApplyResources(this.groupBox4, "groupBox4");
+      this.groupBox4.Controls.Add(this.label8);
+      this.groupBox4.Controls.Add(this.label17);
+      this.groupBox4.Controls.Add(this.checkBoxPropagateMotwAllFiles);
+      this.groupBox4.Controls.Add(this.textBoxUserDefinedTypes);
+      this.groupBox4.Controls.Add(this.checkBoxPropagateMotwUserDefinedTypes);
+      this.groupBox4.Controls.Add(this.labelOfficeFilesList);
+      this.groupBox4.Controls.Add(this.checkBoxPropagateMotwOfficeFiles);
+      this.groupBox4.Controls.Add(this.labelExecutableFilesList);
+      this.groupBox4.Controls.Add(this.checkBoxPropagateMotwExecutableFiles);
+      this.groupBox4.Name = "groupBox4";
+      this.groupBox4.TabStop = false;
+      // 
+      // label8
+      // 
+      resources.ApplyResources(this.label8, "label8");
+      this.label8.ForeColor = System.Drawing.Color.ForestGreen;
+      this.label8.Name = "label8";
+      // 
+      // label17
+      // 
+      this.label17.ForeColor = System.Drawing.Color.DarkRed;
+      resources.ApplyResources(this.label17, "label17");
+      this.label17.Name = "label17";
+      // 
+      // checkBoxPropagateMotwAllFiles
+      // 
+      resources.ApplyResources(this.checkBoxPropagateMotwAllFiles, "checkBoxPropagateMotwAllFiles");
+      this.checkBoxPropagateMotwAllFiles.Name = "checkBoxPropagateMotwAllFiles";
+      this.checkBoxPropagateMotwAllFiles.UseVisualStyleBackColor = true;
+      this.checkBoxPropagateMotwAllFiles.CheckedChanged += new System.EventHandler(this.checkBoxPropagateMotwAllFiles_CheckedChanged);
+      // 
+      // textBoxUserDefinedTypes
+      // 
+      resources.ApplyResources(this.textBoxUserDefinedTypes, "textBoxUserDefinedTypes");
+      this.textBoxUserDefinedTypes.Name = "textBoxUserDefinedTypes";
+      this.textBoxUserDefinedTypes.Leave += new System.EventHandler(this.textBoxUserDefinedTypes_Leave);
+      // 
+      // checkBoxPropagateMotwUserDefinedTypes
+      // 
+      resources.ApplyResources(this.checkBoxPropagateMotwUserDefinedTypes, "checkBoxPropagateMotwUserDefinedTypes");
+      this.checkBoxPropagateMotwUserDefinedTypes.Name = "checkBoxPropagateMotwUserDefinedTypes";
+      this.checkBoxPropagateMotwUserDefinedTypes.UseVisualStyleBackColor = true;
+      this.checkBoxPropagateMotwUserDefinedTypes.CheckedChanged += new System.EventHandler(this.checkBoxPropagateMotwUserDefinedTypes_CheckedChanged);
+      // 
+      // labelOfficeFilesList
+      // 
+      resources.ApplyResources(this.labelOfficeFilesList, "labelOfficeFilesList");
+      this.labelOfficeFilesList.Name = "labelOfficeFilesList";
+      // 
+      // checkBoxPropagateMotwOfficeFiles
+      // 
+      resources.ApplyResources(this.checkBoxPropagateMotwOfficeFiles, "checkBoxPropagateMotwOfficeFiles");
+      this.checkBoxPropagateMotwOfficeFiles.Name = "checkBoxPropagateMotwOfficeFiles";
+      this.checkBoxPropagateMotwOfficeFiles.UseVisualStyleBackColor = true;
+      this.checkBoxPropagateMotwOfficeFiles.CheckedChanged += new System.EventHandler(this.checkBoxPropagateMotwOfficeFiles_CheckedChanged);
+      // 
+      // labelExecutableFilesList
+      // 
+      this.labelExecutableFilesList.ForeColor = System.Drawing.SystemColors.ControlText;
+      resources.ApplyResources(this.labelExecutableFilesList, "labelExecutableFilesList");
+      this.labelExecutableFilesList.Name = "labelExecutableFilesList";
+      // 
+      // checkBoxPropagateMotwExecutableFiles
+      // 
+      resources.ApplyResources(this.checkBoxPropagateMotwExecutableFiles, "checkBoxPropagateMotwExecutableFiles");
+      this.checkBoxPropagateMotwExecutableFiles.Name = "checkBoxPropagateMotwExecutableFiles";
+      this.checkBoxPropagateMotwExecutableFiles.UseVisualStyleBackColor = true;
+      this.checkBoxPropagateMotwExecutableFiles.CheckedChanged += new System.EventHandler(this.checkBoxPropagateMotwExecutableFiles_CheckedChanged);
+      // 
       // tabPagePasswordFileOption
       // 
       this.tabPagePasswordFileOption.Controls.Add(this.panelPasswordFileOption);
@@ -1535,6 +1657,7 @@
       // 
       // panelPasswordFileOption
       // 
+      this.panelPasswordFileOption.Controls.Add(this.checkBoxPasswordFilePriority);
       this.panelPasswordFileOption.Controls.Add(this.checkBoxDoByPasswordFile);
       this.panelPasswordFileOption.Controls.Add(this.buttonOpenFileDialogForDecryption);
       this.panelPasswordFileOption.Controls.Add(this.buttonOpenFileDialogForEncryption);
@@ -1549,13 +1672,19 @@
       resources.ApplyResources(this.panelPasswordFileOption, "panelPasswordFileOption");
       this.panelPasswordFileOption.Name = "panelPasswordFileOption";
       // 
+      // checkBoxPasswordFilePriority
+      // 
+      resources.ApplyResources(this.checkBoxPasswordFilePriority, "checkBoxPasswordFilePriority");
+      this.checkBoxPasswordFilePriority.ForeColor = System.Drawing.SystemColors.ControlText;
+      this.checkBoxPasswordFilePriority.Name = "checkBoxPasswordFilePriority";
+      this.checkBoxPasswordFilePriority.UseVisualStyleBackColor = true;
+      // 
       // checkBoxDoByPasswordFile
       // 
       resources.ApplyResources(this.checkBoxDoByPasswordFile, "checkBoxDoByPasswordFile");
       this.checkBoxDoByPasswordFile.ForeColor = System.Drawing.SystemColors.ControlText;
       this.checkBoxDoByPasswordFile.Name = "checkBoxDoByPasswordFile";
       this.checkBoxDoByPasswordFile.UseVisualStyleBackColor = true;
-      this.checkBoxDoByPasswordFile.CheckedChanged += new System.EventHandler(this.options_ComponentChanged);
       // 
       // buttonOpenFileDialogForDecryption
       // 
@@ -1704,7 +1833,17 @@
       resources.ApplyResources(this.comboBoxMissTypeLimitsNum, "comboBoxMissTypeLimitsNum");
       this.comboBoxMissTypeLimitsNum.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.comboBoxMissTypeLimitsNum.FormattingEnabled = true;
-      this.comboBoxMissTypeLimitsNum.Items.AddRange(new object[] { resources.GetString("comboBoxMissTypeLimitsNum.Items"), resources.GetString("comboBoxMissTypeLimitsNum.Items1"), resources.GetString("comboBoxMissTypeLimitsNum.Items2"), resources.GetString("comboBoxMissTypeLimitsNum.Items3"), resources.GetString("comboBoxMissTypeLimitsNum.Items4"), resources.GetString("comboBoxMissTypeLimitsNum.Items5"), resources.GetString("comboBoxMissTypeLimitsNum.Items6"), resources.GetString("comboBoxMissTypeLimitsNum.Items7"), resources.GetString("comboBoxMissTypeLimitsNum.Items8"), resources.GetString("comboBoxMissTypeLimitsNum.Items9") });
+      this.comboBoxMissTypeLimitsNum.Items.AddRange(new object[] {
+            resources.GetString("comboBoxMissTypeLimitsNum.Items"),
+            resources.GetString("comboBoxMissTypeLimitsNum.Items1"),
+            resources.GetString("comboBoxMissTypeLimitsNum.Items2"),
+            resources.GetString("comboBoxMissTypeLimitsNum.Items3"),
+            resources.GetString("comboBoxMissTypeLimitsNum.Items4"),
+            resources.GetString("comboBoxMissTypeLimitsNum.Items5"),
+            resources.GetString("comboBoxMissTypeLimitsNum.Items6"),
+            resources.GetString("comboBoxMissTypeLimitsNum.Items7"),
+            resources.GetString("comboBoxMissTypeLimitsNum.Items8"),
+            resources.GetString("comboBoxMissTypeLimitsNum.Items9")});
       this.comboBoxMissTypeLimitsNum.Name = "comboBoxMissTypeLimitsNum";
       this.comboBoxMissTypeLimitsNum.SelectedIndexChanged += new System.EventHandler(this.options_ComponentChanged);
       // 
@@ -1849,7 +1988,9 @@
       // 
       // contextMenuStrip2
       // 
-      this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.toolStripMenuItemOnlineHelp, this.toolStripMenuItemCmdReference });
+      this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripMenuItemOnlineHelp,
+            this.toolStripMenuItemCmdReference});
       this.contextMenuStrip2.Name = "contextMenuStrip2";
       resources.ApplyResources(this.contextMenuStrip2, "contextMenuStrip2");
       // 
@@ -1907,7 +2048,13 @@
       // 
       // contextMenuStrip1
       // 
-      this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { this.fileNameToolStripMenuItem, this.extensionToolStripMenuItem, this.toolStripMenuItem1, this.dateToolStripMenuItem, this.ToolStripMenuItemrandomNumber, this.ToolStripMenuItemserialNumber });
+      this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileNameToolStripMenuItem,
+            this.extensionToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.dateToolStripMenuItem,
+            this.ToolStripMenuItemrandomNumber,
+            this.ToolStripMenuItemserialNumber});
       this.contextMenuStrip1.Name = "contextMenuStrip1";
       resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
       // 
@@ -1936,14 +2083,19 @@
       // 
       // ToolStripMenuItemrandomNumber
       // 
-      this.ToolStripMenuItemrandomNumber.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.ToolStripMenuItemAlphabet, this.ToolStripMenuItemNumbers, this.ToolStripMenuItemSymbols });
+      this.ToolStripMenuItemrandomNumber.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItemAlphabet,
+            this.ToolStripMenuItemNumbers,
+            this.ToolStripMenuItemSymbols});
       resources.ApplyResources(this.ToolStripMenuItemrandomNumber, "ToolStripMenuItemrandomNumber");
       this.ToolStripMenuItemrandomNumber.Name = "ToolStripMenuItemrandomNumber";
       // 
       // ToolStripMenuItemAlphabet
       // 
       this.ToolStripMenuItemAlphabet.CheckOnClick = true;
-      this.ToolStripMenuItemAlphabet.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { this.ToolStripMenuItemLowerCase, this.ToolStripMenuItemUpperCase });
+      this.ToolStripMenuItemAlphabet.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.ToolStripMenuItemLowerCase,
+            this.ToolStripMenuItemUpperCase});
       this.ToolStripMenuItemAlphabet.Name = "ToolStripMenuItemAlphabet";
       resources.ApplyResources(this.ToolStripMenuItemAlphabet, "ToolStripMenuItemAlphabet");
       this.ToolStripMenuItemAlphabet.Click += new System.EventHandler(this.InsertRandomStringOject);
@@ -2076,6 +2228,10 @@
       this.groupBoxIniFileOption.ResumeLayout(false);
       this.groupBoxIniFileOption.PerformLayout();
       this.groupBox9.ResumeLayout(false);
+      this.tabPageAdvanced.ResumeLayout(false);
+      this.panelAdvancedOption.ResumeLayout(false);
+      this.groupBox4.ResumeLayout(false);
+      this.groupBox4.PerformLayout();
       this.tabPagePasswordFileOption.ResumeLayout(false);
       this.panelPasswordFileOption.ResumeLayout(false);
       this.panelPasswordFileOption.PerformLayout();
@@ -2105,7 +2261,10 @@
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRegistryIcon)).EndInit();
       this.contextMenuStrip1.ResumeLayout(false);
       this.ResumeLayout(false);
+
     }
+
+    private System.Windows.Forms.CheckBox checkBoxPasswordFilePriority;
 
     #endregion
 
@@ -2325,5 +2484,17 @@
     private System.Windows.Forms.CheckBox checkBoxAllowSelfExecutableFileLargerThan4GiB;
     private System.Windows.Forms.CheckBox checkBoxAskSelfExecutableFileExceed4GiB;
     private System.Windows.Forms.CheckBox checkBoxNoMaximizedInTabletMode;
+    private System.Windows.Forms.TabPage tabPageAdvanced;
+    private System.Windows.Forms.Panel panelAdvancedOption;
+    private System.Windows.Forms.GroupBox groupBox4;
+    private System.Windows.Forms.Label labelOfficeFilesList;
+    private System.Windows.Forms.CheckBox checkBoxPropagateMotwOfficeFiles;
+    private System.Windows.Forms.Label labelExecutableFilesList;
+    private System.Windows.Forms.CheckBox checkBoxPropagateMotwExecutableFiles;
+    private System.Windows.Forms.CheckBox checkBoxPropagateMotwAllFiles;
+    private System.Windows.Forms.TextBox textBoxUserDefinedTypes;
+    private System.Windows.Forms.CheckBox checkBoxPropagateMotwUserDefinedTypes;
+    private System.Windows.Forms.Label label17;
+    private System.Windows.Forms.Label label8;
   }
 }

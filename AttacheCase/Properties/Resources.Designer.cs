@@ -61,7 +61,7 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
-        ///   AttachéCase4 に類似しているローカライズされた文字列を検索します。
+        ///   AttacheCase4 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string AppName {
             get {
@@ -70,7 +70,7 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
-        ///   AttachéCase4 に類似しているローカライズされた文字列を検索します。
+        ///   AttacheCase4 に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string AttacheCase {
             get {
@@ -319,6 +319,16 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   Junction or symbolic link cannot be encrypted.
+        ///The process is aborted. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageDirReparsePoint {
+            get {
+                return ResourceManager.GetString("DialogMessageDirReparsePoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   There are files or folders that be encrypted or decrypted, and they are mixed, they does not exists. So, AttacheCase can not determine which should encrypt or decrypt either. It stopped the process. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string DialogMessageDragAndDropMixedFiles {
@@ -353,6 +363,16 @@ namespace AttacheCase.Properties {
         public static string DialogMessageExecutableFile {
             get {
                 return ResourceManager.GetString("DialogMessageExecutableFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The extension was not entered correctly or is an invalid value.
+        ///Extensions must be entered as comma-separated values containing a period. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageExtensionInvalid {
+            get {
+                return ResourceManager.GetString("DialogMessageExtensionInvalid", resourceCulture);
             }
         }
         
@@ -495,6 +515,16 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   A memorized password is currently applied. Proceed with changes?
+        ///Decryption may become impossible. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageMemorizedPasswordChange {
+            get {
+                return ResourceManager.GetString("DialogMessageMemorizedPasswordChange", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   No free space on the following disk. The process is aborted. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string DialogMessageNoDiskSpace {
@@ -586,6 +616,16 @@ namespace AttacheCase.Properties {
         public static string DialogMessagePasswordFileNotFound {
             get {
                 return ResourceManager.GetString("DialogMessagePasswordFileNotFound", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   A password from the password file is currently applied. Proceed with changes?
+        ///Decryption may become impossible. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessagePasswordFromPasswordFileChange {
+            get {
+                return ResourceManager.GetString("DialogMessagePasswordFromPasswordFileChange", resourceCulture);
             }
         }
         

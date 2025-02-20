@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------- 
-// "アタッシェケース#3 ( AttachéCase#3 )" -- File encryption software.
+// "アタッシェケース4 ( AttacheCase4 )" -- File encryption software.
 // Copyright (C) 2016-2025  Mitsuhiro Hibara
 // 
 // This program is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using AttacheCase.Properties;
 using System.Text;
@@ -34,7 +35,7 @@ namespace AttacheCase
   /// <summary>
   /// Save AttacheCase setting to registry class by Singleton pattern
   /// </summary>
-  public class AppSettings
+  internal class AppSettings
   {
     [SuppressUnmanagedCodeSecurityAttribute]
     internal static class UnsafeNativeMethods
@@ -863,12 +864,7 @@ namespace AttacheCase
 
     // 常に、設定ファイル「_AtcCase.ini」を読み込む
     // Always read the setting file "_AtcCase.ini"
-    private bool _fAlwaysReadIniFile;
-    public bool fAlwaysReadIniFile
-    {
-      get => this._fAlwaysReadIniFile;
-      set => this._fAlwaysReadIniFile = value;
-    }
+    public bool fAlwaysReadIniFile { get; set; }
 
     // 毎回、確認のためのダイアログ ボックスを表示する
     // Show a dialog box to confirm always.
@@ -883,6 +879,67 @@ namespace AttacheCase
     // Show a dialog box to confirm always.
     // ver.4.0.2.7～
     public bool fShowConfirmationDialogToReadIniFile { get; set; }
+
+    #endregion
+
+    //----------------------------------------------------------------------
+    // Advanced
+    #region
+
+    // 実行ファイルの場合にMOTWが伝播する
+    // MOTW propagates in the case of executable files
+    private bool _isCheckMotwExecutableFiles;
+
+    public bool isCheckMotwExecutableFiles
+    {
+      get => this._isCheckMotwExecutableFiles;
+      set => this._isCheckMotwExecutableFiles = value;
+    }
+    public string[] MotwExecutableFilesExtensions = [".exe", ".bat", ".cmd", ".hta", ".lnk", ".msi", ".pif", ".ps1", ".scr", ".vbs"];
+
+    // Officeファイルの場合にMOTWが伝播する
+    // MOTW propagates in the case of Office files
+    private bool _isCheckMotwOfficeFiles;
+    public bool isCheckMotwOfficeFiles
+    {
+      get => this._isCheckMotwOfficeFiles;
+      set => this._isCheckMotwOfficeFiles = value;
+    }
+    public string[] MotwOfficeFilesExtensions = [
+      ".doc",".docb",".docm",".docx",".dot",".dotm",".dotx",".wbk",
+      ".ppa",".ppam",".pot",".potm",".potx",".pps",".ppsm",".ppsx",".ppt",".pptm",".pptx",".sldm",".sldx",
+      ".xls",".xlsb",".xlsm",".xlsx",".xlm",".xlt",".xltm",".xltx"
+    ];
+
+    // ユーザー定義型ファイルの場合にMOTWが伝播する
+    // MOTW propagates in the case of user defined types
+    private bool _isCheckMotwUserDefinedTypes;
+    public bool isCheckMotwUserDefinedTypes
+    {
+      get => this._isCheckMotwUserDefinedTypes;
+      set => this._isCheckMotwUserDefinedTypes = value;
+    }
+    // ユーザー定義型ファイルの拡張子リスト
+    // List of extensions for user-defined type files
+    public string[] MotwUserDefinedTypesExtensions = [];
+    // ユーザー定義型ファイルリスト
+    // User-defined file list
+    private string[] _MotwUserDefinedTypes;
+
+    public string[] MotwUserDefinedTypes
+    {
+      get => this._MotwUserDefinedTypes;
+      set => this._MotwUserDefinedTypes = value;
+    }
+
+    // すべてのファイルにMOTWが伝播する
+    // MOTW propagation to all files
+    private bool _isCheckMotwAllFiles;
+    public bool isCheckMotwAllFiles
+    {
+      get => this._isCheckMotwAllFiles;
+      set => this._isCheckMotwAllFiles = value;
+    }
 
     #endregion
 
@@ -956,6 +1013,8 @@ namespace AttacheCase
       get => this._fPasswordFileExe;
       set => this._fPasswordFileExe = value;
     }
+
+    public bool PasswordFilePriority { get; set; }
 
     #endregion
 
@@ -1161,6 +1220,7 @@ namespace AttacheCase
     //======================================================================
     private AppSettings()
     {
+      _FileList = [];
     }
 
     public AppSettings(string registryPathMyKey)
@@ -1184,7 +1244,7 @@ namespace AttacheCase
       //----------------------------------------------------------------------
       // アタッシェケース本体のある場所に設定用INIファイルがあるか？
       // Is there INI file in the location where AttacheCase Application exists?
-      string FilePath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath) ?? string.Empty, "_AtcCase.ini");
+      var FilePath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath) ?? string.Empty, "_AtcCase.ini");
       if (File.Exists(FilePath) == true)
       {
         IniFilePath = FilePath;
@@ -1449,8 +1509,17 @@ namespace AttacheCase
 
         //-----------------------------------
         // Import / Export
-        _fAlwaysReadIniFile = (string)reg.GetValue("fAlwaysReadIniFile", "0") == "1";
+        fAlwaysReadIniFile = (string)reg.GetValue("fAlwaysReadIniFile", "0") == "1";
         fShowConfirmationDialogToReadIniFile = (string)reg.GetValue("fShowConfirmationDialogToReadIniFile", "1") == "1";
+
+        //-----------------------------------
+        // Advanced
+        _isCheckMotwExecutableFiles = (string)reg.GetValue("fMotwExecutableFiles", "1") == "1";
+        _isCheckMotwOfficeFiles = (string)reg.GetValue("fMotwOfficeFiles", "1") == "1";
+        _isCheckMotwUserDefinedTypes = (string)reg.GetValue("fMotwUserDefinedTypes", "0") == "1";
+        _isCheckMotwAllFiles = (string)reg.GetValue("fMotwAllFiles", "0") == "1";
+        var value = reg.GetValue("MotwUserDefinedTypes", null);
+        _MotwUserDefinedTypes = value as string[] ?? [];
 
         //-----------------------------------
         // Password file 
@@ -1642,12 +1711,21 @@ namespace AttacheCase
 
         //----------------------------------------------------------------------
         // Import / Export
-        reg.SetValue("fAlwaysReadIniFile", _fAlwaysReadIniFile == true ? "1" : "0");
+        reg.SetValue("fAlwaysReadIniFile", fAlwaysReadIniFile == true ? "1" : "0");
         //reg.SetValue("fShowDialogToConfirmToReadIniFile", _fShowDialogToConfirmToReadIniFile == true ? "1" : "0");
         reg.SetValue("fShowConfirmationDialogToReadIniFile", fShowConfirmationDialogToReadIniFile == true ? "1" : "0");
 
         //-----------------------------------
-        //Password file
+        // Advanced
+        reg.SetValue("fMotwExecutableFiles", _isCheckMotwExecutableFiles ? "1" : "0");
+        reg.SetValue("fMotwOfficeFiles", _isCheckMotwOfficeFiles ? "1" : "0");
+        reg.SetValue("fMotwUserDefinedTypes", _isCheckMotwUserDefinedTypes ? "1" : "0");
+        reg.SetValue("fMotwAllFiles", _isCheckMotwAllFiles ? "1" : "0");
+
+        reg.SetValue("MotwUserDefinedTypes", MotwUserDefinedTypes);
+
+        //-----------------------------------
+        // Password file
         reg.SetValue("fAllowPassFile", _fAllowPassFile == true ? "1" : "0");
         reg.SetValue("fCheckPassFile", _fCheckPassFile == true ? "1" : "0");
         reg.SetValue("PassFilePath", _PassFilePath);
@@ -1658,7 +1736,7 @@ namespace AttacheCase
         reg.SetValue("fPasswordFileExe", _fPasswordFileExe == true ? "1" : "0");
 
         //-----------------------------------
-        //Camouflage Extension
+        // Camouflage Extension
         reg.SetValue("fAddCamoExt", _fAddCamoExt == true ? "1" : "0");
         reg.SetValue("CamoExt", _CamoExt);
 
@@ -1720,7 +1798,7 @@ namespace AttacheCase
       }
       else
       {
-        if (_fAlwaysReadIniFile == true)
+        if (fAlwaysReadIniFile == true)
         {
           // Read INI file
         }
@@ -1872,6 +1950,16 @@ namespace AttacheCase
       // Import / Export (depends on the registry)
       //ReadIniFile(IniFilePath, ref _fAlwaysReadIniFile, "Option", "fAlwaysReadIniFile", "0");
       //ReadIniFile(IniFilePath, ref _fShowConfirmationDialogToReadIniFile, "Option", "fShowConfirmationDialogToReadIniFile", "1");
+
+      //-----------------------------------
+      // Advanced
+      ReadIniFile(IniFilePath, ref _isCheckMotwExecutableFiles, "Option", "fMotwExecutableFiles", "1");
+      ReadIniFile(IniFilePath, ref _isCheckMotwOfficeFiles, "Option", "fMotwOfficeFiles", "1");
+      ReadIniFile(IniFilePath, ref _isCheckMotwUserDefinedTypes, "Option", "fMotwUserDefinedTypes", "0");
+      ReadIniFile(IniFilePath, ref _isCheckMotwAllFiles, "Option", "fMotwAllFiles", "0");
+      var motwUserDefinedTypesString = "";
+      ReadIniFile(IniFilePath, ref motwUserDefinedTypesString, "Option", "MotwUserDefinedTypes", "");
+      _MotwUserDefinedTypes = motwUserDefinedTypesString.Split(',');
 
       //-----------------------------------
       //Password file 
@@ -2060,6 +2148,15 @@ namespace AttacheCase
       // Import / Export ( Only this setting is written to the registry )
 
       //-----------------------------------
+      // Advanced
+      WriteIniFile(IniFilePath, _isCheckMotwExecutableFiles, "Option", "fMotwExecutableFiles");
+      WriteIniFile(IniFilePath, _isCheckMotwOfficeFiles, "Option", "fMotwOfficeFiles");
+      WriteIniFile(IniFilePath, _isCheckMotwUserDefinedTypes, "Option", "fMotwUserDefinedTypes");
+      WriteIniFile(IniFilePath, _isCheckMotwAllFiles, "Option", "fMotwAllFiles");
+
+      WriteIniFile(IniFilePath, string.Join(",", _MotwUserDefinedTypes), "Option", "MotwUserDefinedTypes");
+
+      //-----------------------------------
       //Password file
       WriteIniFile(IniFilePath, _fAllowPassFile, "Option", "fAllowPassFile");
       WriteIniFile(IniFilePath, _fCheckPassFile, "Option", "fCheckPassFile");
@@ -2104,35 +2201,35 @@ namespace AttacheCase
     /// INIファイルからの読み込み（オーバーロード）
     /// Read options from INI file ( Overload )
     /// </summary>
-    /// <param name="IniFilePath"></param>
+    /// <param name="filePath"></param>
     /// <param name="o">Option variable</param>
     /// <param name="section">INI file 'section' item</param>
     /// <param name="key">INI file 'key' item</param>
     /// <param name="defval">INI file default value</param>
     /// <returns></returns>
     //======================================================================
-    public void ReadIniFile(string IniFilePath, ref int o, string section, string key, string defval)  // Integer
+    public void ReadIniFile(string filePath, ref int o, string section, string key, string defval)  // Integer
     {
       var ResultValue = new StringBuilder(255);
-      if (UnsafeNativeMethods.GetPrivateProfileString(section, key, defval, ResultValue, 255, this.IniFilePath) > 0)
+      if (UnsafeNativeMethods.GetPrivateProfileString(section, key, defval, ResultValue, 255, filePath) > 0)
       {
         o = int.Parse(ResultValue.ToString());
       }
     }
 
-    public void ReadIniFile(string IniFilePath, ref string o, string section, string key, string defval)  // string
+    public void ReadIniFile(string filePath, ref string o, string section, string key, string defval)  // string
     {
       var ResultValue = new StringBuilder(255);
-      if (UnsafeNativeMethods.GetPrivateProfileString(section, key, defval, ResultValue, 255, IniFilePath) > 0)
+      if (UnsafeNativeMethods.GetPrivateProfileString(section, key, defval, ResultValue, 255, filePath) > 0)
       {
         o = ResultValue.ToString();
       }
     }
 
-    public void ReadIniFile(string IniFilePath, ref bool o, string section, string key, string defval)  // bool
+    public void ReadIniFile(string filePath, ref bool o, string section, string key, string defval)  // bool
     {
       var ResultValue = new StringBuilder(255);
-      if (UnsafeNativeMethods.GetPrivateProfileString(section, key, defval, ResultValue, 255, IniFilePath) > 0)
+      if (UnsafeNativeMethods.GetPrivateProfileString(section, key, defval, ResultValue, 255, filePath) > 0)
       {
         o = (ResultValue.ToString() == "1" ? true : false);
       }
@@ -2143,28 +2240,28 @@ namespace AttacheCase
     /// INIファイルへの書き込み
     /// Write options to INI file
     /// </summary>
-    /// <param name="IniFilePath">INI file path</param>
+    /// <param name="filePath">INI file path</param>
     /// <param name="section">INI file 'section' item</param>
     /// <param name="key">INI file 'key' item</param>
     /// <param name="o">Object(int, string, bool)</param>
     //======================================================================
-    public void WriteIniFile(string IniFilePath, object o, string section, string key)
+    public void WriteIniFile(string filePath, object o, string section, string key)
     {
       var value = "";
-      if (o == null)
+      switch (o)
       {
-        value = "";
-      }
-      else if (o.GetType() == typeof(bool))
-      {
-        value = (bool)o == true ? "1" : "0";
-      }
-      else if (o.GetType() == typeof(string) || o.GetType() == typeof(int))
-      {
-        value = o.ToString();
+        case null:
+          value = "";
+          break;
+        case bool b:
+          value = b == true ? "1" : "0";
+          break;
+        case string or int:
+          value = o.ToString();
+          break;
       }
 
-      UnsafeNativeMethods.WritePrivateProfileString(section, key, value, IniFilePath);
+      UnsafeNativeMethods.WritePrivateProfileString(section, key, value, filePath);
 
     }
 
@@ -2178,12 +2275,9 @@ namespace AttacheCase
     public void ReadOptionsFromXML(string FilePath)
     {
       var szr = new XmlSerializer(typeof(AppSettings));
-      using (var sr = new StreamReader(FilePath, new System.Text.UTF8Encoding(false)))
-      {
-        //XMLファイルから読み込み、逆シリアル化する
-        Instance = (AppSettings)szr.Deserialize(sr);
-      }
-
+      using var sr = new StreamReader(FilePath, new System.Text.UTF8Encoding(false));
+      //XMLファイルから読み込み、逆シリアル化する
+      Instance = (AppSettings)szr.Deserialize(sr);
     }
 
     //======================================================================
@@ -2196,12 +2290,9 @@ namespace AttacheCase
     public void SaveOptionsToXML(string FilePath)
     {
       var szr = new XmlSerializer(typeof(AppSettings));
-      using (var sw = new StreamWriter(FilePath, false, new System.Text.UTF8Encoding(false)))
-      {
-        //シリアル化し、XMLファイルに保存する
-        szr.Serialize(sw, AppSettings.Instance);
-      }
-
+      using var sw = new StreamWriter(FilePath, false, new System.Text.UTF8Encoding(false));
+      //シリアル化し、XMLファイルに保存する
+      szr.Serialize(sw, AppSettings.Instance);
     }
 
     //======================================================================
@@ -2938,13 +3029,14 @@ namespace AttacheCase
             #region
             // Allow a password file to drag and drop
             case "/pf": // パスワードにファイルの指定を許可する
-              if (value == "1")
+              switch (value)
               {
-                _fAllowPassFile = true;
-              }
-              else if (value == "0")
-              {
-                _fAllowPassFile = false;
+                case "1":
+                  _fAllowPassFile = true;
+                  break;
+                case "0":
+                  _fAllowPassFile = false;
+                  break;
               }
               break;
 
@@ -2976,13 +3068,80 @@ namespace AttacheCase
 
             // It's not issued an error message when password file doesn't exist
             case "/nomsgp": // パスワードファイルがない場合エラーを出さない
-              if (value == "1")
+              switch (value)
               {
-                _fNoErrMsgOnPassFile = true;
+                case "1":
+                  _fNoErrMsgOnPassFile = true;
+                  break;
+                case "0":
+                  _fNoErrMsgOnPassFile = false;
+                  break;
               }
-              else if (value == "0")
+              break;
+
+            #endregion
+
+            //-----------------------------------
+            // Advanced 高度
+            //-----------------------------------
+            #region 
+            case "/motwexe":
+              switch (value)
               {
-                _fNoErrMsgOnPassFile = false;
+                case "1":
+                  _isCheckMotwExecutableFiles = true;
+                  break;
+                case "0":
+                  _isCheckMotwExecutableFiles = false;
+                  break;
+              }
+              break;
+
+            case "/motwoffice":
+              switch (value)
+              {
+                case "1":
+                  _isCheckMotwOfficeFiles = true;
+                  break;
+                case "0":
+                  _isCheckMotwOfficeFiles = false;
+                  break;
+              }
+              break;
+
+            case "/motwuser":
+              switch (value)
+              {
+                case "1":
+                  _isCheckMotwUserDefinedTypes = true;
+                  break;
+                case "0":
+                  _isCheckMotwUserDefinedTypes = false;
+                  break;
+              }
+              break;
+
+            case "/motwall":
+              switch (value)
+              {
+                case "1":
+                  _isCheckMotwAllFiles = true;
+                  break;
+                case "0":
+                  _isCheckMotwAllFiles = false;
+                  break;
+              }
+              break;
+
+            case "/motwtypes":
+              if (IsValidExtensionFormat(value))
+              {
+                _MotwUserDefinedTypes = value.Split(',');
+              }
+              else
+              {
+                _isCheckMotwUserDefinedTypes = false;
+                _MotwUserDefinedTypes = null;
               }
               break;
 
@@ -3333,12 +3492,9 @@ namespace AttacheCase
     /// <param name="MyPasswordString"></param>
     /// <returns></returns>
     //======================================================================
-    private byte[] EncryptMyPassword(string MyPasswordString)
+    private static byte[] EncryptMyPassword(string MyPasswordString)
     {
-      if (MyPasswordString == null)
-      {
-        MyPasswordString = "";
-      }
+      MyPasswordString ??= "";
       // Get the drive name where the application is installed
       //アプリケーションがインストールされているドライブ名を取得
       var RootDriveName = Path.GetPathRoot(Application.ExecutablePath);
@@ -3451,7 +3607,6 @@ namespace AttacheCase
     /// </summary>
     /// <param name="FormatString"></param  >
     /// <param name="FilePath"></param>
-    /// <param name="fInit"></param>
     /// <returns></returns>
     //======================================================================
     public string getSpecifyFileNameFormat(string FormatString, string FilePath)
@@ -3605,7 +3760,6 @@ namespace AttacheCase
     /// </summary>
     /// <returns>serial number string</returns>
     //======================================================================
-    #region
     private static string GetDriveSerialNumber()
     {
       //アプリケーションがインストールされているドライブ名を取得
@@ -3629,7 +3783,6 @@ namespace AttacheCase
       }
 
     }
-    #endregion
 
     //======================================================================
     /// <summary>
@@ -3642,14 +3795,61 @@ namespace AttacheCase
     private static bool IsValidFileName(string FileName)
     {
       var containsABadCharacter = new Regex("[" + Regex.Escape(new string(Path.GetInvalidPathChars())) + "]");
-      if (containsABadCharacter.IsMatch(FileName))
+      return !containsABadCharacter.IsMatch(FileName);
+    }
+
+
+
+    /// <summary>
+    /// Validates whether the provided extension string is in a correct format.
+    /// 指定された拡張子文字列が正しい形式であるかを検証します。
+    /// </summary>
+    /// <param name="ExtensionString">
+    /// A comma-separated string of file extensions. Each extension must start with a period (.) 
+    /// followed by one or more alphanumeric characters.
+    /// カンマ区切りの拡張子文字列。各拡張子はピリオド（.）で始まり、その後に1文字以上の英数字が続く必要があります。
+    /// </param>
+    /// <returns>
+    /// <c>true</c> if all extensions in the string are valid; otherwise, <c>false</c>.
+    /// 文字列内のすべての拡張子が有効であれば<c>true</c>を返し、それ以外の場合は<c>false</c>を返します。
+    /// </returns>
+    /// <remarks>
+    /// If the validation fails, an alert dialog is displayed listing the invalid extensions.
+    /// 検証に失敗した場合、無効な拡張子をリストアップした警告ダイアログが表示されます。
+    /// </remarks>
+    public static bool IsValidExtensionFormat(string ExtensionString)
+    {
+      if (string.IsNullOrEmpty(ExtensionString)) { return false; }
+
+      // 空白を正規化して分割（連続する空白を1つの空白に置換）
+      var extensions = ExtensionString.Trim().Split([','], StringSplitOptions.RemoveEmptyEntries);
+
+      // 正規表現: ピリオドで始まり、アルファベットと数字が1文字以上続く
+      var regex = new Regex(@"^\.[a-zA-Z0-9]+$");
+
+      // 拡張子がすべて正しいかどうかをチェック
+      var allValid = extensions.All(ext => regex.IsMatch(ext));
+
+      if (allValid)
       {
-        return false;
+        // 検証成功
+        return (true);
       }
-      else
+
+      var extList = new List<string>();
+      foreach (var ext in extensions.Where(ext => !regex.IsMatch(ext)))
       {
-        return true;
+        extList.Add(ext);
       }
+
+      // The extension was not entered correctly or is an invalid value.
+      // Extensions must be entered as comma-separated values containing a period.
+      // 拡張子が正しく入力されていないか、不正な値です。
+      // 拡張子はピリオドを含むカンマ区切りで入力してください。
+      MessageBox.Show(Resources.DialogMessageExtensionInvalid + Environment.NewLine + string.Join(", ", extList),
+        Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+      return (false);
+
     }
 
     //======================================================================
@@ -3742,7 +3942,7 @@ namespace AttacheCase
         return (0);
       }
 
-      using (FileStream fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+      using (var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
       {
         if (fs.Length < 4)
         {

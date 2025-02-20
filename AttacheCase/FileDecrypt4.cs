@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------- 
-// "アタッシェケース4 ( AttachéCase4 )" -- File encryption software.
+// "アタッシェケース4 ( AttacheCase4 )" -- File encryption software.
 // Copyright (C) 2016-2025  Mitsuhiro Hibara
 //
 // * Required .NET Framework 4.6 or later
@@ -20,15 +20,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using System.IO;
-using System.Security.Cryptography;
-using System.IO.Compression;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
-using System.Windows.Controls;
-using System.Windows.Forms.VisualStyles;
+using System.Security.Cryptography;
+using System.Text;
 using System.Xml.Linq;
 #if __MACOS__
 using AppKit;
@@ -92,9 +90,9 @@ namespace AttacheCase
     // MD5 hash mismatch
     private const int CONTINUE = 7;
 
-    private byte[] GuidData = new byte[16];
+    private readonly byte[] GuidData = new byte[16];
     private byte[] RsaPassword = new byte[32];
-    private byte[] RsaEncryptedPassword = new byte[256];
+    private readonly byte[] RsaEncryptedPassword = new byte[256];
 
     private const int BUFFER_SIZE = 4096;
 
@@ -106,7 +104,7 @@ namespace AttacheCase
     private const string ATC_ENCRYPTED_TOKEN = "atc4";
 
     // Atc data size of self executable file
-    private Int64 _ExeOutSize;
+    private readonly Int64 _ExeOutSize;
     private Int64 _TotalSize;
     //private Int64 _TotalFileSize = 0;
 
@@ -224,7 +222,7 @@ namespace AttacheCase
     public int TypeAlgorism { get; } = 0;
 
     // The size of encrypted header data
-    private int _AtcHeaderSize = 0;
+    private readonly int _AtcHeaderSize;
 
     // Just this ATC file to decrypt
     public string AtcFilePath { get; }
