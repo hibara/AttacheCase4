@@ -755,7 +755,12 @@ namespace AttacheCase
     ///  復号中、同期的にダイアログボックスの表示
     ///  Synchronous display of dialog boxes during decryption
     /// </summary>
-    private readonly ManualResetEvent _busy = new System.Threading.ManualResetEvent(false);
+
+    // Form1.cs
+
+    // AutoResetEventを使用してダイアログ応答を待機
+    private readonly AutoResetEvent _dialogResponseEvent = new AutoResetEvent(false);
+
     private void CustomDialogMessageShow(int fileType, string filePath, IReadOnlyList<string> md5FileHash = null)
     {
       if (this.InvokeRequired)
@@ -767,10 +772,8 @@ namespace AttacheCase
       switch (fileType)
       {
         // 上書きの確認ダイアログ表示とユーザー応答内容の受け渡し
-        // Show dialog for confirming to overwrite, and passing user command.
         case 0:
         case 1:
-
           if (decryption2 != null)
           {
             TempOverWriteOption = decryption2.TempOverWriteOption;
@@ -787,6 +790,7 @@ namespace AttacheCase
           if (AppSettings.Instance.fDecryptConfirmOverwrite == false)
           {
             TempOverWriteOption = OVERWRITE_ALL;
+            _dialogResponseEvent.Set();
             return;
           }
 
@@ -794,62 +798,46 @@ namespace AttacheCase
           {
             case OVERWRITE_ALL:
             case SKIP_ALL:
+              _dialogResponseEvent.Set();
               return;
           }
 
-          if (!bkg.IsBusy)
+          using (var frm4 = new Form4(fileType == 0 ? "ConfirmToOverwriteDir" : "ConfirmToOverwriteFile",
+               (fileType == 0 ? Resources.labelConfirmToOverwriteDir : Resources.labelConfirmToOverwriteFile)
+               + Environment.NewLine + filePath))
           {
-            bkg.RunWorkerAsync();
-            // Unblock the worker 
-            _busy.Set();
+            frm4.TopMost = true;
+            // メインフォームの中央に表示
+            // Display dialog in center of main form
+            frm4.StartPosition = FormStartPosition.Manual;
+            frm4.Location = new Point(
+                this.Location.X + this.Width / 2 - frm4.Width / 2,
+                this.Location.Y + this.Height / 2 - frm4.Height / 2);
+
+            // Deactivateイベントハンドラの登録
+            frm4.Deactivate += (s, e) =>
+            {
+              ForceForegroundWindow(((Form)s).Handle);
+            };
+
+            frm4.ShowDialog(this);
+
+            // Show dialog for confirming to overwrite
+            TempOverWriteOption = frm4.OverWriteOption;
+
+            if (decryption2 != null)
+            {
+              decryption2.TempOverWriteOption = TempOverWriteOption;
+            }
+            else if (decryption3 != null)
+            {
+              decryption3.TempOverWriteOption = TempOverWriteOption;
+            }
+            else
+            {
+              decryption4.TempOverWriteOption = TempOverWriteOption;
+            }
           }
-
-          // Show dialog for confirming to overwrite
-          Form4 frm4;
-          if (fileType == 0)
-          {
-            frm4 = new Form4("ConfirmToOverwriteDir", Resources.labelConfirmToOverwriteDir + Environment.NewLine + filePath);
-          }
-          else
-          {
-            frm4 = new Form4("ConfirmToOverwriteFile", Resources.labelConfirmToOverwriteFile + Environment.NewLine + filePath);
-          }
-
-          frm4.TopMost = true;
-          frm4.StartPosition = FormStartPosition.Manual;
-
-          frm4.Location = new Point(
-            this.Location.X + this.Width / 2 - frm4.Width / 2,
-            this.Location.Y + this.Height / 2 - frm4.Height / 2
-          );
-
-          // Deactivateイベントハンドラの登録
-          // Register Deactivate event handler
-          frm4.Deactivate += (s, e) =>
-          {
-            // ウィンドウを強制的に前面に出す
-            // Forcing a window to the front
-            ForceForegroundWindow(((Form)s).Handle);
-          };
-
-          frm4.ShowDialog(this);
-
-          TempOverWriteOption = frm4.OverWriteOption;
-
-          if (decryption2 != null)
-          {
-            decryption2.TempOverWriteOption = TempOverWriteOption;
-          }
-          else if (decryption3 != null)
-          {
-            decryption3.TempOverWriteOption = TempOverWriteOption;
-          }
-          else
-          {
-            decryption4.TempOverWriteOption = TempOverWriteOption;
-          }
-
-          frm4.Dispose();
 
           if (TempOverWriteOption is USER_CANCELED or SKIP_ALL)
           {
@@ -857,10 +845,10 @@ namespace AttacheCase
             {
               bkg.CancelAsync();
             }
-
             cts?.Cancel();
           }
 
+          _dialogResponseEvent.Set();
           break;
 
         // MD5ハッシュが異なる時のダイアログメッセージ。詳細表示し続行するかを問い合わせる
@@ -943,7 +931,7 @@ namespace AttacheCase
               // Basically, anything other than "Continue" will return "Cancel" and bring the process to a halt
               decryption4.TempMd5HashMismatchContinueOption = USER_CANCELED;
 
-              if (bkg != null && bkg.IsBusy)
+              if (bkg is { IsBusy: true })
               {
                 bkg.CancelAsync();
               }
@@ -955,16 +943,19 @@ namespace AttacheCase
           }
 
           break;
+
       }
-
-      _busy.Reset();
-
     }
+
+
+
+
 
     //======================================================================
     // 【Decryption】不正なパスエラー表示と、ユーザー応答内容の受け渡し
     //  Invalid path error indication and return of user response contents.
     //======================================================================
+    private readonly ManualResetEvent _busy = new System.Threading.ManualResetEvent(false);
     private void DialogMessageInvalidChar(string FilePath)
     {
       if (!bkg.IsBusy)
@@ -1037,31 +1028,29 @@ namespace AttacheCase
       var result = new byte[32];
       //byte[] header = new byte[12];
 
-      using (var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read))
+      using var fs = new FileStream(FilePath, FileMode.Open, FileAccess.Read);
+      //SHA1CryptoServiceProviderオブジェクト
+      using (var sha1 = new SHA1CryptoServiceProvider())
       {
-        //SHA1CryptoServiceProviderオブジェクト
-        using (var sha1 = new SHA1CryptoServiceProvider())
+        var array_bytes = sha1.ComputeHash(fs);
+        for (var i = 0; i < 20; i++)
         {
-          var array_bytes = sha1.ComputeHash(fs);
-          for (var i = 0; i < 20; i++)
-          {
-            result[i] = array_bytes[i];
-          }
+          result[i] = array_bytes[i];
         }
-
-        fs.Seek(0, SeekOrigin.Begin);
-        while (fs.Read(buffer, 0, 255) > 0)
-        {
-          // 最後の255バイトを取得しようとしたデータから残り12bytesのパスワードを埋める
-          // Fill the rest data with trying to get the last 255 bytes.
-        }
-
-        for (var i = 0; i < 12; i++)
-        {
-          result[20 + i] = buffer[i];
-        }
-
       }
+
+      fs.Seek(0, SeekOrigin.Begin);
+      while (fs.Read(buffer, 0, 255) > 0)
+      {
+        // 最後の255バイトを取得しようとしたデータから残り12bytesのパスワードを埋める
+        // Fill the rest data with trying to get the last 255 bytes.
+      }
+
+      for (var i = 0; i < 12; i++)
+      {
+        result[20 + i] = buffer[i];
+      }
+
       //string text = System.Text.Encoding.ASCII.GetString(result);
       return (result);
 
@@ -2292,7 +2281,8 @@ namespace AttacheCase
     private void StartProcess()
     {
       var ProcessType = 0;
-      TempOverWriteOption = -1;
+
+      TempOverWriteOption = -1;  // 必ず初期化する
 
       labelPassword.Text = Resources.labelPassword;
       labelInputPasswordAgain.Text = Resources.labelInputPasswordAgainToConfirm;
@@ -4206,11 +4196,10 @@ namespace AttacheCase
 
             if (TempOverWriteOption == SKIP_ALL)
             {
-              FileIndex = AppSettings.Instance.FileList.Count;
-              EncryptionProcess();
               return;
             }
-            else if (TempOverWriteOption == OVERWRITE_ALL)
+
+            if (TempOverWriteOption == OVERWRITE_ALL)
             {
               // Overwrite ( Create )
             }
@@ -4222,7 +4211,7 @@ namespace AttacheCase
               // Question
               // The following file already exists. Do you overwrite the files to save?
               using (var frm4 = new Form4("ConfirmToOverwriteAtc",
-                Resources.labelConfirmToOverwriteFile + Environment.NewLine + AtcFilePath))
+                       Resources.labelConfirmToOverwriteFile + Environment.NewLine + AtcFilePath))
               {
                 frm4.ShowDialog(this);
 

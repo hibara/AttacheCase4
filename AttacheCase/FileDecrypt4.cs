@@ -960,8 +960,6 @@ namespace AttacheCase
                     //----------------------------------------------------------------------
                     if (outfs == null)
                     {
-                      var processPath = string.Empty;
-
                       //-----------------------------------
                       // Create file or directories.
                       if (FileIndex > FileDataList.Count - 1)
@@ -974,6 +972,7 @@ namespace AttacheCase
                         //-----------------------------------
                         // Create directory
                         //-----------------------------------
+                        string processPath;
                         if (FileDataList[FileIndex].FilePath.EndsWith("\\") ||
                             FileDataList[FileIndex].FilePath.EndsWith("/"))
                         {
@@ -1011,33 +1010,33 @@ namespace AttacheCase
                               // Show dialog of confirming to overwrite. 
                               dialog(0, processPath, null);
 
-                              // Cancel
-                              if (TempOverWriteOption == USER_CANCELED)
+                              switch (TempOverWriteOption)
                               {
-                                ReturnCode = USER_CANCELED;
-                                return (false);
-                              }
-                              else if (TempOverWriteOption == OVERWRITE || TempOverWriteOption == OVERWRITE_ALL)
-                              {
-                                // Overwrite ( New create )
-                              }
-                              // Skip, or Skip All
-                              else if (TempOverWriteOption == SKIP_ALL)
-                              {
-                                fSkip = true;
-                                ReturnCode = DECRYPT_SUCCEEDED;
-                                return (true);
-                              }
-                              else if (TempOverWriteOption == SKIP)
-                              {
-                                fSkip = true;
-                              }
-                              else if (TempOverWriteOption is KEEP_NEWER or KEEP_NEWER_ALL)
-                              { // New file?
-                                if (di.LastWriteTime > FileDataList[FileIndex].LastWriteDateTime)
-                                {
+                                // Cancel
+                                case USER_CANCELED:
+                                  ReturnCode = USER_CANCELED;
+                                  return (false);
+                                case OVERWRITE or OVERWRITE_ALL:
+                                  // Overwrite ( New create )
+                                  break;
+                                // Skip, or Skip All
+                                case SKIP_ALL:
                                   fSkip = true;
-                                }
+                                  ReturnCode = DECRYPT_SUCCEEDED;
+                                  return (true);
+                                case SKIP:
+                                  fSkip = true;
+                                  break;
+                                case KEEP_NEWER or KEEP_NEWER_ALL:
+                                  {
+                                    // New file?
+                                    if (di.LastWriteTime > FileDataList[FileIndex].LastWriteDateTime)
+                                    {
+                                      fSkip = true;
+                                    }
+
+                                    break;
+                                  }
                               }
                             }
 
@@ -1102,56 +1101,62 @@ namespace AttacheCase
                             }
                             else
                             {
-                              // Temporary option for overwriting
-                              // private const int USER_CANCELED  = -1;
-                              // private const int OVERWRITE      = 1;
-                              // private const int OVERWRITE_ALL  = 2;
-                              // private const int KEEP_NEWER     = 3;
-                              // private const int KEEP_NEWER_ALL = 4;
-                              // private const int SKIP           = 5;
-                              // private const int SKIP_ALL       = 6;
-                              if (TempOverWriteOption == OVERWRITE_ALL)
+                              switch (TempOverWriteOption)
                               {
-                                // Overwrite ( New create )
-                              }
-                              else if (TempOverWriteOption == SKIP_ALL)
-                              {
-                                fSkip = true;
-                              }
-                              else if (TempOverWriteOption == KEEP_NEWER_ALL)
-                              {
-                                if (fi.LastWriteTime > FileDataList[FileIndex].LastWriteDateTime)
-                                {
-                                  fSkip = true;
-                                }
-                              }
-                              else
-                              {
-                                // Show dialog of confirming to overwrite. 
-                                dialog(1, processPath, null);
-
-                                // Cancel
-                                if (TempOverWriteOption == USER_CANCELED)
-                                {
-                                  ReturnCode = USER_CANCELED;
-                                  return (false);
-                                }
-                                else if (TempOverWriteOption is OVERWRITE or OVERWRITE_ALL)
-                                {
+                                // Temporary option for overwriting
+                                // private const int USER_CANCELED  = -1;
+                                // private const int OVERWRITE      = 1;
+                                // private const int OVERWRITE_ALL  = 2;
+                                // private const int KEEP_NEWER     = 3;
+                                // private const int KEEP_NEWER_ALL = 4;
+                                // private const int SKIP           = 5;
+                                // private const int SKIP_ALL       = 6;
+                                case OVERWRITE_ALL:
                                   // Overwrite ( New create )
-                                }
-                                // Skip, or Skip All
-                                else if (TempOverWriteOption is SKIP or SKIP_ALL)
-                                {
+                                  break;
+                                case SKIP_ALL:
                                   fSkip = true;
-                                }
-                                else if (TempOverWriteOption is KEEP_NEWER or KEEP_NEWER_ALL)
-                                { // New file?
-                                  if (fi.LastWriteTime > FileDataList[FileIndex].LastWriteDateTime)
+                                  break;
+                                case KEEP_NEWER_ALL:
                                   {
-                                    fSkip = true; // old directory
+                                    if (fi.LastWriteTime > FileDataList[FileIndex].LastWriteDateTime)
+                                    {
+                                      fSkip = true;
+                                    }
+
+                                    break;
                                   }
-                                }
+                                default:
+                                  {
+                                    // Show dialog of confirming to overwrite. 
+                                    dialog(1, processPath, null);
+
+                                    switch (TempOverWriteOption)
+                                    {
+                                      // Cancel
+                                      case USER_CANCELED:
+                                        ReturnCode = USER_CANCELED;
+                                        return (false);
+                                      case OVERWRITE or OVERWRITE_ALL:
+                                        // Overwrite ( New create )
+                                        break;
+                                      // Skip, or Skip All
+                                      case SKIP or SKIP_ALL:
+                                        fSkip = true;
+                                        break;
+                                      case KEEP_NEWER or KEEP_NEWER_ALL:
+                                        {
+                                          // New file?
+                                          if (fi.LastWriteTime > FileDataList[FileIndex].LastWriteDateTime)
+                                          {
+                                            fSkip = true; // old directory
+                                          }
+                                          break;
+                                        }
+                                    }
+
+                                    break;
+                                  }
                               }
 
                               if (fSkip == false)
@@ -1164,7 +1169,6 @@ namespace AttacheCase
                                 //すべての属性を解除
                                 File.SetAttributes(processPath, FileAttributes.Normal);
                               }
-
                             }
 
                           }// end if ( File.Exists );
@@ -1205,7 +1209,6 @@ namespace AttacheCase
                           FileSize = 0;
 
                         }
-
                       }
 
                     }// end if (outfs == null);

@@ -2693,7 +2693,7 @@ namespace AttacheCase
               break;
 
             // Confirm overwriting when same filename exists 
-            case "/ow": // 同名ファイルの上書きを確認するか（確認無で上書きするか？）
+            case "/ow": // 同名ファイルの上書きを確認するか
               if (value == "1")
               {
                 _fEncryptConfirmOverwrite = true;

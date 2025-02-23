@@ -103,30 +103,31 @@
       // 
       // panelOuter
       // 
-      this.panelOuter.Controls.Add(this.tabControl1);
       resources.ApplyResources(this.panelOuter, "panelOuter");
+      this.panelOuter.Controls.Add(this.tabControl1);
       this.panelOuter.Name = "panelOuter";
       // 
       // tabControl1
       // 
+      resources.ApplyResources(this.tabControl1, "tabControl1");
       this.tabControl1.Controls.Add(this.tabPageInputPassword);
       this.tabControl1.Controls.Add(this.tabPageOverwriteConfirm);
       this.tabControl1.Controls.Add(this.tabPageAskEncryptOrDecrypt);
       this.tabControl1.Controls.Add(this.tabPageInvalidChar);
       this.tabControl1.Controls.Add(this.tabPageConfirmToReadIniFile);
-      resources.ApplyResources(this.tabControl1, "tabControl1");
       this.tabControl1.Name = "tabControl1";
       this.tabControl1.SelectedIndex = 0;
       // 
       // tabPageInputPassword
       // 
-      this.tabPageInputPassword.Controls.Add(this.panelInputPassword);
       resources.ApplyResources(this.tabPageInputPassword, "tabPageInputPassword");
+      this.tabPageInputPassword.Controls.Add(this.panelInputPassword);
       this.tabPageInputPassword.Name = "tabPageInputPassword";
       this.tabPageInputPassword.UseVisualStyleBackColor = true;
       // 
       // panelInputPassword
       // 
+      resources.ApplyResources(this.panelInputPassword, "panelInputPassword");
       this.panelInputPassword.Controls.Add(this.checkBoxNotMaskEncryptedPassword);
       this.panelInputPassword.Controls.Add(this.labelPasswordValid);
       this.panelInputPassword.Controls.Add(this.pictureBoxPasswordValid);
@@ -136,7 +137,6 @@
       this.panelInputPassword.Controls.Add(this.textBoxPassword);
       this.panelInputPassword.Controls.Add(this.buttonPasswordCancel);
       this.panelInputPassword.Controls.Add(this.buttonPasswordOK);
-      resources.ApplyResources(this.panelInputPassword, "panelInputPassword");
       this.panelInputPassword.Name = "panelInputPassword";
       // 
       // checkBoxNotMaskEncryptedPassword
@@ -196,19 +196,19 @@
       // 
       // tabPageOverwriteConfirm
       // 
-      this.tabPageOverwriteConfirm.Controls.Add(this.panelOverwriteConfirm);
       resources.ApplyResources(this.tabPageOverwriteConfirm, "tabPageOverwriteConfirm");
+      this.tabPageOverwriteConfirm.Controls.Add(this.panelOverwriteConfirm);
       this.tabPageOverwriteConfirm.Name = "tabPageOverwriteConfirm";
       this.tabPageOverwriteConfirm.UseVisualStyleBackColor = true;
       // 
       // panelOverwriteConfirm
       // 
+      resources.ApplyResources(this.panelOverwriteConfirm, "panelOverwriteConfirm");
       this.panelOverwriteConfirm.Controls.Add(this.splitButton2);
       this.panelOverwriteConfirm.Controls.Add(this.splitButton1);
       this.panelOverwriteConfirm.Controls.Add(this.buttonOverwriteCancel);
       this.panelOverwriteConfirm.Controls.Add(this.labelMessageText);
       this.panelOverwriteConfirm.Controls.Add(this.pictureBoxQuestionIcon);
-      resources.ApplyResources(this.panelOverwriteConfirm, "panelOverwriteConfirm");
       this.panelOverwriteConfirm.Name = "panelOverwriteConfirm";
       // 
       // splitButton2
@@ -221,22 +221,22 @@
       // 
       // contextMenuStrip2
       // 
+      resources.ApplyResources(this.contextMenuStrip2, "contextMenuStrip2");
       this.contextMenuStrip2.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItemSkip,
             this.ToolStripMenuItemSkipAll});
       this.contextMenuStrip2.Name = "contextMenuStrip2";
-      resources.ApplyResources(this.contextMenuStrip2, "contextMenuStrip2");
       // 
       // ToolStripMenuItemSkip
       // 
-      this.ToolStripMenuItemSkip.Name = "ToolStripMenuItemSkip";
       resources.ApplyResources(this.ToolStripMenuItemSkip, "ToolStripMenuItemSkip");
+      this.ToolStripMenuItemSkip.Name = "ToolStripMenuItemSkip";
       this.ToolStripMenuItemSkip.Click += new System.EventHandler(this.ToolStripMenuItemSkip_Click);
       // 
       // ToolStripMenuItemSkipAll
       // 
-      this.ToolStripMenuItemSkipAll.Name = "ToolStripMenuItemSkipAll";
       resources.ApplyResources(this.ToolStripMenuItemSkipAll, "ToolStripMenuItemSkipAll");
+      this.ToolStripMenuItemSkipAll.Name = "ToolStripMenuItemSkipAll";
       this.ToolStripMenuItemSkipAll.Click += new System.EventHandler(this.ToolStripMenuItemSkipAll_Click);
       // 
       // splitButton1
@@ -249,6 +249,7 @@
       // 
       // contextMenuStrip1
       // 
+      resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
       this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.ToolStripMenuItemOverwrite,
             this.ToolStripMenuItemOverwriteAll,
@@ -256,35 +257,34 @@
             this.ToolStripMenuItemKeepNewer,
             this.ToolStripMenuItemkeepNewerAll});
       this.contextMenuStrip1.Name = "contextMenuStrip1";
-      resources.ApplyResources(this.contextMenuStrip1, "contextMenuStrip1");
       // 
       // ToolStripMenuItemOverwrite
       // 
-      this.ToolStripMenuItemOverwrite.Name = "ToolStripMenuItemOverwrite";
       resources.ApplyResources(this.ToolStripMenuItemOverwrite, "ToolStripMenuItemOverwrite");
+      this.ToolStripMenuItemOverwrite.Name = "ToolStripMenuItemOverwrite";
       this.ToolStripMenuItemOverwrite.Click += new System.EventHandler(this.ToolStripMenuItemOverwrite_Click);
       // 
       // ToolStripMenuItemOverwriteAll
       // 
-      this.ToolStripMenuItemOverwriteAll.Name = "ToolStripMenuItemOverwriteAll";
       resources.ApplyResources(this.ToolStripMenuItemOverwriteAll, "ToolStripMenuItemOverwriteAll");
+      this.ToolStripMenuItemOverwriteAll.Name = "ToolStripMenuItemOverwriteAll";
       this.ToolStripMenuItemOverwriteAll.Click += new System.EventHandler(this.ToolStripMenuItemOverwriteAll_Click);
       // 
       // toolStripMenuItem1
       // 
-      this.toolStripMenuItem1.Name = "toolStripMenuItem1";
       resources.ApplyResources(this.toolStripMenuItem1, "toolStripMenuItem1");
+      this.toolStripMenuItem1.Name = "toolStripMenuItem1";
       // 
       // ToolStripMenuItemKeepNewer
       // 
-      this.ToolStripMenuItemKeepNewer.Name = "ToolStripMenuItemKeepNewer";
       resources.ApplyResources(this.ToolStripMenuItemKeepNewer, "ToolStripMenuItemKeepNewer");
+      this.ToolStripMenuItemKeepNewer.Name = "ToolStripMenuItemKeepNewer";
       this.ToolStripMenuItemKeepNewer.Click += new System.EventHandler(this.ToolStripMenuItemKeepNewer_Click);
       // 
       // ToolStripMenuItemkeepNewerAll
       // 
-      this.ToolStripMenuItemkeepNewerAll.Name = "ToolStripMenuItemkeepNewerAll";
       resources.ApplyResources(this.ToolStripMenuItemkeepNewerAll, "ToolStripMenuItemkeepNewerAll");
+      this.ToolStripMenuItemkeepNewerAll.Name = "ToolStripMenuItemkeepNewerAll";
       this.ToolStripMenuItemkeepNewerAll.Click += new System.EventHandler(this.ToolStripMenuItemkeepNewerAll_Click);
       // 
       // buttonOverwriteCancel
@@ -307,19 +307,19 @@
       // 
       // tabPageAskEncryptOrDecrypt
       // 
-      this.tabPageAskEncryptOrDecrypt.Controls.Add(this.panelAskEncryptOrDecrypt);
       resources.ApplyResources(this.tabPageAskEncryptOrDecrypt, "tabPageAskEncryptOrDecrypt");
+      this.tabPageAskEncryptOrDecrypt.Controls.Add(this.panelAskEncryptOrDecrypt);
       this.tabPageAskEncryptOrDecrypt.Name = "tabPageAskEncryptOrDecrypt";
       this.tabPageAskEncryptOrDecrypt.UseVisualStyleBackColor = true;
       // 
       // panelAskEncryptOrDecrypt
       // 
+      resources.ApplyResources(this.panelAskEncryptOrDecrypt, "panelAskEncryptOrDecrypt");
       this.panelAskEncryptOrDecrypt.Controls.Add(this.buttonAskEncryptOrDecryptCancel);
       this.panelAskEncryptOrDecrypt.Controls.Add(this.buttonDecrypt);
       this.panelAskEncryptOrDecrypt.Controls.Add(this.buttonEncrypt);
       this.panelAskEncryptOrDecrypt.Controls.Add(this.labelAskEncryptOrDecrypt);
       this.panelAskEncryptOrDecrypt.Controls.Add(this.pictureBox1);
-      resources.ApplyResources(this.panelAskEncryptOrDecrypt, "panelAskEncryptOrDecrypt");
       this.panelAskEncryptOrDecrypt.Name = "panelAskEncryptOrDecrypt";
       // 
       // buttonAskEncryptOrDecryptCancel
@@ -356,18 +356,18 @@
       // 
       // tabPageInvalidChar
       // 
-      this.tabPageInvalidChar.Controls.Add(this.panelInvalidChar);
       resources.ApplyResources(this.tabPageInvalidChar, "tabPageInvalidChar");
+      this.tabPageInvalidChar.Controls.Add(this.panelInvalidChar);
       this.tabPageInvalidChar.Name = "tabPageInvalidChar";
       this.tabPageInvalidChar.UseVisualStyleBackColor = true;
       // 
       // panelInvalidChar
       // 
+      resources.ApplyResources(this.panelInvalidChar, "panelInvalidChar");
       this.panelInvalidChar.Controls.Add(this.buttonInvalidCharYes);
       this.panelInvalidChar.Controls.Add(this.buttonInvalidCharCancel);
       this.panelInvalidChar.Controls.Add(this.labelInvalidChar);
       this.panelInvalidChar.Controls.Add(this.pictureBox2);
-      resources.ApplyResources(this.panelInvalidChar, "panelInvalidChar");
       this.panelInvalidChar.Name = "panelInvalidChar";
       // 
       // buttonInvalidCharYes
@@ -397,20 +397,20 @@
       // 
       // tabPageConfirmToReadIniFile
       // 
-      this.tabPageConfirmToReadIniFile.Controls.Add(this.panelConfirmToReadIniFile);
       resources.ApplyResources(this.tabPageConfirmToReadIniFile, "tabPageConfirmToReadIniFile");
+      this.tabPageConfirmToReadIniFile.Controls.Add(this.panelConfirmToReadIniFile);
       this.tabPageConfirmToReadIniFile.Name = "tabPageConfirmToReadIniFile";
       this.tabPageConfirmToReadIniFile.UseVisualStyleBackColor = true;
       // 
       // panelConfirmToReadIniFile
       // 
+      resources.ApplyResources(this.panelConfirmToReadIniFile, "panelConfirmToReadIniFile");
       this.panelConfirmToReadIniFile.Controls.Add(this.labelConfirmToReadIniFileAlert);
       this.panelConfirmToReadIniFile.Controls.Add(this.labelIniFilePath);
       this.panelConfirmToReadIniFile.Controls.Add(this.buttonConfirmToReadIniFileYes);
       this.panelConfirmToReadIniFile.Controls.Add(this.buttonConfirmToReadIniFileNo);
       this.panelConfirmToReadIniFile.Controls.Add(this.labelConfirmToReadIniFile);
       this.panelConfirmToReadIniFile.Controls.Add(this.pictureBox3);
-      resources.ApplyResources(this.panelConfirmToReadIniFile, "panelConfirmToReadIniFile");
       this.panelConfirmToReadIniFile.Name = "panelConfirmToReadIniFile";
       // 
       // labelConfirmToReadIniFileAlert

@@ -117,1581 +117,1578 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="&gt;&gt;ToolStripMenuItemOverwriteAll.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;buttonPasswordOK.Name" xml:space="preserve">
+    <value>buttonPasswordOK</value>
+  </data>
+  <data name="&gt;&gt;labelInvalidChar.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="tabPageInvalidChar.Size" type="System.Drawing.Size, System.Drawing">
+    <value>485, 176</value>
+  </data>
+  <data name="buttonInvalidCharYes.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 32</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="checkBoxNotMaskEncryptedPassword.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+  <data name="textBoxRePassword.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Left, Right</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="checkBoxNotMaskEncryptedPassword.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="tabPageAskEncryptOrDecrypt.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="checkBoxNotMaskEncryptedPassword.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="checkBoxNotMaskEncryptedPassword.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="buttonConfirmToReadIniFileNo.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="checkBoxNotMaskEncryptedPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>166, 12</value>
+  <data name="textBoxRePassword.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
   </data>
-  <data name="checkBoxNotMaskEncryptedPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>228, 20</value>
+  <data name="&gt;&gt;panelInputPassword.Parent" xml:space="preserve">
+    <value>tabPageInputPassword</value>
   </data>
-  <data name="checkBoxNotMaskEncryptedPassword.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
-  </data>
-  <data name="checkBoxNotMaskEncryptedPassword.Text" xml:space="preserve">
-    <value>Not mask password character</value>
-  </data>
-  <data name="checkBoxNotMaskEncryptedPassword.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleRight</value>
-  </data>
-  <data name="&gt;&gt;checkBoxNotMaskEncryptedPassword.Name" xml:space="preserve">
-    <value>checkBoxNotMaskEncryptedPassword</value>
-  </data>
-  <data name="&gt;&gt;checkBoxNotMaskEncryptedPassword.Type" xml:space="preserve">
-    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;checkBoxNotMaskEncryptedPassword.Parent" xml:space="preserve">
-    <value>panelInputPassword</value>
-  </data>
-  <data name="&gt;&gt;checkBoxNotMaskEncryptedPassword.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;tabControl1.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="labelPasswordValid.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Left, Right</value>
+  <data name="&gt;&gt;textBoxRePassword.ZOrder" xml:space="preserve">
+    <value>5</value>
   </data>
-  <data name="labelPasswordValid.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="&gt;&gt;splitButton1.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
-  <data name="labelPasswordValid.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+  <data name="&gt;&gt;buttonDecrypt.Name" xml:space="preserve">
+    <value>buttonDecrypt</value>
+  </data>
+  <data name="&gt;&gt;contextMenuStrip1.Name" xml:space="preserve">
+    <value>contextMenuStrip1</value>
+  </data>
+  <data name="splitButton1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="labelPasswordValid.Location" type="System.Drawing.Point, System.Drawing">
-    <value>43, 134</value>
+  <data name="buttonInvalidCharCancel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="labelPasswordValid.Size" type="System.Drawing.Size, System.Drawing">
     <value>97, 12</value>
   </data>
-  <data name="labelPasswordValid.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
+  <data name="&gt;&gt;checkBoxNotMaskEncryptedPassword.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="labelPasswordValid.Text" xml:space="preserve">
-    <value>Password is valid.</value>
+  <data name="buttonEncrypt.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="tabControl1.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="buttonDecrypt.Location" type="System.Drawing.Point, System.Drawing">
+    <value>259, 126</value>
+  </data>
+  <data name="&gt;&gt;tabPageAskEncryptOrDecrypt.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="&gt;&gt;ToolStripMenuItemKeepNewer.Name" xml:space="preserve">
+    <value>ToolStripMenuItemKeepNewer</value>
+  </data>
+  <data name="&gt;&gt;splitButton2.Parent" xml:space="preserve">
+    <value>panelOverwriteConfirm</value>
   </data>
   <data name="labelPasswordValid.Visible" type="System.Boolean, mscorlib">
     <value>False</value>
   </data>
-  <data name="&gt;&gt;labelPasswordValid.Name" xml:space="preserve">
-    <value>labelPasswordValid</value>
+  <data name="panelOverwriteConfirm.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
-  <data name="&gt;&gt;labelPasswordValid.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="labelInvalidChar.Text" xml:space="preserve">
+    <value>labelInvalidChar</value>
   </data>
-  <data name="&gt;&gt;labelPasswordValid.Parent" xml:space="preserve">
-    <value>panelInputPassword</value>
+  <data name="labelInvalidChar.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
   </data>
-  <data name="&gt;&gt;labelPasswordValid.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="buttonInvalidCharYes.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
   </data>
-  <data name="pictureBoxPasswordValid.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Left</value>
+  <data name="&gt;&gt;panelOverwriteConfirm.Parent" xml:space="preserve">
+    <value>tabPageOverwriteConfirm</value>
   </data>
-  <data name="pictureBoxPasswordValid.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-      iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
-      dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAQHSURBVDhPbVVtT5NnGDVZ6D4Qwm8YkECUBbIXaGAb
-      SEk2bIOjhTLb4jBAHZS+YSaCUA1LFBAorOp0cVumSzeDfmsGCEz4gGwCbk5oozBbtKRAYWVAR6GDs/u6
-      bRc7OMlp7ue6zjnP2/Xc3bcXAAgY5YxWRifjJuMaoyNUK2IUhLQR3AVWLGCcHhwchFqtRkJCAgQCASet
-      qTYwMMAkmGaUMu4dyA5eYWxxOBzIzs5Gek4a6q7WwvrkBu4EfuSkNdWEonSuIS15Qt5dgS1DQ0OIiYmB
-      sdOAnm0bbm/fhHX7Om5sf8NJa6pRz9ip51rykDcikC0K6WyxsbEwWRvR/c8P+Cp4FReDnTAHW9G21czZ
-      vtGMC97z6Hh+Ad8uf43G7xq4J3SlhTyQ/Qh2dnaeC4VCaM0aWLeuw7JpxrnNJpwNnEZj4BROB05yfuox
-      oH2iFVOeSVgedOGa9wr3kJdluCmLApX9/f1IE72Nm5tWmDfaYPq7Hif9Najx62D0a2HwV0O3UoXS+yq4
-      vPTSgUnPIzS5znAPeSmDQUWB3RUVFdBd1uLShgUmfz306xpUrlXg+FrZC66W4egfClhGPycTR/1wHWo9
-      J7iHvJTBcIsCXfHx8eic6sC59c+gX63GsZWPcXRFiZIVBadivhjyIRl86z4yYcI1DunYh9D5NNxjnmoH
-      ZVAWBQZoxq74LqPuz1qUzCqQ7xAj3ymGdPEwpN7DyHv4Pr7/leb5BaoHq1DgzEeZrxT1f53CF75LfE4Z
-      NilwlV5/h6cNmtlK1IwaMTY3BvVABd67l4mDD7NQ1CNDcDtIBtx3/sLrYs8HOLJUjBqfAV3LXRGBjxMT
-      E3FmohHl9jKMu8epwfGzcxSqbhXuOu6GKsCxO6V453EGcudzULgohX5Zh6bfzyIuLo7a/Ja7S0pKUP5l
-      OTQzlTDda8TS2hI1d2H06SheHz6AtNm3kDX3LqTzBTixZOReymDgL0XZ29uL1NxUNCw0QDYlhahHBNuU
-      jQQRKO6RY//kfrz57A1ku7NwxPMRTMsmpIpS0NfXRxI+Nv8NdlFzEaoXNMibyUPqcAqq+ivhXfWSECPO
-      EcT99BqSnx6A8Fk6JHMSVC9qIG+RvzzYr4Y/vaLwp6e6poJ6Xg2xS4y0B2nIsGXANmODcliJlEcpyJzN
-      hMQt4RrSksdut9M5aUvjeRzsoDW8ORScL4B+QQeFW4FDTw4h57eDyLWLIHFJoJhTwLCg55qXNodWCvt/
-      IG1BFrpSuoXknGTIzDJUjn0Cg9sArVOL4yNqXqMeaUKbwsWQNzIwDFaUsecxTQ+ZPicah6ioKERHRyMp
-      KYnXqEcapi0M2XjYnoEE1qApVTLeYqTdYCtEWlONevwvIAx2zIh9/wLzHheE+BvHSwAAAABJRU5ErkJg
-      gg==
-    </value>
+  <data name="labelMessageText.Location" type="System.Drawing.Point, System.Drawing">
+    <value>78, 40</value>
+  </data>
+  <data name="tabPageConfirmToReadIniFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="buttonPasswordOK.Location" type="System.Drawing.Point, System.Drawing">
+    <value>271, 125</value>
   </data>
   <data name="pictureBoxPasswordValid.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="pictureBoxPasswordValid.Location" type="System.Drawing.Point, System.Drawing">
     <value>19, 129</value>
   </data>
-  <data name="pictureBoxPasswordValid.Size" type="System.Drawing.Size, System.Drawing">
-    <value>20, 20</value>
+  <data name="buttonAskEncryptOrDecryptCancel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>365, 126</value>
   </data>
-  <data name="pictureBoxPasswordValid.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
-    <value>AutoSize</value>
+  <data name="splitButton1.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
   </data>
-  <data name="pictureBoxPasswordValid.TabIndex" type="System.Int32, mscorlib">
-    <value>6</value>
+  <data name="panelInvalidChar.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
-  <data name="pictureBoxPasswordValid.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
+  <data name="&gt;&gt;tabPageOverwriteConfirm.Name" xml:space="preserve">
+    <value>tabPageOverwriteConfirm</value>
   </data>
-  <data name="&gt;&gt;pictureBoxPasswordValid.Name" xml:space="preserve">
-    <value>pictureBoxPasswordValid</value>
+  <data name="pictureBoxPasswordValid.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAYAAACNiR0NAAAABGdBTUEAALGPC/xhBQAAABl0RVh0U29m
+        dHdhcmUAQWRvYmUgSW1hZ2VSZWFkeXHJZTwAAAPxSURBVDhPdZXpT9RXFIZNGugHQvgbCiQQpYF0AQJt
+        QSBpEYJlhqUOYDXAWBiWAVMRBDQ0UUDWolYb26ba0Brst0kBgQofkFbA1soSlTqgQ4a1Q1nKVuZpznWg
+        UOlNTnJz7vs+v+Wee+6ePbsMwBlIABoBM7AKLADDjly8aBzaHfHCAGKBxx0dHej1ejw9PXF2dlYhc8m1
+        t7cjGkDzv0DgJaBieHiY0NBQAsL8KbxSQOOj69xa+UGFzCUXGB6gNKIVj8P7ArCis7MTV1dX8uqMNG+Y
+        +H7jBo0b17i+8ZUKmUtO1vLqcpVWPA7ov0AgTp7m5uZGaWMJTX9/xxfrV7iwXkfteiVVa+UqqpfLOT99
+        jppn5/l69ktKvilWHsebximg/Fy73f4sMDCQ7FoDjWvXaFit5exqGWdWTlGycpJTKydUfGw1Ut1fyaB1
+        gIZ79Vydvqw84rXb7Ra1UUBSW1sb/uFvcmO1kdrlKkr/KuLEUj75SznkLWVjXMoiZy6TI3eTGZ2WTYcB
+        6wPKRk8rj3iFASQLsCk9PZ2cS9lcXG6gdKmI3EUDGQvpHFtIfR7zqRz+XUdDz6cKJqOoq5AC63HlEa8w
+        gJsCHPXw8KBusIazi5+QO5/F0bkPOTyXRMqcToVuIpGETi22RZuC9Y/2oel9nxybQXlqB6sRhrAEuCI1
+        dtl2icI/CkgZ0xEzHEWMOQrN1EE00weJvP8u3/4i9fx8ZHVkEmuOIdV2hKI/T/KZ7aKqUzkAApyX7a+x
+        VmEYyyC/J4/e8V707em8cyeY/fdDiG/Wsr6xrmB3zT+rfJT1PQ7NJJJvM1I/W78D+NDLy4vT/SWkDaXS
+        Z+nbepOfzD0kNyVze/j2Vu7orSO89TCIiIkw4qY05M7mUPbbGdzd3WVZfXJTSkoKaZ+nYRjJoPROCTML
+        M1uA7aPnSQ+vdu3Df+wNQsbfRjMRy/GZPOUVxuamJLW0tOAX4UfxZDHaQQ3hzeGYBk3/5ZHYnMDegb28
+        /vQ1Qi0hHLJ+QOlsKX7hvrS2topElc1WYceXx5M1aSByJBK/Ll8y2zKYnp9WsG5zN+4/voLPk30EPg0g
+        ejyarCkDCRUJ2wv75c2jF7959JKvJqOf0BM1GoX/PX+CTEGYRkwkdSXh+8CX4LFgoi3RSiNa8QwNDckz
+        paXtaA6Vm80h9lwsuZM56Cw6Djw6QNiv+4kYCid6NBrduA7jZK7SbGsOlbt1G2lBDfKm8gk+YT5oa7Vk
+        9H6E0WIk25zNsW69ysmaaBxN4cKu7WsbWGu32x/LT5bjJOXg5OSEi4sL3t7eKidropEOs823O1CG4wpI
+        kjJwXAFrjpC55GRNXQHbPCr+AfMeF4TklvXDAAAAAElFTkSuQmCC
+</value>
   </data>
-  <data name="&gt;&gt;pictureBoxPasswordValid.Type" xml:space="preserve">
-    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="buttonPasswordOK.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
-  <data name="&gt;&gt;pictureBoxPasswordValid.Parent" xml:space="preserve">
-    <value>panelInputPassword</value>
-  </data>
-  <data name="&gt;&gt;pictureBoxPasswordValid.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="label2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Left, Right</value>
-  </data>
-  <data name="label2.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="label2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>17, 67</value>
-  </data>
-  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>446, 17</value>
-  </data>
-  <data name="label2.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
-  <data name="label2.Text" xml:space="preserve">
-    <value>Input again to confirm:</value>
-  </data>
-  <data name="&gt;&gt;label2.Name" xml:space="preserve">
-    <value>label2</value>
-  </data>
-  <data name="&gt;&gt;label2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
-    <value>panelInputPassword</value>
-  </data>
-  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="label1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Left, Right</value>
-  </data>
-  <data name="label1.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="label1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>17, 13</value>
-  </data>
-  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>446, 19</value>
-  </data>
-  <data name="label1.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
-  </data>
-  <data name="label1.Text" xml:space="preserve">
-    <value>Input password:</value>
-  </data>
-  <data name="&gt;&gt;label1.Name" xml:space="preserve">
-    <value>label1</value>
-  </data>
-  <data name="&gt;&gt;label1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
-    <value>panelInputPassword</value>
-  </data>
-  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="textBoxRePassword.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Left, Right</value>
-  </data>
-  <data name="textBoxRePassword.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="textBoxRePassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>17, 87</value>
-  </data>
-  <data name="textBoxRePassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>446, 23</value>
-  </data>
-  <data name="textBoxRePassword.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="&gt;&gt;textBoxRePassword.Name" xml:space="preserve">
-    <value>textBoxRePassword</value>
-  </data>
-  <data name="&gt;&gt;textBoxRePassword.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;textBoxRePassword.Parent" xml:space="preserve">
-    <value>panelInputPassword</value>
-  </data>
-  <data name="&gt;&gt;textBoxRePassword.ZOrder" xml:space="preserve">
-    <value>5</value>
-  </data>
-  <data name="textBoxPassword.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Left, Right</value>
-  </data>
-  <data name="textBoxPassword.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="textBoxPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>17, 35</value>
-  </data>
-  <data name="textBoxPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>446, 23</value>
-  </data>
-  <data name="textBoxPassword.TabIndex" type="System.Int32, mscorlib">
+  <data name="&gt;&gt;tabPageAskEncryptOrDecrypt.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
   <data name="&gt;&gt;textBoxPassword.Name" xml:space="preserve">
     <value>textBoxPassword</value>
   </data>
-  <data name="&gt;&gt;textBoxPassword.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;labelMessageText.Name" xml:space="preserve">
+    <value>labelMessageText</value>
   </data>
-  <data name="&gt;&gt;textBoxPassword.Parent" xml:space="preserve">
-    <value>panelInputPassword</value>
+  <data name="&gt;&gt;ToolStripMenuItemSkipAll.Name" xml:space="preserve">
+    <value>ToolStripMenuItemSkipAll</value>
   </data>
   <data name="&gt;&gt;textBoxPassword.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
-  <data name="buttonPasswordCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="buttonPasswordCancel.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="buttonPasswordCancel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="buttonPasswordCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>372, 125</value>
-  </data>
-  <data name="buttonPasswordCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 32</value>
-  </data>
-  <data name="buttonPasswordCancel.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="buttonPasswordCancel.Text" xml:space="preserve">
-    <value>&amp;Cancel</value>
-  </data>
-  <data name="&gt;&gt;buttonPasswordCancel.Name" xml:space="preserve">
-    <value>buttonPasswordCancel</value>
-  </data>
-  <data name="&gt;&gt;buttonPasswordCancel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonPasswordCancel.Parent" xml:space="preserve">
-    <value>panelInputPassword</value>
-  </data>
-  <data name="&gt;&gt;buttonPasswordCancel.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
-  <data name="buttonPasswordOK.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="buttonPasswordOK.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="buttonPasswordOK.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="buttonPasswordOK.Location" type="System.Drawing.Point, System.Drawing">
-    <value>271, 125</value>
-  </data>
-  <data name="buttonPasswordOK.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 32</value>
-  </data>
-  <data name="buttonPasswordOK.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="buttonPasswordOK.Text" xml:space="preserve">
-    <value>&amp;OK</value>
-  </data>
-  <data name="&gt;&gt;buttonPasswordOK.Name" xml:space="preserve">
-    <value>buttonPasswordOK</value>
-  </data>
-  <data name="&gt;&gt;buttonPasswordOK.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonPasswordOK.Parent" xml:space="preserve">
-    <value>panelInputPassword</value>
-  </data>
-  <data name="&gt;&gt;buttonPasswordOK.ZOrder" xml:space="preserve">
-    <value>8</value>
-  </data>
-  <data name="panelInputPassword.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <data name="panelInputPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
-  </data>
-  <data name="panelInputPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>479, 170</value>
-  </data>
-  <data name="panelInputPassword.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="panelInputPassword.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="&gt;&gt;panelInputPassword.Name" xml:space="preserve">
-    <value>panelInputPassword</value>
-  </data>
-  <data name="&gt;&gt;panelInputPassword.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;panelInputPassword.Parent" xml:space="preserve">
-    <value>tabPageInputPassword</value>
-  </data>
-  <data name="&gt;&gt;panelInputPassword.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="tabPageInputPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
-  </data>
-  <data name="tabPageInputPassword.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
-  </data>
-  <data name="tabPageInputPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>485, 176</value>
-  </data>
-  <data name="tabPageInputPassword.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="tabPageInputPassword.Text" xml:space="preserve">
-    <value>InputPassword</value>
-  </data>
-  <data name="&gt;&gt;tabPageInputPassword.Name" xml:space="preserve">
-    <value>tabPageInputPassword</value>
-  </data>
-  <data name="&gt;&gt;tabPageInputPassword.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPageInputPassword.Parent" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-  <data name="&gt;&gt;tabPageInputPassword.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="splitButton2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="splitButton2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="splitButton2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>236, 128</value>
-  </data>
-  <metadata name="contextMenuStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>182, 17</value>
-  </metadata>
-  <data name="ToolStripMenuItemSkip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 22</value>
-  </data>
-  <data name="ToolStripMenuItemSkip.Text" xml:space="preserve">
-    <value>SKip</value>
-  </data>
-  <data name="ToolStripMenuItemSkipAll.Size" type="System.Drawing.Size, System.Drawing">
-    <value>113, 22</value>
-  </data>
-  <data name="ToolStripMenuItemSkipAll.Text" xml:space="preserve">
-    <value>Skip All</value>
-  </data>
-  <data name="contextMenuStrip2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>114, 48</value>
-  </data>
-  <data name="&gt;&gt;contextMenuStrip2.Name" xml:space="preserve">
-    <value>contextMenuStrip2</value>
-  </data>
-  <data name="&gt;&gt;contextMenuStrip2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="splitButton2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>128, 32</value>
-  </data>
-  <data name="splitButton2.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
-  </data>
-  <data name="splitButton2.Text" xml:space="preserve">
-    <value>splitButton2</value>
-  </data>
-  <data name="splitButton2.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleLeft</value>
-  </data>
-  <data name="&gt;&gt;splitButton2.Name" xml:space="preserve">
-    <value>splitButton2</value>
-  </data>
-  <data name="&gt;&gt;splitButton2.Type" xml:space="preserve">
-    <value>AttacheCase.SplitButton, AttacheCase, Version=4.0.2.7, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;splitButton2.Parent" xml:space="preserve">
-    <value>panelOverwriteConfirm</value>
-  </data>
-  <data name="&gt;&gt;splitButton2.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="splitButton1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="splitButton1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="splitButton1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>102, 128</value>
-  </data>
-  <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
-  <data name="ToolStripMenuItemOverwrite.Size" type="System.Drawing.Size, System.Drawing">
-    <value>154, 22</value>
-  </data>
-  <data name="ToolStripMenuItemOverwrite.Text" xml:space="preserve">
-    <value>Overwrite</value>
-  </data>
-  <data name="ToolStripMenuItemOverwriteAll.Size" type="System.Drawing.Size, System.Drawing">
-    <value>154, 22</value>
-  </data>
-  <data name="ToolStripMenuItemOverwriteAll.Text" xml:space="preserve">
-    <value>Overwrite All</value>
-  </data>
-  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>151, 6</value>
-  </data>
-  <data name="ToolStripMenuItemKeepNewer.Size" type="System.Drawing.Size, System.Drawing">
-    <value>154, 22</value>
-  </data>
   <data name="ToolStripMenuItemKeepNewer.Text" xml:space="preserve">
     <value>Keep Newer</value>
-  </data>
-  <data name="ToolStripMenuItemkeepNewerAll.Size" type="System.Drawing.Size, System.Drawing">
-    <value>154, 22</value>
-  </data>
-  <data name="ToolStripMenuItemkeepNewerAll.Text" xml:space="preserve">
-    <value>Keep Newer All</value>
-  </data>
-  <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>155, 98</value>
-  </data>
-  <data name="&gt;&gt;contextMenuStrip1.Name" xml:space="preserve">
-    <value>contextMenuStrip1</value>
-  </data>
-  <data name="&gt;&gt;contextMenuStrip1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="splitButton1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>128, 32</value>
-  </data>
-  <data name="splitButton1.TabIndex" type="System.Int32, mscorlib">
-    <value>20</value>
-  </data>
-  <data name="splitButton1.Text" xml:space="preserve">
-    <value>splitButton1</value>
-  </data>
-  <data name="splitButton1.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
-    <value>MiddleLeft</value>
-  </data>
-  <data name="&gt;&gt;splitButton1.Name" xml:space="preserve">
-    <value>splitButton1</value>
-  </data>
-  <data name="&gt;&gt;splitButton1.Type" xml:space="preserve">
-    <value>AttacheCase.SplitButton, AttacheCase, Version=4.0.2.7, Culture=neutral, PublicKeyToken=null</value>
-  </data>
-  <data name="&gt;&gt;splitButton1.Parent" xml:space="preserve">
-    <value>panelOverwriteConfirm</value>
-  </data>
-  <data name="&gt;&gt;splitButton1.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="buttonOverwriteCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="buttonOverwriteCancel.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="buttonOverwriteCancel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="buttonOverwriteCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>370, 128</value>
-  </data>
-  <data name="buttonOverwriteCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>101, 32</value>
-  </data>
-  <data name="buttonOverwriteCancel.TabIndex" type="System.Int32, mscorlib">
-    <value>18</value>
-  </data>
-  <data name="buttonOverwriteCancel.Text" xml:space="preserve">
-    <value>&amp;Cancel</value>
-  </data>
-  <data name="&gt;&gt;buttonOverwriteCancel.Name" xml:space="preserve">
-    <value>buttonOverwriteCancel</value>
-  </data>
-  <data name="&gt;&gt;buttonOverwriteCancel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonOverwriteCancel.Parent" xml:space="preserve">
-    <value>panelOverwriteConfirm</value>
-  </data>
-  <data name="&gt;&gt;buttonOverwriteCancel.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="labelMessageText.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="labelMessageText.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="labelMessageText.Location" type="System.Drawing.Point, System.Drawing">
-    <value>78, 40</value>
-  </data>
-  <data name="labelMessageText.Size" type="System.Drawing.Size, System.Drawing">
-    <value>393, 69</value>
-  </data>
-  <data name="labelMessageText.TabIndex" type="System.Int32, mscorlib">
-    <value>14</value>
-  </data>
-  <data name="labelMessageText.Text" xml:space="preserve">
-    <value>labelMessageText</value>
-  </data>
-  <data name="&gt;&gt;labelMessageText.Name" xml:space="preserve">
-    <value>labelMessageText</value>
-  </data>
-  <data name="&gt;&gt;labelMessageText.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;labelMessageText.Parent" xml:space="preserve">
-    <value>panelOverwriteConfirm</value>
-  </data>
-  <data name="&gt;&gt;labelMessageText.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="pictureBoxQuestionIcon.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-      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
-      zhoAAAAASUVORK5CYII=
-    </value>
-  </data>
-  <data name="pictureBoxQuestionIcon.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="pictureBoxQuestionIcon.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 40</value>
-  </data>
-  <data name="pictureBoxQuestionIcon.Size" type="System.Drawing.Size, System.Drawing">
-    <value>48, 48</value>
-  </data>
-  <data name="pictureBoxQuestionIcon.TabIndex" type="System.Int32, mscorlib">
-    <value>13</value>
-  </data>
-  <data name="&gt;&gt;pictureBoxQuestionIcon.Name" xml:space="preserve">
-    <value>pictureBoxQuestionIcon</value>
-  </data>
-  <data name="&gt;&gt;pictureBoxQuestionIcon.Type" xml:space="preserve">
-    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;pictureBoxQuestionIcon.Parent" xml:space="preserve">
-    <value>panelOverwriteConfirm</value>
-  </data>
-  <data name="&gt;&gt;pictureBoxQuestionIcon.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="panelOverwriteConfirm.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <data name="panelOverwriteConfirm.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
-  </data>
-  <data name="panelOverwriteConfirm.Size" type="System.Drawing.Size, System.Drawing">
-    <value>479, 170</value>
-  </data>
-  <data name="panelOverwriteConfirm.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="panelOverwriteConfirm.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
-  </data>
-  <data name="&gt;&gt;panelOverwriteConfirm.Name" xml:space="preserve">
-    <value>panelOverwriteConfirm</value>
-  </data>
-  <data name="&gt;&gt;panelOverwriteConfirm.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;panelOverwriteConfirm.Parent" xml:space="preserve">
-    <value>tabPageOverwriteConfirm</value>
-  </data>
-  <data name="&gt;&gt;panelOverwriteConfirm.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="tabPageOverwriteConfirm.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
-  </data>
-  <data name="tabPageOverwriteConfirm.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
-  </data>
-  <data name="tabPageOverwriteConfirm.Size" type="System.Drawing.Size, System.Drawing">
-    <value>485, 176</value>
-  </data>
-  <data name="tabPageOverwriteConfirm.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="tabPageOverwriteConfirm.Text" xml:space="preserve">
-    <value>OverwriteConfirm</value>
-  </data>
-  <data name="&gt;&gt;tabPageOverwriteConfirm.Name" xml:space="preserve">
-    <value>tabPageOverwriteConfirm</value>
-  </data>
-  <data name="&gt;&gt;tabPageOverwriteConfirm.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPageOverwriteConfirm.Parent" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-  <data name="&gt;&gt;tabPageOverwriteConfirm.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="buttonAskEncryptOrDecryptCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="buttonAskEncryptOrDecryptCancel.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="buttonAskEncryptOrDecryptCancel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="buttonAskEncryptOrDecryptCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>365, 126</value>
-  </data>
-  <data name="buttonAskEncryptOrDecryptCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
-  </data>
-  <data name="buttonAskEncryptOrDecryptCancel.TabIndex" type="System.Int32, mscorlib">
-    <value>25</value>
-  </data>
-  <data name="buttonAskEncryptOrDecryptCancel.Text" xml:space="preserve">
-    <value>&amp;Cancel</value>
-  </data>
-  <data name="&gt;&gt;buttonAskEncryptOrDecryptCancel.Name" xml:space="preserve">
-    <value>buttonAskEncryptOrDecryptCancel</value>
-  </data>
-  <data name="&gt;&gt;buttonAskEncryptOrDecryptCancel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonAskEncryptOrDecryptCancel.Parent" xml:space="preserve">
-    <value>panelAskEncryptOrDecrypt</value>
-  </data>
-  <data name="&gt;&gt;buttonAskEncryptOrDecryptCancel.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="buttonDecrypt.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="buttonDecrypt.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="buttonDecrypt.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="buttonDecrypt.Location" type="System.Drawing.Point, System.Drawing">
-    <value>259, 126</value>
-  </data>
-  <data name="buttonDecrypt.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
-  </data>
-  <data name="buttonDecrypt.TabIndex" type="System.Int32, mscorlib">
-    <value>23</value>
-  </data>
-  <data name="buttonDecrypt.Text" xml:space="preserve">
-    <value>&amp;Decrypt</value>
-  </data>
-  <data name="&gt;&gt;buttonDecrypt.Name" xml:space="preserve">
-    <value>buttonDecrypt</value>
-  </data>
-  <data name="&gt;&gt;buttonDecrypt.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonDecrypt.Parent" xml:space="preserve">
-    <value>panelAskEncryptOrDecrypt</value>
-  </data>
-  <data name="&gt;&gt;buttonDecrypt.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="buttonEncrypt.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="buttonEncrypt.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="buttonEncrypt.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="buttonEncrypt.Location" type="System.Drawing.Point, System.Drawing">
-    <value>153, 126</value>
-  </data>
-  <data name="buttonEncrypt.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
-  </data>
-  <data name="buttonEncrypt.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
-  </data>
-  <data name="buttonEncrypt.Text" xml:space="preserve">
-    <value>&amp;Encrypt</value>
-  </data>
-  <data name="&gt;&gt;buttonEncrypt.Name" xml:space="preserve">
-    <value>buttonEncrypt</value>
-  </data>
-  <data name="&gt;&gt;buttonEncrypt.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonEncrypt.Parent" xml:space="preserve">
-    <value>panelAskEncryptOrDecrypt</value>
-  </data>
-  <data name="&gt;&gt;buttonEncrypt.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="labelAskEncryptOrDecrypt.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="labelAskEncryptOrDecrypt.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="labelAskEncryptOrDecrypt.Location" type="System.Drawing.Point, System.Drawing">
-    <value>78, 40</value>
-  </data>
-  <data name="labelAskEncryptOrDecrypt.Size" type="System.Drawing.Size, System.Drawing">
-    <value>387, 69</value>
-  </data>
-  <data name="labelAskEncryptOrDecrypt.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
-  </data>
-  <data name="labelAskEncryptOrDecrypt.Text" xml:space="preserve">
-    <value>Which is encryption and decryption of drag and drop files/folders?</value>
-  </data>
-  <data name="&gt;&gt;labelAskEncryptOrDecrypt.Name" xml:space="preserve">
-    <value>labelAskEncryptOrDecrypt</value>
-  </data>
-  <data name="&gt;&gt;labelAskEncryptOrDecrypt.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;labelAskEncryptOrDecrypt.Parent" xml:space="preserve">
-    <value>panelAskEncryptOrDecrypt</value>
-  </data>
-  <data name="&gt;&gt;labelAskEncryptOrDecrypt.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="pictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-      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
-      zhoAAAAASUVORK5CYII=
-    </value>
-  </data>
-  <data name="pictureBox1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="pictureBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 40</value>
-  </data>
-  <data name="pictureBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>48, 48</value>
-  </data>
-  <data name="pictureBox1.TabIndex" type="System.Int32, mscorlib">
-    <value>20</value>
-  </data>
-  <data name="&gt;&gt;pictureBox1.Name" xml:space="preserve">
-    <value>pictureBox1</value>
-  </data>
-  <data name="&gt;&gt;pictureBox1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;pictureBox1.Parent" xml:space="preserve">
-    <value>panelAskEncryptOrDecrypt</value>
-  </data>
-  <data name="&gt;&gt;pictureBox1.ZOrder" xml:space="preserve">
-    <value>4</value>
-  </data>
-  <data name="panelAskEncryptOrDecrypt.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
-  </data>
-  <data name="panelAskEncryptOrDecrypt.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
-  </data>
-  <data name="panelAskEncryptOrDecrypt.Size" type="System.Drawing.Size, System.Drawing">
-    <value>479, 170</value>
-  </data>
-  <data name="panelAskEncryptOrDecrypt.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;panelAskEncryptOrDecrypt.Name" xml:space="preserve">
-    <value>panelAskEncryptOrDecrypt</value>
-  </data>
-  <data name="&gt;&gt;panelAskEncryptOrDecrypt.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;panelAskEncryptOrDecrypt.Parent" xml:space="preserve">
-    <value>tabPageAskEncryptOrDecrypt</value>
-  </data>
-  <data name="&gt;&gt;panelAskEncryptOrDecrypt.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="tabPageAskEncryptOrDecrypt.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
-  </data>
-  <data name="tabPageAskEncryptOrDecrypt.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
-  </data>
-  <data name="tabPageAskEncryptOrDecrypt.Size" type="System.Drawing.Size, System.Drawing">
-    <value>485, 176</value>
-  </data>
-  <data name="tabPageAskEncryptOrDecrypt.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="tabPageAskEncryptOrDecrypt.Text" xml:space="preserve">
-    <value>AskEncryptOrDecrypt</value>
-  </data>
-  <data name="&gt;&gt;tabPageAskEncryptOrDecrypt.Name" xml:space="preserve">
-    <value>tabPageAskEncryptOrDecrypt</value>
-  </data>
-  <data name="&gt;&gt;tabPageAskEncryptOrDecrypt.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPageAskEncryptOrDecrypt.Parent" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-  <data name="&gt;&gt;tabPageAskEncryptOrDecrypt.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="buttonInvalidCharYes.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="buttonInvalidCharYes.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
   </data>
   <data name="buttonInvalidCharYes.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="buttonInvalidCharYes.Location" type="System.Drawing.Point, System.Drawing">
-    <value>259, 126</value>
-  </data>
-  <data name="buttonInvalidCharYes.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
-  </data>
-  <data name="buttonInvalidCharYes.TabIndex" type="System.Int32, mscorlib">
-    <value>27</value>
-  </data>
-  <data name="buttonInvalidCharYes.Text" xml:space="preserve">
-    <value>&amp;Yes</value>
-  </data>
-  <data name="&gt;&gt;buttonInvalidCharYes.Name" xml:space="preserve">
-    <value>buttonInvalidCharYes</value>
-  </data>
-  <data name="&gt;&gt;buttonInvalidCharYes.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonInvalidCharYes.Parent" xml:space="preserve">
-    <value>panelInvalidChar</value>
-  </data>
-  <data name="&gt;&gt;buttonInvalidCharYes.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="buttonInvalidCharCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="buttonInvalidCharCancel.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="buttonInvalidCharCancel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="buttonInvalidCharCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>365, 126</value>
-  </data>
-  <data name="buttonInvalidCharCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
-  </data>
-  <data name="buttonInvalidCharCancel.TabIndex" type="System.Int32, mscorlib">
-    <value>26</value>
-  </data>
-  <data name="buttonInvalidCharCancel.Text" xml:space="preserve">
-    <value>&amp;Cancel</value>
-  </data>
-  <data name="&gt;&gt;buttonInvalidCharCancel.Name" xml:space="preserve">
-    <value>buttonInvalidCharCancel</value>
-  </data>
-  <data name="&gt;&gt;buttonInvalidCharCancel.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonInvalidCharCancel.Parent" xml:space="preserve">
-    <value>panelInvalidChar</value>
-  </data>
-  <data name="&gt;&gt;buttonInvalidCharCancel.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="labelInvalidChar.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="labelInvalidChar.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="labelInvalidChar.Location" type="System.Drawing.Point, System.Drawing">
-    <value>78, 40</value>
-  </data>
-  <data name="labelInvalidChar.Size" type="System.Drawing.Size, System.Drawing">
-    <value>387, 69</value>
-  </data>
-  <data name="labelInvalidChar.TabIndex" type="System.Int32, mscorlib">
-    <value>22</value>
-  </data>
-  <data name="labelInvalidChar.Text" xml:space="preserve">
-    <value>labelInvalidChar</value>
-  </data>
-  <data name="&gt;&gt;labelInvalidChar.Name" xml:space="preserve">
-    <value>labelInvalidChar</value>
-  </data>
-  <data name="&gt;&gt;labelInvalidChar.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;labelInvalidChar.Parent" xml:space="preserve">
-    <value>panelInvalidChar</value>
-  </data>
-  <data name="&gt;&gt;labelInvalidChar.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="pictureBox2.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-      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
-      YZA8OMjpfzTO+/tE6gVtAAAAAElFTkSuQmCC
-    </value>
-  </data>
-  <data name="pictureBox2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="pictureBox2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 40</value>
-  </data>
-  <data name="pictureBox2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>48, 48</value>
-  </data>
-  <data name="pictureBox2.TabIndex" type="System.Int32, mscorlib">
-    <value>21</value>
-  </data>
-  <data name="&gt;&gt;pictureBox2.Name" xml:space="preserve">
-    <value>pictureBox2</value>
+  <data name="tabPageInvalidChar.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
   </data>
   <data name="&gt;&gt;pictureBox2.Type" xml:space="preserve">
     <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;pictureBox2.Parent" xml:space="preserve">
-    <value>panelInvalidChar</value>
-  </data>
-  <data name="&gt;&gt;pictureBox2.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="panelInvalidChar.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+  <data name="panelConfirmToReadIniFile.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>
   </data>
-  <data name="panelInvalidChar.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
-  </data>
-  <data name="panelInvalidChar.Size" type="System.Drawing.Size, System.Drawing">
-    <value>479, 170</value>
-  </data>
-  <data name="panelInvalidChar.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;panelInvalidChar.Name" xml:space="preserve">
+  <data name="&gt;&gt;buttonInvalidCharYes.Parent" xml:space="preserve">
     <value>panelInvalidChar</value>
   </data>
-  <data name="&gt;&gt;panelInvalidChar.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;panelInvalidChar.Parent" xml:space="preserve">
-    <value>tabPageInvalidChar</value>
-  </data>
-  <data name="&gt;&gt;panelInvalidChar.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="tabPageInvalidChar.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
-  </data>
-  <data name="tabPageInvalidChar.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
-  </data>
-  <data name="tabPageInvalidChar.Size" type="System.Drawing.Size, System.Drawing">
-    <value>485, 176</value>
-  </data>
-  <data name="tabPageInvalidChar.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
-  </data>
-  <data name="tabPageInvalidChar.Text" xml:space="preserve">
-    <value>InvalidChar</value>
-  </data>
-  <data name="&gt;&gt;tabPageInvalidChar.Name" xml:space="preserve">
-    <value>tabPageInvalidChar</value>
-  </data>
-  <data name="&gt;&gt;tabPageInvalidChar.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabPageInvalidChar.Parent" xml:space="preserve">
-    <value>tabControl1</value>
-  </data>
-  <data name="&gt;&gt;tabPageInvalidChar.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="labelConfirmToReadIniFileAlert.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
-  </data>
-  <data name="labelConfirmToReadIniFileAlert.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="labelConfirmToReadIniFileAlert.Location" type="System.Drawing.Point, System.Drawing">
-    <value>79, 68</value>
-  </data>
-  <data name="labelConfirmToReadIniFileAlert.Size" type="System.Drawing.Size, System.Drawing">
-    <value>377, 12</value>
-  </data>
-  <data name="labelConfirmToReadIniFileAlert.TabIndex" type="System.Int32, mscorlib">
-    <value>33</value>
-  </data>
-  <data name="labelConfirmToReadIniFileAlert.Text" xml:space="preserve">
-    <value>* If you do not  know that file, it is possible that there is a security risk.</value>
-  </data>
-  <data name="&gt;&gt;labelConfirmToReadIniFileAlert.Name" xml:space="preserve">
-    <value>labelConfirmToReadIniFileAlert</value>
-  </data>
-  <data name="&gt;&gt;labelConfirmToReadIniFileAlert.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;labelConfirmToReadIniFileAlert.Parent" xml:space="preserve">
-    <value>panelConfirmToReadIniFile</value>
-  </data>
-  <data name="&gt;&gt;labelConfirmToReadIniFileAlert.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
-  <data name="labelIniFilePath.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="labelIniFilePath.Location" type="System.Drawing.Point, System.Drawing">
-    <value>79, 90</value>
-  </data>
-  <data name="labelIniFilePath.Size" type="System.Drawing.Size, System.Drawing">
-    <value>386, 33</value>
-  </data>
-  <data name="labelIniFilePath.TabIndex" type="System.Int32, mscorlib">
-    <value>32</value>
-  </data>
-  <data name="labelIniFilePath.Text" xml:space="preserve">
-    <value>labelIniFilePath</value>
-  </data>
-  <data name="&gt;&gt;labelIniFilePath.Name" xml:space="preserve">
-    <value>labelIniFilePath</value>
-  </data>
-  <data name="&gt;&gt;labelIniFilePath.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;labelIniFilePath.Parent" xml:space="preserve">
-    <value>panelConfirmToReadIniFile</value>
-  </data>
-  <data name="&gt;&gt;labelIniFilePath.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
-  <data name="buttonConfirmToReadIniFileYes.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="buttonConfirmToReadIniFileYes.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
+  <data name="&gt;&gt;buttonEncrypt.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="buttonConfirmToReadIniFileYes.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="buttonConfirmToReadIniFileYes.Location" type="System.Drawing.Point, System.Drawing">
-    <value>259, 126</value>
-  </data>
-  <data name="buttonConfirmToReadIniFileYes.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
-  </data>
-  <data name="buttonConfirmToReadIniFileYes.TabIndex" type="System.Int32, mscorlib">
-    <value>31</value>
-  </data>
-  <data name="buttonConfirmToReadIniFileYes.Text" xml:space="preserve">
-    <value>&amp;Yes</value>
-  </data>
-  <data name="&gt;&gt;buttonConfirmToReadIniFileYes.Name" xml:space="preserve">
-    <value>buttonConfirmToReadIniFileYes</value>
-  </data>
-  <data name="&gt;&gt;buttonConfirmToReadIniFileYes.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonConfirmToReadIniFileYes.Parent" xml:space="preserve">
-    <value>panelConfirmToReadIniFile</value>
-  </data>
-  <data name="&gt;&gt;buttonConfirmToReadIniFileYes.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="buttonConfirmToReadIniFileNo.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Bottom, Right</value>
-  </data>
-  <data name="buttonConfirmToReadIniFileNo.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="buttonConfirmToReadIniFileNo.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="buttonConfirmToReadIniFileNo.Location" type="System.Drawing.Point, System.Drawing">
-    <value>365, 126</value>
-  </data>
-  <data name="buttonConfirmToReadIniFileNo.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
-  </data>
-  <data name="buttonConfirmToReadIniFileNo.TabIndex" type="System.Int32, mscorlib">
-    <value>30</value>
-  </data>
-  <data name="buttonConfirmToReadIniFileNo.Text" xml:space="preserve">
-    <value>&amp;No</value>
-  </data>
-  <data name="&gt;&gt;buttonConfirmToReadIniFileNo.Name" xml:space="preserve">
-    <value>buttonConfirmToReadIniFileNo</value>
-  </data>
-  <data name="&gt;&gt;buttonConfirmToReadIniFileNo.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;buttonConfirmToReadIniFileNo.Parent" xml:space="preserve">
-    <value>panelConfirmToReadIniFile</value>
-  </data>
-  <data name="&gt;&gt;buttonConfirmToReadIniFileNo.ZOrder" xml:space="preserve">
-    <value>3</value>
-  </data>
-  <data name="labelConfirmToReadIniFile.Font" type="System.Drawing.Font, System.Drawing">
-    <value>MS UI Gothic, 12pt</value>
-  </data>
-  <data name="labelConfirmToReadIniFile.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <data name="labelConfirmToReadIniFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>78, 20</value>
-  </data>
-  <data name="labelConfirmToReadIniFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>387, 48</value>
-  </data>
-  <data name="labelConfirmToReadIniFile.TabIndex" type="System.Int32, mscorlib">
-    <value>29</value>
-  </data>
-  <data name="labelConfirmToReadIniFile.Text" xml:space="preserve">
-    <value>The setting file "_AtcCase.ini" was found in the following location. Are you sure you want to read it?</value>
-  </data>
-  <data name="&gt;&gt;labelConfirmToReadIniFile.Name" xml:space="preserve">
-    <value>labelConfirmToReadIniFile</value>
-  </data>
-  <data name="&gt;&gt;labelConfirmToReadIniFile.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="&gt;&gt;labelConfirmToReadIniFile.Parent" xml:space="preserve">
     <value>panelConfirmToReadIniFile</value>
   </data>
-  <data name="&gt;&gt;labelConfirmToReadIniFile.ZOrder" xml:space="preserve">
-    <value>4</value>
+  <data name="labelConfirmToReadIniFileAlert.Size" type="System.Drawing.Size, System.Drawing">
+    <value>377, 12</value>
   </data>
-  <data name="pictureBox3.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
-    <value>
-      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
-      YZA8OMjpfzTO+/tE6gVtAAAAAElFTkSuQmCC
-    </value>
+  <data name="&gt;&gt;ToolStripMenuItemOverwrite.Name" xml:space="preserve">
+    <value>ToolStripMenuItemOverwrite</value>
   </data>
-  <data name="pictureBox3.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="&gt;&gt;ToolStripMenuItemkeepNewerAll.Name" xml:space="preserve">
+    <value>ToolStripMenuItemkeepNewerAll</value>
   </data>
-  <data name="pictureBox3.Location" type="System.Drawing.Point, System.Drawing">
-    <value>24, 20</value>
+  <data name="splitButton2.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
   </data>
-  <data name="pictureBox3.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="&gt;&gt;ToolStripMenuItemOverwrite.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;labelIniFilePath.Parent" xml:space="preserve">
+    <value>panelConfirmToReadIniFile</value>
+  </data>
+  <data name="&gt;&gt;textBoxPassword.Parent" xml:space="preserve">
+    <value>panelInputPassword</value>
+  </data>
+  <data name="&gt;&gt;ToolStripMenuItemKeepNewer.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;pictureBox1.Name" xml:space="preserve">
+    <value>pictureBox1</value>
+  </data>
+  <data name="ToolStripMenuItemSkip.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 22</value>
+  </data>
+  <data name="tabPageInputPassword.Text" xml:space="preserve">
+    <value>InputPassword</value>
+  </data>
+  <data name="pictureBoxQuestionIcon.Size" type="System.Drawing.Size, System.Drawing">
     <value>48, 48</value>
   </data>
-  <data name="pictureBox3.TabIndex" type="System.Int32, mscorlib">
-    <value>28</value>
+  <data name="tabPageInvalidChar.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
   </data>
-  <data name="&gt;&gt;pictureBox3.Name" xml:space="preserve">
-    <value>pictureBox3</value>
+  <data name="splitButton2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>236, 128</value>
   </data>
   <data name="&gt;&gt;pictureBox3.Type" xml:space="preserve">
     <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;pictureBox3.Parent" xml:space="preserve">
-    <value>panelConfirmToReadIniFile</value>
+  <data name="tabControl1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>493, 202</value>
   </data>
-  <data name="&gt;&gt;pictureBox3.ZOrder" xml:space="preserve">
-    <value>5</value>
+  <data name="panelOuter.Size" type="System.Drawing.Size, System.Drawing">
+    <value>493, 202</value>
   </data>
-  <data name="panelConfirmToReadIniFile.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
+  <data name="splitButton2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
   </data>
-  <data name="panelConfirmToReadIniFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+  <data name="labelAskEncryptOrDecrypt.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
-  <data name="panelConfirmToReadIniFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>479, 170</value>
+  <data name="textBoxPassword.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 35</value>
   </data>
-  <data name="panelConfirmToReadIniFile.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;panelConfirmToReadIniFile.Name" xml:space="preserve">
-    <value>panelConfirmToReadIniFile</value>
+  <data name="ToolStripMenuItemSkip.Text" xml:space="preserve">
+    <value>SKip</value>
   </data>
   <data name="&gt;&gt;panelConfirmToReadIniFile.Type" xml:space="preserve">
     <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;panelConfirmToReadIniFile.Parent" xml:space="preserve">
-    <value>tabPageConfirmToReadIniFile</value>
+  <data name="&gt;&gt;tabPageAskEncryptOrDecrypt.Name" xml:space="preserve">
+    <value>tabPageAskEncryptOrDecrypt</value>
   </data>
-  <data name="&gt;&gt;panelConfirmToReadIniFile.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;tabPageInputPassword.Name" xml:space="preserve">
+    <value>tabPageInputPassword</value>
+  </data>
+  <data name="labelPasswordValid.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="tabPageOverwriteConfirm.Size" type="System.Drawing.Size, System.Drawing">
+    <value>485, 176</value>
+  </data>
+  <data name="&gt;&gt;pictureBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="pictureBoxPasswordValid.TabIndex" type="System.Int32, mscorlib">
+    <value>6</value>
+  </data>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>493, 202</value>
+  </data>
+  <data name="&gt;&gt;pictureBoxQuestionIcon.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;tabPageInvalidChar.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>151, 6</value>
+  </data>
+  <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>155, 98</value>
+  </data>
+  <data name="&gt;&gt;buttonAskEncryptOrDecryptCancel.Parent" xml:space="preserve">
+    <value>panelAskEncryptOrDecrypt</value>
+  </data>
+  <data name="&gt;&gt;labelConfirmToReadIniFileAlert.Name" xml:space="preserve">
+    <value>labelConfirmToReadIniFileAlert</value>
+  </data>
+  <data name="&gt;&gt;panelInvalidChar.Parent" xml:space="preserve">
+    <value>tabPageInvalidChar</value>
+  </data>
+  <data name="pictureBoxPasswordValid.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Left</value>
+  </data>
+  <data name="&gt;&gt;panelInvalidChar.Name" xml:space="preserve">
+    <value>panelInvalidChar</value>
+  </data>
+  <data name="&gt;&gt;labelIniFilePath.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;splitButton2.Type" xml:space="preserve">
+    <value>AttacheCase.SplitButton, AttacheCase, Version=4.2.5.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="textBoxPassword.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="labelConfirmToReadIniFileAlert.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="panelInputPassword.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="buttonDecrypt.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="&gt;&gt;labelPasswordValid.Name" xml:space="preserve">
+    <value>labelPasswordValid</value>
+  </data>
+  <data name="labelConfirmToReadIniFileAlert.Text" xml:space="preserve">
+    <value>* If you do not  know that file, it is possible that there is a security risk.</value>
+  </data>
+  <data name="&gt;&gt;pictureBox3.Parent" xml:space="preserve">
+    <value>panelConfirmToReadIniFile</value>
+  </data>
+  <data name="buttonEncrypt.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="checkBoxNotMaskEncryptedPassword.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="&gt;&gt;buttonInvalidCharCancel.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;splitButton2.ZOrder" xml:space="preserve">
     <value>0</value>
-  </data>
-  <data name="tabPageConfirmToReadIniFile.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
   </data>
   <data name="tabPageConfirmToReadIniFile.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
   </data>
-  <data name="tabPageConfirmToReadIniFile.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="&gt;&gt;buttonConfirmToReadIniFileNo.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;pictureBoxPasswordValid.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="labelInvalidChar.Size" type="System.Drawing.Size, System.Drawing">
+    <value>387, 69</value>
+  </data>
+  <data name="&gt;&gt;panelInvalidChar.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;labelInvalidChar.Parent" xml:space="preserve">
+    <value>panelInvalidChar</value>
+  </data>
+  <data name="&gt;&gt;textBoxPassword.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="labelConfirmToReadIniFileAlert.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="labelPasswordValid.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="buttonEncrypt.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 32</value>
+  </data>
+  <data name="&gt;&gt;labelIniFilePath.Name" xml:space="preserve">
+    <value>labelIniFilePath</value>
+  </data>
+  <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 13</value>
+  </data>
+  <data name="buttonInvalidCharYes.Location" type="System.Drawing.Point, System.Drawing">
+    <value>259, 126</value>
+  </data>
+  <data name="&gt;&gt;panelOverwriteConfirm.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;panelAskEncryptOrDecrypt.Parent" xml:space="preserve">
+    <value>tabPageAskEncryptOrDecrypt</value>
+  </data>
+  <data name="&gt;&gt;buttonConfirmToReadIniFileNo.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="buttonConfirmToReadIniFileNo.Text" xml:space="preserve">
+    <value>&amp;No</value>
+  </data>
+  <data name="&gt;&gt;panelAskEncryptOrDecrypt.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="pictureBoxQuestionIcon.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 40</value>
+  </data>
+  <data name="labelConfirmToReadIniFile.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="&gt;&gt;splitButton1.Type" xml:space="preserve">
+    <value>AttacheCase.SplitButton, AttacheCase, Version=4.2.5.0, Culture=neutral, PublicKeyToken=null</value>
+  </data>
+  <data name="tabPageAskEncryptOrDecrypt.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="buttonConfirmToReadIniFileYes.Location" type="System.Drawing.Point, System.Drawing">
+    <value>259, 126</value>
+  </data>
+  <data name="panelOverwriteConfirm.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;pictureBoxQuestionIcon.Name" xml:space="preserve">
+    <value>pictureBoxQuestionIcon</value>
+  </data>
+  <data name="&gt;&gt;panelInputPassword.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="buttonPasswordOK.Size" type="System.Drawing.Size, System.Drawing">
+    <value>90, 32</value>
+  </data>
+  <data name="buttonEncrypt.Location" type="System.Drawing.Point, System.Drawing">
+    <value>153, 126</value>
+  </data>
+  <data name="buttonConfirmToReadIniFileYes.Text" xml:space="preserve">
+    <value>&amp;Yes</value>
+  </data>
+  <data name="labelPasswordValid.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Left, Right</value>
+  </data>
+  <data name="panelInvalidChar.Size" type="System.Drawing.Size, System.Drawing">
+    <value>479, 170</value>
+  </data>
+  <data name="&gt;&gt;labelInvalidChar.Name" xml:space="preserve">
+    <value>labelInvalidChar</value>
+  </data>
+  <data name="&gt;&gt;panelOuter.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;buttonInvalidCharCancel.Name" xml:space="preserve">
+    <value>buttonInvalidCharCancel</value>
+  </data>
+  <data name="&gt;&gt;labelPasswordValid.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;panelOuter.Name" xml:space="preserve">
+    <value>panelOuter</value>
+  </data>
+  <data name="&gt;&gt;buttonOverwriteCancel.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="tabPageInputPassword.Size" type="System.Drawing.Size, System.Drawing">
     <value>485, 176</value>
   </data>
-  <data name="tabPageConfirmToReadIniFile.TabIndex" type="System.Int32, mscorlib">
-    <value>4</value>
+  <data name="&gt;&gt;panelAskEncryptOrDecrypt.Name" xml:space="preserve">
+    <value>panelAskEncryptOrDecrypt</value>
   </data>
-  <data name="tabPageConfirmToReadIniFile.Text" xml:space="preserve">
-    <value>ConfirmToReadIniFile</value>
+  <data name="labelIniFilePath.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
-  <data name="&gt;&gt;tabPageConfirmToReadIniFile.Name" xml:space="preserve">
-    <value>tabPageConfirmToReadIniFile</value>
+  <data name="&gt;&gt;labelAskEncryptOrDecrypt.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;tabPageConfirmToReadIniFile.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;labelMessageText.ZOrder" xml:space="preserve">
+    <value>3</value>
   </data>
-  <data name="&gt;&gt;tabPageConfirmToReadIniFile.Parent" xml:space="preserve">
-    <value>tabControl1</value>
+  <data name="tabPageAskEncryptOrDecrypt.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
   </data>
-  <data name="&gt;&gt;tabPageConfirmToReadIniFile.ZOrder" xml:space="preserve">
-    <value>4</value>
+  <data name="&gt;&gt;panelInputPassword.Name" xml:space="preserve">
+    <value>panelInputPassword</value>
   </data>
-  <data name="tabControl1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
-    <value>Fill</value>
+  <data name="tabPageInvalidChar.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
   </data>
-  <data name="tabControl1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 0</value>
+  <data name="buttonPasswordCancel.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
-  <data name="tabControl1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>493, 202</value>
-  </data>
-  <data name="tabControl1.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+  <data name="&gt;&gt;tabPageInvalidChar.Name" xml:space="preserve">
+    <value>tabPageInvalidChar</value>
   </data>
   <data name="&gt;&gt;tabControl1.Name" xml:space="preserve">
     <value>tabControl1</value>
   </data>
-  <data name="&gt;&gt;tabControl1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="panelAskEncryptOrDecrypt.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
   </data>
-  <data name="&gt;&gt;tabControl1.Parent" xml:space="preserve">
-    <value>panelOuter</value>
+  <data name="labelIniFilePath.Text" xml:space="preserve">
+    <value>labelIniFilePath</value>
   </data>
-  <data name="&gt;&gt;tabControl1.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;splitButton1.Parent" xml:space="preserve">
+    <value>panelOverwriteConfirm</value>
+  </data>
+  <data name="pictureBoxPasswordValid.Size" type="System.Drawing.Size, System.Drawing">
+    <value>20, 20</value>
+  </data>
+  <data name="buttonConfirmToReadIniFileYes.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 32</value>
+  </data>
+  <data name="buttonConfirmToReadIniFileNo.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="buttonAskEncryptOrDecryptCancel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="panelConfirmToReadIniFile.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
-  <data name="panelOuter.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+  <data name="splitButton2.Text" xml:space="preserve">
+    <value>splitButton2</value>
+  </data>
+  <data name="&gt;&gt;buttonDecrypt.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;checkBoxNotMaskEncryptedPassword.Parent" xml:space="preserve">
+    <value>panelInputPassword</value>
+  </data>
+  <data name="buttonPasswordCancel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="buttonConfirmToReadIniFileNo.TabIndex" type="System.Int32, mscorlib">
+    <value>30</value>
+  </data>
+  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
+    <value>6, 12</value>
+  </data>
+  <data name="&gt;&gt;buttonPasswordCancel.Parent" xml:space="preserve">
+    <value>panelInputPassword</value>
+  </data>
+  <data name="labelAskEncryptOrDecrypt.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="panelInputPassword.Size" type="System.Drawing.Size, System.Drawing">
+    <value>479, 170</value>
+  </data>
+  <data name="&gt;&gt;labelConfirmToReadIniFile.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPageConfirmToReadIniFile.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 67</value>
+  </data>
+  <data name="labelIniFilePath.Location" type="System.Drawing.Point, System.Drawing">
+    <value>79, 90</value>
+  </data>
+  <data name="&gt;&gt;labelMessageText.Parent" xml:space="preserve">
+    <value>panelOverwriteConfirm</value>
+  </data>
+  <data name="pictureBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 48</value>
+  </data>
+  <data name="&gt;&gt;buttonAskEncryptOrDecryptCancel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="pictureBoxQuestionIcon.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="&gt;&gt;labelConfirmToReadIniFile.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="pictureBox2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 48</value>
+  </data>
+  <data name="splitButton2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="buttonConfirmToReadIniFileYes.TabIndex" type="System.Int32, mscorlib">
+    <value>31</value>
+  </data>
+  <data name="&gt;&gt;buttonOverwriteCancel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="checkBoxNotMaskEncryptedPassword.Text" xml:space="preserve">
+    <value>Not mask password character</value>
+  </data>
+  <data name="buttonOverwriteCancel.Text" xml:space="preserve">
+    <value>&amp;Cancel</value>
+  </data>
+  <data name="tabPageInputPassword.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="textBoxRePassword.Size" type="System.Drawing.Size, System.Drawing">
+    <value>446, 23</value>
+  </data>
+  <data name="buttonEncrypt.TabIndex" type="System.Int32, mscorlib">
+    <value>22</value>
+  </data>
+  <data name="tabPageOverwriteConfirm.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="buttonOverwriteCancel.TabIndex" type="System.Int32, mscorlib">
+    <value>18</value>
+  </data>
+  <data name="&gt;&gt;pictureBox1.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;tabPageInputPassword.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="buttonDecrypt.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="checkBoxNotMaskEncryptedPassword.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Left, Right</value>
+  </data>
+  <data name="buttonDecrypt.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="splitButton1.Text" xml:space="preserve">
+    <value>splitButton1</value>
+  </data>
+  <data name="buttonOverwriteCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="buttonOverwriteCancel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>101, 32</value>
+  </data>
+  <data name="labelMessageText.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="labelInvalidChar.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="pictureBoxPasswordValid.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
+    <value>AutoSize</value>
+  </data>
+  <data name="labelAskEncryptOrDecrypt.Size" type="System.Drawing.Size, System.Drawing">
+    <value>387, 69</value>
+  </data>
+  <data name="&gt;&gt;buttonConfirmToReadIniFileNo.Name" xml:space="preserve">
+    <value>buttonConfirmToReadIniFileNo</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>Form4</value>
+  </data>
+  <data name="buttonDecrypt.TabIndex" type="System.Int32, mscorlib">
+    <value>23</value>
+  </data>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
+  </data>
+  <data name="&gt;&gt;buttonConfirmToReadIniFileYes.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="labelConfirmToReadIniFile.TabIndex" type="System.Int32, mscorlib">
+    <value>29</value>
+  </data>
+  <data name="&gt;&gt;pictureBoxPasswordValid.Parent" xml:space="preserve">
+    <value>panelInputPassword</value>
+  </data>
+  <data name="&gt;&gt;buttonInvalidCharCancel.Parent" xml:space="preserve">
+    <value>panelInvalidChar</value>
+  </data>
+  <data name="label1.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
+  </data>
+  <data name="panelConfirmToReadIniFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="tabControl1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="&gt;&gt;tabPageOverwriteConfirm.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="labelConfirmToReadIniFile.Location" type="System.Drawing.Point, System.Drawing">
+    <value>78, 20</value>
+  </data>
+  <data name="buttonInvalidCharCancel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>365, 126</value>
+  </data>
+  <data name="&gt;&gt;labelConfirmToReadIniFileAlert.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;labelIniFilePath.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;labelInvalidChar.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>446, 19</value>
+  </data>
+  <data name="labelIniFilePath.Size" type="System.Drawing.Size, System.Drawing">
+    <value>386, 33</value>
+  </data>
+  <data name="textBoxRePassword.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="buttonInvalidCharCancel.Text" xml:space="preserve">
+    <value>&amp;Cancel</value>
+  </data>
+  <data name="labelMessageText.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="labelAskEncryptOrDecrypt.Text" xml:space="preserve">
+    <value>Which is encryption and decryption of drag and drop files/folders?</value>
+  </data>
+  <data name="&gt;&gt;buttonPasswordOK.Parent" xml:space="preserve">
+    <value>panelInputPassword</value>
+  </data>
+  <data name="&gt;&gt;panelOuter.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;buttonEncrypt.Name" xml:space="preserve">
+    <value>buttonEncrypt</value>
+  </data>
+  <data name="&gt;&gt;panelOverwriteConfirm.Name" xml:space="preserve">
+    <value>panelOverwriteConfirm</value>
+  </data>
+  <data name="&gt;&gt;panelConfirmToReadIniFile.Name" xml:space="preserve">
+    <value>panelConfirmToReadIniFile</value>
+  </data>
+  <data name="&gt;&gt;ToolStripMenuItemSkipAll.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="panelAskEncryptOrDecrypt.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="&gt;&gt;tabPageConfirmToReadIniFile.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="labelConfirmToReadIniFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>387, 48</value>
+  </data>
+  <data name="buttonPasswordOK.Text" xml:space="preserve">
+    <value>&amp;OK</value>
+  </data>
+  <data name="&gt;&gt;buttonOverwriteCancel.Name" xml:space="preserve">
+    <value>buttonOverwriteCancel</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Form4</value>
+  </data>
+  <data name="&gt;&gt;buttonPasswordOK.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;labelPasswordValid.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label1.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="ToolStripMenuItemKeepNewer.Size" type="System.Drawing.Size, System.Drawing">
+    <value>154, 22</value>
+  </data>
+  <data name="&gt;&gt;ToolStripMenuItemkeepNewerAll.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;pictureBoxQuestionIcon.Parent" xml:space="preserve">
+    <value>panelOverwriteConfirm</value>
+  </data>
+  <data name="&gt;&gt;labelAskEncryptOrDecrypt.Name" xml:space="preserve">
+    <value>labelAskEncryptOrDecrypt</value>
+  </data>
+  <data name="&gt;&gt;label1.Parent" xml:space="preserve">
+    <value>panelInputPassword</value>
+  </data>
+  <data name="buttonInvalidCharYes.Text" xml:space="preserve">
+    <value>&amp;Yes</value>
+  </data>
+  <data name="pictureBox3.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+</value>
+  </data>
+  <data name="pictureBox3.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 48</value>
+  </data>
+  <data name="&gt;&gt;checkBoxNotMaskEncryptedPassword.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="pictureBox1.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="ToolStripMenuItemOverwrite.Text" xml:space="preserve">
+    <value>Overwrite</value>
+  </data>
+  <data name="ToolStripMenuItemSkipAll.Text" xml:space="preserve">
+    <value>Skip All</value>
+  </data>
+  <data name="&gt;&gt;pictureBox3.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="labelConfirmToReadIniFileAlert.TabIndex" type="System.Int32, mscorlib">
+    <value>33</value>
+  </data>
+  <data name="buttonAskEncryptOrDecryptCancel.Text" xml:space="preserve">
+    <value>&amp;Cancel</value>
+  </data>
+  <data name="checkBoxNotMaskEncryptedPassword.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="&gt;&gt;tabPageOverwriteConfirm.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="ToolStripMenuItemOverwrite.Size" type="System.Drawing.Size, System.Drawing">
+    <value>154, 22</value>
+  </data>
+  <data name="&gt;&gt;buttonDecrypt.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;buttonEncrypt.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="buttonInvalidCharYes.TabIndex" type="System.Int32, mscorlib">
+    <value>27</value>
+  </data>
+  <data name="pictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+        /+TS/71kfG/ZAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="checkBoxNotMaskEncryptedPassword.Size" type="System.Drawing.Size, System.Drawing">
+    <value>228, 20</value>
+  </data>
+  <data name="&gt;&gt;labelConfirmToReadIniFile.Name" xml:space="preserve">
+    <value>labelConfirmToReadIniFile</value>
+  </data>
+  <data name="pictureBox2.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="checkBoxNotMaskEncryptedPassword.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleRight</value>
+  </data>
+  <data name="panelInvalidChar.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="&gt;&gt;buttonDecrypt.Parent" xml:space="preserve">
+    <value>panelAskEncryptOrDecrypt</value>
+  </data>
+  <data name="&gt;&gt;buttonPasswordOK.ZOrder" xml:space="preserve">
+    <value>8</value>
+  </data>
+  <data name="labelAskEncryptOrDecrypt.Location" type="System.Drawing.Point, System.Drawing">
+    <value>78, 40</value>
+  </data>
+  <data name="&gt;&gt;tabPageInputPassword.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="splitButton2.TextAlign" type="System.Drawing.ContentAlignment, System.Drawing">
+    <value>MiddleLeft</value>
+  </data>
+  <data name="&gt;&gt;labelConfirmToReadIniFileAlert.Parent" xml:space="preserve">
+    <value>panelConfirmToReadIniFile</value>
+  </data>
+  <data name="buttonPasswordOK.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="&gt;&gt;panelConfirmToReadIniFile.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="labelInvalidChar.Location" type="System.Drawing.Point, System.Drawing">
+    <value>78, 40</value>
+  </data>
+  <data name="&gt;&gt;contextMenuStrip1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;labelAskEncryptOrDecrypt.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;splitButton2.Name" xml:space="preserve">
+    <value>splitButton2</value>
+  </data>
+  <data name="pictureBoxPasswordValid.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="tabPageAskEncryptOrDecrypt.Size" type="System.Drawing.Size, System.Drawing">
+    <value>485, 176</value>
+  </data>
+  <data name="panelInvalidChar.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
     <value>Fill</value>
   </data>
   <data name="panelOuter.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
-  <data name="panelOuter.Size" type="System.Drawing.Size, System.Drawing">
-    <value>493, 202</value>
+  <data name="&gt;&gt;pictureBox1.Parent" xml:space="preserve">
+    <value>panelAskEncryptOrDecrypt</value>
   </data>
-  <data name="panelOuter.TabIndex" type="System.Int32, mscorlib">
+  <data name="&gt;&gt;tabPageInputPassword.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;panelOuter.Name" xml:space="preserve">
-    <value>panelOuter</value>
+  <data name="labelPasswordValid.Text" xml:space="preserve">
+    <value>Password is valid.</value>
   </data>
-  <data name="&gt;&gt;panelOuter.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="splitButton1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>102, 128</value>
   </data>
-  <data name="&gt;&gt;panelOuter.Parent" xml:space="preserve">
-    <value>$this</value>
+  <data name="tabPageOverwriteConfirm.Text" xml:space="preserve">
+    <value>OverwriteConfirm</value>
   </data>
-  <data name="&gt;&gt;panelOuter.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>ja-JP</value>
-  </metadata>
-  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>True</value>
-  </metadata>
-  <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 12</value>
+  <data name="tabPageConfirmToReadIniFile.TabIndex" type="System.Int32, mscorlib">
+    <value>4</value>
   </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>493, 202</value>
+  <data name="buttonConfirmToReadIniFileNo.Location" type="System.Drawing.Point, System.Drawing">
+    <value>365, 126</value>
   </data>
-  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>440, 240</value>
+  <data name="&gt;&gt;pictureBox2.Name" xml:space="preserve">
+    <value>pictureBox2</value>
   </data>
-  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
-    <value>CenterParent</value>
+  <data name="&gt;&gt;label1.ZOrder" xml:space="preserve">
+    <value>4</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Form4</value>
+  <data name="&gt;&gt;buttonEncrypt.Parent" xml:space="preserve">
+    <value>panelAskEncryptOrDecrypt</value>
   </data>
-  <data name="&gt;&gt;ToolStripMenuItemSkip.Name" xml:space="preserve">
-    <value>ToolStripMenuItemSkip</value>
+  <data name="label2.Text" xml:space="preserve">
+    <value>Input again to confirm:</value>
   </data>
-  <data name="&gt;&gt;ToolStripMenuItemSkip.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="tabPageAskEncryptOrDecrypt.Text" xml:space="preserve">
+    <value>AskEncryptOrDecrypt</value>
   </data>
-  <data name="&gt;&gt;ToolStripMenuItemSkipAll.Name" xml:space="preserve">
-    <value>ToolStripMenuItemSkipAll</value>
+  <data name="panelInputPassword.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
-  <data name="&gt;&gt;ToolStripMenuItemSkipAll.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;buttonAskEncryptOrDecryptCancel.Name" xml:space="preserve">
+    <value>buttonAskEncryptOrDecryptCancel</value>
   </data>
-  <data name="&gt;&gt;ToolStripMenuItemOverwrite.Name" xml:space="preserve">
-    <value>ToolStripMenuItemOverwrite</value>
+  <data name="buttonAskEncryptOrDecryptCancel.TabIndex" type="System.Int32, mscorlib">
+    <value>25</value>
   </data>
-  <data name="&gt;&gt;ToolStripMenuItemOverwrite.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;pictureBox2.Parent" xml:space="preserve">
+    <value>panelInvalidChar</value>
+  </data>
+  <data name="&gt;&gt;labelAskEncryptOrDecrypt.Parent" xml:space="preserve">
+    <value>panelAskEncryptOrDecrypt</value>
   </data>
   <data name="&gt;&gt;ToolStripMenuItemOverwriteAll.Name" xml:space="preserve">
     <value>ToolStripMenuItemOverwriteAll</value>
   </data>
-  <data name="&gt;&gt;ToolStripMenuItemOverwriteAll.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="panelAskEncryptOrDecrypt.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="buttonConfirmToReadIniFileNo.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="&gt;&gt;buttonInvalidCharYes.Name" xml:space="preserve">
+    <value>buttonInvalidCharYes</value>
+  </data>
+  <data name="ToolStripMenuItemSkipAll.Size" type="System.Drawing.Size, System.Drawing">
+    <value>113, 22</value>
+  </data>
+  <data name="panelAskEncryptOrDecrypt.Size" type="System.Drawing.Size, System.Drawing">
+    <value>479, 170</value>
+  </data>
+  <data name="buttonInvalidCharCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;contextMenuStrip2.Name" xml:space="preserve">
+    <value>contextMenuStrip2</value>
+  </data>
+  <data name="buttonPasswordOK.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="labelConfirmToReadIniFileAlert.Location" type="System.Drawing.Point, System.Drawing">
+    <value>79, 68</value>
+  </data>
+  <data name="&gt;&gt;checkBoxNotMaskEncryptedPassword.Name" xml:space="preserve">
+    <value>checkBoxNotMaskEncryptedPassword</value>
+  </data>
+  <data name="&gt;&gt;panelInputPassword.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="panelOuter.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="pictureBox3.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 20</value>
+  </data>
+  <data name="&gt;&gt;contextMenuStrip2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ContextMenuStrip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="labelAskEncryptOrDecrypt.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
+  </data>
+  <data name="&gt;&gt;buttonPasswordCancel.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="&gt;&gt;textBoxRePassword.Name" xml:space="preserve">
+    <value>textBoxRePassword</value>
+  </data>
+  <data name="&gt;&gt;buttonConfirmToReadIniFileNo.Parent" xml:space="preserve">
+    <value>panelConfirmToReadIniFile</value>
+  </data>
+  <data name="buttonConfirmToReadIniFileNo.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 32</value>
+  </data>
+  <data name="buttonOverwriteCancel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>370, 128</value>
   </data>
   <data name="&gt;&gt;toolStripMenuItem1.Name" xml:space="preserve">
     <value>toolStripMenuItem1</value>
   </data>
+  <data name="&gt;&gt;ToolStripMenuItemSkip.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;toolStripMenuItem1.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolStripSeparator, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;ToolStripMenuItemKeepNewer.Name" xml:space="preserve">
-    <value>ToolStripMenuItemKeepNewer</value>
+  <data name="panelInputPassword.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
   </data>
-  <data name="&gt;&gt;ToolStripMenuItemKeepNewer.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="buttonOverwriteCancel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
-  <data name="&gt;&gt;ToolStripMenuItemkeepNewerAll.Name" xml:space="preserve">
-    <value>ToolStripMenuItemkeepNewerAll</value>
+  <data name="checkBoxNotMaskEncryptedPassword.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
   </data>
-  <data name="&gt;&gt;ToolStripMenuItemkeepNewerAll.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolStripMenuItem, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="pictureBox2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 40</value>
   </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>Form4</value>
+  <data name="pictureBox2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="buttonAskEncryptOrDecryptCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;buttonConfirmToReadIniFileYes.Parent" xml:space="preserve">
+    <value>panelConfirmToReadIniFile</value>
+  </data>
+  <data name="panelOverwriteConfirm.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>Input password:</value>
+  </data>
+  <data name="&gt;&gt;buttonInvalidCharYes.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="checkBoxNotMaskEncryptedPassword.Location" type="System.Drawing.Point, System.Drawing">
+    <value>166, 12</value>
+  </data>
+  <data name="&gt;&gt;ToolStripMenuItemSkip.Name" xml:space="preserve">
+    <value>ToolStripMenuItemSkip</value>
+  </data>
+  <data name="buttonConfirmToReadIniFileYes.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="panelOuter.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
+  </data>
+  <data name="&gt;&gt;buttonAskEncryptOrDecryptCancel.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;labelConfirmToReadIniFileAlert.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="tabPageOverwriteConfirm.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="buttonPasswordCancel.Text" xml:space="preserve">
+    <value>&amp;Cancel</value>
+  </data>
+  <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>446, 17</value>
+  </data>
+  <data name="buttonEncrypt.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
+    <value>440, 240</value>
+  </data>
+  <data name="&gt;&gt;pictureBox3.Name" xml:space="preserve">
+    <value>pictureBox3</value>
+  </data>
+  <data name="splitButton2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>128, 32</value>
+  </data>
+  <data name="buttonDecrypt.Text" xml:space="preserve">
+    <value>&amp;Decrypt</value>
+  </data>
+  <data name="&gt;&gt;buttonPasswordCancel.Name" xml:space="preserve">
+    <value>buttonPasswordCancel</value>
+  </data>
+  <data name="textBoxRePassword.Location" type="System.Drawing.Point, System.Drawing">
+    <value>17, 87</value>
+  </data>
+  <data name="&gt;&gt;tabPageConfirmToReadIniFile.Name" xml:space="preserve">
+    <value>tabPageConfirmToReadIniFile</value>
+  </data>
+  <data name="buttonEncrypt.Text" xml:space="preserve">
+    <value>&amp;Encrypt</value>
+  </data>
+  <data name="ToolStripMenuItemOverwriteAll.Text" xml:space="preserve">
+    <value>Overwrite All</value>
+  </data>
+  <data name="splitButton1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>128, 32</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.Parent" xml:space="preserve">
+    <value>panelOuter</value>
+  </data>
+  <data name="tabPageInputPassword.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="panelInputPassword.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
+  </data>
+  <data name="pictureBox3.TabIndex" type="System.Int32, mscorlib">
+    <value>28</value>
+  </data>
+  <data name="&gt;&gt;pictureBox2.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="labelMessageText.TabIndex" type="System.Int32, mscorlib">
+    <value>14</value>
+  </data>
+  <data name="&gt;&gt;panelOverwriteConfirm.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;pictureBoxPasswordValid.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="buttonConfirmToReadIniFileYes.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="tabPageConfirmToReadIniFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>485, 176</value>
+  </data>
+  <data name="labelIniFilePath.TabIndex" type="System.Int32, mscorlib">
+    <value>32</value>
+  </data>
+  <data name="buttonPasswordCancel.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="splitButton1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="&gt;&gt;panelOuter.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="pictureBox2.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+</value>
+  </data>
+  <data name="textBoxPassword.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="ToolStripMenuItemkeepNewerAll.Size" type="System.Drawing.Size, System.Drawing">
+    <value>154, 22</value>
+  </data>
+  <data name="buttonAskEncryptOrDecryptCancel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 32</value>
+  </data>
+  <data name="label2.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="pictureBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>24, 40</value>
+  </data>
+  <data name="textBoxPassword.Size" type="System.Drawing.Size, System.Drawing">
+    <value>446, 23</value>
+  </data>
+  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
+    <value>panelInputPassword</value>
+  </data>
+  <data name="&gt;&gt;buttonInvalidCharYes.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="buttonAskEncryptOrDecryptCancel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="tabPageInputPassword.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="&gt;&gt;splitButton1.Name" xml:space="preserve">
+    <value>splitButton1</value>
+  </data>
+  <data name="pictureBox3.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="ToolStripMenuItemOverwriteAll.Size" type="System.Drawing.Size, System.Drawing">
+    <value>154, 22</value>
+  </data>
+  <data name="buttonPasswordCancel.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Bottom, Right</value>
+  </data>
+  <data name="tabPageInvalidChar.Text" xml:space="preserve">
+    <value>InvalidChar</value>
+  </data>
+  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="checkBoxNotMaskEncryptedPassword.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
+  <data name="pictureBoxQuestionIcon.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        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
+        /+TS/71kfG/ZAAAAAElFTkSuQmCC
+</value>
+  </data>
+  <data name="labelMessageText.Size" type="System.Drawing.Size, System.Drawing">
+    <value>393, 69</value>
+  </data>
+  <data name="buttonInvalidCharYes.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="&gt;&gt;panelInvalidChar.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Panel, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPageAskEncryptOrDecrypt.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPageOverwriteConfirm.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="pictureBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
+  <data name="&gt;&gt;label2.Name" xml:space="preserve">
+    <value>label2</value>
+  </data>
+  <data name="pictureBoxQuestionIcon.TabIndex" type="System.Int32, mscorlib">
+    <value>13</value>
+  </data>
+  <data name="buttonDecrypt.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 32</value>
+  </data>
+  <data name="textBoxPassword.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Left, Right</value>
+  </data>
+  <data name="&gt;&gt;pictureBoxPasswordValid.Name" xml:space="preserve">
+    <value>pictureBoxPasswordValid</value>
+  </data>
+  <data name="labelConfirmToReadIniFile.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="panelConfirmToReadIniFile.Size" type="System.Drawing.Size, System.Drawing">
+    <value>479, 170</value>
+  </data>
+  <data name="buttonPasswordCancel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>90, 32</value>
+  </data>
+  <data name="&gt;&gt;buttonInvalidCharCancel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="label2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="label2.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="panelOverwriteConfirm.Size" type="System.Drawing.Size, System.Drawing">
+    <value>479, 170</value>
+  </data>
+  <data name="&gt;&gt;textBoxRePassword.Parent" xml:space="preserve">
+    <value>panelInputPassword</value>
+  </data>
+  <data name="&gt;&gt;buttonConfirmToReadIniFileYes.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;buttonConfirmToReadIniFileYes.Name" xml:space="preserve">
+    <value>buttonConfirmToReadIniFileYes</value>
+  </data>
+  <data name="labelMessageText.Text" xml:space="preserve">
+    <value>labelMessageText</value>
+  </data>
+  <data name="&gt;&gt;tabPageInvalidChar.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;panelAskEncryptOrDecrypt.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;panelConfirmToReadIniFile.Parent" xml:space="preserve">
+    <value>tabPageConfirmToReadIniFile</value>
+  </data>
+  <data name="contextMenuStrip2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>114, 48</value>
+  </data>
+  <data name="buttonInvalidCharCancel.TabIndex" type="System.Int32, mscorlib">
+    <value>26</value>
+  </data>
+  <data name="panelOverwriteConfirm.Location" type="System.Drawing.Point, System.Drawing">
+    <value>3, 3</value>
+  </data>
+  <data name="splitButton1.TabIndex" type="System.Int32, mscorlib">
+    <value>20</value>
+  </data>
+  <data name="buttonOverwriteCancel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="labelPasswordValid.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
+  </data>
+  <data name="labelConfirmToReadIniFile.Text" xml:space="preserve">
+    <value>The setting file "_AtcCase.ini" was found in the following location. Are you sure you want to read it?</value>
+  </data>
+  <data name="tabPageConfirmToReadIniFile.Text" xml:space="preserve">
+    <value>ConfirmToReadIniFile</value>
+  </data>
+  <data name="&gt;&gt;labelMessageText.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;buttonOverwriteCancel.Parent" xml:space="preserve">
+    <value>panelOverwriteConfirm</value>
+  </data>
+  <data name="label1.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Left, Right</value>
+  </data>
+  <data name="&gt;&gt;pictureBoxQuestionIcon.Type" xml:space="preserve">
+    <value>System.Windows.Forms.PictureBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="buttonInvalidCharCancel.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="tabControl1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>0, 0</value>
+  </data>
+  <data name="&gt;&gt;tabPageInvalidChar.Parent" xml:space="preserve">
+    <value>tabControl1</value>
+  </data>
+  <data name="&gt;&gt;textBoxRePassword.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="labelPasswordValid.Location" type="System.Drawing.Point, System.Drawing">
+    <value>43, 134</value>
+  </data>
+  <data name="&gt;&gt;tabPageConfirmToReadIniFile.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="buttonPasswordCancel.Location" type="System.Drawing.Point, System.Drawing">
+    <value>372, 125</value>
+  </data>
+  <data name="buttonPasswordOK.Font" type="System.Drawing.Font, System.Drawing">
+    <value>MS UI Gothic, 12pt</value>
+  </data>
+  <data name="&gt;&gt;labelPasswordValid.Parent" xml:space="preserve">
+    <value>panelInputPassword</value>
+  </data>
+  <data name="tabPageOverwriteConfirm.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="label2.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Left, Right</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="ToolStripMenuItemkeepNewerAll.Text" xml:space="preserve">
+    <value>Keep Newer All</value>
+  </data>
+  <data name="buttonInvalidCharCancel.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 32</value>
+  </data>
+  <data name="&gt;&gt;buttonPasswordCancel.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="labelInvalidChar.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>ja-JP</value>
+  </metadata>
+  <metadata name="contextMenuStrip2.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>182, 17</value>
+  </metadata>
+  <metadata name="contextMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
 </root>

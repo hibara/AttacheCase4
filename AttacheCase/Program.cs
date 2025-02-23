@@ -79,7 +79,7 @@ namespace AttacheCase
       const string logFileName = "debug_console_log.txt";
       var logFilePath = Path.Combine(exeDir, logFileName);
 
-      var logText = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss: ") + " クリプタン起動\n";
+      var logText = DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss: ") + " Cryptan is launched";
 
       try
       {
@@ -167,19 +167,6 @@ namespace AttacheCase
 
       if (isNew)
       {
-        // 初回起動時
-        foreach (var t in args)
-        {
-          if (File.Exists(t))
-          {
-            AppSettings.Instance.FileList.Add(t);
-          }
-        }
-
-#if DEBUG
-        //AppSettings.Instance.FileList.Add("C:\\Users\\hibara\\Desktop\\クマさん.atc");
-#endif
-
         Application.EnableVisualStyles();
         Application.SetCompatibleTextRenderingDefault(false);
         Application.Run(new Form1());

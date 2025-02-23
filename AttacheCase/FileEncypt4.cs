@@ -190,6 +190,7 @@ namespace AttacheCase
     // Constructor
     public FileEncrypt4()
     {
+
     }
 
     /// <summary>
@@ -979,72 +980,6 @@ namespace AttacheCase
         swProgress.Restart();
       }
     }
-
-    /*
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="parentPath"></param>
-    /// <param name="rootFolderPath"></param>
-    /// <param name="cancelCheck"></param>
-    /// <returns></returns>
-    /// <exception cref="OperationCanceledException"></exception>
-    public IEnumerable<FileSystemEntry> GetFileList(string parentPath, string rootFolderPath, Func<bool> cancelCheck)
-    {
-      if (string.IsNullOrEmpty(parentPath) || string.IsNullOrEmpty(rootFolderPath))
-      {
-        throw new ArgumentException("Parent path and root folder path must not be null or empty");
-      }
-
-      // パスの正規化
-      parentPath = Path.GetFullPath(parentPath);
-      rootFolderPath = Path.GetFullPath(rootFolderPath);
-
-      var pending = new ConcurrentQueue<string>();
-      var results = new ConcurrentBag<FileSystemEntry>();
-      pending.Enqueue(rootFolderPath);
-
-      while (!pending.IsEmpty)
-      {
-        if (cancelCheck()) throw new OperationCanceledException();
-
-        if (pending.TryDequeue(out var currentPath))
-        {
-          try
-          {
-            var dirInfo = new DirectoryInfo(currentPath);
-            if (!dirInfo.Exists)
-            {
-              continue;
-            }
-
-            var dirEntry = GetDirectoryInfo(parentPath, currentPath);
-            results.Add(dirEntry);
-
-            foreach (var dir in dirInfo.GetDirectories())
-            {
-              pending.Enqueue(dir.FullName);
-            }
-
-            foreach (var file in dirInfo.GetFiles())
-            {
-              if (cancelCheck()) throw new OperationCanceledException();
-
-              var fileEntry = GetFileInfo(parentPath, file.FullName, cancelCheck);
-              results.Add(fileEntry);
-            }
-          }
-          catch (Exception ex)
-          {
-            continue;
-          }
-        }
-      }
-
-      var resultList = results.Where(entry => !string.IsNullOrEmpty(entry.FullPath)).OrderBy(e => e.RelativePath).ToList();
-      return resultList;
-    }
-    */
 
     /// <summary>
     /// 暗号化ファイルに格納する各ファイル情報をMemoryStreamに書き込む
