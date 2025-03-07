@@ -3313,7 +3313,6 @@ namespace AttacheCase
       if (panelEncryptConfirm.Visible == false) return;
       if (_IsInitializedTextBox) return;
 
-
       if (AppSettings.Instance.fMyEncryptPasswordKeep == true)
       {
         // The memorized password:
@@ -3388,8 +3387,6 @@ namespace AttacheCase
           pictureBoxCheckPasswordValidation.Image = pictureBoxInValidIcon.Image;
           textBoxRePassword.BackColor = Color.PapayaWhip;
         }
-
-        _IsInitializedTextBox = true;
 
       }
 
@@ -4131,11 +4128,13 @@ namespace AttacheCase
             AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC ||
             AppSettings.Instance.EncryptionFileType == FILE_TYPE_ATC_EXE)
         {
+
           encryption4 = new FileEncrypt4
           {
             NumberOfFiles = 1,
-            TotalNumberOfFiles = encryption4.NumberOfFiles
+            TotalNumberOfFiles = 1
           };
+
         }
 
         //-----------------------------------
