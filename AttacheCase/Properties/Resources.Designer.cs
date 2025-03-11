@@ -348,6 +348,15 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   The encrypted file was deleted because the number of password entry errors exceeded the specified number of attempts. Once the application is closed. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageEncryptedFileDeletedOverAttempts {
+            get {
+                return ResourceManager.GetString("DialogMessageEncryptedFileDeletedOverAttempts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   The specified password file is not found in encryption. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string DialogMessageEncryptionPasswordFileNotFound {
@@ -493,6 +502,15 @@ namespace AttacheCase.Properties {
         public static string DialogMessageHigherVersion {
             get {
                 return ResourceManager.GetString("DialogMessageHigherVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The application will close once due to a series of password entry errors. Please start over from the beginning. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageInputPasswordOverAttempts {
+            get {
+                return ResourceManager.GetString("DialogMessageInputPasswordOverAttempts", resourceCulture);
             }
         }
         
@@ -1211,6 +1229,15 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   Number of attempts: に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string LabelInputPasswordAttempts {
+            get {
+                return ResourceManager.GetString("LabelInputPasswordAttempts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Invalid character string in path. Do you replace it and decrypt it? に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string labelInvalidChar {
@@ -1315,6 +1342,15 @@ namespace AttacheCase.Properties {
         public static string labelPasswordFileIsEnteredAlready {
             get {
                 return ResourceManager.GetString("labelPasswordFileIsEnteredAlready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Password is incorrect に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string labelPasswordIncorrect {
+            get {
+                return ResourceManager.GetString("labelPasswordIncorrect", resourceCulture);
             }
         }
         

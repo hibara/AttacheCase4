@@ -782,4 +782,16 @@ Extensions must be entered as comma-separated values containing a period.</value
     <value>Junction or symbolic link cannot be encrypted.
 The process is aborted.</value>
   </data>
+  <data name="labelPasswordIncorrect" xml:space="preserve">
+    <value>Password is incorrect</value>
+  </data>
+  <data name="LabelInputPasswordAttempts" xml:space="preserve">
+    <value>Number of attempts:</value>
+  </data>
+  <data name="DialogMessageEncryptedFileDeletedOverAttempts" xml:space="preserve">
+    <value>The encrypted file was deleted because the number of password entry errors exceeded the specified number of attempts. Once the application is closed.</value>
+  </data>
+  <data name="DialogMessageInputPasswordOverAttempts" xml:space="preserve">
+    <value>The application will close once due to a series of password entry errors. Please start over from the beginning.</value>
+  </data>
 </root>

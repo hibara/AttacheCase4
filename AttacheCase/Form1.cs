@@ -165,7 +165,8 @@ namespace AttacheCase
     // List<string> FileList = new List<string>();
     // AppSettings.Instance.FileList
 
-    private int LimitOfInputPassword = -1;
+    private int MissTypeCount = 0; // ミス回数をクラスフィールドとして追加
+    private int LimitOfInputPassword = -1; // 既存のフィールド
 
     // パスワードファイル
     private string _previousPassword = "";
@@ -1483,7 +1484,8 @@ namespace AttacheCase
         return;
 
       }
-      else if (e.Error != null)
+
+      if (e.Error != null)
       {
         //e.Error.Message;
         labelProgressPercentText.Text = @"- %";
@@ -1497,417 +1499,422 @@ namespace AttacheCase
         this.Update();
         return;
       }
+
+      /*
+      // Status code
+      private const int ENCRYPT_SUCCEEDED   = 1; // Encrypt is succeeded.
+      private const int DECRYPT_SUCCEEDED   = 2; // Decrypt is succeeded.
+      private const int DELETE_SUCCEEDED    = 3; // Delete is succeeded.
+      private const int HEADER_DATA_READING = 4; // Header data is reading.
+      private const int ENCRYPTING          = 5; // Encrypting.
+      private const int DECRYPTING          = 6; // Decrypting.
+      private const int DELETING            = 7; // Deleting.
+
+      // Error code
+      private const int USER_CANCELED            = -1;
+      private const int ERROR_UNEXPECTED         = -100;
+      private const int NOT_ATC_DATA             = -101;
+      private const int ATC_BROKEN_DATA          = -102;
+      private const int NO_DISK_SPACE            = -103;
+      private const int FILE_INDEX_NOT_FOUND     = -104;
+      private const int PASSWORD_TOKEN_NOT_FOUND = -105;
+      private const int NOT_CORRECT_HASH_VALUE   = -106;
+      private const int INVALID_FILE_PATH        = -107;
+      private const int OS_DENIES_ACCESS         = -108;
+      private const int DATA_NOT_FOUND           = -109;
+      private const int DIRECTORY_NOT_FOUND      = -110;
+      private const int DRIVE_NOT_FOUND          = -111;
+      private const int FILE_NOT_LOADED          = -112;
+      private const int FILE_NOT_FOUND           = -113;
+      private const int PATH_TOO_LONG            = -114;
+      private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
+      private const int RSA_KEY_GUID_NOT_MATCH   = -116;
+      private const int IO_EXCEPTION             = -117;
+      */
+      int ReturnCode;
+      if (decryption2 != null)
+      {
+        ReturnCode = decryption2.ReturnCode;
+      }
+      else if (decryption3 != null)
+      {
+        ReturnCode = decryption3.ReturnCode;
+      }
       else
       {
-        /*
-        // Status code
-        private const int ENCRYPT_SUCCEEDED   = 1; // Encrypt is succeeded.
-        private const int DECRYPT_SUCCEEDED   = 2; // Decrypt is succeeded.
-        private const int DELETE_SUCCEEDED    = 3; // Delete is succeeded.
-        private const int HEADER_DATA_READING = 4; // Header data is reading.
-        private const int ENCRYPTING          = 5; // Ecrypting.
-        private const int DECRYPTING          = 6; // Decrypting.
-        private const int DELETING            = 7; // Deleting.
+        ReturnCode = decryption4.ReturnCode;
+      }
 
-        // Error code
-        private const int USER_CANCELED            = -1;
-        private const int ERROR_UNEXPECTED         = -100;
-        private const int NOT_ATC_DATA             = -101;
-        private const int ATC_BROKEN_DATA          = -102;
-        private const int NO_DISK_SPACE            = -103;
-        private const int FILE_INDEX_NOT_FOUND     = -104;
-        private const int PASSWORD_TOKEN_NOT_FOUND = -105;
-        private const int NOT_CORRECT_HASH_VALUE   = -106;
-        private const int INVALID_FILE_PATH        = -107;
-        private const int OS_DENIES_ACCESS         = -108;
-        private const int DATA_NOT_FOUND           = -109;
-        private const int DIRECTORY_NOT_FOUND      = -110;
-        private const int DRIVE_NOT_FOUND          = -111;
-        private const int FILE_NOT_LOADED          = -112;
-        private const int FILE_NOT_FOUND           = -113;
-        private const int PATH_TOO_LONG            = -114;
-        private const int CRYPTOGRAPHIC_EXCEPTION  = -115;
-        private const int RSA_KEY_GUID_NOT_MATCH   = -116;
-        private const int IO_EXCEPTION             = -117;
-        */
-        int ReturnCode;
-        if (decryption2 != null)
-        {
-          ReturnCode = decryption2.ReturnCode;
-        }
-        else if (decryption3 != null)
-        {
-          ReturnCode = decryption3.ReturnCode;
-        }
-        else
-        {
-          ReturnCode = decryption4.ReturnCode;
-        }
+      var ErrorFilePath = "";
+      switch (ReturnCode)
+      {
+        //-----------------------------------
+        case DECRYPT_SUCCEEDED:
+          labelProgressPercentText.Text = @"100%";
+          progressBar.Style = ProgressBarStyle.Continuous;
+          progressBar.Value = progressBar.Maximum;
+          _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+          _taskbarProgress.UpdateProgress(100);
+          _taskbarProgress.Flash();
+          labelCryptionType.Text = "";
+          labelProgressMessageText.Text = Resources.labelCaptionCompleted;  // "Completed"
+          notifyIcon1.Text = @"100% " + Resources.labelCaptionCompleted;
 
-        var ErrorFilePath = "";
-        switch (ReturnCode)
-        {
+          MissTypeCount = 0; // 成功したらリセット
+
+          if (decryption2 != null)
+          {
+            OutputFileList.AddRange(decryption2.OutputFileList);
+          }
+          else if (decryption3 != null)
+          {
+            OutputFileList.AddRange(decryption3.OutputFileList);
+          }
+          else
+          {
+            OutputFileList.AddRange(decryption4.OutputFileList);
+          }
+
           //-----------------------------------
-          case DECRYPT_SUCCEEDED:
-            labelProgressPercentText.Text = @"100%";
-            progressBar.Style = ProgressBarStyle.Continuous;
-            progressBar.Value = progressBar.Maximum;
-            _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
-            _taskbarProgress.UpdateProgress(100);
-            _taskbarProgress.Flash();
-            labelCryptionType.Text = "";
-            labelProgressMessageText.Text = Resources.labelCaptionCompleted;  // "Completed"
-            notifyIcon1.Text = @"100% " + Resources.labelCaptionCompleted;
+          // Developer mode
+          if (AppSettings.Instance.fDeveloperConsole == true)
+          {
+            showDeveloperConsoleWindowDecrypt();
+          }
 
-            if (decryption2 != null)
-            {
-              OutputFileList.AddRange(decryption2.OutputFileList);
-            }
-            else if (decryption3 != null)
-            {
-              OutputFileList.AddRange(decryption3.OutputFileList);
-            }
-            else
-            {
-              OutputFileList.AddRange(decryption4.OutputFileList);
-            }
-
-            //-----------------------------------
-            // Developer mode
-            if (AppSettings.Instance.fDeveloperConsole == true)
-            {
-              showDeveloperConsoleWindowDecrypt();
-            }
-
-            //-----------------------------------
-            // DecryptionEndProcess
-            if (FileIndex < AppSettings.Instance.FileList.Count)
-            {
-              FileIndex++;
-              DecryptionProcess();
-              return;
-            }
-
-            // Wait for the BackgroundWorker thread end
-            while (bkg.IsBusy)
-            {
-              Application.DoEvents();
-            }
-
-            DecryptionEndProcess();
-            AppSettings.Instance.FileList?.Clear();
-
-            this.Update();
+          //-----------------------------------
+          // DecryptionEndProcess
+          if (FileIndex < AppSettings.Instance.FileList.Count)
+          {
+            FileIndex++;
+            DecryptionProcess();
             return;
+          }
 
-          //-----------------------------------
-          case USER_CANCELED:
-            // Canceled
-            labelProgressPercentText.Text = @"- %";
-            progressBar.Style = ProgressBarStyle.Continuous;
-            progressBar.Value = 0;
-            _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
-            _taskbarProgress.UpdateProgress(0);
-            labelCryptionType.Text = "";
-            notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
-            AppSettings.Instance.FileList?.Clear();
+          // Wait for the BackgroundWorker thread end
+          while (bkg.IsBusy)
+          {
+            Application.DoEvents();
+          }
 
-            // 復号処理はキャンセルされました。
-            // Decryption was canceled.
-            labelProgressMessageText.Text = Resources.labelDecryptionCanceled;
+          DecryptionEndProcess();
+          AppSettings.Instance.FileList?.Clear();
 
-            this.Update();
+          this.Update();
+          return;
 
-            decryption2 = null;
-            decryption3 = null;
-            decryption4 = null;
+        //-----------------------------------
+        case USER_CANCELED:
+          // Canceled
+          labelProgressPercentText.Text = @"- %";
+          progressBar.Style = ProgressBarStyle.Continuous;
+          progressBar.Value = 0;
+          _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Normal);
+          _taskbarProgress.UpdateProgress(0);
+          labelCryptionType.Text = "";
+          notifyIcon1.Text = @"- % " + Resources.labelCaptionCanceled;
+          AppSettings.Instance.FileList?.Clear();
 
-            return;
+          // 復号処理はキャンセルされました。
+          // Decryption was canceled.
+          labelProgressMessageText.Text = Resources.labelDecryptionCanceled;
 
-          //-----------------------------------
-          case OS_DENIES_ACCESS:
-            // エラー
-            // ファイルへのアクセスが拒否されました。
-            // ファイルの読み書きができる場所（デスクトップ等）へ移動して再度実行してください。
-            //
-            // Error
-            // Access to the file has been denied.
-            // Move to a place (eg Desktop) where you can read and write files and try again.
-            // 
-            MessageBox.Show(this, Resources.DialogMessageAccessDeny,
-              Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+          this.Update();
 
-            break;
+          decryption2 = null;
+          decryption3 = null;
+          decryption4 = null;
 
-          //-----------------------------------
-          case NOT_ATC_DATA:
-            // エラー
-            // 暗号化ファイルではありません。処理を中止します。
-            //
-            // Error
-            // The file is not encrypted file. The process is aborted.
-            if (decryption4 != null)
-            {
-              ErrorFilePath = decryption4.ErrorFilePath;
-            }
-            else if (decryption3 != null)
-            {
-              ErrorFilePath = decryption3.ErrorFilePath;
-            }
-            else if (decryption2 != null)
-            {
-              ErrorFilePath = decryption2.ErrorFilePath;
-            }
+          return;
 
-            MessageBox.Show(this,
-              Resources.DialogMessageNotAtcFile + Environment.NewLine + ErrorFilePath,
-              Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+        //-----------------------------------
+        case OS_DENIES_ACCESS:
+          // エラー
+          // ファイルへのアクセスが拒否されました。
+          // ファイルの読み書きができる場所（デスクトップ等）へ移動して再度実行してください。
+          //
+          // Error
+          // Access to the file has been denied.
+          // Move to a place (eg Desktop) where you can read and write files and try again.
+          // 
+          MessageBox.Show(this, Resources.DialogMessageAccessDeny,
+            Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+          break;
 
-            break;
+        //-----------------------------------
+        case NOT_ATC_DATA:
+          // エラー
+          // 暗号化ファイルではありません。処理を中止します。
+          //
+          // Error
+          // The file is not encrypted file. The process is aborted.
+          if (decryption4 != null)
+          {
+            ErrorFilePath = decryption4.ErrorFilePath;
+          }
+          else if (decryption3 != null)
+          {
+            ErrorFilePath = decryption3.ErrorFilePath;
+          }
+          else if (decryption2 != null)
+          {
+            ErrorFilePath = decryption2.ErrorFilePath;
+          }
 
-          //-----------------------------------
-          case ATC_BROKEN_DATA:
-            // エラー
-            // 暗号化ファイル(.atc)は壊れています。処理を中止します。
-            //
-            // Error
-            // Encrypted file ( atc ) is broken. The process is aborted.
-            if (decryption4 != null)
-            {
-              ErrorFilePath = decryption4.ErrorFilePath;
-            }
-            else if (decryption3 != null)
-            {
-              ErrorFilePath = decryption3.ErrorFilePath;
-            }
-            else if (decryption2 != null)
-            {
-              ErrorFilePath = decryption2.ErrorFilePath;
-            }
-
-            MessageBox.Show(this,
-              Resources.DialogMessageAtcFileBroken + Environment.NewLine + ErrorFilePath,
-              Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            break;
-
-          //-----------------------------------
-          case NO_DISK_SPACE:
-            // 警告
-            // ドライブに空き容量がありません。処理を中止します。
-            // [ドライブパス名]
-            //
-            // Alert
-            // No free space on the disk. The process is aborted.
-            // [The drive path]
-            //
-            if (decryption4 != null)
-            {
-              ErrorFilePath = decryption4.DriveName;
-            }
-            else if (decryption3 != null)
-            {
-              ErrorFilePath = decryption3.DriveName;
-            }
-            else if (decryption2 != null)
-            {
-              ErrorFilePath = decryption2.DriveName;
-            }
-
-            MessageBox.Show(this,
-              Resources.DialogMessageNoDiskSpace + Environment.NewLine + ErrorFilePath,
-              Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            break;
-
-          //-----------------------------------
-          case FILE_INDEX_NOT_FOUND:
-            // エラー
-            // 暗号化ファイル内部で、不正なファイルインデックスがありました。
-            //
-            // Error
-            // Internal file index is invalid in encrypted file.
-            MessageBox.Show(this, Resources.DialogMessageFileIndexInvalid,
-              Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            break;
-
-          //-----------------------------------
-          case NOT_CORRECT_HASH_VALUE:
-            // エラー
-            // ファイルのハッシュ値が異なります。ファイルが壊れたか、改ざんされた可能性があります。
-            // 処理を中止します。
-            //
-            // Error
-            // The file is not the same hash value. Whether the file is corrupted, it may have been made the falsification.
-            // The process is aborted.
-            if (decryption4 != null)
-            {
-              ErrorFilePath = decryption4.ErrorFilePath;
-            }
-            else if (decryption3 != null)
-            {
-              ErrorFilePath = decryption3.ErrorFilePath;
-            }
-            else if (decryption2 != null)
-            {
-              ErrorFilePath = decryption2.ErrorFilePath;
-            }
-
-            MessageBox.Show(this,
-              Resources.DialogMessageNotSameHash + Environment.NewLine + ErrorFilePath,
-              Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            break;
-
-          //-----------------------------------
-          case INVALID_FILE_PATH:
-            // エラー
-            // ファイル、またはフォルダーパスが不正です。処理を中止します。
-            //
-            // Error
-            // The path of files or folders are invalid. The process is aborted.
-            if (decryption4 != null)
-            {
-              ErrorFilePath = decryption4.ErrorFilePath;
-            }
-            else if (decryption3 != null)
-            {
-              ErrorFilePath = decryption3.ErrorFilePath;
-            }
-            else if (decryption2 != null)
-            {
-              ErrorFilePath = decryption2.ErrorFilePath;
-            }
-
-            MessageBox.Show(this,
-              Resources.DialogMessageInvalidFilePath + Environment.NewLine + ErrorFilePath,
-              Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            break;
-
-          //-----------------------------------
-          case DATA_NOT_FOUND:
-            // エラー
-            // 暗号化するデータが見つかりません。ファイルは壊れています。
-            // 復号できませんでした。
-            //
-            // Error
-            // Encrypted data not found. The file is broken.
-            // Decryption failed.
-            MessageBox.Show(this, Resources.DialogMessageDataNotFound,
-              Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            break;
-
-          //-----------------------------------
-          case PASSWORD_TOKEN_NOT_FOUND:
-            // エラー
-            // パスワードがちがうか、ファイルが破損している可能性があります。
-            // 復号できませんでした。
-            //
-            // Error
-            // Password is invalid, or the encrypted file might have been broken.
-            // Decryption is aborted.
-            MessageBox.Show(this, Resources.DialogMessageDecryptionError,
-              Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            if (LimitOfInputPassword > 1)
-            {
-              LimitOfInputPassword--;
-              panelStartPage.Visible = false;
-              panelEncrypt.Visible = false;
-              panelEncryptConfirm.Visible = false;
-              panelDecrypt.Visible = true;
-            }
-            else
-            {
-              // パスワード回数を超過
-              // Exceed times limit of inputting password
-
-              if (AppSettings.Instance.fBroken == true)
-              {
-                // ファイル破壊を行うか
-                // Whether breaking the files
-                foreach (var FilePath in AppSettings.Instance.FileList)
-                {
-                  BreakTheFile(FilePath);
-                }
-              }
-              // スタートページへ戻る
-              // Back to Start page.
-              panelStartPage.Visible = true;
-              panelEncrypt.Visible = false;
-              panelEncryptConfirm.Visible = false;
-              panelDecrypt.Visible = false;
-            }
-
-            panelRsa.Visible = false;
-            panelRsaKey.Visible = false;
-            panelProgressState.Visible = false;
-            textBoxDecryptPassword.Focus();
-            textBoxDecryptPassword.SelectAll();
-            break;
-
-          //-----------------------------------
-          case CRYPTOGRAPHIC_EXCEPTION:
-            // エラー
-            // RSA公開鍵または秘密鍵の形式が違うか、XMLファイル形式ではありません。
-            // 処理を中止します。
-            //
-            // Error
-            // The RSA public or private key is in a different format or is not in XML file format.
-            // The process is aborted.
-            //
-            MessageBox.Show(this, Resources.DialogMessageCryptographicException,
-              Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            break;
-
-          //-----------------------------------
-          case RSA_KEY_GUID_NOT_MATCH:
-            // エラー
-            // RSAで暗号化された公開鍵と異なるペアの鍵が指定されています。復号できません。
-            // 処理を中止します。
-            //
-            // Error
-            // A different pair of keys from the RSA-encrypted public key has been specified. Cannot decrypt.
-            // The process is aborted.
-            //
-            MessageBox.Show(this, Resources.DialogMessageRsaKeyGuidNotMatch,
-              Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-
-            break;
-
-          //-----------------------------------
-          default:
-            // エラー
-            // 予期せぬエラーが発生しました。処理を中止します。
-            //
-            // Error
-            // An unexpected error has occurred. And stops processing.
-            MessageBox.Show(this, Resources.DialogMessageUnexpectedError,
+          MessageBox.Show(this,
+            Resources.DialogMessageNotAtcFile + Environment.NewLine + ErrorFilePath,
             Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-            break;
+          break;
 
-        }// end switch();
+        //-----------------------------------
+        case ATC_BROKEN_DATA:
+          // エラー
+          // 暗号化ファイル(.atc)は壊れています。処理を中止します。
+          //
+          // Error
+          // Encrypted file ( atc ) is broken. The process is aborted.
+          if (decryption4 != null)
+          {
+            ErrorFilePath = decryption4.ErrorFilePath;
+          }
+          else if (decryption3 != null)
+          {
+            ErrorFilePath = decryption3.ErrorFilePath;
+          }
+          else if (decryption2 != null)
+          {
+            ErrorFilePath = decryption2.ErrorFilePath;
+          }
 
-        labelProgressPercentText.Text = @"- %";
-        progressBar.Style = ProgressBarStyle.Continuous;
-        progressBar.Value = 0;
-        _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
-        _taskbarProgress.UpdateProgress(0);
-        labelCryptionType.Text = Resources.labelCaptionError;
-        notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
-        AppSettings.Instance.FileList?.Clear();
-        this.Update();
+          MessageBox.Show(this,
+            Resources.DialogMessageAtcFileBroken + Environment.NewLine + ErrorFilePath,
+            Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
 
-        decryption2 = null;
-        decryption3 = null;
-        decryption4 = null;
+          break;
 
-      }
+        //-----------------------------------
+        case NO_DISK_SPACE:
+          // 警告
+          // ドライブに空き容量がありません。処理を中止します。
+          // [ドライブパス名]
+          //
+          // Alert
+          // No free space on the disk. The process is aborted.
+          // [The drive path]
+          //
+          if (decryption4 != null)
+          {
+            ErrorFilePath = decryption4.DriveName;
+          }
+          else if (decryption3 != null)
+          {
+            ErrorFilePath = decryption3.DriveName;
+          }
+          else if (decryption2 != null)
+          {
+            ErrorFilePath = decryption2.DriveName;
+          }
+
+          MessageBox.Show(this,
+            Resources.DialogMessageNoDiskSpace + Environment.NewLine + ErrorFilePath,
+            Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+          break;
+
+        //-----------------------------------
+        case FILE_INDEX_NOT_FOUND:
+          // エラー
+          // 暗号化ファイル内部で、不正なファイルインデックスがありました。
+          //
+          // Error
+          // Internal file index is invalid in encrypted file.
+          MessageBox.Show(this, Resources.DialogMessageFileIndexInvalid,
+            Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+          break;
+
+        //-----------------------------------
+        case NOT_CORRECT_HASH_VALUE:
+          // エラー
+          // ファイルのハッシュ値が異なります。ファイルが壊れたか、改ざんされた可能性があります。
+          // 処理を中止します。
+          //
+          // Error
+          // The file is not the same hash value. Whether the file is corrupted, it may have been made the falsification.
+          // The process is aborted.
+          if (decryption4 != null)
+          {
+            ErrorFilePath = decryption4.ErrorFilePath;
+          }
+          else if (decryption3 != null)
+          {
+            ErrorFilePath = decryption3.ErrorFilePath;
+          }
+          else if (decryption2 != null)
+          {
+            ErrorFilePath = decryption2.ErrorFilePath;
+          }
+
+          MessageBox.Show(this,
+            Resources.DialogMessageNotSameHash + Environment.NewLine + ErrorFilePath,
+            Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+          break;
+
+        //-----------------------------------
+        case INVALID_FILE_PATH:
+          // エラー
+          // ファイル、またはフォルダーパスが不正です。処理を中止します。
+          //
+          // Error
+          // The path of files or folders are invalid. The process is aborted.
+          if (decryption4 != null)
+          {
+            ErrorFilePath = decryption4.ErrorFilePath;
+          }
+          else if (decryption3 != null)
+          {
+            ErrorFilePath = decryption3.ErrorFilePath;
+          }
+          else if (decryption2 != null)
+          {
+            ErrorFilePath = decryption2.ErrorFilePath;
+          }
+
+          MessageBox.Show(this,
+            Resources.DialogMessageInvalidFilePath + Environment.NewLine + ErrorFilePath,
+            Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+          break;
+
+        //-----------------------------------
+        case DATA_NOT_FOUND:
+          // エラー
+          // 暗号化するデータが見つかりません。ファイルは壊れています。
+          // 復号できませんでした。
+          //
+          // Error
+          // Encrypted data not found. The file is broken.
+          // Decryption failed.
+          MessageBox.Show(this, Resources.DialogMessageDataNotFound,
+            Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+          break;
+
+        //-----------------------------------
+        case PASSWORD_TOKEN_NOT_FOUND:
+          // エラー
+          // パスワードがちがうか、ファイルが破損している可能性があります。
+          // 復号できませんでした。
+          //
+          // Error
+          // Password is invalid, or the encrypted file might have been broken.
+          // Decryption is aborted.
+          MessageBox.Show(this, Resources.DialogMessageDecryptionError,
+            Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+          MissTypeCount++; // ミス回数をインクリメント
+
+          if (MissTypeCount >= LimitOfInputPassword)
+          {
+            if (AppSettings.Instance.fBroken)
+            {
+              // パスワード入力ミスが指定回数を超えたので暗号化ファイルを削除する
+              // Delete encrypted files because the number of password entry errors has exceeded the specified number of times.
+              BreakTheFile(AppSettings.Instance.FileList[FileIndex]);
+
+              // パスワード入力ミスの回数が指定の試行回数を超えたので暗号化ファイルは削除されました。いったんアプリケーションを終了します。
+              // The encrypted file was deleted because the number of password entry errors exceeded the specified number of attempts. Once the application is closed.
+              MessageBox.Show(this, Resources.DialogMessageEncryptedFileDeletedOverAttempts,
+                Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+            else
+            {
+              // パスワード入力のミスが続いたので、いったんアプリケーションを終了します。初めからやり直してください。
+              // The application will close once due to a series of password entry errors. Please start over from the beginning.
+              MessageBox.Show(this, Resources.DialogMessageInputPasswordOverAttempts,
+                Resources.DialogTitleAlert, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            }
+
+            this.Close();
+            return;
+
+          }
+
+          panelDecrypt.Visible = true;
+          panelProgressState.Visible = false;
+
+          textBoxDecryptPassword.BackColor = Color.PapayaWhip;
+          textBoxDecryptPassword.Focus();
+          textBoxDecryptPassword.SelectAll();
+
+          // パスワードに誤りがあります: (試行回数: 1/3)
+          // Password is incorrect: (Number of attempts: 1/3)
+          labelDecryptionPassword.Text = Resources.labelPasswordIncorrect + $@": ({Resources.LabelInputPasswordAttempts}{MissTypeCount}/{LimitOfInputPassword})";
+
+          _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+          _taskbarProgress.UpdateProgress(0);
+          notifyIcon1.Text = @"- % " + Resources.labelPasswordIncorrect;
+          return;
+
+        //-----------------------------------
+        case CRYPTOGRAPHIC_EXCEPTION:
+          // エラー
+          // RSA公開鍵または秘密鍵の形式が違うか、XMLファイル形式ではありません。
+          // 処理を中止します。
+          //
+          // Error
+          // The RSA public or private key is in a different format or is not in XML file format.
+          // The process is aborted.
+          //
+          MessageBox.Show(this, Resources.DialogMessageCryptographicException,
+            Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+          break;
+
+        //-----------------------------------
+        case RSA_KEY_GUID_NOT_MATCH:
+          // エラー
+          // RSAで暗号化された公開鍵と異なるペアの鍵が指定されています。復号できません。
+          // 処理を中止します。
+          //
+          // Error
+          // A different pair of keys from the RSA-encrypted public key has been specified. Cannot decrypt.
+          // The process is aborted.
+          //
+          MessageBox.Show(this, Resources.DialogMessageRsaKeyGuidNotMatch,
+            Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+          break;
+
+        //-----------------------------------
+        default:
+          // エラー
+          // 予期せぬエラーが発生しました。処理を中止します。
+          //
+          // Error
+          // An unexpected error has occurred. And stops processing.
+          MessageBox.Show(this, Resources.DialogMessageUnexpectedError,
+            Resources.DialogTitleError, MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+
+          break;
+
+      }// end switch();
+
+      labelProgressPercentText.Text = @"- %";
+      progressBar.Style = ProgressBarStyle.Continuous;
+      progressBar.Value = 0;
+      _taskbarProgress.SetState(TaskbarProgress.TaskbarProgressBarStatus.Error);
+      _taskbarProgress.UpdateProgress(0);
+      labelCryptionType.Text = Resources.labelCaptionError;
+      notifyIcon1.Text = @"- % " + Resources.labelCaptionError;
+      AppSettings.Instance.FileList?.Clear();
+      this.Update();
+
+      decryption2 = null;
+      decryption3 = null;
+      decryption4 = null;
 
     }
 
@@ -3410,10 +3417,6 @@ namespace AttacheCase
     private void panelDecrypt_VisibleChanged(object sender, EventArgs e)
     {
       if (!panelDecrypt.Visible) return;
-      //toolStripButtonEncryptSelectFiles.Enabled = false;
-      //toolStripButtonEncryptSelectFolder.Enabled = false;
-      //toolStripButtonDecryptSelectAtcFiles.Enabled = false;
-      //toolStripButtonOption.Enabled = false;
 
       this.AcceptButton = buttonDecryptStart;
       this.CancelButton = buttonDecryptCancel;
@@ -5357,6 +5360,11 @@ namespace AttacheCase
     //======================================================================
     private void DecryptionProcess()
     {
+
+      // 各ファイル処理の開始時に初期化
+      // パスワード入力回数制限
+      LimitOfInputPassword = -1;
+
       //-----------------------------------
       // Display progress window
       //-----------------------------------
@@ -5702,7 +5710,7 @@ namespace AttacheCase
           LimitOfInputPassword = decryption4.MissTypeLimits;
         }
         decryption4.fSalvageIgnoreHashCheck = AppSettings.Instance.fSalvageIgnoreHashCheck;
-        toolStripStatusLabelDataVersion.Text = "Data ver.4";
+        toolStripStatusLabelDataVersion.Text = @"Data ver.4";
         this.Update();
 
         //======================================================================
@@ -6381,10 +6389,7 @@ namespace AttacheCase
       {
         foreach (var filename in openFileDialog1.FileNames)
         {
-          if (AppSettings.Instance.FileList == null)
-          {
-            AppSettings.Instance.FileList = new List<string>();
-          }
+          AppSettings.Instance.FileList ??= new List<string>();
           AppSettings.Instance.FileList.Add(filename);
         }
 

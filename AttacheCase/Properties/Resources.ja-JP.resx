@@ -782,4 +782,16 @@
     <value>ジャンクション、またはシンボリックリンクは暗号化できません。
 処理を中止します。</value>
   </data>
+  <data name="labelPasswordIncorrect" xml:space="preserve">
+    <value>パスワードに誤りがあります</value>
+  </data>
+  <data name="LabelInputPasswordAttempts" xml:space="preserve">
+    <value>試行回数:</value>
+  </data>
+  <data name="DialogMessageEncryptedFileDeletedOverAttempts" xml:space="preserve">
+    <value>パスワード入力ミスの回数が指定の試行回数を超えたので暗号化ファイルは削除されました。いったんアプリケーションを終了します。</value>
+  </data>
+  <data name="DialogMessageInputPasswordOverAttempts" xml:space="preserve">
+    <value>パスワード入力のミスが続いたので、いったんアプリケーションを終了します。初めからやり直してください。</value>
+  </data>
 </root>
