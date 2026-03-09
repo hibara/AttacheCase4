@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.If not, see<http://www.gnu.org/licenses/>.
 //---------------------------------------------------------------------- 
+using AttacheCase.CustomControl;
 using AttacheCase.Properties;
 using Microsoft.VisualBasic.FileIO;
 using System;
@@ -365,11 +366,12 @@ namespace AttacheCase
       AppSettings.Instance.FormHeight = this.Height;
       AppSettings.Instance.FormStyle = (int)this.WindowState;
 
-      if (File.Exists(AppSettings.Instance.IniFilePath) == true)
+      if (AppSettings.Instance.SettingSource == AppSettings.SettingDataLocation.IniFile)
       {
         AppSettings.Instance.WriteOptionToIniFile(AppSettings.Instance.IniFilePath);
+
       }
-      else
+      else if (AppSettings.Instance.SettingSource == AppSettings.SettingDataLocation.Registry)
       {
         var cmds = Environment.GetCommandLineArgs();
         if (cmds.Count() <= 1)
@@ -382,6 +384,11 @@ namespace AttacheCase
           //起動時のコマンドライン引数の場合、設定を保存しない。
           //If there is a startup command line arguments, not save the settings.
         }
+      }
+      else
+      {
+        // なにも設定保存せず終了する
+        // AppSettings.SettingDataLocation.None
       }
     }
 

@@ -221,82 +221,51 @@ namespace AttacheCase
     {
       fLoading = true;
 
-      // Add culture change in Form1.
-
-      ////-----------------------------------
-      //// Check culture
-      //switch (AppSettings.Instance.Language)
-      //{
-      //	case "ja":
-      //		CultureInfo.CurrentUICulture = CultureInfo.CreateSpecificCulture("ja-JP");
-      //		Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-JP");
-      //		Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP");
-      //		break;
-      //	case "en":
-      //		Thread.CurrentThread.CurrentCulture = new CultureInfo("", true);
-      //		Thread.CurrentThread.CurrentUICulture = new CultureInfo("", true);
-      //		break;
-      //	case "":
-      //	default:
-      //		if (CultureInfo.CurrentCulture.Name == "ja-JP")
-      //		{
-      //			CultureInfo.CurrentUICulture = CultureInfo.CreateSpecificCulture("ja-JP");
-      //			Thread.CurrentThread.CurrentCulture = new CultureInfo("ja-JP");
-      //         Thread.CurrentThread.CurrentUICulture = new CultureInfo("ja-JP");
-      //		}
-      //		else
-      //		{
-      //			Thread.CurrentThread.CurrentCulture = new CultureInfo("", true);
-      //			Thread.CurrentThread.CurrentUICulture = new CultureInfo("", true);
-      //		}
-      //		break;
-      //}
-
-#if (MS_STORE)
-      if (treeView1.Nodes.ContainsKey("nodeSystem"))
-      {
-        treeView1.Nodes.Remove(treeView1.Nodes["nodeSystem"]);
-      }
-#endif
       //-----------------------------------
       // 読み込み先の表示
-
       fTemporarySettings = false;
       buttonReplaceCurrentByTemporary.Enabled = false;
       buttonDiscardIniSetting.Enabled = false;
 
+      //-----------------------------------
       // Registry
-      using (Bitmap bitmap = new Bitmap(pictureBoxRegistryIcon.Image))
+      using (var bitmap = new Bitmap(pictureBoxRegistryIcon.Image))
       {
         bitmap.SetResolution(24, 24);
         this.Icon = Icon.FromHandle(bitmap.GetHicon());
-        this.Text = Resources.DialogTitleSettings + " - " + Resources.DialogTitleRegistry;
+        this.Text = Resources.DialogTitleSettings + @" - " + Resources.DialogTitleRegistry;
       }
 
+      //-----------------------------------
       // INI file
       if (File.Exists(AppSettings.Instance.IniFilePath) == true)
       {
         // Bitmap to Icon
-        using (Bitmap bitmap = new Bitmap(pictureBoxIniFileIcon.Image))
+        using (var bitmap = new Bitmap(pictureBoxIniFileIcon.Image))
         {
           bitmap.SetResolution(24, 24);
           this.Icon = Icon.FromHandle(bitmap.GetHicon());
-          this.Text = Resources.DialogTitleSettings + " - " + AppSettings.Instance.IniFilePath;
+          this.Text = Resources.DialogTitleSettings + @" - " + AppSettings.Instance.IniFilePath;
         }
+
+        comboBoxAlwaysReadIniFile.Enabled = false;
+        checkBoxShowDialogToConfirmToReadIniFileAlways.Enabled = false;
+
         fTemporarySettings = true;
         buttonReplaceCurrentByTemporary.Enabled = true;
         buttonDiscardIniSetting.Enabled = true;
 
       }
 
+      //-----------------------------------
       // Command line 
       if (AppSettings.Instance.CommandLineArgsNum > 0)
       {
-        using (Bitmap bitmap = new Bitmap(pictureBoxCommandLineIcon.Image))
+        using (var bitmap = new Bitmap(pictureBoxCommandLineIcon.Image))
         {
           bitmap.SetResolution(24, 24);
           this.Icon = Icon.FromHandle(bitmap.GetHicon());
-          this.Text = Resources.DialogTitleSettings + " - " + Resources.DialogTitleCommandLine;
+          this.Text = Resources.DialogTitleSettings + @" - " + Resources.DialogTitleCommandLine;
         }
         fTemporarySettings = true;
         buttonReplaceCurrentByTemporary.Enabled = true;
@@ -310,9 +279,9 @@ namespace AttacheCase
       // Get shield icon
 
       // 1st parameter is window handle.
-      HandleRef hwnd = new HandleRef(buttonAssociateAtcFiles, buttonAssociateAtcFiles.Handle);
-      // 2nd parameter is flaf of setting shield icon
-      uint BCM_SETSHIELD = 0x0000160C;
+      var hwnd = new HandleRef(buttonAssociateAtcFiles, buttonAssociateAtcFiles.Handle);
+      // 2nd parameter is flag of setting shield icon
+      const uint BCM_SETSHIELD = 0x0000160C;
       // Call SendMessage function
       UnsafeNativeMethods.SendMessage(hwnd, BCM_SETSHIELD, new IntPtr(0), new IntPtr(1));
 

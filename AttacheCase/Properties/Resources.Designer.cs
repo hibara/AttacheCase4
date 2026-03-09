@@ -161,6 +161,16 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   The external configuration file (_AtcCase.ini) could not be loaded. AttacheCase will now exit.
+        ///To enable settings, delete &quot;_AtcCase.ini&quot; or approve loading it. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageAppExitWithIniFileFailedToLoad {
+            get {
+                return ResourceManager.GetString("DialogMessageAppExitWithIniFileFailedToLoad", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   To enable this setting, you will need to restart the AttacheCase.
         ///Do you restart AttacheCase now? に類似しているローカライズされた文字列を検索します。
         /// </summary>
@@ -506,6 +516,35 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
+        ///   he external configuration file (_AtcCase.ini) was approved for loading, but the approval information could not be saved. The settings will apply only to the current session, and confirmation will be required again after restarting the application. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageIniFileApproveFailed {
+            get {
+                return ResourceManager.GetString("DialogMessageIniFileApproveFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   his external configuration file (_AtcCase.ini) was created or approved on a different device. For security reasons, approval is required before using it on this device.
+        ///Trust and load this INI file? に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageIniFileDifferentDevice {
+            get {
+                return ResourceManager.GetString("DialogMessageIniFileDifferentDevice", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   The previously approved external configuration file (_AtcCase.ini) may have been altered or tampered with. For security reasons, re-approval is required before using the modified configuration.
+        ///Trust and load the modified INI file? に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageIniFileModified {
+            get {
+                return ResourceManager.GetString("DialogMessageIniFileModified", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   The application will close once due to a series of password entry errors. Please start over from the beginning. に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string DialogMessageInputPasswordOverAttempts {
@@ -737,6 +776,16 @@ namespace AttacheCase.Properties {
         public static string DialogMessageTempSettingsToCurrent {
             get {
                 return ResourceManager.GetString("DialogMessageTempSettingsToCurrent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   External configuration file (_AtcCase.ini) detected. This file may affect AttacheCase behavior.
+        ///Trust and load this file? に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string DialogMessageTrustAndLoadIniFile {
+            get {
+                return ResourceManager.GetString("DialogMessageTrustAndLoadIniFile", resourceCulture);
             }
         }
         

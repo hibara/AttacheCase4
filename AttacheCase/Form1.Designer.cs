@@ -1,4 +1,7 @@
-﻿namespace AttacheCase
+﻿using System.Windows.Forms;
+using AttacheCase.CustomControl;
+
+namespace AttacheCase
 {
   partial class Form1
   {
@@ -89,7 +92,7 @@
       this.labelDragAndDrop = new System.Windows.Forms.Label();
       this.tabPageEncrypt = new System.Windows.Forms.TabPage();
       this.panelEncrypt = new System.Windows.Forms.Panel();
-      this.textBoxPassword = new AttacheCase.DelayTextBox();
+      this.textBoxPassword = new AttacheCase.CustomControl.DelayTextBox();
       this.labelPasswordStrength = new System.Windows.Forms.Label();
       this.checkBoxDeleteOriginalFileAfterEncryption = new System.Windows.Forms.CheckBox();
       this.checkBoxNotMaskEncryptedPassword = new System.Windows.Forms.CheckBox();
@@ -1711,7 +1714,7 @@
     private System.Windows.Forms.ComboBox comboBoxHashList;
     private System.Windows.Forms.Label labelRsaInformation;
     private System.Windows.Forms.PictureBox pictureBox1;
-    private DelayTextBox textBoxPassword;
+    private AttacheCase.CustomControl.DelayTextBox textBoxPassword;
   }
 }
 

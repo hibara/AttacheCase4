@@ -794,4 +794,23 @@ The process is aborted.</value>
   <data name="DialogMessageInputPasswordOverAttempts" xml:space="preserve">
     <value>The application will close once due to a series of password entry errors. Please start over from the beginning.</value>
   </data>
+  <data name="DialogMessageTrustAndLoadIniFile" xml:space="preserve">
+    <value>External configuration file (_AtcCase.ini) detected. This file may affect AttacheCase behavior.
+Trust and load this file?</value>
+  </data>
+  <data name="DialogMessageIniFileModified" xml:space="preserve">
+    <value>The previously approved external configuration file (_AtcCase.ini) may have been altered or tampered with. For security reasons, re-approval is required before using the modified configuration.
+Trust and load the modified INI file?</value>
+  </data>
+  <data name="DialogMessageIniFileDifferentDevice" xml:space="preserve">
+    <value>his external configuration file (_AtcCase.ini) was created or approved on a different device. For security reasons, approval is required before using it on this device.
+Trust and load this INI file?</value>
+  </data>
+  <data name="DialogMessageIniFileApproveFailed" xml:space="preserve">
+    <value>he external configuration file (_AtcCase.ini) was approved for loading, but the approval information could not be saved. The settings will apply only to the current session, and confirmation will be required again after restarting the application.</value>
+  </data>
+  <data name="DialogMessageAppExitWithIniFileFailedToLoad" xml:space="preserve">
+    <value>The external configuration file (_AtcCase.ini) could not be loaded. AttacheCase will now exit.
+To enable settings, delete "_AtcCase.ini" or approve loading it.</value>
+  </data>
 </root>

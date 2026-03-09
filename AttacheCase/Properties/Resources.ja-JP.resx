@@ -794,4 +794,23 @@
   <data name="DialogMessageInputPasswordOverAttempts" xml:space="preserve">
     <value>パスワード入力のミスが続いたので、いったんアプリケーションを終了します。初めからやり直してください。</value>
   </data>
+  <data name="DialogMessageTrustAndLoadIniFile" xml:space="preserve">
+    <value>外部設定ファイル（_AtcCase.ini）が見つかりました。このファイルには、アタッシェケースの動作に影響を与える設定が含まれている可能性があります。
+このファイルを信頼し、読み込みますか？</value>
+  </data>
+  <data name="DialogMessageIniFileModified" xml:space="preserve">
+    <value>前回承認した外部設定ファイル（_AtcCase.ini）が変更、あるいは改ざんされている可能性があります。セキュリティ上の理由から、変更された設定の使用を再度承認する必要があります。
+変更されたINIファイルを信頼し、読み込みますか？</value>
+  </data>
+  <data name="DialogMessageIniFileDifferentDevice" xml:space="preserve">
+    <value>この外部設定ファイル（_AtcCase.ini）は別のデバイスで作成または承認されたものです。セキュリティ上の理由から、このデバイスでの使用を承認する必要があります。
+このINIファイルを信頼し、読み込みますか？</value>
+  </data>
+  <data name="DialogMessageIniFileApproveFailed" xml:space="preserve">
+    <value>外部設定ファイル（_AtcCase.ini）の読み込みを承認しましたが、その承認情報を保存できませんでした。現在のセッションでのみ設定が適用され、アプリケーションを再起動すると再度確認が必要になります。</value>
+  </data>
+  <data name="DialogMessageAppExitWithIniFileFailedToLoad" xml:space="preserve">
+    <value>外部設定ファイル（_AtcCase.ini）が読み込めませんでした。アタッシェケースは終了します。
+設定を有効にするならば、"_AtcCase.ini"を削除するか、読み込みの承認してください。</value>
+  </data>
 </root>

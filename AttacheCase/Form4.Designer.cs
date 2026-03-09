@@ -1,4 +1,6 @@
-﻿namespace AttacheCase
+﻿using AttacheCase.CustomControl;
+
+namespace AttacheCase
 {
 	partial class Form4
 	{

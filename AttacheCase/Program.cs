@@ -68,7 +68,6 @@ namespace AttacheCase
     static void Main(string[] args)
     {
       // DLLプリロード攻撃対策
-      SetDllDirectoryEntryPoint(Path.GetDirectoryName(Application.ExecutablePath));
       SetDefaultDllDirectoriesEntryPoint(DllSearchFlags);
 
 #if DEBUG

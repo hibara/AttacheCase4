@@ -22,6 +22,7 @@ using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Xml.Serialization;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Windows.Forms;
 using AttacheCase.Properties;
@@ -29,6 +30,7 @@ using System.Text;
 using System.Security;
 using System.Security.Cryptography;
 using System.Xml.Linq;
+using Boolean = System.Boolean;
 
 namespace AttacheCase
 {
@@ -82,27 +84,48 @@ namespace AttacheCase
     // Self instance
     private static AppSettings _Instance;
 
-    private readonly string RegistryRootPath3 = $@"Software\Hibara\{"AttacheCase3"}";
-    private readonly string RegistryRootPath4 = $@"Software\Hibara\{"AttacheCase4"}";
+    private const string RegistryRootPath3 = $@"Software\Hibara\AttacheCase3";
+    private const string RegistryRootPath4 = $@"Software\Hibara\AttacheCase4";
 
-    private readonly string RegistryPathAppInfo = $@"Software\Hibara\{"AttacheCase4"}\AppInfo";
-    private readonly string RegistryPathWindowPos = $@"Software\Hibara\{"AttacheCase4"}\WindowPos";
-    private readonly string RegistryPathMyKey = $@"Software\Hibara\{"AttacheCase4"}\MyKey";
-    private readonly string RegistryPathOption = $@"Software\Hibara\{"AttacheCase4"}\Option";
+    private const string RegistryPathAppInfo = $@"Software\Hibara\AttacheCase4\AppInfo";
+    private const string RegistryPathWindowPos = $@"Software\Hibara\AttacheCase4\WindowPos";
+    private const string RegistryPathMyKey = $@"Software\Hibara\AttacheCase4\MyKey";
+    private const string RegistryPathOption = $@"Software\Hibara\AttacheCase4\Option";
+
+    /// <summary>
+    /// Specifies the location where the application settings data is stored.
+    /// </summary>
+    internal enum SettingDataLocation
+    {
+      /// <summary>
+      /// No specific location is defined for the settings data.
+      /// </summary>
+      None,
+      /// <summary>
+      /// The settings data is stored in the Windows Registry.
+      /// </summary>
+      Registry,
+      /// <summary>
+      /// The settings data is stored in an INI file.
+      /// </summary>
+      IniFile,
+      /// <summary>
+      /// The settings data is provided via command-line arguments.
+      /// </summary>
+      CommandLine
+    }
+    public SettingDataLocation SettingSource { get; set; } = SettingDataLocation.None;
 
     // Static instance ( Singleton pattern )
     public static AppSettings Instance
     {
-      get
-      {
-        if (_Instance == null)
-        {
-          _Instance = new AppSettings();
-        }
-        return _Instance;
-      }
+      get { return _Instance ??= new AppSettings(); }
       set => _Instance = value;
     }
+
+    // INIファイルのセキュリティを管理するクラスのインスタンス
+    // Instance of a class that manages INI file security
+    private IniSecurityManager securityManager;
 
     //----------------------------------------------------------------------
     // File List
@@ -118,7 +141,13 @@ namespace AttacheCase
     // Temporary setting file path ( INI file )
     #region
 
-    public string IniFilePath { get; set; }
+    private string _iniFilePath = string.Empty;
+
+    public string IniFilePath
+    {
+      get => this._iniFilePath;
+      set => this._iniFilePath = value;
+    }
 
     #endregion
 
@@ -391,7 +420,7 @@ namespace AttacheCase
     // Temporary option for overwriting
     public int TempOverWriteOption { get; set; }
 
-    // Temporay option for overwriting for new date only.
+    // Temporary option for overwriting for new date only.
     public bool OverWriteForNewDate { get; set; }
 
     private int _EncryptionFileType = 0;              // 暗号化ファイルの種類
@@ -864,21 +893,24 @@ namespace AttacheCase
 
     // 常に、設定ファイル「_AtcCase.ini」を読み込む
     // Always read the setting file "_AtcCase.ini"
-    public bool fAlwaysReadIniFile { get; set; }
+    private bool _fAlwaysReadIniFile;
 
-    // 毎回、確認のためのダイアログ ボックスを表示する
-    // Show a dialog box to confirm always.
-    //private bool _fShowDialogToConfirmToReadIniFile;
-    //public bool fShowDialogToConfirmToReadIniFile
-    //{
-    //  get { return this._fShowDialogToConfirmToReadIniFile; }
-    //  set { this._fShowDialogToConfirmToReadIniFile = value; }
-    //}
+    public bool fAlwaysReadIniFile
+    {
+      get => this._fAlwaysReadIniFile;
+      set => this._fAlwaysReadIniFile = value;
+    }
 
     // 毎回、確認のためのダイアログ ボックスを表示する
     // Show a dialog box to confirm always.
     // ver.4.0.2.7～
-    public bool fShowConfirmationDialogToReadIniFile { get; set; }
+    private bool _fShowConfirmationDialogToReadIniFile;
+
+    public bool fShowConfirmationDialogToReadIniFile
+    {
+      get => this._fShowConfirmationDialogToReadIniFile;
+      set => this._fShowConfirmationDialogToReadIniFile = value;
+    }
 
     #endregion
 
@@ -1218,15 +1250,7 @@ namespace AttacheCase
     /// Constructor（コンストラクタ）
     /// </summary>
     //======================================================================
-    private AppSettings()
-    {
-      _FileList = [];
-    }
-
-    public AppSettings(string registryPathMyKey)
-    {
-      RegistryPathMyKey = registryPathMyKey;
-    }
+    private AppSettings() { }
 
     //======================================================================
     /// <summary>
@@ -1236,19 +1260,19 @@ namespace AttacheCase
     //======================================================================
     public void ReadOptions()
     {
-      //----------------------------------------------------------------------
-      // アタッシェケースのすべての設定をレジストリから読み込む
-      // Load ALL settings of AttacheCase from registry
-      this.ReadOptionsFromRegistry();
+      var isReadIniFile = false;
 
+      //-----------------------------------
+      // まず読み込むINIファイルがあるか
       //----------------------------------------------------------------------
       // アタッシェケース本体のある場所に設定用INIファイルがあるか？
       // Is there INI file in the location where AttacheCase Application exists?
       var FilePath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath) ?? string.Empty, "_AtcCase.ini");
-      if (File.Exists(FilePath) == true)
+      if (File.Exists(FilePath))
       {
-        IniFilePath = FilePath;
-        ReadOptionFromIniFile(IniFilePath);
+        _iniFilePath = FilePath;
+        //ReadOptionFromIniFile(_iniFilePath);
+        isReadIniFile = true;
       }
 
       //----------------------------------------------------------------------
@@ -1258,26 +1282,191 @@ namespace AttacheCase
       for (var i = 0; i < cmds.Length; i++)
       {
         // File list processed
-        if (i > 0 && cmds[i].IndexOf("/", StringComparison.Ordinal) != 0)
-        {
-          if (File.Exists(cmds[i]) == true || Directory.Exists(cmds[i]) == true)
-          {
-            FilePath = Path.Combine(Path.GetDirectoryName(cmds[i]) ?? string.Empty, "_AtcCase.ini");
-            if (File.Exists(FilePath) == true)
-            {
-              IniFilePath = FilePath;
-              ReadOptionFromIniFile(IniFilePath);
-              break;
-            }
-          }
-        }
+        if (i <= 0 || cmds[i].IndexOf("/", StringComparison.Ordinal) == 0) continue;
+        if (!File.Exists(cmds[i]) && !Directory.Exists(cmds[i])) continue;
+        FilePath = Path.Combine(Path.GetDirectoryName(cmds[i]) ?? string.Empty, "_AtcCase.ini");
+        if (!File.Exists(FilePath)) continue;
+        _iniFilePath = FilePath;
+        //ReadOptionFromIniFile(_iniFilePath);
+        isReadIniFile = true;
+        break;
       }
 
-      //----------------------------------------------------------------------
-      // 起動時のコマンドラインオプションから設定を読み込む（上書き）
-      // Load the settings from startup command line option ( Overwrite )
-      _CommandLineArgsNum = this.ParserArguments();
+      //-----------------------------------
+      // レジストリがあるならそこから読み込むか否かの判定
 
+      var isAlwaysReadIniFileKey = false;
+      var isShowConfirmationDialogToReadIniFile = false;
+
+      // レジストリの書き込みがあるかの確認
+      const string registryPath = @"Software\Hibara\AttacheCase4\Option";
+      using var key = Registry.CurrentUser.OpenSubKey(registryPath);
+      if (key != null)
+      {
+        isAlwaysReadIniFileKey = (string)key.GetValue("fAlwaysReadIniFile") == "1";
+        isShowConfirmationDialogToReadIniFile = (string)key.GetValue("fShowConfirmationDialogToReadIniFile") == "1";
+      }
+
+      if (isReadIniFile && isAlwaysReadIniFileKey)
+      {
+        if (isShowConfirmationDialogToReadIniFile)
+        {
+          // External configuration file (_AtcCase.ini) detected. This file may affect AttacheCase behavior.
+          // Trust and load this file?
+          // 
+          // 外部設定ファイル（_AtcCase.ini）が見つかりました。このファイルには、アタッシェケースの動作に影響を与える設定が含まれている可能性があります。
+          // このファイルを信頼し、読み込みますか？
+          var ret = MessageBox.Show(Resources.DialogMessageTrustAndLoadIniFile, Resources.DialogTitleAlert,
+            MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+
+          if (ret == DialogResult.Yes)
+          {
+            // アタッシェケースのすべての設定をINIファイルから読み込む
+            // Read all settings of the AttacheCase from an INI file
+            this.ReadOptionFromIniFile(_iniFilePath);
+            // 起動時のコマンドラインオプションから設定を読み込む（上書き）
+            // Load the settings from startup command line option ( Overwrite )
+            _CommandLineArgsNum = this.ParserArguments();
+
+            SettingSource = SettingDataLocation.IniFile;
+
+            return;
+          }
+
+        }
+        else
+        {
+          // アタッシェケースのすべての設定をINIファイルから読み込む
+          // Read all settings of the AttacheCase from an INI file
+          this.ReadOptionFromIniFile(_iniFilePath);
+
+          // 起動時のコマンドラインオプションから設定を読み込む（上書き）
+          // Load the settings from startup command line option ( Overwrite )
+          _CommandLineArgsNum = this.ParserArguments();
+
+          SettingSource = SettingDataLocation.IniFile;
+
+          return;
+        }
+
+      }
+      //-----------------------------------
+      // レジストリが確認できずINIファイル（_AtcCase.ini）だけがある場合
+      else if (isReadIniFile)
+      {
+        // INIファイルのセキュリティを管理するクラスのインスタンスを作成
+        // Create an instance of a class that manages INI file security
+        securityManager = new IniSecurityManager(_iniFilePath);
+        var reason = securityManager.CheckWarning();
+        var dialogResult = DialogResult.None;
+        switch (reason)
+        {
+          case WarningReason.NewFile:
+            // External configuration file (_AtcCase.ini) detected. This file may affect AttacheCase behavior.
+            // Trust and load this file?
+            // 外部設定ファイル（_AtcCase.ini）が見つかりました。このファイルには、アタッシェケースの動作に影響を与える設定が含まれている可能性があります。
+            // このファイルを信頼し、読み込みますか？
+            dialogResult = MessageBox.Show(Resources.DialogMessageTrustAndLoadIniFile + Environment.NewLine + _iniFilePath, Resources.DialogTitleAlert,
+              MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+            break;
+
+          case WarningReason.ModifiedFile:
+            // The previously approved external configuration file (_AtcCase.ini) may have been altered or tampered with. For security reasons, re-approval is required before using the modified configuration.
+            // Trust and load the modified INI file?
+            // 前回承認した外部設定ファイル（_AtcCase.ini）が変更、あるいは改ざんされている可能性があります。セキュリティ上の理由から、変更された設定の使用を再度承認する必要があります。
+            // 変更されたINIファイルを信頼し、読み込みますか？
+            dialogResult = MessageBox.Show(Resources.DialogMessageIniFileModified + Environment.NewLine + _iniFilePath, Resources.DialogTitleAlert,
+              MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+            break;
+
+          case WarningReason.DifferentDevice:
+            // This external configuration file (_AtcCase.ini) was created or approved on a different device. For security reasons, approval is required before using it on this device.
+            // Trust and load this INI file?
+            // この外部設定ファイル（_AtcCase.ini）は別のデバイスで作成または承認されたものです。セキュリティ上の理由から、このデバイスでの使用を承認する必要があります。
+            // このINIファイルを信頼し、読み込みますか？
+            dialogResult = MessageBox.Show(Resources.DialogMessageIniFileDifferentDevice + Environment.NewLine + _iniFilePath, Resources.DialogTitleAlert,
+              MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+
+            break;
+
+          case WarningReason.None:
+            dialogResult = DialogResult.Yes;
+            break;
+
+          case WarningReason.Unknown:
+          default:
+            // External configuration file (_AtcCase.ini) detected. This file may affect AttacheCase behavior.
+            // Trust and load this file?
+            // 外部設定ファイル（_AtcCase.ini）が見つかりました。このファイルには、アタッシェケースの動作に影響を与える設定が含まれている可能性があります。
+            // このファイルを信頼し、読み込みますか？
+            dialogResult = MessageBox.Show(Resources.DialogMessageTrustAndLoadIniFile + Environment.NewLine + _iniFilePath, Resources.DialogTitleAlert,
+              MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button2);
+            break;
+        }
+
+        if (dialogResult == DialogResult.Yes)
+        {
+          if (!securityManager.MarkAsApproved())
+          {
+            // The external configuration file (_AtcCase.ini) was approved for loading, but the approval information could not be saved.
+            // The settings will apply only to the current session, and confirmation will be required again after restarting the application.
+            // 外部設定ファイル（_AtcCase.ini）の読み込みを承認しましたが、その承認情報を保存できませんでした。
+            // 現在のセッションでのみ設定が適用され、アプリケーションを再起動すると再度確認が必要になります。
+            MessageBox.Show(Resources.DialogMessageIniFileApproveFailed, Resources.DialogTitleAlert,
+              MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+            this._iniFilePath = string.Empty;
+
+            SettingSource = SettingDataLocation.None;
+
+            return;
+          }
+
+          // アタッシェケースのすべての設定をINIファイルから読み込む
+          // Read all settings of the AttacheCase from an INI file
+          this.ReadOptionFromIniFile(_iniFilePath);
+          // 起動時のコマンドラインオプションから設定を読み込む（上書き）
+          // Load the settings from startup command line option ( Overwrite )
+          _CommandLineArgsNum = this.ParserArguments();
+
+          SettingSource = SettingDataLocation.IniFile;
+
+        }
+        else
+        {
+          // The external configuration file (_AtcCase.ini) could not be loaded. AttacheCase will now exit.
+          // To enable settings, delete "_AtcCase.ini" or approve loading it.
+          // 外部設定ファイル（_AtcCase.ini）が読み込めませんでした。アタッシェケースは終了します。
+          // 設定を有効にするならば、"_AtcCase.ini"を削除するか、読み込みの承認してください。
+          MessageBox.Show(Resources.DialogMessageAppExitWithIniFileFailedToLoad, Resources.DialogTitleInfomation,
+            MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+          // この段階ではメッセージループが回っていないので、この命令は無効になる
+          // Application.Exit();
+
+          SettingSource = SettingDataLocation.None;
+
+          // 引数は終了コード（0は正常終了、0以外はエラー終了）
+          Environment.Exit(1);
+          return;
+        }
+
+        // 初期状態を記録
+        securityManager.RecordInitialState();
+
+      }
+      else
+      {
+        // アタッシェケースのすべての設定をレジストリから読み込む
+        // Load ALL settings of AttacheCase from registry
+        this.ReadOptionsFromRegistry();
+
+        // 起動時のコマンドラインオプションから設定を読み込む（上書き）
+        // Load the settings from startup command line option ( Overwrite )
+        _CommandLineArgsNum = this.ParserArguments();
+
+        SettingSource = SettingDataLocation.Registry;
+
+      }
     }
 
     //======================================================================
@@ -1289,17 +1478,17 @@ namespace AttacheCase
     public void SaveOptions(bool fTemporarySettings)
     {
       //コマンドラインからの設定が読み込まれているときは保存しない
-      if (_CommandLineArgsNum > 0 && fTemporarySettings == true)
+      if (_CommandLineArgsNum > 0 && fTemporarySettings)
       {
         // Do not save when the setting from the command line argument is loaded
         return;
       }
 
-      if (File.Exists(IniFilePath) == true && fTemporarySettings == true)
+      if (File.Exists(_iniFilePath) && fTemporarySettings)
       {
         // INIファイルへの保存
         // If there is to read INI file, save to it.
-        WriteOptionToIniFile(IniFilePath);
+        WriteOptionToIniFile(_iniFilePath);
         return;
       }
 
@@ -1310,7 +1499,7 @@ namespace AttacheCase
 
     //======================================================================
     /// <summary>
-    /// Read all options of AttacheCase from sysytem registry
+    /// Read all options of AttacheCase from system registry
     /// アタッシェケースの設定をレジストリから読み込む
     /// </summary>
     //======================================================================
@@ -1509,8 +1698,8 @@ namespace AttacheCase
 
         //-----------------------------------
         // Import / Export
-        fAlwaysReadIniFile = (string)reg.GetValue("fAlwaysReadIniFile", "0") == "1";
-        fShowConfirmationDialogToReadIniFile = (string)reg.GetValue("fShowConfirmationDialogToReadIniFile", "1") == "1";
+        _fAlwaysReadIniFile = (string)reg.GetValue("fAlwaysReadIniFile", "0") == "1";
+        _fShowConfirmationDialogToReadIniFile = (string)reg.GetValue("fShowConfirmationDialogToReadIniFile", "1") == "1";
 
         //-----------------------------------
         // Advanced
@@ -1590,7 +1779,7 @@ namespace AttacheCase
         reg.SetValue("WindowHeight", _FormHeight.ToString());
         reg.SetValue("FormStyle", _FormStyle.ToString());
         reg.SetValue("ActiveTreeNode", _ActiveTreeNode.ToString());
-        reg.SetValue("InitDirPath", _InitDirPath);
+        reg.SetValue("InitDirPath", _InitDirPath ?? string.Empty);
       }
 
       //----------------------------------------------------------------------
@@ -1711,9 +1900,9 @@ namespace AttacheCase
 
         //----------------------------------------------------------------------
         // Import / Export
-        reg.SetValue("fAlwaysReadIniFile", fAlwaysReadIniFile == true ? "1" : "0");
+        reg.SetValue("fAlwaysReadIniFile", _fAlwaysReadIniFile ? "1" : "0");
         //reg.SetValue("fShowDialogToConfirmToReadIniFile", _fShowDialogToConfirmToReadIniFile == true ? "1" : "0");
-        reg.SetValue("fShowConfirmationDialogToReadIniFile", fShowConfirmationDialogToReadIniFile == true ? "1" : "0");
+        reg.SetValue("fShowConfirmationDialogToReadIniFile", _fShowConfirmationDialogToReadIniFile ? "1" : "0");
 
         //-----------------------------------
         // Advanced
@@ -1770,85 +1959,84 @@ namespace AttacheCase
     /// 指定のINIファイルから設定を読み込む
     /// Read options from specified INI file
     /// </summary>
-    /// <param name="IniFilePath">Specified INI file</param>
+    /// <param name="iniFilePath">Specified INI file</param>
     //======================================================================
-    public void ReadOptionFromIniFile(string IniFilePath)
+    public void ReadOptionFromIniFile(string iniFilePath)
     {
       var ReturnValue = "";
 
       // Whether to read the found setting file (_AtcCase.ini)?
-      if (fShowConfirmationDialogToReadIniFile == true)
+      if (fShowConfirmationDialogToReadIniFile)
       {
-        var frm4 = new Form4("ConfirmToReadIniFile", IniFilePath);
+        var frm4 = new Form4("ConfirmToReadIniFile", iniFilePath);
         frm4.ShowDialog();
 
         var _fReadIniFile = frm4.fReadIniFile;
 
-        if (_fReadIniFile == true)
+        if (_fReadIniFile) // Yes
         {
           // Read INI file
           frm4.Dispose();
         }
-        else
+        else              // No
         {
-          this.IniFilePath = "";
+          this._iniFilePath = "";
           frm4.Dispose();
           return;
         }
       }
       else
       {
-        if (fAlwaysReadIniFile == true)
+        if (fAlwaysReadIniFile)
         {
           // Read INI file
         }
         else
         {
-          this.IniFilePath = "";
-          return;
+          // Read INI file
         }
       }
 
       //-----------------------------------
       // Application information
-      ReadIniFile(IniFilePath, ref _ApplicationPath, "AppInfo", "AppPath", "");
-      ReadIniFile(IniFilePath, ref _AppVersion, "AppInfo", "AppVersion", "0");
+      ReadIniFile(iniFilePath, ref _ApplicationPath, "AppInfo", "AppPath", "");
+      ReadIniFile(iniFilePath, ref _AppVersion, "AppInfo", "AppVersion", "0");
 
       //-----------------------------------
       // Window positions
       //-----------------------------------
-      ReadIniFile(IniFilePath, ref _FormStyle, "WindowPos", "FormStyle", "0");
-      ReadIniFile(IniFilePath, ref _FormTop, "WindowPos", "WindowTop", "-1");
-      ReadIniFile(IniFilePath, ref _FormLeft, "WindowPos", "WindowLeft", "-1");
-      ReadIniFile(IniFilePath, ref _FormWidth, "WindowPos", "WindowWidth", "420");
-      ReadIniFile(IniFilePath, ref _FormHeight, "WindowPos", "WindowHeight", "380");
-      ReadIniFile(IniFilePath, ref _InitDirPath, "WindowPos", "InitDirPath", "");
+      ReadIniFile(iniFilePath, ref _FormStyle, "WindowPos", "FormStyle", "0");
+      ReadIniFile(iniFilePath, ref _FormTop, "WindowPos", "WindowTop", "-1");
+      ReadIniFile(iniFilePath, ref _FormLeft, "WindowPos", "WindowLeft", "-1");
+      ReadIniFile(iniFilePath, ref _FormWidth, "WindowPos", "WindowWidth", "420");
+      ReadIniFile(iniFilePath, ref _FormHeight, "WindowPos", "WindowHeight", "380");
+      ReadIniFile(iniFilePath, ref _InitDirPath, "WindowPos", "InitDirPath", "");
 
-      ReadIniFile(IniFilePath, ref _ActiveTreeNode, "WindowPos", "ActiveTreeNode", "0");
-      ReadIniFile(IniFilePath, ref _InitDirPath, "WindowPos", "InitDirPath", "");
+      ReadIniFile(iniFilePath, ref _ActiveTreeNode, "WindowPos", "ActiveTreeNode", "0");
+      ReadIniFile(iniFilePath, ref _InitDirPath, "WindowPos", "InitDirPath", "");
 
       //-----------------------------------
       // Passwords
       //-----------------------------------
-      ReadIniFile(IniFilePath, ref _fMyEncryptPasswordKeep, "MyKey", "fMyEncryptPasswordKeep", "");
-      ReadIniFile(IniFilePath, ref ReturnValue, "MyKey", "MyEncryptPasswordString", "");
+      ReadIniFile(iniFilePath, ref _fMyEncryptPasswordKeep, "MyKey", "fMyEncryptPasswordKeep", "");
+      ReadIniFile(iniFilePath, ref ReturnValue, "MyKey", "MyEncryptPasswordString", "");
       if (ReturnValue != "")
       {
         _MyEncryptPasswordBinary = HexStringToByteArray(ReturnValue.ToString());
         MyEncryptPasswordString = DecryptMyPassword(_MyEncryptPasswordBinary);
       }
 
-      ReadIniFile(IniFilePath, ref _fMyDecryptPasswordKeep, "MyKey", "fMyDecryptPasswordKeep", "");
-      ReadIniFile(IniFilePath, ref ReturnValue, "MyKey", "MyDecryptPasswordString", "");
+      ReadIniFile(iniFilePath, ref _fMyDecryptPasswordKeep, "MyKey", "fMyDecryptPasswordKeep", "");
+      ReadIniFile(iniFilePath, ref ReturnValue, "MyKey", "MyDecryptPasswordString", "");
       if (ReturnValue != "")
       {
         MyDecryptPasswordBinary = HexStringToByteArray(ReturnValue.ToString());
         MyDecryptPasswordString = DecryptMyPassword(MyDecryptPasswordBinary);
       }
-      ReadIniFile(IniFilePath, ref _fMemPasswordExe, "MyKey", "fMemPasswordExe", "0");
-      ReadIniFile(IniFilePath, ref _fNotMaskPassword, "MyKey", "fNotMaskPassword", "0");
+      ReadIniFile(iniFilePath, ref _fMemPasswordExe, "MyKey", "fMemPasswordExe", "0");
+      ReadIniFile(iniFilePath, ref _fNotMaskPassword, "MyKey", "fNotMaskPassword", "0");
 
-      ReadIniFile(IniFilePath, ref _fPasswordStrengthMeter, "MyKey", "fPasswordStrengthMeter", "1");
+      ReadIniFile(iniFilePath, ref _fPasswordStrengthMeter, "MyKey", "fPasswordStrengthMeter", "1");
 
       //-----------------------------------
       // Options
@@ -1856,149 +2044,149 @@ namespace AttacheCase
 
       //-----------------------------------
       // General
-      ReadIniFile(IniFilePath, ref _fEndToExit, "Option", "fEndToExit", "0");
-      ReadIniFile(IniFilePath, ref _fOpenFile, "Option", "fOpenFile", "0");
-      ReadIniFile(IniFilePath, ref _fShowDialogWhenExeFile, "Option", "fShowDialogWhenExeFile", "1");
-      ReadIniFile(IniFilePath, ref _ShowDialogWhenMultipleFilesNum, "Option", "ShowDialogWhenMultipleFilesNum", "5");
-      ReadIniFile(IniFilePath, ref _fAskEncDecode, "Option", "fAskEncDecode", "0");
-      ReadIniFile(IniFilePath, ref _fSaveToExeout, "Option", "fSaveToExeout", "0");
-      ReadIniFile(IniFilePath, ref _fShowExeoutChkBox, "Option", "fShowExeoutChkBox", "1");
-      ReadIniFile(IniFilePath, ref _ThemeColorName, "Option", "ThemeColorName", "auto");
+      ReadIniFile(iniFilePath, ref _fEndToExit, "Option", "fEndToExit", "0");
+      ReadIniFile(iniFilePath, ref _fOpenFile, "Option", "fOpenFile", "0");
+      ReadIniFile(iniFilePath, ref _fShowDialogWhenExeFile, "Option", "fShowDialogWhenExeFile", "1");
+      ReadIniFile(iniFilePath, ref _ShowDialogWhenMultipleFilesNum, "Option", "ShowDialogWhenMultipleFilesNum", "5");
+      ReadIniFile(iniFilePath, ref _fAskEncDecode, "Option", "fAskEncDecode", "0");
+      ReadIniFile(iniFilePath, ref _fSaveToExeout, "Option", "fSaveToExeout", "0");
+      ReadIniFile(iniFilePath, ref _fShowExeoutChkBox, "Option", "fShowExeoutChkBox", "1");
+      ReadIniFile(iniFilePath, ref _ThemeColorName, "Option", "ThemeColorName", "auto");
 
       //-----------------------------------
       // Window
-      ReadIniFile(IniFilePath, ref _fMainWindowMinimize, "Option", "fMainWindowMinimize", "0");
-      ReadIniFile(IniFilePath, ref _fTaskBarHide, "Option", "fTaskBarHide", "0");
-      ReadIniFile(IniFilePath, ref _fTaskTrayIcon, "Option", "fTaskTrayIcon", "0");
-      ReadIniFile(IniFilePath, ref _fOpenFolder, "Option", "fOpenFolder", "0");
-      ReadIniFile(IniFilePath, ref _fWindowForeground, "Option", "fWindowForeground", "1");
-      ReadIniFile(IniFilePath, ref _fNoMultipleInstance, "Option", "fNoMultipleInstance", "1");
-      ReadIniFile(IniFilePath, ref _fTurnOnIMEsTextBoxForPasswordEntry, "Option", "fTurnOnIMEsTextBoxForPasswordEntry", "0");
-      ReadIniFile(IniFilePath, ref _fNotMaximizedInTabletMode, "Option", "fNotMaximizedInTabletMode", "0");
+      ReadIniFile(iniFilePath, ref _fMainWindowMinimize, "Option", "fMainWindowMinimize", "0");
+      ReadIniFile(iniFilePath, ref _fTaskBarHide, "Option", "fTaskBarHide", "0");
+      ReadIniFile(iniFilePath, ref _fTaskTrayIcon, "Option", "fTaskTrayIcon", "0");
+      ReadIniFile(iniFilePath, ref _fOpenFolder, "Option", "fOpenFolder", "0");
+      ReadIniFile(iniFilePath, ref _fWindowForeground, "Option", "fWindowForeground", "1");
+      ReadIniFile(iniFilePath, ref _fNoMultipleInstance, "Option", "fNoMultipleInstance", "1");
+      ReadIniFile(iniFilePath, ref _fTurnOnIMEsTextBoxForPasswordEntry, "Option", "fTurnOnIMEsTextBoxForPasswordEntry", "0");
+      ReadIniFile(iniFilePath, ref _fNotMaximizedInTabletMode, "Option", "fNotMaximizedInTabletMode", "0");
 
       //-----------------------------------
       // Save
 
       // 1: ATC, 2: EXE(ATC), 3: ZIP, 0: Others(Encrypt file?)
-      ReadIniFile(IniFilePath, ref _EncryptionFileType, "Option", "EncryptionFileType", "0");
-      ReadIniFile(IniFilePath, ref _fEncryptionSameFileTypeAlways, "Option", "fEncryptionSameFileTypeAlways", "0");
-      ReadIniFile(IniFilePath, ref _EncryptionSameFileTypeAlways, "Option", "EncryptionSameFileTypeAlways", "-1");
-      ReadIniFile(IniFilePath, ref _fEncryptionSameFileTypeBefore, "Option", "fEncryptionSameFileTypeBefore", "0");
-      ReadIniFile(IniFilePath, ref _EncryptionSameFileTypeBefore, "Option", "EncryptionSameFileTypeBefore", "-1");
-      ReadIniFile(IniFilePath, ref _fOver4GBok, "Option", "fOver4GBok", "0");
-      ReadIniFile(IniFilePath, ref _fAskAboutToExceed4Gib, "Option", "fAskAboutToExceed4Gib", "1");
-      ReadIniFile(IniFilePath, ref _fOutputExeForOlderOS, "Option", "fOutputExeForOlderOS", "0");
+      ReadIniFile(iniFilePath, ref _EncryptionFileType, "Option", "EncryptionFileType", "0");
+      ReadIniFile(iniFilePath, ref _fEncryptionSameFileTypeAlways, "Option", "fEncryptionSameFileTypeAlways", "0");
+      ReadIniFile(iniFilePath, ref _EncryptionSameFileTypeAlways, "Option", "EncryptionSameFileTypeAlways", "-1");
+      ReadIniFile(iniFilePath, ref _fEncryptionSameFileTypeBefore, "Option", "fEncryptionSameFileTypeBefore", "0");
+      ReadIniFile(iniFilePath, ref _EncryptionSameFileTypeBefore, "Option", "EncryptionSameFileTypeBefore", "-1");
+      ReadIniFile(iniFilePath, ref _fOver4GBok, "Option", "fOver4GBok", "0");
+      ReadIniFile(iniFilePath, ref _fAskAboutToExceed4Gib, "Option", "fAskAboutToExceed4Gib", "1");
+      ReadIniFile(iniFilePath, ref _fOutputExeForOlderOS, "Option", "fOutputExeForOlderOS", "0");
 
       //-----------------------------------
       // Save Encrypt
-      ReadIniFile(IniFilePath, ref _fSaveToSameFldr, "Option", "fSaveToSameFldr", "0");
-      ReadIniFile(IniFilePath, ref _SaveToSameFldrPath, "Option", "SaveToSameFldrPath", "");
-      ReadIniFile(IniFilePath, ref _fEncryptConfirmOverwrite, "Option", "fEncryptConfirmOverwrite", "1");
-      ReadIniFile(IniFilePath, ref _fAllFilePack, "Option", "fAllFilePack", "0");
-      ReadIniFile(IniFilePath, ref _fFilesOneByOne, "Option", "fFilesOneByOne", "0");
-      _fNormal = (_fAllFilePack == false && _fFilesOneByOne == false) ? true : false;
-      ReadIniFile(IniFilePath, ref _fKeepTimeStamp, "Option", "fKeepTimeStamp", "0");
-      ReadIniFile(IniFilePath, ref _fExtInAtcFileName, "Option", "fExtInAtcFileName", "0");
-      ReadIniFile(IniFilePath, ref _fAutoName, "Option", "fAutoName", "0");
-      ReadIniFile(IniFilePath, ref _AutoNameFormatText, "Option", "AutoNameFormatText", "<filename>_<date:yyyy_MM_dd><ext>");
-      ReadIniFile(IniFilePath, ref _fAutoNameAlphabets, "Option", "fAutoNameAlphabets", "1");
-      ReadIniFile(IniFilePath, ref _fAutoNameLowerCase, "Option", "fAutoNameLowerCase", "1");
-      ReadIniFile(IniFilePath, ref _fAutoNameUpperCase, "Option", "fAutoNameUpperCase", "1");
-      ReadIniFile(IniFilePath, ref _fAutoNameNumbers, "Option", "fAutoNameNumbers", "1");
-      ReadIniFile(IniFilePath, ref _fAutoNameSymbols, "Option", "fAutoNameSymbols", "0");
+      ReadIniFile(iniFilePath, ref _fSaveToSameFldr, "Option", "fSaveToSameFldr", "0");
+      ReadIniFile(iniFilePath, ref _SaveToSameFldrPath, "Option", "SaveToSameFldrPath", "");
+      ReadIniFile(iniFilePath, ref _fEncryptConfirmOverwrite, "Option", "fEncryptConfirmOverwrite", "1");
+      ReadIniFile(iniFilePath, ref _fAllFilePack, "Option", "fAllFilePack", "0");
+      ReadIniFile(iniFilePath, ref _fFilesOneByOne, "Option", "fFilesOneByOne", "0");
+      _fNormal = (_fAllFilePack == false && _fFilesOneByOne == false);
+      ReadIniFile(iniFilePath, ref _fKeepTimeStamp, "Option", "fKeepTimeStamp", "0");
+      ReadIniFile(iniFilePath, ref _fExtInAtcFileName, "Option", "fExtInAtcFileName", "0");
+      ReadIniFile(iniFilePath, ref _fAutoName, "Option", "fAutoName", "0");
+      ReadIniFile(iniFilePath, ref _AutoNameFormatText, "Option", "AutoNameFormatText", "<filename>_<date:yyyy_MM_dd><ext>");
+      ReadIniFile(iniFilePath, ref _fAutoNameAlphabets, "Option", "fAutoNameAlphabets", "1");
+      ReadIniFile(iniFilePath, ref _fAutoNameLowerCase, "Option", "fAutoNameLowerCase", "1");
+      ReadIniFile(iniFilePath, ref _fAutoNameUpperCase, "Option", "fAutoNameUpperCase", "1");
+      ReadIniFile(iniFilePath, ref _fAutoNameNumbers, "Option", "fAutoNameNumbers", "1");
+      ReadIniFile(iniFilePath, ref _fAutoNameSymbols, "Option", "fAutoNameSymbols", "0");
 
       //-----------------------------------
       // Save Decrypt
-      ReadIniFile(IniFilePath, ref _fDecodeToSameFldr, "Option", "fDecodeToSameFldr", "0");
-      ReadIniFile(IniFilePath, ref _DecodeToSameFldrPath, "Option", "DecodeToSameFldrPath", "");
-      ReadIniFile(IniFilePath, ref _fDecryptConfirmOverwrite, "Option", "fDecryptConfirmOverwrite", "1");
-      ReadIniFile(IniFilePath, ref _fNoParentFldr, "Option", "fNoParentFldr", "0");
-      ReadIniFile(IniFilePath, ref _fSameTimeStamp, "Option", "fSameTimeStamp", "0");
-      ReadIniFile(IniFilePath, ref _fCompareFile, "Option", "fCompareFile", "0");
+      ReadIniFile(iniFilePath, ref _fDecodeToSameFldr, "Option", "fDecodeToSameFldr", "0");
+      ReadIniFile(iniFilePath, ref _DecodeToSameFldrPath, "Option", "DecodeToSameFldrPath", "");
+      ReadIniFile(iniFilePath, ref _fDecryptConfirmOverwrite, "Option", "fDecryptConfirmOverwrite", "1");
+      ReadIniFile(iniFilePath, ref _fNoParentFldr, "Option", "fNoParentFldr", "0");
+      ReadIniFile(iniFilePath, ref _fSameTimeStamp, "Option", "fSameTimeStamp", "0");
+      ReadIniFile(iniFilePath, ref _fCompareFile, "Option", "fCompareFile", "0");
 
       //-----------------------------------
       // Password ZIP
-      ReadIniFile(IniFilePath, ref _fZipToSameFldr, "Option", "fZipToSameFldr", "0");
-      ReadIniFile(IniFilePath, ref _ZipToSameFldrPath, "Option", "ZipToSameFldrPath", "");
-      ReadIniFile(IniFilePath, ref _fZipConfirmOverwrite, "Option", "fZipConfirmOverwrite", "1");
-      ReadIniFile(IniFilePath, ref _ZipEncryptionAlgorithm, "Option", "ZipEncryptionAlgorithm", "0"); // int
+      ReadIniFile(iniFilePath, ref _fZipToSameFldr, "Option", "fZipToSameFldr", "0");
+      ReadIniFile(iniFilePath, ref _ZipToSameFldrPath, "Option", "ZipToSameFldrPath", "");
+      ReadIniFile(iniFilePath, ref _fZipConfirmOverwrite, "Option", "fZipConfirmOverwrite", "1");
+      ReadIniFile(iniFilePath, ref _ZipEncryptionAlgorithm, "Option", "ZipEncryptionAlgorithm", "0"); // int
 
       //-----------------------------------
       // Delete
-      ReadIniFile(IniFilePath, ref _fDelOrgFile, "Option", "fDelOrgFile", "0");
-      ReadIniFile(IniFilePath, ref _fEncryptShowDelChkBox, "Option", "fEncryptShowDelChkBox", "0");
-      ReadIniFile(IniFilePath, ref _fConfirmToDeleteAfterEncryption, "Option", "fConfirmToDeleteAfterEncryption", "1");
-      ReadIniFile(IniFilePath, ref _fDelEncFile, "Option", "fDelEncFile", "0");
-      ReadIniFile(IniFilePath, ref _fDecryptShowDelChkBox, "Option", "fDecryptShowDelChkBox", "0");
-      ReadIniFile(IniFilePath, ref _fConfirmToDeleteAfterDecryption, "Option", "fConfirmToDeleteAfterDecryption", "1");
-      ReadIniFile(IniFilePath, ref _fCompleteDelFile, "Option", "fCompleteDelFile", "1");
-      ReadIniFile(IniFilePath, ref _DelRandNum, "Option", "DelRandNum", "0");
-      ReadIniFile(IniFilePath, ref _DelZeroNum, "Option", "DelZeroNum", "1");
+      ReadIniFile(iniFilePath, ref _fDelOrgFile, "Option", "fDelOrgFile", "0");
+      ReadIniFile(iniFilePath, ref _fEncryptShowDelChkBox, "Option", "fEncryptShowDelChkBox", "0");
+      ReadIniFile(iniFilePath, ref _fConfirmToDeleteAfterEncryption, "Option", "fConfirmToDeleteAfterEncryption", "1");
+      ReadIniFile(iniFilePath, ref _fDelEncFile, "Option", "fDelEncFile", "0");
+      ReadIniFile(iniFilePath, ref _fDecryptShowDelChkBox, "Option", "fDecryptShowDelChkBox", "0");
+      ReadIniFile(iniFilePath, ref _fConfirmToDeleteAfterDecryption, "Option", "fConfirmToDeleteAfterDecryption", "1");
+      ReadIniFile(iniFilePath, ref _fCompleteDelFile, "Option", "fCompleteDelFile", "1");
+      ReadIniFile(iniFilePath, ref _DelRandNum, "Option", "DelRandNum", "0");
+      ReadIniFile(iniFilePath, ref _DelZeroNum, "Option", "DelZeroNum", "1");
 
       //-----------------------------------
       //Compression
-      ReadIniFile(IniFilePath, ref _CompressRate, "Option", "CompressRate", "6");
-      ReadIniFile(IniFilePath, ref _CompressionLevel, "Option", "CompressionLevel", "0");
+      ReadIniFile(iniFilePath, ref _CompressRate, "Option", "CompressRate", "2");
+      ReadIniFile(iniFilePath, ref _CompressionLevel, "Option", "CompressionLevel", "2");
 
       //-----------------------------------
       // System
-      ReadIniFile(IniFilePath, ref _fAssociationFile, "Option", "fAssociationFile", "1");
-      ReadIniFile(IniFilePath, ref _AtcsFileIconIndex, "Option", "AtcsFileIconIndex", "1");
-      ReadIniFile(IniFilePath, ref _UserRegIconFilePath, "Option", "UserRegIconFilePath", "");
+      ReadIniFile(iniFilePath, ref _fAssociationFile, "Option", "fAssociationFile", "1");
+      ReadIniFile(iniFilePath, ref _AtcsFileIconIndex, "Option", "AtcsFileIconIndex", "1");
+      ReadIniFile(iniFilePath, ref _UserRegIconFilePath, "Option", "UserRegIconFilePath", "");
 
       //-----------------------------------
       // Import / Export (depends on the registry)
-      //ReadIniFile(IniFilePath, ref _fAlwaysReadIniFile, "Option", "fAlwaysReadIniFile", "0");
-      //ReadIniFile(IniFilePath, ref _fShowConfirmationDialogToReadIniFile, "Option", "fShowConfirmationDialogToReadIniFile", "1");
+      ReadIniFile(iniFilePath, ref _fAlwaysReadIniFile, "Option", "fAlwaysReadIniFile", "0");
+      ReadIniFile(iniFilePath, ref _fShowConfirmationDialogToReadIniFile, "Option", "fShowConfirmationDialogToReadIniFile", "1");
 
       //-----------------------------------
       // Advanced
-      ReadIniFile(IniFilePath, ref _isCheckMotwExecutableFiles, "Option", "fMotwExecutableFiles", "1");
-      ReadIniFile(IniFilePath, ref _isCheckMotwOfficeFiles, "Option", "fMotwOfficeFiles", "1");
-      ReadIniFile(IniFilePath, ref _isCheckMotwUserDefinedTypes, "Option", "fMotwUserDefinedTypes", "0");
-      ReadIniFile(IniFilePath, ref _isCheckMotwAllFiles, "Option", "fMotwAllFiles", "0");
+      ReadIniFile(iniFilePath, ref _isCheckMotwExecutableFiles, "Option", "fMotwExecutableFiles", "1");
+      ReadIniFile(iniFilePath, ref _isCheckMotwOfficeFiles, "Option", "fMotwOfficeFiles", "1");
+      ReadIniFile(iniFilePath, ref _isCheckMotwUserDefinedTypes, "Option", "fMotwUserDefinedTypes", "0");
+      ReadIniFile(iniFilePath, ref _isCheckMotwAllFiles, "Option", "fMotwAllFiles", "0");
       var motwUserDefinedTypesString = "";
-      ReadIniFile(IniFilePath, ref motwUserDefinedTypesString, "Option", "MotwUserDefinedTypes", "");
+      ReadIniFile(iniFilePath, ref motwUserDefinedTypesString, "Option", "MotwUserDefinedTypes", "");
       _MotwUserDefinedTypes = motwUserDefinedTypesString.Split(',');
 
       //-----------------------------------
       //Password file 
-      ReadIniFile(IniFilePath, ref _fAllowPassFile, "Option", "fAllowPassFile", "0");
-      ReadIniFile(IniFilePath, ref _fCheckPassFile, "Option", "fCheckPassFile", "0");
-      ReadIniFile(IniFilePath, ref _PassFilePath, "Option", "PassFilePath", "");
+      ReadIniFile(iniFilePath, ref _fAllowPassFile, "Option", "fAllowPassFile", "0");
+      ReadIniFile(iniFilePath, ref _fCheckPassFile, "Option", "fCheckPassFile", "0");
+      ReadIniFile(iniFilePath, ref _PassFilePath, "Option", "PassFilePath", "");
 
-      ReadIniFile(IniFilePath, ref _fCheckPassFileDecrypt, "Option", "fCheckPassFileDecrypt", "0");
-      ReadIniFile(IniFilePath, ref _PassFilePathDecrypt, "Option", "PassFilePathDecrypt", "");
-      ReadIniFile(IniFilePath, ref _fNoErrMsgOnPassFile, "Option", "fNoErrMsgOnPassFile", "0");
-      ReadIniFile(IniFilePath, ref _fPasswordFileExe, "Option", "fPasswordFileExe", "0");
+      ReadIniFile(iniFilePath, ref _fCheckPassFileDecrypt, "Option", "fCheckPassFileDecrypt", "0");
+      ReadIniFile(iniFilePath, ref _PassFilePathDecrypt, "Option", "PassFilePathDecrypt", "");
+      ReadIniFile(iniFilePath, ref _fNoErrMsgOnPassFile, "Option", "fNoErrMsgOnPassFile", "0");
+      ReadIniFile(iniFilePath, ref _fPasswordFileExe, "Option", "fPasswordFileExe", "0");
 
       //-----------------------------------
       //Camouflage Extension
-      ReadIniFile(IniFilePath, ref _fAddCamoExt, "Option", "fAddCamoExt", "0");
-      ReadIniFile(IniFilePath, ref _CamoExt, "Option", "CamoExt", ".jpg");
+      ReadIniFile(iniFilePath, ref _fAddCamoExt, "Option", "fAddCamoExt", "0");
+      ReadIniFile(iniFilePath, ref _CamoExt, "Option", "CamoExt", ".jpg");
 
       //-----------------------------------
       // Input Password limit
-      ReadIniFile(IniFilePath, ref _MissTypeLimitsNum, "Option", "MissTypeLimitsNum", "3");
-      ReadIniFile(IniFilePath, ref _fBroken, "Option", "fBroken", "0");
+      ReadIniFile(iniFilePath, ref _MissTypeLimitsNum, "Option", "MissTypeLimitsNum", "3");
+      ReadIniFile(iniFilePath, ref _fBroken, "Option", "fBroken", "0");
 
       //-----------------------------------
       // Salvage
-      ReadIniFile(IniFilePath, ref _fSalvageToCreateParentFolderOneByOne, "Option", "fSalvageToCreateParentFolderOneByOne", "0");
-      ReadIniFile(IniFilePath, ref _fSalvageIntoSameDirectory, "Option", "fSalvageIntoSameDirectory", "0");
+      ReadIniFile(iniFilePath, ref _fSalvageToCreateParentFolderOneByOne, "Option", "fSalvageToCreateParentFolderOneByOne", "0");
+      ReadIniFile(iniFilePath, ref _fSalvageIntoSameDirectory, "Option", "fSalvageIntoSameDirectory", "0");
 
       //-----------------------------------
       // Developer mode
-      ReadIniFile(IniFilePath, ref _fDeveloperConsole, "Option", "fDeveloperConsole", "0");
-      ReadIniFile(IniFilePath, ref _DeveloperConsolePosX, "Option", "DeveloperConsolePosX", "-1");
-      ReadIniFile(IniFilePath, ref _DeveloperConsolePosY, "Option", "DeveloperConsolePosY", "-1");
-      ReadIniFile(IniFilePath, ref _DeveloperConsoleWidth, "Option", "DeveloperConsoleWidth", "640");
-      ReadIniFile(IniFilePath, ref _DeveloperConsoleHeight, "Option", "DeveloperConsoleHeight", "480");
+      ReadIniFile(iniFilePath, ref _fDeveloperConsole, "Option", "fDeveloperConsole", "0");
+      ReadIniFile(iniFilePath, ref _DeveloperConsolePosX, "Option", "DeveloperConsolePosX", "-1");
+      ReadIniFile(iniFilePath, ref _DeveloperConsolePosY, "Option", "DeveloperConsolePosY", "-1");
+      ReadIniFile(iniFilePath, ref _DeveloperConsoleWidth, "Option", "DeveloperConsoleWidth", "640");
+      ReadIniFile(iniFilePath, ref _DeveloperConsoleHeight, "Option", "DeveloperConsoleHeight", "480");
 
       //-----------------------------------
       // Others
-      ReadIniFile(IniFilePath, ref _Language, "Option", "Language", "");
-      ReadIniFile(IniFilePath, ref _SaveToIniDirPath, "Option", "SaveToIniDirPath", "");
+      ReadIniFile(iniFilePath, ref _Language, "Option", "Language", "");
+      ReadIniFile(iniFilePath, ref _SaveToIniDirPath, "Option", "SaveToIniDirPath", "");
 
     }
 
@@ -2007,193 +2195,197 @@ namespace AttacheCase
     /// 指定のINIファイルへ設定を書き込む
     /// Write options to specified INI file
     /// </summary>
-    /// <param name="IniFilePath">Specified INI file</param>
+    /// <param name="iniFilePath">Specified INI file</param>
     //======================================================================
-    public void WriteOptionToIniFile(string IniFilePath)
+    public void WriteOptionToIniFile(string iniFilePath)
     {
       //-----------------------------------
       // Open the registry key (AppInfo).
-      WriteIniFile(IniFilePath, _ApplicationPath, "AppInfo", "AppPath");
-      WriteIniFile(IniFilePath, _AppVersion, "AppInfo", "AppVersion");
+      WriteIniFile(iniFilePath, _ApplicationPath, "AppInfo", "AppPath");
+      WriteIniFile(iniFilePath, _AppVersion, "AppInfo", "AppVersion");
 
       //-----------------------------------
       // Window
-      WriteIniFile(IniFilePath, _FormTop, "WindowPos", "WindowTop");
-      WriteIniFile(IniFilePath, _FormLeft, "WindowPos", "WindowLeft");
-      WriteIniFile(IniFilePath, _FormWidth, "WindowPos", "WindowWidth");
-      WriteIniFile(IniFilePath, _FormHeight, "WindowPos", "WindowHeight");
-      WriteIniFile(IniFilePath, _FormStyle, "WindowPos", "FormStyle");
+      WriteIniFile(iniFilePath, _FormTop, "WindowPos", "WindowTop");
+      WriteIniFile(iniFilePath, _FormLeft, "WindowPos", "WindowLeft");
+      WriteIniFile(iniFilePath, _FormWidth, "WindowPos", "WindowWidth");
+      WriteIniFile(iniFilePath, _FormHeight, "WindowPos", "WindowHeight");
+      WriteIniFile(iniFilePath, _FormStyle, "WindowPos", "FormStyle");
 
-      WriteIniFile(IniFilePath, _ActiveTreeNode, "WindowPos", "ActiveTreeNode");
-      WriteIniFile(IniFilePath, _InitDirPath, "WindowPos", "InitDirPath");
+      WriteIniFile(iniFilePath, _ActiveTreeNode, "WindowPos", "ActiveTreeNode");
+      WriteIniFile(iniFilePath, _InitDirPath, "WindowPos", "InitDirPath");
 
       //----------------------------------------------------------------------
       // Passwords
-      WriteIniFile(IniFilePath, _fMyEncryptPasswordKeep, "MyKey", "fMyEncryptPasswordKeep");
-      WriteIniFile(IniFilePath, _fMyDecryptPasswordKeep, "MyKey", "fMyDecryptPasswordKeep");
+      WriteIniFile(iniFilePath, _fMyEncryptPasswordKeep, "MyKey", "fMyEncryptPasswordKeep");
+      WriteIniFile(iniFilePath, _fMyDecryptPasswordKeep, "MyKey", "fMyDecryptPasswordKeep");
 
       var bytes = new byte[32];
       bytes = EncryptMyPassword(MyEncryptPasswordString);
       var p = ByteArrayToHexString(bytes);
       Console.WriteLine(p);
-      WriteIniFile(IniFilePath, p, "MyKey", "MyEncryptPasswordString");
+      WriteIniFile(iniFilePath, p, "MyKey", "MyEncryptPasswordString");
 
       bytes = new byte[32];
       bytes = EncryptMyPassword(MyDecryptPasswordString);
       p = ByteArrayToHexString(bytes);
       Console.WriteLine(p);
-      WriteIniFile(IniFilePath, p, "MyKey", "MyDecryptPasswordString");
+      WriteIniFile(iniFilePath, p, "MyKey", "MyDecryptPasswordString");
 
-      WriteIniFile(IniFilePath, _fMemPasswordExe, "MyKey", "fMemPasswordExe");
-      WriteIniFile(IniFilePath, _fNotMaskPassword, "MyKey", "fNotMaskPassword");
+      WriteIniFile(iniFilePath, _fMemPasswordExe, "MyKey", "fMemPasswordExe");
+      WriteIniFile(iniFilePath, _fNotMaskPassword, "MyKey", "fNotMaskPassword");
 
-      WriteIniFile(IniFilePath, _fPasswordStrengthMeter, "MyKey", "fPasswordStrengthMeter");
+      WriteIniFile(iniFilePath, _fPasswordStrengthMeter, "MyKey", "fPasswordStrengthMeter");
 
       //----------------------------------------------------------------------
       // Options
 
       // General
-      WriteIniFile(IniFilePath, _fEndToExit, "Option", "fEndToExit");
-      WriteIniFile(IniFilePath, _fOpenFile, "Option", "fOpenFile");
-      WriteIniFile(IniFilePath, _fShowDialogWhenExeFile, "Option", "fShowDialogWhenExeFile");
-      WriteIniFile(IniFilePath, _ShowDialogWhenMultipleFilesNum, "Option", "ShowDialogWhenMultipleFilesNum");
-      WriteIniFile(IniFilePath, _fAskEncDecode, "Option", "fAskEncDecode");
-      WriteIniFile(IniFilePath, _fSaveToExeout, "Option", "fSaveToExeout");
-      WriteIniFile(IniFilePath, _fShowExeoutChkBox, "Option", "fShowExeoutChkBox");
-      WriteIniFile(IniFilePath, _ThemeColorName, "Option", "ThemeColorName");
+      WriteIniFile(iniFilePath, _fEndToExit, "Option", "fEndToExit");
+      WriteIniFile(iniFilePath, _fOpenFile, "Option", "fOpenFile");
+      WriteIniFile(iniFilePath, _fShowDialogWhenExeFile, "Option", "fShowDialogWhenExeFile");
+      WriteIniFile(iniFilePath, _ShowDialogWhenMultipleFilesNum, "Option", "ShowDialogWhenMultipleFilesNum");
+      WriteIniFile(iniFilePath, _fAskEncDecode, "Option", "fAskEncDecode");
+      WriteIniFile(iniFilePath, _fSaveToExeout, "Option", "fSaveToExeout");
+      WriteIniFile(iniFilePath, _fShowExeoutChkBox, "Option", "fShowExeoutChkBox");
+      WriteIniFile(iniFilePath, _ThemeColorName, "Option", "ThemeColorName");
 
       //-----------------------------------
       // Window
-      WriteIniFile(IniFilePath, _fMainWindowMinimize, "Option", "fMainWindowMinimize");
-      WriteIniFile(IniFilePath, _fTaskBarHide, "Option", "fTaskBarHide");
-      WriteIniFile(IniFilePath, _fTaskTrayIcon, "Option", "fTaskTrayIcon");
-      WriteIniFile(IniFilePath, _fOpenFolder, "Option", "fOpenFolder");
-      WriteIniFile(IniFilePath, _fWindowForeground, "Option", "fWindowForeground");
-      WriteIniFile(IniFilePath, _fNoMultipleInstance, "Option", "fNoMultipleInstance");
-      WriteIniFile(IniFilePath, _fTurnOnIMEsTextBoxForPasswordEntry, "Option", "fTurnOnIMEsTextBoxForPasswordEntry");
-      WriteIniFile(IniFilePath, _fNotMaximizedInTabletMode, "Option", "fNotMaximizedInTabletMode");
+      WriteIniFile(iniFilePath, _fMainWindowMinimize, "Option", "fMainWindowMinimize");
+      WriteIniFile(iniFilePath, _fTaskBarHide, "Option", "fTaskBarHide");
+      WriteIniFile(iniFilePath, _fTaskTrayIcon, "Option", "fTaskTrayIcon");
+      WriteIniFile(iniFilePath, _fOpenFolder, "Option", "fOpenFolder");
+      WriteIniFile(iniFilePath, _fWindowForeground, "Option", "fWindowForeground");
+      WriteIniFile(iniFilePath, _fNoMultipleInstance, "Option", "fNoMultipleInstance");
+      WriteIniFile(iniFilePath, _fTurnOnIMEsTextBoxForPasswordEntry, "Option", "fTurnOnIMEsTextBoxForPasswordEntry");
+      WriteIniFile(iniFilePath, _fNotMaximizedInTabletMode, "Option", "fNotMaximizedInTabletMode");
 
       //-----------------------------------
       // Save
-      WriteIniFile(IniFilePath, _EncryptionFileType, "Option", "EncryptionFileType");
-      WriteIniFile(IniFilePath, _fEncryptionSameFileTypeAlways, "Option", "fEncryptionSameFileTypeAlways");
-      WriteIniFile(IniFilePath, _EncryptionSameFileTypeAlways, "Option", "EncryptionSameFileTypeAlways");
-      WriteIniFile(IniFilePath, _fEncryptionSameFileTypeBefore, "Option", "fEncryptionSameFileTypeBefore");
-      WriteIniFile(IniFilePath, _EncryptionSameFileTypeBefore, "Option", "EncryptionSameFileTypeBefore");
-      WriteIniFile(IniFilePath, _fOver4GBok, "Option", "fOver4GBok");
-      WriteIniFile(IniFilePath, _fAskAboutToExceed4Gib, "Option", "fAskAboutToExceed4Gib");
-      WriteIniFile(IniFilePath, _fOutputExeForOlderOS, "Option", "fOutputExeForOlderOS");
+      WriteIniFile(iniFilePath, _EncryptionFileType, "Option", "EncryptionFileType");
+      WriteIniFile(iniFilePath, _fEncryptionSameFileTypeAlways, "Option", "fEncryptionSameFileTypeAlways");
+      WriteIniFile(iniFilePath, _EncryptionSameFileTypeAlways, "Option", "EncryptionSameFileTypeAlways");
+      WriteIniFile(iniFilePath, _fEncryptionSameFileTypeBefore, "Option", "fEncryptionSameFileTypeBefore");
+      WriteIniFile(iniFilePath, _EncryptionSameFileTypeBefore, "Option", "EncryptionSameFileTypeBefore");
+      WriteIniFile(iniFilePath, _fOver4GBok, "Option", "fOver4GBok");
+      WriteIniFile(iniFilePath, _fAskAboutToExceed4Gib, "Option", "fAskAboutToExceed4Gib");
+      WriteIniFile(iniFilePath, _fOutputExeForOlderOS, "Option", "fOutputExeForOlderOS");
 
       //-----------------------------------
       // Save Encrypt
-      WriteIniFile(IniFilePath, _fSaveToSameFldr, "Option", "fSaveToSameFldr");
-      WriteIniFile(IniFilePath, _SaveToSameFldrPath, "Option", "SaveToSameFldrPath");
-      WriteIniFile(IniFilePath, _fEncryptConfirmOverwrite, "Option", "fEncryptConfirmOverwrite");
+      WriteIniFile(iniFilePath, _fSaveToSameFldr, "Option", "fSaveToSameFldr");
+      WriteIniFile(iniFilePath, _SaveToSameFldrPath, "Option", "SaveToSameFldrPath");
+      WriteIniFile(iniFilePath, _fEncryptConfirmOverwrite, "Option", "fEncryptConfirmOverwrite");
 
-      WriteIniFile(IniFilePath, _fAllFilePack, "Option", "fAllFilePack");
-      WriteIniFile(IniFilePath, _fFilesOneByOne, "Option", "fFilesOneByOne");
-      WriteIniFile(IniFilePath, _fNormal, "Option", "fNormal");
-      WriteIniFile(IniFilePath, _fKeepTimeStamp, "Option", "fKeepTimeStamp");
-      WriteIniFile(IniFilePath, _fExtInAtcFileName, "Option", "fExtInAtcFileName");
+      WriteIniFile(iniFilePath, _fAllFilePack, "Option", "fAllFilePack");
+      WriteIniFile(iniFilePath, _fFilesOneByOne, "Option", "fFilesOneByOne");
+      WriteIniFile(iniFilePath, _fNormal, "Option", "fNormal");
+      WriteIniFile(iniFilePath, _fKeepTimeStamp, "Option", "fKeepTimeStamp");
+      WriteIniFile(iniFilePath, _fExtInAtcFileName, "Option", "fExtInAtcFileName");
 
-      WriteIniFile(IniFilePath, _fAutoName, "Option", "fAutoName");
-      WriteIniFile(IniFilePath, _AutoNameFormatText, "Option", "AutoNameFormatText");
-      WriteIniFile(IniFilePath, _fAutoNameAlphabets, "Option", "fAutoNameAlphabets");
-      WriteIniFile(IniFilePath, _fAutoNameLowerCase, "Option", "fAutoNameLowerCase");
-      WriteIniFile(IniFilePath, _fAutoNameUpperCase, "Option", "fAutoNameUpperCase");
-      WriteIniFile(IniFilePath, _fAutoNameNumbers, "Option", "fAutoNameNumbers");
-      WriteIniFile(IniFilePath, _fAutoNameSymbols, "Option", "fAutoNameSymbols");
+      WriteIniFile(iniFilePath, _fAutoName, "Option", "fAutoName");
+      WriteIniFile(iniFilePath, _AutoNameFormatText, "Option", "AutoNameFormatText");
+      WriteIniFile(iniFilePath, _fAutoNameAlphabets, "Option", "fAutoNameAlphabets");
+      WriteIniFile(iniFilePath, _fAutoNameLowerCase, "Option", "fAutoNameLowerCase");
+      WriteIniFile(iniFilePath, _fAutoNameUpperCase, "Option", "fAutoNameUpperCase");
+      WriteIniFile(iniFilePath, _fAutoNameNumbers, "Option", "fAutoNameNumbers");
+      WriteIniFile(iniFilePath, _fAutoNameSymbols, "Option", "fAutoNameSymbols");
 
       //-----------------------------------
       // Save Decrypt
-      WriteIniFile(IniFilePath, _fDecodeToSameFldr, "Option", "fDecodeToSameFldr");
-      WriteIniFile(IniFilePath, _DecodeToSameFldrPath, "Option", "DecodeToSameFldrPath");
-      WriteIniFile(IniFilePath, _fDecryptConfirmOverwrite, "Option", "fDecryptConfirmOverwrite");
-      WriteIniFile(IniFilePath, _fNoParentFldr, "Option", "fNoParentFldr");
-      WriteIniFile(IniFilePath, _fSameTimeStamp, "Option", "fSameTimeStamp");
-      WriteIniFile(IniFilePath, _fCompareFile, "Option", "fCompareFile");
+      WriteIniFile(iniFilePath, _fDecodeToSameFldr, "Option", "fDecodeToSameFldr");
+      WriteIniFile(iniFilePath, _DecodeToSameFldrPath, "Option", "DecodeToSameFldrPath");
+      WriteIniFile(iniFilePath, _fDecryptConfirmOverwrite, "Option", "fDecryptConfirmOverwrite");
+      WriteIniFile(iniFilePath, _fNoParentFldr, "Option", "fNoParentFldr");
+      WriteIniFile(iniFilePath, _fSameTimeStamp, "Option", "fSameTimeStamp");
+      WriteIniFile(iniFilePath, _fCompareFile, "Option", "fCompareFile");
 
       //-----------------------------------
       // Password ZIP
-      WriteIniFile(IniFilePath, _fZipToSameFldr, "Option", "fZipToSameFldr");
-      WriteIniFile(IniFilePath, _ZipToSameFldrPath, "Option", "ZipToSameFldrPath");
-      WriteIniFile(IniFilePath, _fZipConfirmOverwrite, "Option", "fZipConfirmOverwrite");
-      WriteIniFile(IniFilePath, _ZipEncryptionAlgorithm, "Option", "ZipEncryptionAlgorithm");
+      WriteIniFile(iniFilePath, _fZipToSameFldr, "Option", "fZipToSameFldr");
+      WriteIniFile(iniFilePath, _ZipToSameFldrPath, "Option", "ZipToSameFldrPath");
+      WriteIniFile(iniFilePath, _fZipConfirmOverwrite, "Option", "fZipConfirmOverwrite");
+      WriteIniFile(iniFilePath, _ZipEncryptionAlgorithm, "Option", "ZipEncryptionAlgorithm");
 
       //-----------------------------------
       // Delete
-      WriteIniFile(IniFilePath, _fDelOrgFile, "Option", "fDelOrgFile");
-      WriteIniFile(IniFilePath, _fEncryptShowDelChkBox, "Option", "fEncryptShowDelChkBox");
-      WriteIniFile(IniFilePath, _fConfirmToDeleteAfterEncryption, "Option", "fConfirmToDeleteAfterEncryption");
+      WriteIniFile(iniFilePath, _fDelOrgFile, "Option", "fDelOrgFile");
+      WriteIniFile(iniFilePath, _fEncryptShowDelChkBox, "Option", "fEncryptShowDelChkBox");
+      WriteIniFile(iniFilePath, _fConfirmToDeleteAfterEncryption, "Option", "fConfirmToDeleteAfterEncryption");
 
-      WriteIniFile(IniFilePath, _fDelEncFile, "Option", "fDelEncFile");
-      WriteIniFile(IniFilePath, _fDecryptShowDelChkBox, "Option", "fDecryptShowDelChkBox");
-      WriteIniFile(IniFilePath, _fConfirmToDeleteAfterDecryption, "Option", "fConfirmToDeleteAfterDecryption");
+      WriteIniFile(iniFilePath, _fDelEncFile, "Option", "fDelEncFile");
+      WriteIniFile(iniFilePath, _fDecryptShowDelChkBox, "Option", "fDecryptShowDelChkBox");
+      WriteIniFile(iniFilePath, _fConfirmToDeleteAfterDecryption, "Option", "fConfirmToDeleteAfterDecryption");
 
-      WriteIniFile(IniFilePath, _fCompleteDelFile, "Option", "fCompleteDelFile");
-      WriteIniFile(IniFilePath, _DelRandNum, "Option", "DelRandNum");
-      WriteIniFile(IniFilePath, _DelZeroNum, "Option", "DelZeroNum");
+      WriteIniFile(iniFilePath, _fCompleteDelFile, "Option", "fCompleteDelFile");
+      WriteIniFile(iniFilePath, _DelRandNum, "Option", "DelRandNum");
+      WriteIniFile(iniFilePath, _DelZeroNum, "Option", "DelZeroNum");
 
       //-----------------------------------
       //Compression
-      WriteIniFile(IniFilePath, _CompressRate, "Option", "CompressRate");
-      WriteIniFile(IniFilePath, _CompressionLevel, "Option", "CompressionLevel");
+      WriteIniFile(iniFilePath, _CompressRate, "Option", "CompressRate");
+      WriteIniFile(iniFilePath, _CompressionLevel, "Option", "CompressionLevel");
 
       //-----------------------------------
       // System
-      WriteIniFile(IniFilePath, _fAssociationFile, "Option", "fAssociationFile");  // int
-      WriteIniFile(IniFilePath, _UserRegIconFilePath, "Option", "UserRegIconFilePath");
+      WriteIniFile(iniFilePath, _fAssociationFile, "Option", "fAssociationFile");  // int
+      WriteIniFile(iniFilePath, _UserRegIconFilePath, "Option", "UserRegIconFilePath");
 
       //-----------------------------------
       // Import / Export ( Only this setting is written to the registry )
 
       //-----------------------------------
       // Advanced
-      WriteIniFile(IniFilePath, _isCheckMotwExecutableFiles, "Option", "fMotwExecutableFiles");
-      WriteIniFile(IniFilePath, _isCheckMotwOfficeFiles, "Option", "fMotwOfficeFiles");
-      WriteIniFile(IniFilePath, _isCheckMotwUserDefinedTypes, "Option", "fMotwUserDefinedTypes");
-      WriteIniFile(IniFilePath, _isCheckMotwAllFiles, "Option", "fMotwAllFiles");
-
-      WriteIniFile(IniFilePath, string.Join(",", _MotwUserDefinedTypes), "Option", "MotwUserDefinedTypes");
+      WriteIniFile(iniFilePath, _isCheckMotwExecutableFiles, "Option", "fMotwExecutableFiles");
+      WriteIniFile(iniFilePath, _isCheckMotwOfficeFiles, "Option", "fMotwOfficeFiles");
+      WriteIniFile(iniFilePath, _isCheckMotwUserDefinedTypes, "Option", "fMotwUserDefinedTypes");
+      WriteIniFile(iniFilePath, _isCheckMotwAllFiles, "Option", "fMotwAllFiles");
 
       //-----------------------------------
       //Password file
-      WriteIniFile(IniFilePath, _fAllowPassFile, "Option", "fAllowPassFile");
-      WriteIniFile(IniFilePath, _fCheckPassFile, "Option", "fCheckPassFile");
-      WriteIniFile(IniFilePath, _PassFilePath, "Option", "PassFilePath");
+      WriteIniFile(iniFilePath, _fAllowPassFile, "Option", "fAllowPassFile");
+      WriteIniFile(iniFilePath, _fCheckPassFile, "Option", "fCheckPassFile");
+      WriteIniFile(iniFilePath, _PassFilePath, "Option", "PassFilePath");
 
-      WriteIniFile(IniFilePath, _fCheckPassFileDecrypt, "Option", "fCheckPassFileDecrypt");
-      WriteIniFile(IniFilePath, _PassFilePathDecrypt, "Option", "PassFilePathDecrypt");
-      WriteIniFile(IniFilePath, _fNoErrMsgOnPassFile, "Option", "fNoErrMsgOnPassFile");
-      WriteIniFile(IniFilePath, _fPasswordFileExe, "Option", "fPasswordFileExe");
+      WriteIniFile(iniFilePath, _fCheckPassFileDecrypt, "Option", "fCheckPassFileDecrypt");
+      WriteIniFile(iniFilePath, _PassFilePathDecrypt, "Option", "PassFilePathDecrypt");
+      WriteIniFile(iniFilePath, _fNoErrMsgOnPassFile, "Option", "fNoErrMsgOnPassFile");
+      WriteIniFile(iniFilePath, _fPasswordFileExe, "Option", "fPasswordFileExe");
 
       //-----------------------------------
       //Camouflage Extension
-      WriteIniFile(IniFilePath, _fAddCamoExt, "Option", "fAddCamoExt");
-      WriteIniFile(IniFilePath, _CamoExt, "Option", "CamoExt");
+      WriteIniFile(iniFilePath, _fAddCamoExt, "Option", "fAddCamoExt");
+      WriteIniFile(iniFilePath, _CamoExt, "Option", "CamoExt");
 
       //-----------------------------------
       // Input Password limit
-      WriteIniFile(IniFilePath, _MissTypeLimitsNum, "Option", "MissTypeLimitsNum");
-      WriteIniFile(IniFilePath, _fBroken, "Option", "fBroken");
+      WriteIniFile(iniFilePath, _MissTypeLimitsNum, "Option", "MissTypeLimitsNum");
+      WriteIniFile(iniFilePath, _fBroken, "Option", "fBroken");
 
       //-----------------------------------
       // Salvage
-      WriteIniFile(IniFilePath, _fSalvageToCreateParentFolderOneByOne, "Option", "fSalvageToCreateParentFolderOneByOne");
-      WriteIniFile(IniFilePath, _fSalvageIntoSameDirectory, "Option", "fSalvageIntoSameDirectory");
+      WriteIniFile(iniFilePath, _fSalvageToCreateParentFolderOneByOne, "Option", "fSalvageToCreateParentFolderOneByOne");
+      WriteIniFile(iniFilePath, _fSalvageIntoSameDirectory, "Option", "fSalvageIntoSameDirectory");
 
       //-----------------------------------
       // Developer mode
-      WriteIniFile(IniFilePath, _fDeveloperConsole, "Option", "fDeveloperConsole");
-      WriteIniFile(IniFilePath, _DeveloperConsolePosX, "Option", "DeveloperConsolePosX");
-      WriteIniFile(IniFilePath, _DeveloperConsolePosY, "Option", "DeveloperConsolePosY");
-      WriteIniFile(IniFilePath, _DeveloperConsoleWidth, "Option", "DeveloperConsoleWidth");
-      WriteIniFile(IniFilePath, _DeveloperConsoleHeight, "Option", "DeveloperConsoleHeight");
+      WriteIniFile(iniFilePath, _fDeveloperConsole, "Option", "fDeveloperConsole");
+      WriteIniFile(iniFilePath, _DeveloperConsolePosX, "Option", "DeveloperConsolePosX");
+      WriteIniFile(iniFilePath, _DeveloperConsolePosY, "Option", "DeveloperConsolePosY");
+      WriteIniFile(iniFilePath, _DeveloperConsoleWidth, "Option", "DeveloperConsoleWidth");
+      WriteIniFile(iniFilePath, _DeveloperConsoleHeight, "Option", "DeveloperConsoleHeight");
 
       //-----------------------------------
       // Others
-      WriteIniFile(IniFilePath, _Language, "Option", "Language");
-      WriteIniFile(IniFilePath, _SaveToIniDirPath, "Option", "SaveToIniDirPath");
+      WriteIniFile(iniFilePath, _Language, "Option", "Language");
+      WriteIniFile(iniFilePath, _SaveToIniDirPath, "Option", "SaveToIniDirPath");
+
+      // 変更があった場合のみ承認マーカーを更新
+      // Update approval markers only when changes are made
+      securityManager.UpdateApprovalIfChanged();
+
+
     }
 
     //======================================================================
@@ -2300,7 +2492,6 @@ namespace AttacheCase
     /// 起動時のコマンドライン引数から設定を読み込む
     /// Read the configuration from the startup command line arguments
     /// </summary>
-    /// <param name="cmds"></param>
     //======================================================================
     public int ParserArguments()
     {
@@ -3475,12 +3666,10 @@ namespace AttacheCase
     //======================================================================
     public void AddArgsFile(string FilePath)
     {
-      if (File.Exists(FilePath) == true)
-      {
-        //何の種類のファイルか
-        FileType[CheckFileType(FilePath)]++;
-        _FileList.Add(FilePath);
-      }
+      if (File.Exists(FilePath) != true) return;
+      //何の種類のファイルか
+      FileType[CheckFileType(FilePath)]++;
+      _FileList.Add(FilePath);
 
     }
 
@@ -3581,15 +3770,11 @@ namespace AttacheCase
         try
         {
           var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-          using (var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read))
-          {
-            using (var sr = new StreamReader(cs))
-            {
-              // Read the decrypted bytes from the decrypting stream
-              // and place them in a string.
-              return (sr.ReadToEnd());
-            }
-          }
+          using var cs = new CryptoStream(ms, decryptor, CryptoStreamMode.Read);
+          using var sr = new StreamReader(cs);
+          // Read the decrypted bytes from the decrypting stream
+          // and place them in a string.
+          return (sr.ReadToEnd());
         }
         catch
         {
@@ -3797,8 +3982,6 @@ namespace AttacheCase
       var containsABadCharacter = new Regex("[" + Regex.Escape(new string(Path.GetInvalidPathChars())) + "]");
       return !containsABadCharacter.IsMatch(FileName);
     }
-
-
 
     /// <summary>
     /// Validates whether the provided extension string is in a correct format.

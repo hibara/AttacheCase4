@@ -1,0 +1,8 @@
+
+
+$(SolutionDir)tools\ExeToHex\bin\Release\ExeToHex.exe $(TargetPath) $(SolutionDir)AttacheCase\ExeOut4.cs
+
+
+
+
+

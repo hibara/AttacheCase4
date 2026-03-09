@@ -25,9 +25,9 @@ namespace ExeToHex
     /// <returns></returns>
 		static int Main(string[] args)
 		{
-			if (args.Length < 3)	// 引数の数が足りてない
+			if (args.Length < 2)	// 引数の数が足りてない
 			{
-				MessageBox.Show("３つの引数が必要です！");
+				MessageBox.Show("２つの引数が必要です！");
 				return (1);
 			}
 			

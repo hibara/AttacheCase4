@@ -122,13 +122,13 @@
   </metadata>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="toolStripStatusLabelDataVersion.Size" type="System.Drawing.Size, System.Drawing">
-    <value>69, 17</value>
+    <value>142, 32</value>
   </data>
   <data name="toolStripStatusLabelDataVersion.Text" xml:space="preserve">
     <value>DataVersion</value>
   </data>
   <data name="toolStripStatusLabelEncryptionTime.Size" type="System.Drawing.Size, System.Drawing">
-    <value>98, 17</value>
+    <value>199, 32</value>
   </data>
   <data name="toolStripStatusLabelEncryptionTime.Text" xml:space="preserve">
     <value>Processing Time :</value>
@@ -138,10 +138,14 @@
     <value>False</value>
   </data>
   <data name="statusStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 467</value>
+    <value>0, 936</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="statusStrip1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>2, 0, 30, 0</value>
   </data>
   <data name="statusStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>582, 22</value>
+    <value>1261, 42</value>
   </data>
   <data name="statusStrip1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -180,7 +184,7 @@
 </value>
   </data>
   <data name="ToolStripMenuItemEncryptSelectFiles.Size" type="System.Drawing.Size, System.Drawing">
-    <value>149, 22</value>
+    <value>297, 44</value>
   </data>
   <data name="ToolStripMenuItemEncryptSelectFiles.Text" xml:space="preserve">
     <value>Select Files...</value>
@@ -200,7 +204,7 @@
 </value>
   </data>
   <data name="ToolStripMenuItemEncryptSelectFolder.Size" type="System.Drawing.Size, System.Drawing">
-    <value>149, 22</value>
+    <value>297, 44</value>
   </data>
   <data name="ToolStripMenuItemEncryptSelectFolder.Text" xml:space="preserve">
     <value>Select Folder...</value>
@@ -221,7 +225,7 @@
 </value>
   </data>
   <data name="ToolStripMenuItemEncrypt.Size" type="System.Drawing.Size, System.Drawing">
-    <value>115, 22</value>
+    <value>230, 44</value>
   </data>
   <data name="ToolStripMenuItemEncrypt.Text" xml:space="preserve">
     <value>&amp;Encrypt</value>
@@ -240,25 +244,25 @@
 </value>
   </data>
   <data name="ToolStripMenuItemDecrypt.Size" type="System.Drawing.Size, System.Drawing">
-    <value>115, 22</value>
+    <value>230, 44</value>
   </data>
   <data name="ToolStripMenuItemDecrypt.Text" xml:space="preserve">
     <value>&amp;Decrypt</value>
   </data>
   <data name="toolStripMenuItem2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>112, 6</value>
+    <value>227, 6</value>
   </data>
   <data name="ToolStripMenuItemExit.RightToLeftAutoMirrorImage" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
   <data name="ToolStripMenuItemExit.Size" type="System.Drawing.Size, System.Drawing">
-    <value>115, 22</value>
+    <value>230, 44</value>
   </data>
   <data name="ToolStripMenuItemExit.Text" xml:space="preserve">
     <value>E&amp;xit</value>
   </data>
   <data name="ToolStripMenuItemFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>37, 20</value>
+    <value>71, 36</value>
   </data>
   <data name="ToolStripMenuItemFile.Text" xml:space="preserve">
     <value>&amp;File</value>
@@ -280,13 +284,13 @@
 </value>
   </data>
   <data name="ToolStripMenuItemSetting.Size" type="System.Drawing.Size, System.Drawing">
-    <value>111, 22</value>
+    <value>223, 44</value>
   </data>
   <data name="ToolStripMenuItemSetting.Text" xml:space="preserve">
     <value>Se&amp;tting</value>
   </data>
   <data name="ToolStripMenuItemOption.Size" type="System.Drawing.Size, System.Drawing">
-    <value>56, 20</value>
+    <value>108, 36</value>
   </data>
   <data name="ToolStripMenuItemOption.Text" xml:space="preserve">
     <value>&amp;Option</value>
@@ -305,27 +309,26 @@
         +OFyucjj8RDvDMB3XkBf/D/wn8lvXjmsv+E3BQfB1Lwkt9AAAAAASUVORK5CYII=
 </value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="ToolStripMenuItemHelpContents.ShortcutKeys" type="System.Windows.Forms.Keys, System.Windows.Forms">
     <value>F1</value>
   </data>
   <data name="ToolStripMenuItemHelpContents.Size" type="System.Drawing.Size, System.Drawing">
-    <value>156, 22</value>
+    <value>314, 44</value>
   </data>
   <data name="ToolStripMenuItemHelpContents.Text" xml:space="preserve">
     <value>On&amp;line Help</value>
   </data>
   <data name="toolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>153, 6</value>
+    <value>311, 6</value>
   </data>
   <data name="ToolStripMenuItemAbout.Size" type="System.Drawing.Size, System.Drawing">
-    <value>156, 22</value>
+    <value>314, 44</value>
   </data>
   <data name="ToolStripMenuItemAbout.Text" xml:space="preserve">
     <value>&amp;About...</value>
   </data>
   <data name="ToolStripMenuItemHelp.Size" type="System.Drawing.Size, System.Drawing">
-    <value>44, 20</value>
+    <value>84, 36</value>
   </data>
   <data name="ToolStripMenuItemHelp.Text" xml:space="preserve">
     <value>&amp;Help</value>
@@ -334,10 +337,10 @@
     <value>0, 0</value>
   </data>
   <data name="menuStrip1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>4, 2, 0, 2</value>
+    <value>9, 4, 0, 4</value>
   </data>
   <data name="menuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>582, 24</value>
+    <value>1261, 44</value>
   </data>
   <data name="menuStrip1.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -414,7 +417,10 @@
     <value />
   </data>
   <data name="pictureBoxDecChk.Location" type="System.Drawing.Point, System.Drawing">
-    <value>303, 149</value>
+    <value>656, 298</value>
+  </data>
+  <data name="pictureBoxDecChk.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxDecChk.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -511,7 +517,10 @@
     <value />
   </data>
   <data name="pictureBoxRsaChk.Location" type="System.Drawing.Point, System.Drawing">
-    <value>233, 150</value>
+    <value>505, 300</value>
+  </data>
+  <data name="pictureBoxRsaChk.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxRsaChk.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -595,7 +604,10 @@
     <value />
   </data>
   <data name="pictureBoxExeChk.Location" type="System.Drawing.Point, System.Drawing">
-    <value>163, 150</value>
+    <value>353, 300</value>
+  </data>
+  <data name="pictureBoxExeChk.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxExeChk.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -671,7 +683,10 @@
     <value />
   </data>
   <data name="pictureBoxAtcChk.Location" type="System.Drawing.Point, System.Drawing">
-    <value>93, 150</value>
+    <value>202, 300</value>
+  </data>
+  <data name="pictureBoxAtcChk.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxAtcChk.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -731,7 +746,10 @@
     <value>NoControl</value>
   </data>
   <data name="pictureBoxOptionButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>471, 309</value>
+    <value>1026, 625</value>
+  </data>
+  <data name="pictureBoxOptionButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxOptionButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>40, 40</value>
@@ -785,7 +803,10 @@
     <value>NoControl</value>
   </data>
   <data name="pictureBoxOptionOn.Location" type="System.Drawing.Point, System.Drawing">
-    <value>393, 61</value>
+    <value>852, 122</value>
+  </data>
+  <data name="pictureBoxOptionOn.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxOptionOn.Size" type="System.Drawing.Size, System.Drawing">
     <value>40, 40</value>
@@ -842,7 +863,10 @@
     <value>NoControl</value>
   </data>
   <data name="pictureBoxOptionOff.Location" type="System.Drawing.Point, System.Drawing">
-    <value>393, 15</value>
+    <value>852, 30</value>
+  </data>
+  <data name="pictureBoxOptionOff.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxOptionOff.Size" type="System.Drawing.Size, System.Drawing">
     <value>40, 40</value>
@@ -893,7 +917,10 @@
     <value>NoControl</value>
   </data>
   <data name="pictureBoxBackButtonOff.Location" type="System.Drawing.Point, System.Drawing">
-    <value>439, 15</value>
+    <value>951, 30</value>
+  </data>
+  <data name="pictureBoxBackButtonOff.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxBackButtonOff.Size" type="System.Drawing.Size, System.Drawing">
     <value>40, 40</value>
@@ -944,7 +971,10 @@
     <value>NoControl</value>
   </data>
   <data name="pictureBoxBackButtonOn.Location" type="System.Drawing.Point, System.Drawing">
-    <value>439, 61</value>
+    <value>951, 122</value>
+  </data>
+  <data name="pictureBoxBackButtonOn.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxBackButtonOn.Size" type="System.Drawing.Size, System.Drawing">
     <value>40, 40</value>
@@ -977,10 +1007,13 @@
     <value>NoControl</value>
   </data>
   <data name="buttonExit.Location" type="System.Drawing.Point, System.Drawing">
-    <value>354, 268</value>
+    <value>772, 543</value>
+  </data>
+  <data name="buttonExit.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="buttonExit.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 32</value>
+    <value>162, 64</value>
   </data>
   <data name="buttonExit.TabIndex" type="System.Int32, mscorlib">
     <value>14</value>
@@ -1004,10 +1037,13 @@
     <value>NoControl</value>
   </data>
   <data name="labelZip.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 354</value>
+    <value>6, 708</value>
+  </data>
+  <data name="labelZip.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelZip.Size" type="System.Drawing.Size, System.Drawing">
-    <value>86, 24</value>
+    <value>186, 48</value>
   </data>
   <data name="labelZip.TabIndex" type="System.Int32, mscorlib">
     <value>36</value>
@@ -1093,7 +1129,10 @@
     <value />
   </data>
   <data name="pictureBoxRsa.Location" type="System.Drawing.Point, System.Drawing">
-    <value>7, 292</value>
+    <value>15, 584</value>
+  </data>
+  <data name="pictureBoxRsa.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxRsa.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -1120,10 +1159,13 @@
     <value>NoControl</value>
   </data>
   <data name="labelDec.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 270</value>
+    <value>6, 540</value>
+  </data>
+  <data name="labelDec.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelDec.Size" type="System.Drawing.Size, System.Drawing">
-    <value>86, 12</value>
+    <value>186, 24</value>
   </data>
   <data name="labelDec.TabIndex" type="System.Int32, mscorlib">
     <value>25</value>
@@ -1193,7 +1235,10 @@
     <value>NoControl</value>
   </data>
   <data name="pictureBoxDec.Location" type="System.Drawing.Point, System.Drawing">
-    <value>7, 203</value>
+    <value>15, 406</value>
+  </data>
+  <data name="pictureBoxDec.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxDec.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -1220,10 +1265,13 @@
     <value>NoControl</value>
   </data>
   <data name="labelExe.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 166</value>
+    <value>9, 332</value>
+  </data>
+  <data name="labelExe.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelExe.Size" type="System.Drawing.Size, System.Drawing">
-    <value>84, 24</value>
+    <value>182, 48</value>
   </data>
   <data name="labelExe.TabIndex" type="System.Int32, mscorlib">
     <value>21</value>
@@ -1292,7 +1340,10 @@ EXE</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxExe.Location" type="System.Drawing.Point, System.Drawing">
-    <value>7, 105</value>
+    <value>15, 210</value>
+  </data>
+  <data name="pictureBoxExe.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxExe.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -1319,10 +1370,13 @@ EXE</value>
     <value>NoControl</value>
   </data>
   <data name="labelAtc.Location" type="System.Drawing.Point, System.Drawing">
-    <value>5, 68</value>
+    <value>11, 136</value>
+  </data>
+  <data name="labelAtc.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelAtc.Size" type="System.Drawing.Size, System.Drawing">
-    <value>84, 24</value>
+    <value>182, 48</value>
   </data>
   <data name="labelAtc.TabIndex" type="System.Int32, mscorlib">
     <value>17</value>
@@ -1388,7 +1442,10 @@ ATC</value>
     <value />
   </data>
   <data name="pictureBoxAtc.Location" type="System.Drawing.Point, System.Drawing">
-    <value>6, 10</value>
+    <value>13, 20</value>
+  </data>
+  <data name="pictureBoxAtc.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxAtc.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -1417,8 +1474,11 @@ ATC</value>
   <data name="panel1.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
+  <data name="panel1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
+  </data>
   <data name="panel1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>90, 388</value>
+    <value>195, 783</value>
   </data>
   <data name="panel1.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
@@ -1465,7 +1525,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxDeleteOn.Location" type="System.Drawing.Point, System.Drawing">
-    <value>415, 149</value>
+    <value>899, 298</value>
+  </data>
+  <data name="pictureBoxDeleteOn.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxDeleteOn.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -1544,7 +1607,10 @@ ATC</value>
     <value />
   </data>
   <data name="pictureBoxDecOff.Location" type="System.Drawing.Point, System.Drawing">
-    <value>303, 10</value>
+    <value>656, 20</value>
+  </data>
+  <data name="pictureBoxDecOff.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxDecOff.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -1615,7 +1681,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxDecOn.Location" type="System.Drawing.Point, System.Drawing">
-    <value>303, 80</value>
+    <value>656, 160</value>
+  </data>
+  <data name="pictureBoxDecOn.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxDecOn.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -1701,7 +1770,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxRsaOff.Location" type="System.Drawing.Point, System.Drawing">
-    <value>233, 10</value>
+    <value>505, 20</value>
+  </data>
+  <data name="pictureBoxRsaOff.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxRsaOff.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -1783,7 +1855,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxRsaOn.Location" type="System.Drawing.Point, System.Drawing">
-    <value>233, 80</value>
+    <value>505, 160</value>
+  </data>
+  <data name="pictureBoxRsaOn.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxRsaOn.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -1854,7 +1929,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxExeOff.Location" type="System.Drawing.Point, System.Drawing">
-    <value>163, 10</value>
+    <value>353, 20</value>
+  </data>
+  <data name="pictureBoxExeOff.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxExeOff.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -1922,7 +2000,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxExeOn.Location" type="System.Drawing.Point, System.Drawing">
-    <value>163, 80</value>
+    <value>353, 160</value>
+  </data>
+  <data name="pictureBoxExeOn.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxExeOn.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -1987,7 +2068,10 @@ ATC</value>
     <value />
   </data>
   <data name="pictureBoxAtcOff.Location" type="System.Drawing.Point, System.Drawing">
-    <value>93, 10</value>
+    <value>202, 20</value>
+  </data>
+  <data name="pictureBoxAtcOff.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxAtcOff.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -2046,7 +2130,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxAtcOn.Location" type="System.Drawing.Point, System.Drawing">
-    <value>93, 80</value>
+    <value>202, 160</value>
+  </data>
+  <data name="pictureBoxAtcOn.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxAtcOn.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -2085,10 +2172,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="labelDragAndDrop.Location" type="System.Drawing.Point, System.Drawing">
-    <value>96, 257</value>
+    <value>208, 514</value>
+  </data>
+  <data name="labelDragAndDrop.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelDragAndDrop.Size" type="System.Drawing.Size, System.Drawing">
-    <value>280, 32</value>
+    <value>555, 66</value>
   </data>
   <data name="labelDragAndDrop.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -2116,10 +2206,13 @@ in this area for encryption or decryption.</value>
     <value>Fill</value>
   </data>
   <data name="panelStartPage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+    <value>6, 6</value>
+  </data>
+  <data name="panelStartPage.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="panelStartPage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>554, 390</value>
+    <value>1203, 785</value>
   </data>
   <data name="panelStartPage.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
@@ -2137,16 +2230,16 @@ in this area for encryption or decryption.</value>
     <value>0</value>
   </data>
   <data name="tabPageStartPage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
+    <value>8, 39</value>
   </data>
   <data name="tabPageStartPage.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
   <data name="tabPageStartPage.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="tabPageStartPage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>560, 396</value>
+    <value>1215, 797</value>
   </data>
   <data name="tabPageStartPage.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -2173,10 +2266,13 @@ in this area for encryption or decryption.</value>
     <value>MS UI Gothic, 12pt</value>
   </data>
   <data name="textBoxPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>94, 176</value>
+    <value>204, 354</value>
+  </data>
+  <data name="textBoxPassword.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="textBoxPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>414, 23</value>
+    <value>895, 39</value>
   </data>
   <data name="textBoxPassword.TabIndex" type="System.Int32, mscorlib">
     <value>42</value>
@@ -2185,7 +2281,7 @@ in this area for encryption or decryption.</value>
     <value>textBoxPassword</value>
   </data>
   <data name="&gt;&gt;textBoxPassword.Type" xml:space="preserve">
-    <value>AttacheCase.DelayTextBox, AttacheCase, Version=4.2.5.0, Culture=neutral, PublicKeyToken=null</value>
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;textBoxPassword.Parent" xml:space="preserve">
     <value>panelEncrypt</value>
@@ -2200,13 +2296,13 @@ in this area for encryption or decryption.</value>
     <value>NoControl</value>
   </data>
   <data name="labelPasswordStrength.Location" type="System.Drawing.Point, System.Drawing">
-    <value>458, 156</value>
+    <value>995, 314</value>
   </data>
   <data name="labelPasswordStrength.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
   <data name="labelPasswordStrength.Size" type="System.Drawing.Size, System.Drawing">
-    <value>87, 12</value>
+    <value>188, 24</value>
   </data>
   <data name="labelPasswordStrength.TabIndex" type="System.Int32, mscorlib">
     <value>41</value>
@@ -2242,10 +2338,13 @@ in this area for encryption or decryption.</value>
     <value>NoControl</value>
   </data>
   <data name="checkBoxDeleteOriginalFileAfterEncryption.Location" type="System.Drawing.Point, System.Drawing">
-    <value>94, 231</value>
+    <value>204, 464</value>
+  </data>
+  <data name="checkBoxDeleteOriginalFileAfterEncryption.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="checkBoxDeleteOriginalFileAfterEncryption.Size" type="System.Drawing.Size, System.Drawing">
-    <value>360, 20</value>
+    <value>715, 37</value>
   </data>
   <data name="checkBoxDeleteOriginalFileAfterEncryption.TabIndex" type="System.Int32, mscorlib">
     <value>19</value>
@@ -2278,10 +2377,13 @@ in this area for encryption or decryption.</value>
     <value>NoControl</value>
   </data>
   <data name="checkBoxNotMaskEncryptedPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>94, 204</value>
+    <value>204, 410</value>
+  </data>
+  <data name="checkBoxNotMaskEncryptedPassword.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="checkBoxNotMaskEncryptedPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>227, 20</value>
+    <value>446, 37</value>
   </data>
   <data name="checkBoxNotMaskEncryptedPassword.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -2327,7 +2429,10 @@ in this area for encryption or decryption.</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxPassStrengthMeter.Location" type="System.Drawing.Point, System.Drawing">
-    <value>514, 176</value>
+    <value>1117, 354</value>
+  </data>
+  <data name="pictureBoxPassStrengthMeter.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxPassStrengthMeter.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
@@ -2370,7 +2475,10 @@ in this area for encryption or decryption.</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxPasswordStrengthEmpty.Location" type="System.Drawing.Point, System.Drawing">
-    <value>110, 64</value>
+    <value>238, 128</value>
+  </data>
+  <data name="pictureBoxPasswordStrengthEmpty.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxPasswordStrengthEmpty.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
@@ -2414,7 +2522,10 @@ in this area for encryption or decryption.</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxPasswordStrength04.Location" type="System.Drawing.Point, System.Drawing">
-    <value>276, 64</value>
+    <value>598, 128</value>
+  </data>
+  <data name="pictureBoxPasswordStrength04.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxPasswordStrength04.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
@@ -2459,7 +2570,10 @@ in this area for encryption or decryption.</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxPasswordStrength03.Location" type="System.Drawing.Point, System.Drawing">
-    <value>246, 64</value>
+    <value>533, 128</value>
+  </data>
+  <data name="pictureBoxPasswordStrength03.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxPasswordStrength03.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
@@ -2503,7 +2617,10 @@ in this area for encryption or decryption.</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxPasswordStrength02.Location" type="System.Drawing.Point, System.Drawing">
-    <value>216, 64</value>
+    <value>468, 128</value>
+  </data>
+  <data name="pictureBoxPasswordStrength02.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxPasswordStrength02.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
@@ -2547,7 +2664,10 @@ in this area for encryption or decryption.</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxPasswordStrength01.Location" type="System.Drawing.Point, System.Drawing">
-    <value>186, 64</value>
+    <value>403, 128</value>
+  </data>
+  <data name="pictureBoxPasswordStrength01.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxPasswordStrength01.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
@@ -2591,7 +2711,10 @@ in this area for encryption or decryption.</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxPasswordStrength00.Location" type="System.Drawing.Point, System.Drawing">
-    <value>156, 64</value>
+    <value>338, 128</value>
+  </data>
+  <data name="pictureBoxPasswordStrength00.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxPasswordStrength00.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
@@ -2645,7 +2768,10 @@ in this area for encryption or decryption.</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxEncryptBackButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>501, 13</value>
+    <value>1089, 26</value>
+  </data>
+  <data name="pictureBoxEncryptBackButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxEncryptBackButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>40, 40</value>
@@ -2678,10 +2804,13 @@ in this area for encryption or decryption.</value>
     <value>NoControl</value>
   </data>
   <data name="buttonEncryptionPasswordOk.Location" type="System.Drawing.Point, System.Drawing">
-    <value>317, 330</value>
+    <value>690, 665</value>
+  </data>
+  <data name="buttonEncryptionPasswordOk.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="buttonEncryptionPasswordOk.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
+    <value>217, 64</value>
   </data>
   <data name="buttonEncryptionPasswordOk.TabIndex" type="System.Int32, mscorlib">
     <value>30</value>
@@ -2708,10 +2837,13 @@ in this area for encryption or decryption.</value>
     <value>NoControl</value>
   </data>
   <data name="labelEncryption.Location" type="System.Drawing.Point, System.Drawing">
-    <value>2, 218</value>
+    <value>4, 438</value>
+  </data>
+  <data name="labelEncryption.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelEncryption.Size" type="System.Drawing.Size, System.Drawing">
-    <value>73, 24</value>
+    <value>158, 48</value>
   </data>
   <data name="labelEncryption.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -2742,10 +2874,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxEncryption.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1, 154</value>
+    <value>2, 310</value>
+  </data>
+  <data name="pictureBoxEncryption.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxEncryption.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 64</value>
+    <value>139, 128</value>
   </data>
   <data name="pictureBoxEncryption.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -2768,8 +2903,11 @@ ATC</value>
   <data name="panel2.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
+  <data name="panel2.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
+  </data>
   <data name="panel2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 390</value>
+    <value>167, 785</value>
   </data>
   <data name="panel2.TabIndex" type="System.Int32, mscorlib">
     <value>29</value>
@@ -2796,10 +2934,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="buttonEncryptCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>432, 330</value>
+    <value>939, 665</value>
+  </data>
+  <data name="buttonEncryptCancel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="buttonEncryptCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
+    <value>217, 64</value>
   </data>
   <data name="buttonEncryptCancel.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -2832,10 +2973,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="labelPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>91, 156</value>
+    <value>197, 314</value>
+  </data>
+  <data name="labelPassword.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>74, 16</value>
+    <value>151, 33</value>
   </data>
   <data name="labelPassword.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -2859,10 +3003,13 @@ ATC</value>
     <value>Fill</value>
   </data>
   <data name="panelEncrypt.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+    <value>6, 6</value>
+  </data>
+  <data name="panelEncrypt.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="panelEncrypt.Size" type="System.Drawing.Size, System.Drawing">
-    <value>554, 390</value>
+    <value>1203, 785</value>
   </data>
   <data name="panelEncrypt.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -2880,13 +3027,16 @@ ATC</value>
     <value>0</value>
   </data>
   <data name="tabPageEncrypt.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
+    <value>8, 39</value>
+  </data>
+  <data name="tabPageEncrypt.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="tabPageEncrypt.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="tabPageEncrypt.Size" type="System.Drawing.Size, System.Drawing">
-    <value>560, 396</value>
+    <value>1215, 797</value>
   </data>
   <data name="tabPageEncrypt.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -2934,7 +3084,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxEncryptConfirmBackButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>501, 13</value>
+    <value>1089, 26</value>
+  </data>
+  <data name="pictureBoxEncryptConfirmBackButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxEncryptConfirmBackButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>40, 40</value>
@@ -2982,7 +3135,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxCheckPasswordValidation.Location" type="System.Drawing.Point, System.Drawing">
-    <value>68, 177</value>
+    <value>147, 356</value>
+  </data>
+  <data name="pictureBoxCheckPasswordValidation.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxCheckPasswordValidation.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
@@ -3012,10 +3168,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="labelEncryptionConfirm.Location" type="System.Drawing.Point, System.Drawing">
-    <value>2, 218</value>
+    <value>4, 438</value>
+  </data>
+  <data name="labelEncryptionConfirm.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelEncryptionConfirm.Size" type="System.Drawing.Size, System.Drawing">
-    <value>73, 24</value>
+    <value>158, 48</value>
   </data>
   <data name="labelEncryptionConfirm.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
@@ -3046,10 +3205,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxEncryptionConfirm.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1, 154</value>
+    <value>2, 310</value>
+  </data>
+  <data name="pictureBoxEncryptionConfirm.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxEncryptionConfirm.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 64</value>
+    <value>139, 128</value>
   </data>
   <data name="pictureBoxEncryptionConfirm.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
@@ -3072,8 +3234,11 @@ ATC</value>
   <data name="panel3.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
+  <data name="panel3.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
+  </data>
   <data name="panel3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 390</value>
+    <value>167, 785</value>
   </data>
   <data name="panel3.TabIndex" type="System.Int32, mscorlib">
     <value>39</value>
@@ -3100,10 +3265,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="buttonEncryptionConfirmCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>432, 330</value>
+    <value>939, 665</value>
+  </data>
+  <data name="buttonEncryptionConfirmCancel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="buttonEncryptionConfirmCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
+    <value>217, 64</value>
   </data>
   <data name="buttonEncryptionConfirmCancel.TabIndex" type="System.Int32, mscorlib">
     <value>38</value>
@@ -3133,10 +3301,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="buttonEncryptStart.Location" type="System.Drawing.Point, System.Drawing">
-    <value>317, 330</value>
+    <value>690, 665</value>
+  </data>
+  <data name="buttonEncryptStart.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="buttonEncryptStart.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
+    <value>217, 64</value>
   </data>
   <data name="buttonEncryptStart.TabIndex" type="System.Int32, mscorlib">
     <value>37</value>
@@ -3179,7 +3350,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxInValidIcon.Location" type="System.Drawing.Point, System.Drawing">
-    <value>143, 326</value>
+    <value>310, 657</value>
+  </data>
+  <data name="pictureBoxInValidIcon.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxInValidIcon.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
@@ -3230,7 +3404,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxValidIcon.Location" type="System.Drawing.Point, System.Drawing">
-    <value>112, 326</value>
+    <value>243, 657</value>
+  </data>
+  <data name="pictureBoxValidIcon.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxValidIcon.Size" type="System.Drawing.Size, System.Drawing">
     <value>24, 24</value>
@@ -3269,10 +3446,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="checkBoxReDeleteOriginalFileAfterEncryption.Location" type="System.Drawing.Point, System.Drawing">
-    <value>94, 231</value>
+    <value>204, 464</value>
+  </data>
+  <data name="checkBoxReDeleteOriginalFileAfterEncryption.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="checkBoxReDeleteOriginalFileAfterEncryption.Size" type="System.Drawing.Size, System.Drawing">
-    <value>360, 20</value>
+    <value>715, 37</value>
   </data>
   <data name="checkBoxReDeleteOriginalFileAfterEncryption.TabIndex" type="System.Int32, mscorlib">
     <value>34</value>
@@ -3305,10 +3485,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="checkBoxReNotMaskEncryptedPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>94, 204</value>
+    <value>204, 410</value>
+  </data>
+  <data name="checkBoxReNotMaskEncryptedPassword.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="checkBoxReNotMaskEncryptedPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>227, 20</value>
+    <value>446, 37</value>
   </data>
   <data name="checkBoxReNotMaskEncryptedPassword.TabIndex" type="System.Int32, mscorlib">
     <value>32</value>
@@ -3344,10 +3527,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="labelInputPasswordAgain.Location" type="System.Drawing.Point, System.Drawing">
-    <value>91, 158</value>
+    <value>197, 318</value>
+  </data>
+  <data name="labelInputPasswordAgain.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelInputPasswordAgain.Size" type="System.Drawing.Size, System.Drawing">
-    <value>224, 16</value>
+    <value>449, 33</value>
   </data>
   <data name="labelInputPasswordAgain.TabIndex" type="System.Int32, mscorlib">
     <value>33</value>
@@ -3374,10 +3560,13 @@ ATC</value>
     <value>MS UI Gothic, 12pt</value>
   </data>
   <data name="textBoxRePassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>94, 177</value>
+    <value>204, 356</value>
+  </data>
+  <data name="textBoxRePassword.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="textBoxRePassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>423, 23</value>
+    <value>915, 39</value>
   </data>
   <data name="textBoxRePassword.TabIndex" type="System.Int32, mscorlib">
     <value>31</value>
@@ -3398,10 +3587,13 @@ ATC</value>
     <value>Fill</value>
   </data>
   <data name="panelEncryptConfirm.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+    <value>6, 6</value>
+  </data>
+  <data name="panelEncryptConfirm.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="panelEncryptConfirm.Size" type="System.Drawing.Size, System.Drawing">
-    <value>554, 390</value>
+    <value>1203, 785</value>
   </data>
   <data name="panelEncryptConfirm.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -3419,13 +3611,16 @@ ATC</value>
     <value>0</value>
   </data>
   <data name="tabPageEncryptConfirm.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
+    <value>8, 39</value>
+  </data>
+  <data name="tabPageEncryptConfirm.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="tabPageEncryptConfirm.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="tabPageEncryptConfirm.Size" type="System.Drawing.Size, System.Drawing">
-    <value>560, 396</value>
+    <value>1215, 797</value>
   </data>
   <data name="tabPageEncryptConfirm.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -3473,7 +3668,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxDecryptBackButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>501, 13</value>
+    <value>1089, 26</value>
+  </data>
+  <data name="pictureBoxDecryptBackButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxDecryptBackButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>40, 40</value>
@@ -3503,10 +3701,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="labelDecryption.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 212</value>
+    <value>6, 426</value>
+  </data>
+  <data name="labelDecryption.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelDecryption.Size" type="System.Drawing.Size, System.Drawing">
-    <value>71, 24</value>
+    <value>154, 48</value>
   </data>
   <data name="labelDecryption.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
@@ -3574,7 +3775,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxDecryption.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1, 154</value>
+    <value>2, 310</value>
+  </data>
+  <data name="pictureBoxDecryption.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxDecryption.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -3603,8 +3807,11 @@ ATC</value>
   <data name="panel4.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
+  <data name="panel4.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
+  </data>
   <data name="panel4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 390</value>
+    <value>167, 785</value>
   </data>
   <data name="panel4.TabIndex" type="System.Int32, mscorlib">
     <value>40</value>
@@ -3634,10 +3841,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="checkBoxDeleteAtcFileAfterDecryption.Location" type="System.Drawing.Point, System.Drawing">
-    <value>83, 231</value>
+    <value>180, 464</value>
+  </data>
+  <data name="checkBoxDeleteAtcFileAfterDecryption.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="checkBoxDeleteAtcFileAfterDecryption.Size" type="System.Drawing.Size, System.Drawing">
-    <value>280, 20</value>
+    <value>550, 37</value>
   </data>
   <data name="checkBoxDeleteAtcFileAfterDecryption.TabIndex" type="System.Int32, mscorlib">
     <value>20</value>
@@ -3670,10 +3880,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="checkBoxNotMaskDecryptedPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>83, 204</value>
+    <value>180, 410</value>
+  </data>
+  <data name="checkBoxNotMaskDecryptedPassword.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="checkBoxNotMaskDecryptedPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>227, 20</value>
+    <value>446, 37</value>
   </data>
   <data name="checkBoxNotMaskDecryptedPassword.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -3706,10 +3919,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="buttonDecryptCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>432, 330</value>
+    <value>939, 665</value>
+  </data>
+  <data name="buttonDecryptCancel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="buttonDecryptCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
+    <value>217, 64</value>
   </data>
   <data name="buttonDecryptCancel.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -3739,10 +3955,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="buttonDecryptStart.Location" type="System.Drawing.Point, System.Drawing">
-    <value>317, 330</value>
+    <value>690, 665</value>
+  </data>
+  <data name="buttonDecryptStart.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="buttonDecryptStart.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
+    <value>217, 64</value>
   </data>
   <data name="buttonDecryptStart.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -3775,10 +3994,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="labelDecryptionPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>83, 156</value>
+    <value>180, 314</value>
+  </data>
+  <data name="labelDecryptionPassword.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelDecryptionPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>74, 16</value>
+    <value>151, 33</value>
   </data>
   <data name="labelDecryptionPassword.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -3805,10 +4027,13 @@ ATC</value>
     <value>MS UI Gothic, 12pt</value>
   </data>
   <data name="textBoxDecryptPassword.Location" type="System.Drawing.Point, System.Drawing">
-    <value>83, 176</value>
+    <value>180, 354</value>
+  </data>
+  <data name="textBoxDecryptPassword.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="textBoxDecryptPassword.Size" type="System.Drawing.Size, System.Drawing">
-    <value>449, 23</value>
+    <value>971, 39</value>
   </data>
   <data name="textBoxDecryptPassword.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -3829,10 +4054,13 @@ ATC</value>
     <value>Fill</value>
   </data>
   <data name="panelDecrypt.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+    <value>6, 6</value>
+  </data>
+  <data name="panelDecrypt.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="panelDecrypt.Size" type="System.Drawing.Size, System.Drawing">
-    <value>554, 390</value>
+    <value>1203, 785</value>
   </data>
   <data name="panelDecrypt.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -3850,13 +4078,16 @@ ATC</value>
     <value>0</value>
   </data>
   <data name="tabPageDecrypt.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
+    <value>8, 39</value>
+  </data>
+  <data name="tabPageDecrypt.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="tabPageDecrypt.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="tabPageDecrypt.Size" type="System.Drawing.Size, System.Drawing">
-    <value>560, 396</value>
+    <value>1215, 797</value>
   </data>
   <data name="tabPageDecrypt.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -3904,7 +4135,10 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxRsaBackButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>504, 16</value>
+    <value>1094, 32</value>
+  </data>
+  <data name="pictureBoxRsaBackButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxRsaBackButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>40, 40</value>
@@ -3937,10 +4171,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="labelRsaMessage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>101, 119</value>
+    <value>219, 238</value>
+  </data>
+  <data name="labelRsaMessage.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelRsaMessage.Size" type="System.Drawing.Size, System.Drawing">
-    <value>422, 129</value>
+    <value>916, 263</value>
   </data>
   <data name="labelRsaMessage.TabIndex" type="System.Int32, mscorlib">
     <value>49</value>
@@ -3973,10 +4210,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="buttonRsaCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>435, 333</value>
+    <value>945, 671</value>
+  </data>
+  <data name="buttonRsaCancel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="buttonRsaCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
+    <value>217, 64</value>
   </data>
   <data name="buttonRsaCancel.TabIndex" type="System.Int32, mscorlib">
     <value>48</value>
@@ -4006,10 +4246,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="buttonGenerateKey.Location" type="System.Drawing.Point, System.Drawing">
-    <value>283, 333</value>
+    <value>615, 671</value>
+  </data>
+  <data name="buttonGenerateKey.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="buttonGenerateKey.Size" type="System.Drawing.Size, System.Drawing">
-    <value>128, 32</value>
+    <value>277, 64</value>
   </data>
   <data name="buttonGenerateKey.TabIndex" type="System.Int32, mscorlib">
     <value>47</value>
@@ -4036,10 +4279,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="labelRsa.Location" type="System.Drawing.Point, System.Drawing">
-    <value>2, 224</value>
+    <value>4, 450</value>
+  </data>
+  <data name="labelRsa.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelRsa.Size" type="System.Drawing.Size, System.Drawing">
-    <value>71, 24</value>
+    <value>154, 48</value>
   </data>
   <data name="labelRsa.TabIndex" type="System.Int32, mscorlib">
     <value>14</value>
@@ -4122,7 +4368,10 @@ Encrypt</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxRsaPage.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 157</value>
+    <value>9, 316</value>
+  </data>
+  <data name="pictureBoxRsaPage.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxRsaPage.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -4151,8 +4400,11 @@ Encrypt</value>
   <data name="panel6.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
+  <data name="panel6.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
+  </data>
   <data name="panel6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 396</value>
+    <value>167, 797</value>
   </data>
   <data name="panel6.TabIndex" type="System.Int32, mscorlib">
     <value>41</value>
@@ -4175,8 +4427,11 @@ Encrypt</value>
   <data name="panelRsa.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
+  <data name="panelRsa.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
+  </data>
   <data name="panelRsa.Size" type="System.Drawing.Size, System.Drawing">
-    <value>560, 396</value>
+    <value>1215, 797</value>
   </data>
   <data name="panelRsa.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -4194,10 +4449,13 @@ Encrypt</value>
     <value>0</value>
   </data>
   <data name="tabPageRsa.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
+    <value>8, 39</value>
+  </data>
+  <data name="tabPageRsa.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="tabPageRsa.Size" type="System.Drawing.Size, System.Drawing">
-    <value>560, 396</value>
+    <value>1215, 797</value>
   </data>
   <data name="tabPageRsa.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
@@ -4224,10 +4482,13 @@ Encrypt</value>
     <value>NoControl</value>
   </data>
   <data name="labelRsaInformation.Location" type="System.Drawing.Point, System.Drawing">
-    <value>130, 252</value>
+    <value>282, 506</value>
+  </data>
+  <data name="labelRsaInformation.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelRsaInformation.Size" type="System.Drawing.Size, System.Drawing">
-    <value>403, 52</value>
+    <value>875, 104</value>
   </data>
   <data name="labelRsaInformation.TabIndex" type="System.Int32, mscorlib">
     <value>64</value>
@@ -4283,10 +4544,13 @@ Encrypt</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>91, 249</value>
+    <value>197, 500</value>
+  </data>
+  <data name="pictureBox1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>32, 32</value>
+    <value>34, 32</value>
   </data>
   <data name="pictureBox1.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
     <value>AutoSize</value>
@@ -4310,10 +4574,13 @@ Encrypt</value>
     <value>Left, Right</value>
   </data>
   <data name="textBoxHashString.Location" type="System.Drawing.Point, System.Drawing">
-    <value>91, 224</value>
+    <value>197, 450</value>
+  </data>
+  <data name="textBoxHashString.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="textBoxHashString.Size" type="System.Drawing.Size, System.Drawing">
-    <value>442, 19</value>
+    <value>955, 31</value>
   </data>
   <data name="textBoxHashString.TabIndex" type="System.Int32, mscorlib">
     <value>62</value>
@@ -4346,10 +4613,13 @@ Encrypt</value>
     <value>SHA-256</value>
   </data>
   <data name="comboBoxHashList.Location" type="System.Drawing.Point, System.Drawing">
-    <value>91, 198</value>
+    <value>197, 398</value>
+  </data>
+  <data name="comboBoxHashList.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="comboBoxHashList.Size" type="System.Drawing.Size, System.Drawing">
-    <value>134, 20</value>
+    <value>286, 32</value>
   </data>
   <data name="comboBoxHashList.TabIndex" type="System.Int32, mscorlib">
     <value>61</value>
@@ -4376,10 +4646,13 @@ Encrypt</value>
     <value>NoControl</value>
   </data>
   <data name="labelRsaDescription.Location" type="System.Drawing.Point, System.Drawing">
-    <value>90, 126</value>
+    <value>195, 252</value>
+  </data>
+  <data name="labelRsaDescription.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelRsaDescription.Size" type="System.Drawing.Size, System.Drawing">
-    <value>443, 69</value>
+    <value>962, 143</value>
   </data>
   <data name="labelRsaDescription.TabIndex" type="System.Int32, mscorlib">
     <value>60</value>
@@ -4461,10 +4734,13 @@ Encrypt</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxPublicAndPrivateKey.Location" type="System.Drawing.Point, System.Drawing">
-    <value>233, 318</value>
+    <value>505, 638</value>
+  </data>
+  <data name="pictureBoxPublicAndPrivateKey.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxPublicAndPrivateKey.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 64</value>
+    <value>66, 64</value>
   </data>
   <data name="pictureBoxPublicAndPrivateKey.SizeMode" type="System.Windows.Forms.PictureBoxSizeMode, System.Windows.Forms">
     <value>AutoSize</value>
@@ -4560,7 +4836,10 @@ Encrypt</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxPrivateKey.Location" type="System.Drawing.Point, System.Drawing">
-    <value>163, 318</value>
+    <value>353, 636</value>
+  </data>
+  <data name="pictureBoxPrivateKey.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxPrivateKey.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -4655,7 +4934,10 @@ Encrypt</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxPublicKey.Location" type="System.Drawing.Point, System.Drawing">
-    <value>93, 318</value>
+    <value>202, 636</value>
+  </data>
+  <data name="pictureBoxPublicKey.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxPublicKey.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -4709,7 +4991,10 @@ Encrypt</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxRsaKeyBackButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>504, 16</value>
+    <value>1094, 32</value>
+  </data>
+  <data name="pictureBoxRsaKeyBackButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxRsaKeyBackButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>40, 40</value>
@@ -4742,10 +5027,13 @@ Encrypt</value>
     <value>NoControl</value>
   </data>
   <data name="buttonRsaKeyCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>435, 333</value>
+    <value>945, 671</value>
+  </data>
+  <data name="buttonRsaKeyCancel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="buttonRsaKeyCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
+    <value>217, 64</value>
   </data>
   <data name="buttonRsaKeyCancel.TabIndex" type="System.Int32, mscorlib">
     <value>48</value>
@@ -4772,10 +5060,13 @@ Encrypt</value>
     <value>NoControl</value>
   </data>
   <data name="labelRsaKeyName.Location" type="System.Drawing.Point, System.Drawing">
-    <value>2, 224</value>
+    <value>4, 450</value>
+  </data>
+  <data name="labelRsaKeyName.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelRsaKeyName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>71, 24</value>
+    <value>154, 48</value>
   </data>
   <data name="labelRsaKeyName.TabIndex" type="System.Int32, mscorlib">
     <value>14</value>
@@ -4857,7 +5148,10 @@ Encrypt</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxRsaType.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 157</value>
+    <value>9, 316</value>
+  </data>
+  <data name="pictureBoxRsaType.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxRsaType.Size" type="System.Drawing.Size, System.Drawing">
     <value>64, 64</value>
@@ -4886,8 +5180,11 @@ Encrypt</value>
   <data name="panel7.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
+  <data name="panel7.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
+  </data>
   <data name="panel7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 396</value>
+    <value>167, 797</value>
   </data>
   <data name="panel7.TabIndex" type="System.Int32, mscorlib">
     <value>41</value>
@@ -4910,8 +5207,11 @@ Encrypt</value>
   <data name="panelRsaKey.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
+  <data name="panelRsaKey.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
+  </data>
   <data name="panelRsaKey.Size" type="System.Drawing.Size, System.Drawing">
-    <value>560, 396</value>
+    <value>1215, 797</value>
   </data>
   <data name="panelRsaKey.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -4929,10 +5229,13 @@ Encrypt</value>
     <value>0</value>
   </data>
   <data name="tabPageRsaKey.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
+    <value>8, 39</value>
+  </data>
+  <data name="tabPageRsaKey.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="tabPageRsaKey.Size" type="System.Drawing.Size, System.Drawing">
-    <value>560, 396</value>
+    <value>1215, 797</value>
   </data>
   <data name="tabPageRsaKey.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
@@ -4980,7 +5283,10 @@ Encrypt</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxProgressStateBackButton.Location" type="System.Drawing.Point, System.Drawing">
-    <value>501, 13</value>
+    <value>1089, 26</value>
+  </data>
+  <data name="pictureBoxProgressStateBackButton.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxProgressStateBackButton.Size" type="System.Drawing.Size, System.Drawing">
     <value>40, 40</value>
@@ -5010,10 +5316,13 @@ Encrypt</value>
     <value>NoControl</value>
   </data>
   <data name="labelProgress.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 218</value>
+    <value>6, 438</value>
+  </data>
+  <data name="labelProgress.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelProgress.Size" type="System.Drawing.Size, System.Drawing">
-    <value>71, 24</value>
+    <value>154, 48</value>
   </data>
   <data name="labelProgress.TabIndex" type="System.Int32, mscorlib">
     <value>10</value>
@@ -5044,10 +5353,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="pictureBoxProgress.Location" type="System.Drawing.Point, System.Drawing">
-    <value>1, 154</value>
+    <value>2, 310</value>
+  </data>
+  <data name="pictureBoxProgress.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="pictureBoxProgress.Size" type="System.Drawing.Size, System.Drawing">
-    <value>64, 64</value>
+    <value>139, 128</value>
   </data>
   <data name="pictureBoxProgress.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
@@ -5070,8 +5382,11 @@ ATC</value>
   <data name="panel5.Location" type="System.Drawing.Point, System.Drawing">
     <value>0, 0</value>
   </data>
+  <data name="panel5.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
+  </data>
   <data name="panel5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>77, 390</value>
+    <value>167, 785</value>
   </data>
   <data name="panel5.TabIndex" type="System.Int32, mscorlib">
     <value>17</value>
@@ -5101,10 +5416,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="labelCryptionType.Location" type="System.Drawing.Point, System.Drawing">
-    <value>83, 137</value>
+    <value>180, 276</value>
+  </data>
+  <data name="labelCryptionType.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelCryptionType.Size" type="System.Drawing.Size, System.Drawing">
-    <value>128, 16</value>
+    <value>255, 33</value>
   </data>
   <data name="labelCryptionType.TabIndex" type="System.Int32, mscorlib">
     <value>16</value>
@@ -5134,10 +5452,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="buttonCancel.Location" type="System.Drawing.Point, System.Drawing">
-    <value>432, 330</value>
+    <value>939, 665</value>
+  </data>
+  <data name="buttonCancel.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="buttonCancel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>100, 32</value>
+    <value>217, 64</value>
   </data>
   <data name="buttonCancel.TabIndex" type="System.Int32, mscorlib">
     <value>15</value>
@@ -5167,10 +5488,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="labelProgressPercentText.Location" type="System.Drawing.Point, System.Drawing">
-    <value>82, 204</value>
+    <value>178, 410</value>
+  </data>
+  <data name="labelProgressPercentText.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelProgressPercentText.Size" type="System.Drawing.Size, System.Drawing">
-    <value>450, 20</value>
+    <value>978, 40</value>
   </data>
   <data name="labelProgressPercentText.TabIndex" type="System.Int32, mscorlib">
     <value>14</value>
@@ -5206,10 +5530,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="labelProgressMessageText.Location" type="System.Drawing.Point, System.Drawing">
-    <value>83, 156</value>
+    <value>180, 314</value>
+  </data>
+  <data name="labelProgressMessageText.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 0, 6, 0</value>
   </data>
   <data name="labelProgressMessageText.Size" type="System.Drawing.Size, System.Drawing">
-    <value>175, 15</value>
+    <value>346, 30</value>
   </data>
   <data name="labelProgressMessageText.TabIndex" type="System.Int32, mscorlib">
     <value>13</value>
@@ -5236,10 +5563,13 @@ ATC</value>
     <value>NoControl</value>
   </data>
   <data name="progressBar.Location" type="System.Drawing.Point, System.Drawing">
-    <value>83, 176</value>
+    <value>180, 354</value>
+  </data>
+  <data name="progressBar.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="progressBar.Size" type="System.Drawing.Size, System.Drawing">
-    <value>449, 24</value>
+    <value>976, 48</value>
   </data>
   <data name="progressBar.TabIndex" type="System.Int32, mscorlib">
     <value>12</value>
@@ -5260,10 +5590,13 @@ ATC</value>
     <value>Fill</value>
   </data>
   <data name="panelProgressState.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 3</value>
+    <value>6, 6</value>
+  </data>
+  <data name="panelProgressState.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="panelProgressState.Size" type="System.Drawing.Size, System.Drawing">
-    <value>554, 390</value>
+    <value>1203, 785</value>
   </data>
   <data name="panelProgressState.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -5281,13 +5614,16 @@ ATC</value>
     <value>0</value>
   </data>
   <data name="tabPageProgressState.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
+    <value>8, 39</value>
+  </data>
+  <data name="tabPageProgressState.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="tabPageProgressState.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="tabPageProgressState.Size" type="System.Drawing.Size, System.Drawing">
-    <value>560, 396</value>
+    <value>1215, 797</value>
   </data>
   <data name="tabPageProgressState.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -5308,13 +5644,13 @@ ATC</value>
     <value>6</value>
   </data>
   <data name="tabControl1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>9, 10</value>
+    <value>20, 20</value>
   </data>
   <data name="tabControl1.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>0, 0, 0, 0</value>
   </data>
   <data name="tabControl1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>568, 422</value>
+    <value>1231, 844</value>
   </data>
   <data name="tabControl1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -5335,10 +5671,13 @@ ATC</value>
     <value>Fill</value>
   </data>
   <data name="panelOuter.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 24</value>
+    <value>0, 44</value>
+  </data>
+  <data name="panelOuter.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
   </data>
   <data name="panelOuter.Size" type="System.Drawing.Size, System.Drawing">
-    <value>582, 443</value>
+    <value>1261, 892</value>
   </data>
   <data name="panelOuter.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -5374,7 +5713,7 @@ ATC</value>
 </value>
   </data>
   <data name="selectFilesToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>155, 22</value>
+    <value>309, 44</value>
   </data>
   <data name="selectFilesToolStripMenuItem1.Text" xml:space="preserve">
     <value>Select Files....</value>
@@ -5394,7 +5733,7 @@ ATC</value>
 </value>
   </data>
   <data name="selectFoldersToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>155, 22</value>
+    <value>309, 44</value>
   </data>
   <data name="selectFoldersToolStripMenuItem1.Text" xml:space="preserve">
     <value>Select Folders...</value>
@@ -5415,7 +5754,7 @@ ATC</value>
 </value>
   </data>
   <data name="encryptToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>119, 26</value>
+    <value>175, 38</value>
   </data>
   <data name="encryptToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Encrypt</value>
@@ -5435,13 +5774,13 @@ ATC</value>
 </value>
   </data>
   <data name="decryptToolStripMenuItem.Size" type="System.Drawing.Size, System.Drawing">
-    <value>119, 26</value>
+    <value>175, 38</value>
   </data>
   <data name="decryptToolStripMenuItem.Text" xml:space="preserve">
     <value>&amp;Decrypt</value>
   </data>
   <data name="toolStripMenuItem3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>116, 6</value>
+    <value>172, 6</value>
   </data>
   <data name="optionToolStripMenuItem1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -5460,13 +5799,13 @@ ATC</value>
 </value>
   </data>
   <data name="optionToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>119, 26</value>
+    <value>175, 38</value>
   </data>
   <data name="optionToolStripMenuItem1.Text" xml:space="preserve">
     <value>&amp;Option</value>
   </data>
   <data name="toolStripMenuItem4.Size" type="System.Drawing.Size, System.Drawing">
-    <value>116, 6</value>
+    <value>172, 6</value>
   </data>
   <data name="helpToolStripMenuItem2.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -5483,13 +5822,13 @@ ATC</value>
 </value>
   </data>
   <data name="helpToolStripMenuItem2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>119, 26</value>
+    <value>175, 38</value>
   </data>
   <data name="helpToolStripMenuItem2.Text" xml:space="preserve">
     <value>&amp;Help</value>
   </data>
   <data name="toolStripMenuItem5.Size" type="System.Drawing.Size, System.Drawing">
-    <value>116, 6</value>
+    <value>172, 6</value>
   </data>
   <data name="exitToolStripMenuItem1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -5504,13 +5843,13 @@ ATC</value>
 </value>
   </data>
   <data name="exitToolStripMenuItem1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>119, 26</value>
+    <value>175, 38</value>
   </data>
   <data name="exitToolStripMenuItem1.Text" xml:space="preserve">
     <value>E&amp;xit</value>
   </data>
   <data name="contextMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>120, 152</value>
+    <value>176, 212</value>
   </data>
   <data name="&gt;&gt;contextMenuStrip1.Name" xml:space="preserve">
     <value>contextMenuStrip1</value>
@@ -5572,7 +5911,7 @@ ATC</value>
     <value>None</value>
   </data>
   <data name="ToolStripMenuItemAtcFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>234, 54</value>
+    <value>376, 56</value>
   </data>
   <data name="ToolStripMenuItemAtcFile.Text" xml:space="preserve">
     <value>ATC file</value>
@@ -5617,7 +5956,7 @@ ATC</value>
     <value>None</value>
   </data>
   <data name="ToolStripMenuItemExeFile.Size" type="System.Drawing.Size, System.Drawing">
-    <value>234, 54</value>
+    <value>376, 56</value>
   </data>
   <data name="ToolStripMenuItemExeFile.Text" xml:space="preserve">
     <value>ATC EXE</value>
@@ -5695,13 +6034,13 @@ ATC</value>
     <value>None</value>
   </data>
   <data name="ToolStripMenuItemRsa.Size" type="System.Drawing.Size, System.Drawing">
-    <value>234, 54</value>
+    <value>376, 56</value>
   </data>
   <data name="ToolStripMenuItemRsa.Text" xml:space="preserve">
     <value>Public key cryptography</value>
   </data>
   <data name="contextMenuStrip2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>235, 166</value>
+    <value>377, 172</value>
   </data>
   <data name="&gt;&gt;contextMenuStrip2.Name" xml:space="preserve">
     <value>contextMenuStrip2</value>
@@ -6402,10 +6741,10 @@ ATC</value>
     <value>142</value>
   </metadata>
   <data name="$this.AutoScaleDimensions" type="System.Drawing.SizeF, System.Drawing">
-    <value>6, 12</value>
+    <value>13, 24</value>
   </data>
   <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>582, 489</value>
+    <value>1261, 978</value>
   </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -7673,8 +8012,11 @@ ATC</value>
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAD4DwAA
 </value>
   </data>
+  <data name="$this.Margin" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>6, 6, 6, 6</value>
+  </data>
   <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
-    <value>560, 495</value>
+    <value>1183, 919</value>
   </data>
   <data name="&gt;&gt;toolStripStatusLabelDataVersion.Name" xml:space="preserve">
     <value>toolStripStatusLabelDataVersion</value>

@@ -5,7 +5,7 @@ using System.Windows.Forms;
 using System.Runtime.InteropServices;
 using AttacheCase.Properties;
 
-namespace AttacheCase
+namespace AttacheCase.CustomControl
 {
   public sealed class CustomDialog : Form
   {
@@ -108,7 +108,7 @@ namespace AttacheCase
       //-----------------------------------
       // 最大幅のボタンを見つける
       var buttonMaxWidth = buttons
-        .Select(b => TextRenderer.MeasureText(b.Text, this.Font).Width + ButtonSpacingWidth) // テキストの長さに基づいて幅を計算
+        .Select(b => TextRenderer.MeasureText(b.Text, Font).Width + ButtonSpacingWidth) // テキストの長さに基づいて幅を計算
         .Max();
 
       if (buttonMaxWidth < ButtonMinWidth)
@@ -146,7 +146,7 @@ namespace AttacheCase
 
         button.Click += (sender, e) =>
         {
-          this.DialogResult = button.DialogResult;
+          DialogResult = button.DialogResult;
           Close();
         };
 
@@ -161,7 +161,7 @@ namespace AttacheCase
         _toggleDetailsButton = new Button();
         _toggleDetailsButton.Text = Resources.MessageBoxShowDetails; // "詳細を表示";
         // 文字列表示分だけボタン幅を伸長する
-        buttonMaxWidth = TextRenderer.MeasureText(_toggleDetailsButton.Text, this.Font).Width + ButtonSpacingWidth;
+        buttonMaxWidth = TextRenderer.MeasureText(_toggleDetailsButton.Text, Font).Width + ButtonSpacingWidth;
         _toggleDetailsButton.Width = buttonMaxWidth;
 
         _toggleDetailsButton.Location = new Point(_textPanel.Left, buttonY);
@@ -209,24 +209,21 @@ namespace AttacheCase
     /// </summary>
     private void AdjustSize()
     {
-      using (var g = CreateGraphics())
+      using var g = CreateGraphics();
+      var size = g.MeasureString(_messageBoxText, Font, MessageBoxMaxWidth);
+      var panelWidth = (int)Math.Min(size.Width, MessageBoxMaxWidth);
+      _textPanel.Width = panelWidth;
+      _textPanel.Height = (int)size.Height;
+
+      Width = _textPanel.Left + panelWidth + 32; // 余白を考慮
+
+      if (_detailsTextBox is { Visible: true })
       {
-        var size = g.MeasureString(_messageBoxText, this.Font, MessageBoxMaxWidth);
-        var panelWidth = (int)Math.Min(size.Width, MessageBoxMaxWidth);
-        _textPanel.Width = panelWidth;
-        _textPanel.Height = (int)size.Height;
-
-        this.Width = _textPanel.Left + panelWidth + 32; // 余白を考慮
-
-        if (_detailsTextBox != null && _detailsTextBox.Visible)
-        {
-          this.Height += _detailsTextBox.Height + 16; // 詳細テキストボックス高さを追加
-        }
-        else
-        {
-          this.Height = _messageBoxDefaultHeight;
-        }
-
+        Height += _detailsTextBox.Height + 16; // 詳細テキストボックス高さを追加
+      }
+      else
+      {
+        Height = _messageBoxDefaultHeight;
       }
     }
 
@@ -238,7 +235,7 @@ namespace AttacheCase
     private void TextPanel_Paint(object sender, PaintEventArgs e)
     {
       var g = e.Graphics;
-      g.DrawString(_messageBoxText, this.Font, Brushes.Black,
+      g.DrawString(_messageBoxText, Font, Brushes.Black,
         new RectangleF(0, 0, _textPanel.Width, _textPanel.Height));
     }
 
