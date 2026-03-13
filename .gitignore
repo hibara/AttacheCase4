@@ -296,3 +296,7 @@ tools/resource_hacker/ResourceHacker.ini
 # Cryptan.DLL
 Cryptan/
 
+# Claude Code
+.claude/
+
+

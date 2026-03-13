@@ -3233,7 +3233,7 @@ namespace AttacheCase
 
             // Password file path for encryption
             case "/pfile": // 暗号化時のパスワードファイルパス
-              if (Directory.Exists(value) == true)
+              if (File.Exists(value) == true)
               {
                 if (Path.IsPathRooted(value) == false)
                 {
@@ -3246,7 +3246,7 @@ namespace AttacheCase
 
             // Password file path for decryption
             case "/dpfile": // 復号時のパスワードファイルパス
-              if (Directory.Exists(value) == true)
+              if (File.Exists(value) == true)
               {
                 if (Path.IsPathRooted(value) == false)
                 {

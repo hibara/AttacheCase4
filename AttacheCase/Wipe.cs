@@ -7,6 +7,7 @@ using System.ComponentModel;
 using System.Collections;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using AttacheCase.Properties;
 
 namespace AttacheCase
@@ -34,6 +35,10 @@ namespace AttacheCase
 
     private const int BufferSize = 4096;
 
+    // Retry settings for file access
+    private const int MaxRetries = 5;
+    private const int RetryDelayMs = 200;
+
     /// <summary>
     /// Deletes a file in a secure way by overwriting it with
     /// random garbage data n times.
@@ -49,6 +54,16 @@ namespace AttacheCase
     {
       var swProgress = new Stopwatch();
       swProgress.Start();
+
+      // 修正6: 元のディレクトリパスを保持（ファイルリスト展開前に保存）
+      var originalDirPaths = new List<string>();
+      foreach (string path in filePaths)
+      {
+        if (Directory.Exists(path))
+        {
+          originalDirPaths.Add(path);
+        }
+      }
 
       try
       {
@@ -68,17 +83,6 @@ namespace AttacheCase
 
         filePaths = fileList;
 
-        // var options = new ParallelOptions
-        // {
-        //   MaxDegreeOfParallelism = Environment.ProcessorCount
-        // };
-        // Parallel.ForEach(filePaths, options, filePath =>
-        // {
-        //   if (!File.Exists(filePath)) return;
-        //   // ファイルリストのファイルサイズ合計を計算
-        //   lock (filePaths) totalFileListSize += new FileInfo(filePath).Length;
-        // });
-       
         // ファイルリストのファイルサイズ合計を計算
         var totalFileListSize = filePaths.AsParallel()
           .Where(File.Exists)
@@ -86,13 +90,13 @@ namespace AttacheCase
           .Sum();
 
         totalFileListSize *= (delRandNum + delZeroNum);
-        
+
         var worker = sender as BackgroundWorker;
         worker.WorkerSupportsCancellation = true;
         e.Result = Deleting;
 
         Int64 countSize = 0;
-        
+
         foreach (var filePath in filePaths)
         {
           if (File.Exists(filePath) == false)
@@ -104,8 +108,23 @@ namespace AttacheCase
           var randNum = delRandNum;
           var zeroNum = delZeroNum;
 
-          // Set the files attributes to normal in case it's read-only.
-          File.SetAttributes(filePath, FileAttributes.Normal);
+          // 修正3: リトライ付きでファイル属性を変更
+          for (var retry = 0; retry < MaxRetries; retry++)
+          {
+            try
+            {
+              File.SetAttributes(filePath, FileAttributes.Normal);
+              break;
+            }
+            catch (IOException) when (retry < MaxRetries - 1)
+            {
+              Thread.Sleep(RetryDelayMs);
+            }
+            catch (UnauthorizedAccessException) when (retry < MaxRetries - 1)
+            {
+              Thread.Sleep(RetryDelayMs);
+            }
+          }
 
           // Calculate the total number of sectors in the file.
           var totalFileSize = new FileInfo(filePath).Length;
@@ -113,8 +132,33 @@ namespace AttacheCase
           // Create a dummy-buffer the size of a sector.
           var dummyBuffer = new byte[BufferSize];
 
-          // Open a FileStream to the file.
-          using (var fs = new FileStream(filePath, FileMode.Open))
+          // 修正2: FileAccess.Write, FileShare.None を明示的に指定
+          // 修正3: リトライ付きで FileStream をオープン
+          FileStream fs = null;
+          for (var retry = 0; retry < MaxRetries; retry++)
+          {
+            try
+            {
+              fs = new FileStream(filePath, FileMode.Open, FileAccess.Write, FileShare.None);
+              break;
+            }
+            catch (IOException) when (retry < MaxRetries - 1)
+            {
+              Thread.Sleep(RetryDelayMs);
+            }
+            catch (UnauthorizedAccessException) when (retry < MaxRetries - 1)
+            {
+              Thread.Sleep(RetryDelayMs);
+            }
+          }
+
+          if (fs == null)
+          {
+            // All retries exhausted, try once more to get the actual exception
+            fs = new FileStream(filePath, FileMode.Open, FileAccess.Write, FileShare.None);
+          }
+
+          using (fs)
           {
             while (randNum > 0 || zeroNum > 0)
             {
@@ -201,6 +245,9 @@ namespace AttacheCase
 
               } // end while(totalSize < fileSize);
 
+              // 修正5: 各パス完了後にフラッシュしてディスクに書き込み
+              fs.Flush(true);
+
               if (randNum > 0)
               {
                 randNum--;
@@ -221,7 +268,7 @@ namespace AttacheCase
 
             } // end while (RandNum > 0 || ZeroNum > 0);
 
-          } // end using (FileStream inputStream = new FileStream(FilePath, FileMode.Open))
+          } // end using (FileStream)
 
           //WipeDone();
 
@@ -241,28 +288,32 @@ namespace AttacheCase
 
         } // end foreach (string FilePath in FilePaths);
 
+        // 修正4 & 修正6: ディレクトリ削除を try-catch 内に移動し、
+        // 保持しておいた元のディレクトリパスをすべて削除
+        foreach (var dirPath in originalDirPaths)
+        {
+          if (Directory.Exists(dirPath))
+          {
+            FileSystem.DeleteDirectory(
+              dirPath,
+              UIOption.OnlyErrorDialogs,
+              RecycleOption.DeletePermanently,
+              UICancelOption.DoNothing
+            );
+          }
+        }
 
       }
       catch (Exception ex)
       {
-        System.Windows.Forms.MessageBox.Show(ex.Message);
+        // 修正1: BackgroundWorker スレッドから MessageBox.Show を呼ばない
+        System.Diagnostics.Debug.WriteLine($"Wipe error: {ex.Message}");
         e.Result = ErrorUnexpected;
         return (ErrorUnexpected);
       }
       finally
       {
         swProgress.Stop();
-      }
-
-      // Delete root directory
-      if (Directory.Exists(filePaths[0]))
-      {
-        FileSystem.DeleteDirectory(
-          filePaths[0],
-          UIOption.OnlyErrorDialogs,
-          RecycleOption.DeletePermanently,
-          UICancelOption.ThrowException
-        );
       }
 
       e.Result = DeleteSucceeded;
@@ -296,7 +347,7 @@ namespace AttacheCase
         }
       }
     }
-    
+
     /// <summary>
     /// Formats the given file size in bytes as a human-readable string.
     /// </summary>
@@ -324,4 +375,3 @@ namespace AttacheCase
   }
 
 }
- 
