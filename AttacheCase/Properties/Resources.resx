@@ -565,7 +565,8 @@ Decryption failed.</value>
     <value>Weak</value>
   </data>
   <data name="zxcvbnLabel02" xml:space="preserve">
-    <value>Somewhat weak</value>
+    <value>Somewhat
+weak</value>
   </data>
   <data name="zxcvbnLabel03" xml:space="preserve">
     <value>Good</value>

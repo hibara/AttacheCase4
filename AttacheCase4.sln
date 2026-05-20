@@ -7,9 +7,30 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AttacheCase", "AttacheCase\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AtcSetup", "AtcSetup\AtcSetup.csproj", "{0E3D8AE9-EC0F-442E-B2D8-1E777D69F69F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exeout40", "Exeout\Exeout40.csproj", "{AAD6C030-1FF1-49F2-A04D-99D058515F6B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exeout40", "Exeout40\Exeout40.csproj", "{AAD6C030-1FF1-49F2-A04D-99D058515F6B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exeout462", "Exeout\Exeout462.csproj", "{127908B1-BA3F-4BF4-B7C5-A9742DF40A02}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Exeout462", "Exeout462\Exeout462.csproj", "{127908B1-BA3F-4BF4-B7C5-A9742DF40A02}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExeOutShared", "ExeOutShared", "{8E2F3A7B-1C4D-4E5F-9A6B-3D2E1F8C7A5B}"
+	ProjectSection(SolutionItems) = preProject
+		ExeOutShared\App.config = ExeOutShared\App.config
+		ExeOutShared\FileDecrypt4.cs = ExeOutShared\FileDecrypt4.cs
+		ExeOutShared\Form1.cs = ExeOutShared\Form1.cs
+		ExeOutShared\Form1.Designer.cs = ExeOutShared\Form1.Designer.cs
+		ExeOutShared\Form1.ja-JP.resx = ExeOutShared\Form1.ja-JP.resx
+		ExeOutShared\Form1.resx = ExeOutShared\Form1.resx
+		ExeOutShared\Form2.cs = ExeOutShared\Form2.cs
+		ExeOutShared\Form2.Designer.cs = ExeOutShared\Form2.Designer.cs
+		ExeOutShared\Form2.ja-JP.resx = ExeOutShared\Form2.ja-JP.resx
+		ExeOutShared\Form2.resx = ExeOutShared\Form2.resx
+		ExeOutShared\main_icon.ico = ExeOutShared\main_icon.ico
+		ExeOutShared\Program.cs = ExeOutShared\Program.cs
+		ExeOutShared\Properties\Resources.Designer.cs = ExeOutShared\Properties\Resources.Designer.cs
+		ExeOutShared\Properties\Resources.ja-JP.resx = ExeOutShared\Properties\Resources.ja-JP.resx
+		ExeOutShared\Properties\Resources.resx = ExeOutShared\Properties\Resources.resx
+		ExeOutShared\Properties\Settings.Designer.cs = ExeOutShared\Properties\Settings.Designer.cs
+		ExeOutShared\Properties\Settings.settings = ExeOutShared\Properties\Settings.settings
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

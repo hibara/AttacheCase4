@@ -299,4 +299,7 @@ Cryptan/
 # Claude Code
 .claude/
 
+# Claude Code が生成する一時ファイル
+*.cs.tmp.*
+
 

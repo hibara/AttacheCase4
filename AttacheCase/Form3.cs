@@ -221,6 +221,16 @@ namespace AttacheCase
     {
       fLoading = true;
 
+      // 廃止された「開発者モード」(nodeDevelopment) をツリーから動的に削除する。
+      // ノード自体は Form3.resx 内の TreeView.Nodes (base64 シリアライズ) に残存しているが、
+      // 起動時にこの処理で除去するため、ユーザーからは見えない。
+      // (Designer から物理的に削除するのが理想だが、resx 編集の安全性確保のため動的削除で対応)
+      var devNodes = treeView1.Nodes.Find("nodeDevelopment", true);
+      foreach (var n in devNodes)
+      {
+        n.Remove();
+      }
+
       //-----------------------------------
       // 読み込み先の表示
       fTemporarySettings = false;
@@ -885,9 +895,10 @@ namespace AttacheCase
       checkBoxAddCamoExt.Checked = AppSettings.Instance.fAddCamoExt;
       textBoxCamoExt.Text = AppSettings.Instance.CamoExt;
 
-      //-----------------------------------
-      // Development mode
-      checkBoxDeveloperConsole.Checked = AppSettings.Instance.fDeveloperConsole;
+      // 「開発者モード」(panelDevelopmentOption / Form5) は廃止されたため、
+      // 設定値の読み込みは行わない。panelDevelopmentOption コントロール自体は
+      // Designer 上に残置されているが、ツリーノード (nodeDevelopment) を動的に
+      // 削除しているのでユーザーからはアクセス不能。
 
       #endregion
 
@@ -1154,10 +1165,8 @@ namespace AttacheCase
           panelCamouflageExtOption.Visible = true;
           panelCamouflageExtOption.Focus();
           break;
-        case "nodeDevelopment":
-          panelDevelopmentOption.Visible = true;
-          panelDevelopmentOption.Focus();
-          break;
+        // 「開発者モード」(nodeDevelopment) は廃止された。ノード自体は Form3_Load 内で
+        // ツリーから動的に削除しているため、ここに case は不要。
         case "nodePasswordInputLimit":
           panelPasswordInputLimitOption.Visible = true;
           panelPasswordInputLimitOption.Focus();
@@ -1490,9 +1499,7 @@ namespace AttacheCase
       AppSettings.Instance.MissTypeLimitsNum = comboBoxMissTypeLimitsNum.SelectedIndex + 1;
       AppSettings.Instance.fBroken = checkBoxBroken.Checked;
 
-      //----------------------------------------------------------------------
-      // Developer mode
-      AppSettings.Instance.fDeveloperConsole = checkBoxDeveloperConsole.Checked;
+      // 「開発者モード」(fDeveloperConsole) は廃止されたため、設定値の書き出しは行わない。
 
       //----------------------------------------------------------------------
       // Save to the settings of each source
@@ -2794,7 +2801,7 @@ namespace AttacheCase
       #region Save
 
       radioButtonNotSpecified.Checked = true;
-      checkBoxEncryptionSameFileTypeBefore.Checked = true;
+      checkBoxEncryptionSameFileTypeBefore.Checked = false;
 
       #endregion
 
@@ -2895,12 +2902,7 @@ namespace AttacheCase
 
       #endregion
 
-      #region Development
-
-      checkBoxDeveloperConsole.Checked = false;
-
-      #endregion
-
+      // 「開発者モード」(Development) は廃止されたため、リセット処理は不要。
 
     }
 

@@ -236,7 +236,7 @@ namespace AttacheCase
       this.panelDevelopmentOption = new System.Windows.Forms.Panel();
       this.checkBoxDeveloperConsole = new System.Windows.Forms.CheckBox();
       this.panel1 = new System.Windows.Forms.Panel();
-      this.splitButton1 = new AttacheCase.SplitButton();
+      this.splitButton1 = new AttacheCase.CustomControl.SplitButton();
       this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.toolStripMenuItemOnlineHelp = new System.Windows.Forms.ToolStripMenuItem();
       this.toolStripMenuItemCmdReference = new System.Windows.Forms.ToolStripMenuItem();
@@ -739,16 +739,16 @@ namespace AttacheCase
       this.checkBoxOutputSelfExeForOlderOS.Name = "checkBoxOutputSelfExeForOlderOS";
       this.checkBoxOutputSelfExeForOlderOS.UseVisualStyleBackColor = true;
       this.checkBoxOutputSelfExeForOlderOS.CheckedChanged += new System.EventHandler(this.options_ComponentChanged);
-      // 
+      //
       // checkBoxEncryptionSameFileTypeBefore
-      // 
+      //
       resources.ApplyResources(this.checkBoxEncryptionSameFileTypeBefore, "checkBoxEncryptionSameFileTypeBefore");
       this.checkBoxEncryptionSameFileTypeBefore.Name = "checkBoxEncryptionSameFileTypeBefore";
       this.checkBoxEncryptionSameFileTypeBefore.UseVisualStyleBackColor = true;
       this.checkBoxEncryptionSameFileTypeBefore.CheckedChanged += new System.EventHandler(this.checkBoxEncryptionSameFileTypeBefore_CheckedChanged);
-      // 
+      //
       // groupBox5
-      // 
+      //
       this.groupBox5.Controls.Add(this.radioButtonNotSpecified);
       this.groupBox5.Controls.Add(this.radioButtonEncryptionFileTypeRsa);
       this.groupBox5.Controls.Add(this.radioButtonEncryptionFileTypeEXE);

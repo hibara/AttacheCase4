@@ -1,11 +1,11 @@
-using System;
+ï»¿using System;
 using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace AttacheCase.CustomControl
 {
   [ToolboxItem(true)]
-  // [DesignerCategory("code")] © íœ‚Ü‚½‚ÍƒRƒƒ“ƒgƒAƒEƒg
+  // [DesignerCategory("code")] â† å‰Šé™¤ã¾ãŸã¯ã‚³ãƒ¡ãƒ³ãƒˆã‚¢ã‚¦ãƒˆ
   public class DelayTextBox : TextBox
   {
     private Timer _delayTimer;
@@ -15,14 +15,14 @@ namespace AttacheCase.CustomControl
 
     [DefaultValue(200)]
     [Category("Behavior")]
-    [Description("ƒeƒLƒXƒg•ÏXƒCƒxƒ“ƒg‚ğ”­‰Î‚·‚é‚Ü‚Å‚Ì’x‰„ŠÔiƒ~ƒŠ•bj")]
+    [Description("ãƒ†ã‚­ã‚¹ãƒˆå¤‰æ›´ã‚¤ãƒ™ãƒ³ãƒˆã‚’ç™ºç«ã™ã‚‹ã¾ã§ã®é…å»¶æ™‚é–“ï¼ˆãƒŸãƒªç§’ï¼‰")]
     public int Delay
     {
       get => _delay;
       set
       {
         _delay = Math.Max(0, value);
-        // Às‚©‚Âƒ^ƒCƒ}[‚ª¶¬Ï‚İ‚Ìê‡‚Ì‚İƒCƒ“ƒ^[ƒoƒ‹‚ğXV
+        // å®Ÿè¡Œæ™‚ã‹ã¤ã‚¿ã‚¤ãƒãƒ¼ãŒç”Ÿæˆæ¸ˆã¿ã®å ´åˆã®ã¿ã‚¤ãƒ³ã‚¿ãƒ¼ãƒãƒ«ã‚’æ›´æ–°
         if (_delayTimer != null)
         {
           _delayTimer.Interval = _delay;
@@ -32,11 +32,11 @@ namespace AttacheCase.CustomControl
 
     public DelayTextBox()
     {
-      // ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚Í‰½‚à‚µ‚È‚¢iƒfƒUƒCƒi[‚Å‚Ì–ŒÌ‰ğ•ú‚ğ–h‚®j
+      // ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿ã§ã¯ä½•ã‚‚ã—ãªã„ï¼ˆãƒ‡ã‚¶ã‚¤ãƒŠãƒ¼ã§ã®äº‹æ•…è§£æ”¾ã‚’é˜²ãï¼‰
     }
 
     /// <summary>
-    /// ƒ^ƒCƒ}[‚ğÀs‚Ì‚İA•K—vÅ¬ŒÀ‚Ìƒ^ƒCƒ~ƒ“ƒO‚Å¶¬‚·‚é
+    /// ã‚¿ã‚¤ãƒãƒ¼ã‚’å®Ÿè¡Œæ™‚ã®ã¿ã€å¿…è¦æœ€å°é™ã®ã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ç”Ÿæˆã™ã‚‹
     /// </summary>
     private void EnsureTimerInitialized()
     {
@@ -63,7 +63,7 @@ namespace AttacheCase.CustomControl
         return;
       }
 
-      // Às‚É‰‚ß‚ÄƒL[‚ª‰Ÿ‚³‚ê‚½ƒ^ƒCƒ~ƒ“ƒO‚Åƒ^ƒCƒ}[‚ğ¶¬
+      // å®Ÿè¡Œæ™‚ã«åˆã‚ã¦ã‚­ãƒ¼ãŒæŠ¼ã•ã‚ŒãŸã‚¿ã‚¤ãƒŸãƒ³ã‚°ã§ã‚¿ã‚¤ãƒãƒ¼ã‚’ç”Ÿæˆ
       EnsureTimerInitialized();
 
       _keysPressed = true;
@@ -81,14 +81,14 @@ namespace AttacheCase.CustomControl
         return;
       }
 
-      // ƒ^ƒCƒ}[–—¹A‚Ü‚½‚ÍƒR[ƒh‚©‚ç‚Ì•ÏXiƒL[“ü—ÍˆÈŠOj‚Í‘¦’Ê’m
+      // ã‚¿ã‚¤ãƒãƒ¼æº€äº†ã€ã¾ãŸã¯ã‚³ãƒ¼ãƒ‰ã‹ã‚‰ã®å¤‰æ›´ï¼ˆã‚­ãƒ¼å…¥åŠ›ä»¥å¤–ï¼‰ã¯å³æ™‚é€šçŸ¥
       if (_timerElapsed || !_keysPressed)
       {
         _timerElapsed = false;
         _keysPressed = false;
         base.OnTextChanged(e);
       }
-      // ƒL[“ü—Í’†‚Ìê‡‚ÍAƒ^ƒCƒ}[‚ÌTick‚É‚æ‚Á‚Ä‚Ì‚İOnTextChanged‚ªŒÄ‚Î‚ê‚é‚Ì‚ğ‘Ò‚Â
+      // ã‚­ãƒ¼å…¥åŠ›ä¸­ã®å ´åˆã¯ã€ã‚¿ã‚¤ãƒãƒ¼ã®Tickã«ã‚ˆã£ã¦ã®ã¿OnTextChangedãŒå‘¼ã°ã‚Œã‚‹ã®ã‚’å¾…ã¤
     }
 
     protected override void Dispose(bool disposing)
@@ -107,17 +107,17 @@ namespace AttacheCase.CustomControl
     }
 
     /// <summary>
-    /// ƒfƒUƒCƒ“ƒ‚[ƒh”»’èiƒfƒUƒCƒi[‚ÅˆÀ‘S‚É“®ì‚·‚éƒVƒ“ƒvƒ‹‚ÈÀ‘•j
+    /// ãƒ‡ã‚¶ã‚¤ãƒ³ãƒ¢ãƒ¼ãƒ‰åˆ¤å®šï¼ˆãƒ‡ã‚¶ã‚¤ãƒŠãƒ¼ã§å®‰å…¨ã«å‹•ä½œã™ã‚‹ã‚·ãƒ³ãƒ—ãƒ«ãªå®Ÿè£…ï¼‰
     /// </summary>
     private bool IsInDesignMode()
     {
-      // 1. •W€‚Ì DesignMode ƒvƒƒpƒeƒB
+      // 1. æ¨™æº–ã® DesignMode ãƒ—ãƒ­ãƒ‘ãƒ†ã‚£
       if (DesignMode) return true;
 
-      // 2. LicenseManager ‚É‚æ‚é”»’èiƒRƒ“ƒXƒgƒ‰ƒNƒ^‚É‚à—LŒøj
+      // 2. LicenseManager ã«ã‚ˆã‚‹åˆ¤å®šï¼ˆã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿æ™‚ã«ã‚‚æœ‰åŠ¹ï¼‰
       if (LicenseManager.UsageMode == LicenseUsageMode.Designtime) return true;
 
-      // 3. SiteŒo—R‚Ì”»’èieƒRƒ“ƒgƒ[ƒ‹‚ª‚ ‚éê‡‚É—LŒøj
+      // 3. SiteçµŒç”±ã®åˆ¤å®šï¼ˆè¦ªã‚³ãƒ³ãƒˆãƒ­ãƒ¼ãƒ«ãŒã‚ã‚‹å ´åˆã«æœ‰åŠ¹ï¼‰
       if (Site != null && Site.DesignMode) return true;
 
       return false;

@@ -5,10 +5,10 @@ using System.Runtime.InteropServices;
 // アセンブリに関連付けられている情報を変更するには、
 // これらの属性値を変更してください。
 [assembly: AssemblyTitle("AttachéCase ( Self executable file )")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription(".NET Framework 4.0 based.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("HiBARA Software")]
-[assembly: AssemblyProduct("Exeout (.NET Framework 4.6.2 based.)")]
+[assembly: AssemblyProduct("Exeout (.NET Framework 4.0 based.)")]
 [assembly: AssemblyCopyright("© 2006-2024 M.Hibara, All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -31,5 +31,5 @@ using System.Runtime.InteropServices;
 // すべての値を指定するか、下のように '*' を使ってビルドおよびリビジョン番号を 
 // 既定値にすることができます:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion("4.2.4.0")]
-[assembly: AssemblyFileVersion("4.2.4.0")]
+[assembly: AssemblyVersion("4.2.5.6")]
+[assembly: AssemblyFileVersion("4.2.5.6")]

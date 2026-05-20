@@ -47,11 +47,11 @@ namespace AttacheCase
       this.buttonPasswordOK = new System.Windows.Forms.Button();
       this.tabPageOverwriteConfirm = new System.Windows.Forms.TabPage();
       this.panelOverwriteConfirm = new System.Windows.Forms.Panel();
-      this.splitButton2 = new AttacheCase.SplitButton();
+      this.splitButton2 = new AttacheCase.CustomControl.SplitButton();
       this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.ToolStripMenuItemSkip = new System.Windows.Forms.ToolStripMenuItem();
       this.ToolStripMenuItemSkipAll = new System.Windows.Forms.ToolStripMenuItem();
-      this.splitButton1 = new AttacheCase.SplitButton();
+      this.splitButton1 = new AttacheCase.CustomControl.SplitButton();
       this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
       this.ToolStripMenuItemOverwrite = new System.Windows.Forms.ToolStripMenuItem();
       this.ToolStripMenuItemOverwriteAll = new System.Windows.Forms.ToolStripMenuItem();

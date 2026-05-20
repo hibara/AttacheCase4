@@ -152,6 +152,23 @@ namespace AttacheCase
     #endregion
 
     //----------------------------------------------------------------------
+    // レジストレーションコード（メモリ上のステージング領域）
+    // INI から読み込まれたコードは、ここに保持され、
+    // 「一時的な設定を現在の設定に置き換える」操作 (SaveOptionsToRegistry) の経由で
+    // 初めて AttacheCase4\Registration へ反映される。
+    #region
+
+    private string _RegistrationCodeString = string.Empty;
+
+    public string RegistrationCodeString
+    {
+      get => this._RegistrationCodeString;
+      set => this._RegistrationCodeString = value ?? string.Empty;
+    }
+
+    #endregion
+
+    //----------------------------------------------------------------------
     // Window Pos
     #region
     //----------------------------------------------------------------------
@@ -1123,47 +1140,21 @@ namespace AttacheCase
     // Ignore file hash value check.
     public bool fSalvageIgnoreHashCheck { get; set; }
 
+    // サルベージモード判定: 3つのサルベージ系オプションのいずれかが有効ならサルベージモードとして扱う。
+    // 復号エンジン側のサルベージ分岐への引き渡し可否や、画面のサルベージモードインジケータ表示に使う。
+    public bool IsSalvageMode =>
+      _fSalvageToCreateParentFolderOneByOne ||
+      _fSalvageIntoSameDirectory ||
+      fSalvageIgnoreHashCheck;
+
     #endregion
 
     //----------------------------------------------------------------------
-    // Develop mode
-    #region
-    private bool _fDeveloperConsole;
-    // Ignore file hash value check.
-    public bool fDeveloperConsole
-    {
-      get => this._fDeveloperConsole;
-      set => this._fDeveloperConsole = value;
-    }
-
-    private int _DeveloperConsolePosX;
-    public int DeveloperConsolePosX
-    {
-      get => this._DeveloperConsolePosX;
-      set => this._DeveloperConsolePosX = value;
-    }
-
-    private int _DeveloperConsolePosY;
-    public int DeveloperConsolePosY
-    {
-      get => this._DeveloperConsolePosY;
-      set => this._DeveloperConsolePosY = value;
-    }
-
-    private int _DeveloperConsoleWidth;
-    public int DeveloperConsoleWidth
-    {
-      get => this._DeveloperConsoleWidth;
-      set => this._DeveloperConsoleWidth = value;
-    }
-
-    private int _DeveloperConsoleHeight;
-    public int DeveloperConsoleHeight
-    {
-      get => this._DeveloperConsoleHeight;
-      set => this._DeveloperConsoleHeight = value;
-    }
-    #endregion
+    // 「開発者モード」(fDeveloperConsole / Form5 開発者コンソール) は廃止された。
+    // 旧バージョンのレジストリ/INI に残る fDeveloperConsole / DeveloperConsolePosX/Y /
+    // DeveloperConsoleWidth/Height は読み込み・書き込みともに行わない。
+    // (旧エントリは無害なまま残置される。互換性問題はなし)
+    //----------------------------------------------------------------------
 
     //----------------------------------------------------------------------
     // Command line Only
@@ -1629,7 +1620,7 @@ namespace AttacheCase
         _EncryptionFileType = int.Parse((string)reg.GetValue("EncryptionFileType", "0"));
         _fEncryptionSameFileTypeAlways = (string)reg.GetValue("fEncryptionSameFileTypeAlways", "1") == "1";
         _EncryptionSameFileTypeAlways = int.Parse((string)reg.GetValue("EncryptionSameFileTypeAlways", "0"));
-        _fEncryptionSameFileTypeBefore = (string)reg.GetValue("fEncryptionSameFileTypeBefore", "1") == "1";
+        _fEncryptionSameFileTypeBefore = (string)reg.GetValue("fEncryptionSameFileTypeBefore", "0") == "1";
         _EncryptionSameFileTypeBefore = int.Parse((string)reg.GetValue("EncryptionSameFileTypeBefore", "0"));
         _fOver4GBok = (string)reg.GetValue("fOver4GBok", "0") == "1";
         _fAskAboutToExceed4Gib = (string)reg.GetValue("fAskAboutToExceed4Gib", "1") == "1";
@@ -1735,19 +1726,23 @@ namespace AttacheCase
         _fSalvageToCreateParentFolderOneByOne = (string)reg.GetValue("fSalvageToCreateParentFolderOneByOne", "0") == "1";
         _fSalvageIntoSameDirectory = (string)reg.GetValue("fSalvageIntoSameDirectory", "0") == "1";
 
-        //-----------------------------------
-        // Developer mode
-        _fDeveloperConsole = ((string)reg.GetValue("fDeveloperConsole", "0") == "1");
-        _DeveloperConsolePosX = int.Parse((string)reg.GetValue("DeveloperConsolePosX", "-1"));
-        _DeveloperConsolePosY = int.Parse((string)reg.GetValue("DeveloperConsolePosY", "-1"));
-        _DeveloperConsoleWidth = int.Parse((string)reg.GetValue("DeveloperConsoleWidth", "640"));
-        _DeveloperConsoleHeight = int.Parse((string)reg.GetValue("DeveloperConsoleHeight", "480"));
+        // 「開発者モード」(fDeveloperConsole / DeveloperConsolePosX/Y/Width/Height) は廃止された。
+        // 旧バージョンのレジストリエントリは読み込まない (残置されても無害)。
 
         //-----------------------------------
         // Others
         _Language = (string)reg.GetValue("Language", "");
         _SaveToIniDirPath = (string)reg.GetValue("SaveToIniDirPath", "");
       }
+
+      //-----------------------------------
+      // Registration (商用利用ライセンス)
+      // AttacheCase3 -> AttacheCase4 への移行をここで実施し(通常モードでのみ走る)、
+      // 最新のレジストレーションコードをメモリ上のステージング領域に同期する。
+      // INI 一時設定モードでは ReadOptionsFromRegistry 自体が呼ばれないため、
+      // この経路でレジストリが書き換わることはない。
+      LicenseRegister.MigrateLegacyRegistrationIfNeeded();
+      _RegistrationCodeString = new LicenseRegister("").RegistrationCode ?? string.Empty;
 
     }
 
@@ -1939,18 +1934,28 @@ namespace AttacheCase
         reg.SetValue("fSalvageToCreateParentFolderOneByOne", _fSalvageToCreateParentFolderOneByOne == true ? "1" : "0");
         reg.SetValue("fSalvageIntoSameDirectory", _fSalvageIntoSameDirectory == true ? "1" : "0");
 
-        //-----------------------------------
-        // Developer mode
-        reg.SetValue("fDeveloperConsole", _fDeveloperConsole == true ? "1" : "0");
-        reg.SetValue("DeveloperConsolePosX", _DeveloperConsolePosX.ToString());
-        reg.SetValue("DeveloperConsolePosY", _DeveloperConsolePosY.ToString());
-        reg.SetValue("DeveloperConsoleWidth", _DeveloperConsoleWidth.ToString());
-        reg.SetValue("DeveloperConsoleHeight", _DeveloperConsoleHeight.ToString());
+        // 「開発者モード」(fDeveloperConsole / DeveloperConsolePosX/Y/Width/Height) は廃止された。
+        // 書き込みは行わない (旧エントリが残っている場合も上書きしない / 害なし)。
 
         //-----------------------------------
         // Others
         reg.SetValue("Language", _Language);
         reg.SetValue("SaveToIniDirPath", _SaveToIniDirPath);
+      }
+
+      //-----------------------------------
+      // Registration (商用利用ライセンス)
+      // メモリ上のステージング値がレジストリの現在値と異なれば適用する。
+      // Decrypt(true) が RSA で検証し、有効な場合のみ AttacheCase4\Registration へ書き込む。
+      // 検証失敗時は Decrypt が false を返すだけで、既存のレジストリ値は破壊しない。
+      if (string.IsNullOrEmpty(_RegistrationCodeString) == false)
+      {
+        var currentRegistryCode = new LicenseRegister("").RegistrationCode ?? string.Empty;
+        if (_RegistrationCodeString != currentRegistryCode)
+        {
+          var lcr = new LicenseRegister(_RegistrationCodeString);
+          lcr.Decrypt(true);
+        }
       }
     }
 
@@ -2175,18 +2180,23 @@ namespace AttacheCase
       ReadIniFile(iniFilePath, ref _fSalvageToCreateParentFolderOneByOne, "Option", "fSalvageToCreateParentFolderOneByOne", "0");
       ReadIniFile(iniFilePath, ref _fSalvageIntoSameDirectory, "Option", "fSalvageIntoSameDirectory", "0");
 
-      //-----------------------------------
-      // Developer mode
-      ReadIniFile(iniFilePath, ref _fDeveloperConsole, "Option", "fDeveloperConsole", "0");
-      ReadIniFile(iniFilePath, ref _DeveloperConsolePosX, "Option", "DeveloperConsolePosX", "-1");
-      ReadIniFile(iniFilePath, ref _DeveloperConsolePosY, "Option", "DeveloperConsolePosY", "-1");
-      ReadIniFile(iniFilePath, ref _DeveloperConsoleWidth, "Option", "DeveloperConsoleWidth", "640");
-      ReadIniFile(iniFilePath, ref _DeveloperConsoleHeight, "Option", "DeveloperConsoleHeight", "480");
+      // 「開発者モード」(fDeveloperConsole 他) は廃止された。INI 内に旧エントリが残っていても読み込まない。
 
       //-----------------------------------
       // Others
       ReadIniFile(iniFilePath, ref _Language, "Option", "Language", "");
       ReadIniFile(iniFilePath, ref _SaveToIniDirPath, "Option", "SaveToIniDirPath", "");
+
+      //-----------------------------------
+      // Registration (商用利用ライセンス)
+      // ここでは AppSettings 上のメモリにステージングするだけで、
+      // レジストリ (AttacheCase4\Registration) には触らない。
+      // 実際の反映は、ユーザーが「一時的な設定を現在の設定に置き換える」を選んだ際、
+      // SaveOptionsToRegistry 経由で行われる。
+      // レジストレーションコードはRSA暗号文の16進文字列で 512 文字程度になるため、バッファを大きめに確保
+      var registrationCode = "";
+      ReadIniFile(iniFilePath, ref registrationCode, "Registration", "RegistrationCode", "", 1024);
+      _RegistrationCodeString = registrationCode;
 
     }
 
@@ -2368,23 +2378,41 @@ namespace AttacheCase
       WriteIniFile(iniFilePath, _fSalvageToCreateParentFolderOneByOne, "Option", "fSalvageToCreateParentFolderOneByOne");
       WriteIniFile(iniFilePath, _fSalvageIntoSameDirectory, "Option", "fSalvageIntoSameDirectory");
 
-      //-----------------------------------
-      // Developer mode
-      WriteIniFile(iniFilePath, _fDeveloperConsole, "Option", "fDeveloperConsole");
-      WriteIniFile(iniFilePath, _DeveloperConsolePosX, "Option", "DeveloperConsolePosX");
-      WriteIniFile(iniFilePath, _DeveloperConsolePosY, "Option", "DeveloperConsolePosY");
-      WriteIniFile(iniFilePath, _DeveloperConsoleWidth, "Option", "DeveloperConsoleWidth");
-      WriteIniFile(iniFilePath, _DeveloperConsoleHeight, "Option", "DeveloperConsoleHeight");
+      // 「開発者モード」(fDeveloperConsole 他) は廃止された。INI への書き出しは行わない。
 
       //-----------------------------------
       // Others
       WriteIniFile(iniFilePath, _Language, "Option", "Language");
       WriteIniFile(iniFilePath, _SaveToIniDirPath, "Option", "SaveToIniDirPath");
 
+      //-----------------------------------
+      // Registration (商用利用ライセンス)
+      // 一時設定モード (INI由来の_RegistrationCodeStringを編集中) ならそのまま書き出す。
+      // 通常モードでは、Form2 など別経路でレジストリに登録された可能性があるため、
+      // レジストリの現在値を再読込してから INI へ書き出す。
+      if (SettingSource != SettingDataLocation.IniFile)
+      {
+        _RegistrationCodeString = new LicenseRegister("").RegistrationCode ?? string.Empty;
+      }
+      // レジストリ格納時のコードは可読性のため 32 文字ごとに Environment.NewLine が
+      // 入っているが、WritePrivateProfileString は改行を含む値を正しく扱えず、
+      // 上書き時に古い「孤児行」が残って同じコードが何重にも記録される問題が起きる。
+      // 改行を取り除いた 1 行の連結文字列として書き出す。
+      var registrationOneLine = _RegistrationCodeString
+        .Replace("\r\n", string.Empty)
+        .Replace("\r", string.Empty)
+        .Replace("\n", string.Empty);
+      // 既存の [Registration] セクション全体を削除してからキーを書き直すことで、
+      // 旧バージョンが残した孤児行(改行付き値の残骸)も合わせて掃除する。
+      UnsafeNativeMethods.WritePrivateProfileString("Registration", null, null, iniFilePath);
+      WriteIniFile(iniFilePath, registrationOneLine, "Registration", "RegistrationCode");
+
       // 変更があった場合のみ承認マーカーを更新
       // Update approval markers only when changes are made
-      securityManager.UpdateApprovalIfChanged();
-
+      // securityManager は起動時に _AtcCase.ini が検出された場合にのみ初期化される。
+      // Form3 の「現在の設定をINIファイルへ保存」のように任意パスへ書き出す経路では
+      // null になっているため、null 条件演算子で安全に呼び出す。
+      securityManager?.UpdateApprovalIfChanged();
 
     }
 
@@ -2413,6 +2441,16 @@ namespace AttacheCase
     {
       var ResultValue = new StringBuilder(255);
       if (UnsafeNativeMethods.GetPrivateProfileString(section, key, defval, ResultValue, 255, filePath) > 0)
+      {
+        o = ResultValue.ToString();
+      }
+    }
+
+    // 長い文字列(レジストレーションコードなど)を読み込むためのオーバーロード
+    public void ReadIniFile(string filePath, ref string o, string section, string key, string defval, int maxSize)
+    {
+      var ResultValue = new StringBuilder(maxSize);
+      if (UnsafeNativeMethods.GetPrivateProfileString(section, key, defval, ResultValue, maxSize, filePath) > 0)
       {
         o = ResultValue.ToString();
       }
@@ -3398,24 +3436,7 @@ namespace AttacheCase
 
             #endregion
 
-            //-----------------------------------
-            // Developer mode 開発者モード
-            //-----------------------------------
-            #region
-
-            // Open developer console window 
-            case "/devcl": // 開発用のデベロッパーコンソールウィンドウの表示
-              if (value == "")
-              {
-                _fDeveloperConsole = true;
-              }
-              else if (value == "0")
-              {
-                _fDeveloperConsole = false;
-              }
-              break;
-
-            #endregion
+            // 「開発者モード」(/devcl) は廃止された。指定されても無視 (default ケースへフォールスルー)。
 
             //-----------------------------------
             //その他（コマンドラインからのみ）
@@ -3585,7 +3606,7 @@ namespace AttacheCase
                         if (RegistrationCodeString.Length >= 512)
                         {
                           lcr = new LicenseRegister(RegistrationCodeString);
-                          if (lcr.Decypt(true) == false)
+                          if (lcr.Decrypt(true) == false)
                           {
                             // 注意
                             // 
@@ -3606,7 +3627,7 @@ namespace AttacheCase
                   }
 
                   lcr = new LicenseRegister(RegistrationCodeString);
-                  if (lcr.Decypt(true) == false)
+                  if (lcr.Decrypt(true) == false)
                   {
                     // 注意
                     // 

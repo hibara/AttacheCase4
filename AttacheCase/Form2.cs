@@ -50,8 +50,22 @@ namespace AttacheCase
       tabControl1.Visible = false;
 
       // レジストレーションコードのチェック
+      // まずレジストリ(AttacheCase4\Registration)から読み込む。
+      // 見つからない場合は _AtcCase.ini 由来の一時設定 (AppSettings.RegistrationCodeString)
+      // をフォールバックとして利用する。これにより INI 一時設定モードでも、
+      // レジストリを汚染することなく商用ライセンスを画面に表示できる。
       var lcr = new LicenseRegister("");
-      if (lcr.Decypt(false) == true)
+      var isLicensed = lcr.Decrypt(false);
+      if (isLicensed == false)
+      {
+        var staged = AppSettings.Instance.RegistrationCodeString;
+        if (string.IsNullOrEmpty(staged) == false)
+        {
+          lcr = new LicenseRegister(staged);
+          isLicensed = lcr.Decrypt(false);
+        }
+      }
+      if (isLicensed == true)
       {
         // 商用ライセンス適用
         // Commercial license applicable
@@ -112,27 +126,23 @@ namespace AttacheCase
         ServicePointManager.SecurityProtocol = (SecurityProtocolType)192 | (SecurityProtocolType)768 | (SecurityProtocolType)3072;
         // 将来的には、.NET 4.5以上で以下を有効にする
         // ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
-        using (WebClient webClient = new WebClient())
+        using var webClient = new WebClient();
+        var stream = webClient.OpenRead(new Uri("https://hibara.org/software/attachecase/current/index.php"));
+        using var sr = new StreamReader(stream);
+        var content = sr.ReadToEnd();
+        var current = int.Parse(content);
+        if (current > AppSettings.Instance.AppVersion)
         {
-          var stream = webClient.OpenRead(new Uri("https://hibara.org/software/attachecase/current/index.php"));
-          using (var sr = new StreamReader(stream))
-          {
-            var content = sr.ReadToEnd();
-            var current = int.Parse(content);
-            if (current > AppSettings.Instance.AppVersion)
-            {
-              pictureBoxProgressCircle.Image = pictureBoxExclamationMark.Image;
-              // "The latest version is released!"
-              linkLabelCheckForUpdates.Text = Resources.linkLabelLatestVersionReleased;
-            }
-            else
-            {
-              pictureBoxProgressCircle.Image = pictureBoxCheckMark.Image;
-              // "Your version is latest."
-              linkLabelCheckForUpdates.Text = Resources.linkLabelLatestVersion;
-              linkLabelCheckForUpdates.Enabled = false;
-            }
-          }
+          pictureBoxProgressCircle.Image = pictureBoxExclamationMark.Image;
+          // "The latest version is released!"
+          linkLabelCheckForUpdates.Text = Resources.linkLabelLatestVersionReleased;
+        }
+        else
+        {
+          pictureBoxProgressCircle.Image = pictureBoxCheckMark.Image;
+          // "Your version is latest."
+          linkLabelCheckForUpdates.Text = Resources.linkLabelLatestVersion;
+          linkLabelCheckForUpdates.Enabled = false;
         }
       }
       catch (Exception ex)
@@ -156,8 +166,8 @@ namespace AttacheCase
 
     private void buttonRegister_Click(object sender, EventArgs e)
     {
-      LicenseRegister lcr = new LicenseRegister(textBox1.Text);
-      if (lcr.Decypt(true) == true)
+      var lcr = new LicenseRegister(textBox1.Text);
+      if (lcr.Decrypt(true) == true)
       {
         // 商用利用適用
         // Commercial Use applicable
@@ -202,7 +212,7 @@ namespace AttacheCase
     private void textBox1_TextChanged(object sender, EventArgs e)
     {
       LicenseRegister lcr = new LicenseRegister(textBox1.Text.Trim());
-      if (lcr.Decypt(false) == true)  // レジストリへは書き込まずに判定だけ行う
+      if (lcr.Decrypt(false) == true)  // レジストリへは書き込まずに判定だけ行う
       {
         labelValidation.ForeColor = Color.FromName("ForestGreen");
         // Valid code.

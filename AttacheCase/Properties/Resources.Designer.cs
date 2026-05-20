@@ -1771,7 +1771,8 @@ namespace AttacheCase.Properties {
         }
         
         /// <summary>
-        ///   Somewhat weak に類似しているローカライズされた文字列を検索します。
+        ///   Somewhat
+        ///weak に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string zxcvbnLabel02 {
             get {
